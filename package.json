@@ -1,0 +1,26 @@
+{
+  "name": "expenses",
+  "description": "",
+  "version": "0.0.1",
+  "main": "build/index.js",
+  "author": "Nihal Gonsalves <nihal@nihalgonsalves.com>",
+  "license": "",
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts",
+    "start": "NODE_ENV=production node build/index.js",
+    "build": "tsc",
+    "test": "exit 0",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src/",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "devDependencies": {
+    "@nihalgonsalves/esconfig": "^0.3.2",
+    "@types/node": "18",
+    "eslint": "^8.44.0",
+    "npm-check-updates": "^16.10.13",
+    "prettier": "^2.8.8",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.1.6"
+  }
+}
