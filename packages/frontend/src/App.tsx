@@ -1,3 +1,5 @@
+import { Typography } from '@mui/material';
+
 export const App = () => {
-  return <>Hello World</>;
+  return <Typography>Hello World</Typography>;
 };
