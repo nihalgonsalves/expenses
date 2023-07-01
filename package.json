@@ -10,16 +10,28 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "run-p --print-label dev:*",
     "build": "tsc --build",
     "test": "exit 0",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ./packages/*/src/",
+    "lint": "eslint --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx ./packages/*/src/",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "fe": "yarn workspace @nihalgonsalves/expenses-frontend",
+    "be": "yarn workspace @nihalgonsalves/expenses-backend",
+    "dev:fe": "yarn fe dev",
+    "dev:be": "yarn be dev"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.3.2",
+    "@nihalgonsalves/esconfig": "^0.3.4",
     "@types/node": "18",
     "eslint": "^8.44.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.1",
+    "npm-run-all2": "^6.0.5",
     "prettier": "^2.8.8",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6"

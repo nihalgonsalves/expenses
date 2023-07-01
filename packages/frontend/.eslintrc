@@ -1,0 +1,13 @@
+{
+  "extends": "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react",
+  "settings": { "react": { "version": "detect" } },
+  "overrides": [
+    {
+      "files": ["vite.config.ts"],
+      "rules": {
+        "import/no-extraneous-dependencies": "off",
+        "import/no-default-export": "off"
+      }
+    }
+  ]
+}

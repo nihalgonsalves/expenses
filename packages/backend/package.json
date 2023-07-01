@@ -1,5 +1,8 @@
 {
   "name": "@nihalgonsalves/expenses-backend",
   "description": "",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts"
+  }
 }

@@ -1,4 +1,5 @@
 {
+  "root": true,
   "extends": ["./node_modules/@nihalgonsalves/esconfig/.eslintrc"],
   "parserOptions": {
     "project": "packages/*/tsconfig.json"
