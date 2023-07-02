@@ -1,8 +1,17 @@
-import { createBrowserRouter } from 'react-router-dom';
-export { RouterProvider } from 'react-router-dom';
+import { forwardRef } from 'react';
+import { createBrowserRouter, Link, type LinkProps } from 'react-router-dom';
 
+import { Expense } from './pages/Expense';
 import { Index } from './pages/Index';
 import { Root } from './pages/Root';
+
+export const RouterLink = forwardRef<
+  HTMLAnchorElement,
+  { href: string } & Omit<LinkProps, 'to'>
+>(({ href, ...props }, ref) => (
+  <Link ref={ref} to={href} {...props} role={undefined} />
+));
+RouterLink.displayName = 'RouterLink';
 
 export const router = createBrowserRouter([
   {
@@ -14,6 +23,12 @@ export const router = createBrowserRouter([
         path: '',
         element: <Index />,
       },
+      {
+        path: 'expenses/new',
+        element: <Expense />,
+      },
     ],
   },
 ]);
+
+export { RouterProvider } from 'react-router-dom';

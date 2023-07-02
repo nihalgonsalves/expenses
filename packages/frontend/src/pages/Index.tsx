@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material';
+import { ExpensesList } from '../components/ExpensesList';
 
 export const Index = () => {
-  return <Typography>Hello World</Typography>;
+  return <ExpensesList />;
 };
