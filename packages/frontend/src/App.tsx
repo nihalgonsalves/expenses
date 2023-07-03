@@ -1,5 +1,3 @@
-import { Typography } from '@mui/material';
+import { RouterProvider, router } from './router';
 
-export const App = () => {
-  return <Typography>Hello World</Typography>;
-};
+export const App = () => <RouterProvider router={router} />;

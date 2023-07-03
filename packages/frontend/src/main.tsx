@@ -12,8 +12,18 @@ import '@fontsource/roboto/700.css';
 import { App } from './App';
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+  throw new Error('div[id="root"] not found');
+}
+
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
+}
