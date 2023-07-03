@@ -1,3 +1,5 @@
+import { Temporal } from '@js-temporal/polyfill';
+
 export const getUserLanguage = () => {
   return window.navigator.languages[0];
 };
@@ -10,3 +12,10 @@ export const generateId = () => {
 
   return btoa(binString).replace(/\+/g, '-').replace(/\//g, '_');
 };
+
+export const epochNowSeconds = () => Temporal.Now.instant().epochSeconds;
+
+export const dateTimeLocalToEpoch = (val: string) =>
+  Temporal.PlainDateTime.from(val).toZonedDateTime(
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  ).epochSeconds;

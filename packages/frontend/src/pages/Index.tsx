@@ -1,3 +1,1 @@
-import { CreateGroupForm } from '../components/CreateGroupForm';
-
-export const Index = () => <CreateGroupForm />;
+export const Index = () => 'Hello World';

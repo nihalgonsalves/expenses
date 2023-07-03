@@ -14,6 +14,7 @@ import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { createGroup } from '../db/splitGroup';
+import { CURRENCY_CODES, getDefaultCurrency } from '../money';
 
 type InputParticipant = { name: string };
 
@@ -24,7 +25,7 @@ export const CreateGroupForm = () => {
   const navigate = useNavigate();
 
   const [groupName, setGroupName] = useState('');
-  const [currency, setCurrency] = useState('EUR');
+  const [currency, setCurrency] = useState(getDefaultCurrency());
 
   const [participants, setParticipants] = useState([
     blankParticipant,
@@ -61,6 +62,7 @@ export const CreateGroupForm = () => {
       currency,
       owner,
       participants: others,
+      expenses: [],
     });
 
     navigate(`/groups/${id}`);
@@ -93,7 +95,11 @@ export const CreateGroupForm = () => {
               setCurrency(e.target.value);
             }}
           >
-            <MenuItem value="EUR">Euro (EUR, €)</MenuItem>
+            {CURRENCY_CODES.map((c) => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 

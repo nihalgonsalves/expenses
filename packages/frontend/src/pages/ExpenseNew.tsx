@@ -1,12 +1,14 @@
-import { Group } from '../components/Group';
+import { EditExpenseForm } from '../components/EditExpenseForm';
 import { useGroup } from '../db/splitGroup';
 import { GroupParams, useParams } from '../router';
 
-export const GroupDetail = () => {
+export const ExpenseNew = () => {
   const { groupId } = useParams(GroupParams);
   const group = useGroup(groupId);
 
-  if (!group) return null;
+  if (!group) {
+    return null;
+  }
 
-  return <Group group={group} />;
+  return <EditExpenseForm group={group} />;
 };

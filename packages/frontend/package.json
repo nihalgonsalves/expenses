@@ -8,16 +8,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dinero.js/currencies": "^2.0.0-alpha.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@js-temporal/polyfill": "^0.4.4",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.6",
+    "country-to-currency": "^1.0.10",
+    "dinero.js": "^2.0.0-alpha.14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.1",
     "rxdb": "^14.14.1",
     "rxjs": "^7.8.1",
+    "ts-essentials": "^9.3.2",
     "zod": "^3.21.4",
     "zod-to-json-schema": "^3.21.3"
   },

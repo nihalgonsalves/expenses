@@ -1,9 +1,16 @@
 import { forwardRef } from 'react';
-import { createBrowserRouter, Link, type LinkProps } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Link,
+  type LinkProps,
+  useParams as useParamsOriginal,
+} from 'react-router-dom';
+import { z, type ZodRawShape } from 'zod';
 
-import { Expense } from './pages/Expense';
+import { ExpenseNew } from './pages/ExpenseNew';
 import { ExpensesIndex } from './pages/ExpensesIndex';
 import { GroupDetail } from './pages/GroupDetail';
+import { GroupNew } from './pages/GroupNew';
 import { GroupsIndex } from './pages/GroupsIndex';
 import { Index } from './pages/Index';
 import { Root } from './pages/Root';
@@ -31,19 +38,30 @@ export const router = createBrowserRouter([
         element: <GroupsIndex />,
       },
       {
-        path: 'groups/:id',
+        path: 'groups/new',
+        element: <GroupNew />,
+      },
+      {
+        path: 'groups/:groupId',
         element: <GroupDetail />,
       },
       {
-        path: 'expenses',
+        path: 'groups/:groupId/expenses',
         element: <ExpensesIndex />,
       },
       {
-        path: 'expenses/new',
-        element: <Expense />,
+        path: 'groups/:groupId/expenses/new',
+        element: <ExpenseNew />,
       },
     ],
   },
 ]);
+
+export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
+  const params = useParamsOriginal();
+  return schema.parse(params);
+};
+
+export const GroupParams = z.object({ groupId: z.string() });
 
 export { RouterProvider } from 'react-router-dom';

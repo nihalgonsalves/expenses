@@ -1,8 +1,7 @@
-import { Add, Restaurant } from '@mui/icons-material';
+import { Restaurant } from '@mui/icons-material';
 import {
   Avatar,
   Divider,
-  Fab,
   List,
   ListItem,
   ListItemAvatar,
@@ -11,52 +10,34 @@ import {
 } from '@mui/material';
 import { Fragment } from 'react';
 
-import { RouterLink } from '../router';
-import { getUserLanguage } from '../utils';
+import { type SplitGroupDocument } from '../db/types';
+import { formatCurrency } from '../money';
 
-export const ExpensesList = () => {
+export const ExpensesList = ({ group }: { group: SplitGroupDocument }) => {
   return (
-    <>
-      <List dense>
-        {Array.from({ length: 50 }).map((_, i) => (
-          // test data
-          // eslint-disable-next-line react/no-array-index-key
-          <Fragment key={i}>
-            <ListItem>
-              <ListItemAvatar>
-                <Avatar>
-                  <Restaurant />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={
-                  <Stack direction="row" justifyContent="space-between">
-                    <span>Food</span>
-                    <span>
-                      {new Intl.NumberFormat(getUserLanguage(), {
-                        style: 'currency',
-                        currency: 'EUR',
-                      }).format(-12.34)}
-                    </span>
-                  </Stack>
-                }
-                secondary="Pizza"
-              />
-            </ListItem>
+    <List dense>
+      {group.expenses.map((expense) => (
+        <Fragment key={expense.id}>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar>
+                <Restaurant />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={
+                <Stack direction="row" justifyContent="space-between">
+                  <span>{expense.category}</span>
+                  <span>{formatCurrency(expense.money)}</span>
+                </Stack>
+              }
+              secondary="Pizza"
+            />
+          </ListItem>
 
-            <Divider />
-          </Fragment>
-        ))}
-      </List>
-      <Fab
-        color="primary"
-        aria-label="Add"
-        sx={{ position: 'sticky', bottom: 0, right: 0 }}
-        LinkComponent={RouterLink}
-        href="/expenses/new"
-      >
-        <Add />
-      </Fab>
-    </>
+          <Divider />
+        </Fragment>
+      ))}
+    </List>
   );
 };
