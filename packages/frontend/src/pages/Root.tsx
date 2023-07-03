@@ -1,4 +1,4 @@
-import { List, Settings } from '@mui/icons-material';
+import { Group, Settings } from '@mui/icons-material';
 import {
   AppBar,
   BottomNavigation,
@@ -33,10 +33,10 @@ export const Root = () => {
         value="Expenses"
       >
         <BottomNavigationAction
-          label="Expenses"
-          icon={<List />}
+          label="Groups"
+          icon={<Group />}
           LinkComponent={RouterLink}
-          href="/"
+          href="/groups"
         />
         <BottomNavigationAction label="Setings" icon={<Settings />} />
       </BottomNavigation>

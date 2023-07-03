@@ -1,5 +1,3 @@
-import { ExpensesList } from '../components/ExpensesList';
+import { CreateGroupForm } from '../components/CreateGroupForm';
 
-export const Index = () => {
-  return <ExpensesList />;
-};
+export const Index = () => <CreateGroupForm />;
