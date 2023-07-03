@@ -1071,10 +1071,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@nihalgonsalves/esconfig@^0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@nihalgonsalves/esconfig/-/esconfig-0.3.5.tgz#ebe29169c558a72290089608dc64c8d99035757a"
-  integrity sha512-8fWSdAo3BjFWyv0c4FmvNw80rZNPCKq61zbMo43mIZM1zeT5m3QT6jouxfIPg2by3KDnUOAQsW2HLMVCz608Sw==
+"@nihalgonsalves/esconfig@^0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@nihalgonsalves/esconfig/-/esconfig-0.3.6.tgz#9dc904168c56169a600b1203c639c79b6d3688a1"
+  integrity sha512-qu78/zZ4dKmW23SpC09GnkGsVJgtDELziSELWSR7Qnwm1giPuhiGWoiM5B8qS8YA4YVNHn3fqxqpRq4prhm/iQ==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^5.60.1"
     "@typescript-eslint/parser" "^5.60.1"

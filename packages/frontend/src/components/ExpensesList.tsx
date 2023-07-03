@@ -20,6 +20,7 @@ export const ExpensesList = () => {
       <List dense>
         {Array.from({ length: 50 }).map((_, i) => (
           // test data
+          // eslint-disable-next-line react/no-array-index-key
           <Fragment key={i}>
             <ListItem>
               <ListItemAvatar>

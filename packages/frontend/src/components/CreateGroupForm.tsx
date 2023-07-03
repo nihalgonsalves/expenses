@@ -69,84 +69,84 @@ export const CreateGroupForm = () => {
   const valid = groupName && participants.every((p) => p.name);
 
   return (
-    <>
-      <form>
-        <Stack spacing={3}>
-          <TextField
-            fullWidth
-            label="Group name"
-            placeholder="WG Expenses"
-            required
-            value={groupName}
-            onChange={(e) => {
-              setGroupName(e.target.value);
-            }}
-          />
+    <form>
+      <Stack spacing={3}>
+        <TextField
+          fullWidth
+          label="Group name"
+          placeholder="WG Expenses"
+          required
+          value={groupName}
+          onChange={(e) => {
+            setGroupName(e.target.value);
+          }}
+        />
 
-          <FormControl fullWidth>
-            <InputLabel id={currencySelectId}>Currency</InputLabel>
-            <Select
-              labelId={currencySelectId}
-              value={currency}
-              label="Currency"
+        <FormControl fullWidth>
+          <InputLabel id={currencySelectId}>Currency</InputLabel>
+          <Select
+            labelId={currencySelectId}
+            value={currency}
+            label="Currency"
+            required
+            onChange={(e) => {
+              setCurrency(e.target.value);
+            }}
+          >
+            <MenuItem value="EUR">Euro (EUR, €)</MenuItem>
+          </Select>
+        </FormControl>
+
+        <Divider />
+
+        {participants.map((participant, i) => (
+          // this is a list of inputs without an ID that won't be re-ordered
+          // eslint-disable-next-line react/no-array-index-key
+          <Stack key={i} direction="row" spacing={1}>
+            <TextField
+              fullWidth
+              label={i === 0 ? 'Your Name' : `Person ${i}'s name`}
+              value={participant.name}
               required
               onChange={(e) => {
-                setCurrency(e.target.value);
+                handleChangeParticipant(i, 'name', e.target.value);
               }}
-            >
-              <MenuItem value="EUR">Euro (EUR, €)</MenuItem>
-            </Select>
-          </FormControl>
+              InputProps={{
+                endAdornment: i > 1 && (
+                  <IconButton
+                    aria-label="Delete"
+                    onClick={() => handleDeleteParticipant(i)}
+                    color="error"
+                  >
+                    <DeleteOutline />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Stack>
+        ))}
 
-          <Divider />
+        <Button
+          fullWidth
+          variant="outlined"
+          startIcon={<PersonAdd />}
+          onClick={handleAddParticipant}
+        >
+          Add Participant
+        </Button>
 
-          {participants.map((participant, i) => (
-            <Stack key={i} direction="row" spacing={1}>
-              <TextField
-                fullWidth
-                label={i === 0 ? 'Your Name' : `Person ${i}'s name`}
-                value={participant.name}
-                required
-                onChange={(e) => {
-                  handleChangeParticipant(i, 'name', e.target.value);
-                }}
-                InputProps={{
-                  endAdornment: i > 1 && (
-                    <IconButton
-                      aria-label="Delete"
-                      onClick={() => handleDeleteParticipant(i)}
-                      color="error"
-                    >
-                      <DeleteOutline />
-                    </IconButton>
-                  ),
-                }}
-              />
-            </Stack>
-          ))}
+        <Divider />
 
-          <Button
-            fullWidth
-            variant="outlined"
-            startIcon={<PersonAdd />}
-            onClick={handleAddParticipant}
-          >
-            Add Participant
-          </Button>
-
-          <Divider />
-
-          <Button
-            fullWidth
-            variant="contained"
-            startIcon={<AddCircle />}
-            onClick={() => void handleCreateGroup()}
-            disabled={!valid}
-          >
-            Create Group
-          </Button>
-        </Stack>
-      </form>
-    </>
+        <Button
+          fullWidth
+          variant="contained"
+          startIcon={<AddCircle />}
+          onClick={() => void handleCreateGroup()}
+          disabled={!valid}
+        >
+          Create Group
+        </Button>
+      </Stack>
+    </form>
   );
 };
