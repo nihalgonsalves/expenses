@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-pwa-assets": "pwa-assets-generator"
   },
   "dependencies": {
     "@dinero.js/currencies": "^2.0.0-alpha.1",
@@ -28,7 +29,9 @@
   "devDependencies": {
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
+    "@vite-pwa/assets-generator": "^0.0.3",
     "@vitejs/plugin-react": "^4.0.1",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "vite-plugin-pwa": "^0.16.4"
   }
 }

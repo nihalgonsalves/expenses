@@ -3,7 +3,7 @@
   "settings": { "react": { "version": "detect" } },
   "overrides": [
     {
-      "files": ["vite.config.ts"],
+      "files": ["vite.config.ts", "pwa-assets.config.ts"],
       "rules": {
         "import/no-extraneous-dependencies": "off",
         "import/no-default-export": "off"
