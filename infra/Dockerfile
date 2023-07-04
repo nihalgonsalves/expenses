@@ -1,0 +1,27 @@
+FROM node:18-slim as builder
+
+RUN mkdir -p /opt/app
+WORKDIR /opt/app
+
+RUN mkdir -p ./packages/frontend/
+RUN mkdir -p ./packages/backend/
+
+ADD package.json .
+ADD ./packages/frontend/package.json ./packages/frontend/
+ADD ./packages/backend/package.json ./packages/backend/
+ADD yarn.lock .
+
+RUN yarn install --frozen-lockfile
+
+ADD ./tsconfig.json ./tsconfig.base.json ./
+ADD ./packages/frontend/ ./packages/frontend/
+ADD ./packages/backend/ ./packages/backend/
+
+RUN yarn build
+RUN yarn fe build
+
+FROM caddy:2.6-alpine
+
+COPY ./infra/Caddyfile /etc/caddy/Caddyfile
+COPY --from=builder /opt/app/packages/frontend/dist /var/www
+

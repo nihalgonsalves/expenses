@@ -28,10 +28,15 @@ type RXDBCollections = {
   split_groups: RxCollection<SplitGroup>;
 };
 
+const DB_NAME = 'expenses-app';
+
+export const resetDatabase = () =>
+  removeRxDatabase(DB_NAME, getRxStorageDexie());
+
 const init = async (): Promise<RxDatabase<RXDBCollections>> => {
   try {
     const db = await createRxDatabase<RXDBCollections>({
-      name: 'expenses-app',
+      name: DB_NAME,
       storage: getRxStorageDexie(),
       ignoreDuplicate: import.meta.hot != null,
     });
@@ -49,9 +54,10 @@ const init = async (): Promise<RxDatabase<RXDBCollections>> => {
 
     return db;
   } catch (e) {
+    // TODO: when ready to release, add check for import.meta.env.DEV
     // @ts-expect-error RxError instance is not exported
-    if (import.meta.env.DEV && e.rxdb && e.code === 'DB6') {
-      await removeRxDatabase('expenses-app', getRxStorageDexie());
+    if (e.rxdb && e.code === 'DB6') {
+      await resetDatabase();
       return init();
     }
     throw e;
