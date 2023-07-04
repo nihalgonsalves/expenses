@@ -10,7 +10,7 @@ export const GroupsIndex = () => {
 
   return (
     <>
-      <GroupsList groups={groups} />
+      <GroupsList groups={groups} sx={{ flexGrow: 1 }} />
       <Button
         fullWidth
         variant="outlined"

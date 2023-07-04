@@ -1,22 +1,28 @@
 import { Restaurant } from '@mui/icons-material';
 import {
   Avatar,
-  Divider,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Stack,
+  type SxProps,
 } from '@mui/material';
 import { Fragment } from 'react';
 
-import { type SplitGroupDocument } from '../db/types';
+import { type SplitGroupExpense } from '../db/types';
 import { formatCurrency } from '../money';
 
-export const ExpensesList = ({ group }: { group: SplitGroupDocument }) => {
+export const ExpensesList = ({
+  expenses,
+  sx,
+}: {
+  expenses: SplitGroupExpense[];
+  sx?: SxProps;
+}) => {
   return (
-    <List dense>
-      {group.expenses.map((expense) => (
+    <List sx={sx ?? {}} dense>
+      {expenses.map((expense) => (
         <Fragment key={expense.id}>
           <ListItem>
             <ListItemAvatar>
@@ -34,8 +40,6 @@ export const ExpensesList = ({ group }: { group: SplitGroupDocument }) => {
               secondary="Pizza"
             />
           </ListItem>
-
-          <Divider />
         </Fragment>
       ))}
     </List>

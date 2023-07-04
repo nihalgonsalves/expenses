@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { Person, PlaylistAdd } from '@mui/icons-material';
+import { PlaylistAdd } from '@mui/icons-material';
 import {
   Button,
   FormControl,
@@ -12,10 +12,6 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   List,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
 } from '@mui/material';
 import { type Dinero, allocate } from 'dinero.js';
 import { useId, useState } from 'react';
@@ -35,6 +31,8 @@ import {
   toMoneySnapshot,
 } from '../money';
 import { dateTimeLocalToEpoch, getUserLanguage } from '../utils';
+
+import { ParticipantListItem } from './ParticipantListItem';
 
 const stringInputToInt = (val: string) => {
   const digits = val.replace(/[^0-9]/g, '');
@@ -210,17 +208,11 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
 
         <List dense>
           {splits.map(({ participantId, share }) => (
-            <ListItem key={participantId}>
-              <ListItemAvatar>
-                <Avatar>
-                  <Person />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary={participantsById[participantId]}
-                secondary={formatCurrency(share)}
-              />
-            </ListItem>
+            <ParticipantListItem
+              key={participantId}
+              primary={participantsById[participantId] ?? 'Unknown'}
+              secondary={formatCurrency(share)}
+            />
           ))}
         </List>
 

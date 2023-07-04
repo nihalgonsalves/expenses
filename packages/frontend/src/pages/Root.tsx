@@ -24,6 +24,8 @@ export const Root = () => {
       </AppBar>
 
       <Box
+        display="flex"
+        flexDirection="column"
         flexGrow={1}
         padding={2}
         position="relative"

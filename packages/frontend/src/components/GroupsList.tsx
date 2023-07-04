@@ -6,14 +6,21 @@ import {
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  type SxProps,
 } from '@mui/material';
 
 import { type SplitGroup } from '../db/types';
 import { RouterLink } from '../router';
 
-export const GroupsList = ({ groups }: { groups: SplitGroup[] }) => {
+export const GroupsList = ({
+  groups,
+  sx,
+}: {
+  groups: SplitGroup[];
+  sx?: SxProps;
+}) => {
   return (
-    <List>
+    <List sx={sx ?? {}}>
       {groups.map((group) => (
         <ListItem key={group.id}>
           <ListItemButton

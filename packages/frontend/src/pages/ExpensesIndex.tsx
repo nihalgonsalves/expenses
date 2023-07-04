@@ -1,5 +1,5 @@
 import { PlaylistAdd } from '@mui/icons-material';
-import { Fab } from '@mui/material';
+import { Button } from '@mui/material';
 
 import { ExpensesList } from '../components/ExpensesList';
 import { useGroup } from '../db/splitGroup';
@@ -13,16 +13,17 @@ export const ExpensesIndex = () => {
 
   return (
     <>
-      <ExpensesList group={group} />
-      <Fab
+      <ExpensesList expenses={group.expenses} sx={{ flexGrow: 1 }} />
+      <Button
+        fullWidth
+        variant="outlined"
         color="primary"
-        aria-label="Add"
-        sx={{ position: 'sticky', bottom: 0, right: 0 }}
+        startIcon={<PlaylistAdd />}
         LinkComponent={RouterLink}
-        href="/expenses/new"
+        href={`/groups/${group.id}/expenses/new`}
       >
-        <PlaylistAdd />
-      </Fab>
+        Add Expense
+      </Button>
     </>
   );
 };
