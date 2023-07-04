@@ -7,6 +7,7 @@ import {
   type SplitGroupDocument,
   type SplitGroupExpense,
   ZSplitGroupExpense,
+  type SplitGroupParticipant,
 } from './types';
 import { useRXDBQuery } from './util';
 
@@ -21,13 +22,25 @@ export const useGroup = (id: string): SplitGroupDocument | null => {
   return value ?? null;
 };
 
-export const createGroup = async (
-  input: Omit<SplitGroup, 'id' | 'createdAt'>,
-): Promise<SplitGroupDocument> => {
+const addId = <T>(obj: T): T & { id: string } => ({
+  ...obj,
+  id: generateId(),
+});
+
+export const createGroup = async ({
+  owner,
+  participants,
+  ...input
+}: Omit<SplitGroup, 'id' | 'createdAt' | 'owner' | 'participants'> & {
+  owner: Omit<SplitGroupParticipant, 'id'>;
+  participants: Omit<SplitGroupParticipant, 'id'>[];
+}): Promise<SplitGroupDocument> => {
   const parsedGroup = ZSplitGroup.parse({
     ...input,
     id: generateId(),
     createdAt: epochNowSeconds(),
+    owner: addId(owner),
+    participants: participants.map((participant) => addId(participant)),
   } satisfies SplitGroup);
 
   const group = await db.collections.split_groups.insert(parsedGroup);

@@ -23,7 +23,12 @@ export const Root = () => {
         </Toolbar>
       </AppBar>
 
-      <Box flexGrow={1} padding={2} position="relative" overflow="scroll">
+      <Box
+        flexGrow={1}
+        padding={2}
+        position="relative"
+        sx={{ overflowY: 'auto' }}
+      >
         <Outlet />
       </Box>
 

@@ -1,6 +1,6 @@
 import * as Currencies from '@dinero.js/currencies';
 import countryToCurrency from 'country-to-currency';
-import { dinero, toSnapshot } from 'dinero.js';
+import { type Dinero, dinero, toSnapshot } from 'dinero.js';
 import { type DeepReadonly } from 'ts-essentials';
 import { z } from 'zod';
 
@@ -42,14 +42,11 @@ export const formatCurrency = ({ amount, scale, currency }: DineroSnapshot) => {
   }).format(floatValue);
 };
 
-export const toMoneySnapshot = (amount: number, currencyCode: string) => {
-  const d = dinero({ amount, currency: getCurrency(currencyCode) });
+export const toMoney = (amount: number, currencyCode: string) =>
+  dinero({ amount, currency: getCurrency(currencyCode) });
 
-  // This is a little weird: dinero.js usually uses readonly types,
-  // but this causes problems with Zod, and in turn rxdb's types.
-  // So we re-parse the snapshot to get the type, but also use
-  // satisfies to make sure it's structurally compatible, readonly aside
+export const toMoneySnapshot = (money: Dinero<number>) => {
   return ZDineroSnapshot.parse(
-    toSnapshot(d) satisfies DeepReadonly<DineroSnapshot>,
+    toSnapshot(money) satisfies DeepReadonly<DineroSnapshot>,
   );
 };

@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { PlaylistAdd } from '@mui/icons-material';
+import { Person, PlaylistAdd } from '@mui/icons-material';
 import {
   Button,
   FormControl,
@@ -9,19 +9,73 @@ import {
   type SelectChangeEvent,
   Stack,
   TextField,
+  ToggleButtonGroup,
+  ToggleButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
 } from '@mui/material';
+import { type Dinero, allocate } from 'dinero.js';
 import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { addExpense } from '../db/splitGroup';
-import { type SplitGroupDocument } from '../db/types';
-import { CURRENCY_CODES, formatCurrency, toMoneySnapshot } from '../money';
+import {
+  SplitGroupExpenseSplitType,
+  type SplitGroupDocument,
+  ZSplitGroupExpenseSplitType,
+  type SplitGroupExpenseSplit,
+} from '../db/types';
+import {
+  CURRENCY_CODES,
+  formatCurrency,
+  toMoney,
+  toMoneySnapshot,
+} from '../money';
 import { dateTimeLocalToEpoch, getUserLanguage } from '../utils';
 
 const stringInputToInt = (val: string) => {
   const digits = val.replace(/[^0-9]/g, '');
 
   return digits === '' ? 0 : parseInt(digits);
+};
+
+const calcSplitEqually = (
+  group: SplitGroupDocument,
+  money: Dinero<number>,
+): SplitGroupExpenseSplit[] => {
+  const allocations = allocate(
+    money,
+    Array.from({ length: group.participants.length + 1 }).map(() => 1),
+  );
+
+  return [group.owner, ...group.participants].map(({ id }, i) => {
+    const share = allocations[i];
+
+    if (!share) {
+      throw new Error('Unexpected missing share');
+    }
+
+    return {
+      participantId: id,
+      share: toMoneySnapshot(share),
+    };
+  });
+};
+
+const calcSplits = (
+  group: SplitGroupDocument,
+  money: Dinero<number>,
+  splitBy: SplitGroupExpenseSplitType,
+): SplitGroupExpenseSplit[] => {
+  switch (splitBy) {
+    case SplitGroupExpenseSplitType.Equal:
+      return calcSplitEqually(group, money);
+  }
+
+  throw new Error('Not Implemented');
 };
 
 export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
@@ -35,8 +89,18 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
   const [when, setWhen] = useState(
     Temporal.Now.plainDateTimeISO().round('minutes').toString(),
   );
+  const [splitBy, setSplitBy] = useState<SplitGroupExpenseSplitType>(
+    SplitGroupExpenseSplitType.Equal,
+  );
 
-  const money = toMoneySnapshot(amount, currencyCode);
+  const money = toMoney(amount, currencyCode);
+  const moneySnapshot = toMoneySnapshot(money);
+
+  const splits = calcSplits(group, money, splitBy);
+
+  const participantsById = Object.fromEntries(
+    [group.owner, ...group.participants].map(({ id, name }) => [id, name]),
+  );
 
   const handleChangeCurrency = (e: SelectChangeEvent) => {
     setCurrencyCode(e.target.value);
@@ -50,16 +114,18 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
 
   const handleCreateExpense = async () => {
     await addExpense(group, {
-      money,
+      money: moneySnapshot,
       category,
       notes,
       spentAt: dateTimeLocalToEpoch(when),
+      splitBy,
+      splits,
     });
 
     navigate(`/groups/${group.id}`);
   };
 
-  const valid = money.amount > 0;
+  const valid = moneySnapshot.amount > 0;
 
   return (
     <form
@@ -79,7 +145,7 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
             fullWidth
             autoFocus
             label="How much did you spend?"
-            InputProps={{ endAdornment: formatCurrency(money) }}
+            InputProps={{ endAdornment: formatCurrency(moneySnapshot) }}
             inputProps={{ inputMode: 'numeric' }}
             placeholder={new Intl.NumberFormat(getUserLanguage()).format(12.34)}
             value={amount}
@@ -126,6 +192,37 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
             setWhen(e.target.value);
           }}
         />
+
+        <ToggleButtonGroup
+          color="primary"
+          value={splitBy}
+          exclusive
+          onChange={(_e, value) => {
+            setSplitBy(ZSplitGroupExpenseSplitType.parse(value));
+          }}
+          fullWidth
+          orientation="vertical"
+        >
+          <ToggleButton value={SplitGroupExpenseSplitType.Equal}>
+            Split Equally
+          </ToggleButton>
+        </ToggleButtonGroup>
+
+        <List dense>
+          {splits.map(({ participantId, share }) => (
+            <ListItem key={participantId}>
+              <ListItemAvatar>
+                <Avatar>
+                  <Person />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={participantsById[participantId]}
+                secondary={formatCurrency(share)}
+              />
+            </ListItem>
+          ))}
+        </List>
 
         <Button
           color="primary"

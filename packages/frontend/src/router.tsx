@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { z, type ZodRawShape } from 'zod';
 
+import { ErrorPage } from './pages/ErrorPage';
 import { ExpenseNew } from './pages/ExpenseNew';
 import { ExpensesIndex } from './pages/ExpensesIndex';
 import { GroupDetail } from './pages/GroupDetail';
@@ -23,35 +24,43 @@ export const RouterLink = forwardRef<
 ));
 RouterLink.displayName = 'RouterLink';
 
+const errorElement = <ErrorPage />;
+
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
-    // errorElement: <ErrorPage />,
+    errorElement,
     children: [
       {
         path: '',
         element: <Index />,
+        errorElement,
       },
       {
         path: 'groups',
         element: <GroupsIndex />,
+        errorElement,
       },
       {
         path: 'groups/new',
         element: <GroupNew />,
+        errorElement,
       },
       {
         path: 'groups/:groupId',
         element: <GroupDetail />,
+        errorElement,
       },
       {
         path: 'groups/:groupId/expenses',
         element: <ExpensesIndex />,
+        errorElement,
       },
       {
         path: 'groups/:groupId/expenses/new',
         element: <ExpenseNew />,
+        errorElement,
       },
     ],
   },

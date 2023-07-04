@@ -11,7 +11,11 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 
 import { getCurrency } from '../money';
 
-import { ZSplitGroup, type SplitGroup } from './types';
+import {
+  ZSplitGroup,
+  type SplitGroup,
+  SplitGroupExpenseSplitType,
+} from './types';
 
 if (import.meta.env.DEV) {
   const { RxDBDevModePlugin } = await import('rxdb/plugins/dev-mode');
@@ -63,8 +67,8 @@ if (import.meta.env.DEV) {
     await db.split_groups.insert({
       id: 'test-group',
       name: 'Test',
-      owner: { name: 'Amy' },
-      participants: [{ name: 'Taylor' }],
+      owner: { id: 'uuid-amy', name: 'Amy' },
+      participants: [{ id: 'uuid-taylor', name: 'Taylor' }],
       createdAt: 0,
       currency: 'EUR',
       expenses: [
@@ -75,6 +79,17 @@ if (import.meta.env.DEV) {
           money: { amount: 100, scale: 2, currency: getCurrency('EUR') },
           category: 'food',
           notes: '',
+          splitBy: SplitGroupExpenseSplitType.Equal,
+          splits: [
+            {
+              participantId: 'uuid-amy',
+              share: { amount: 50, scale: 2, currency: getCurrency('EUR') },
+            },
+            {
+              participantId: 'uuid-taylor',
+              share: { amount: 50, scale: 2, currency: getCurrency('EUR') },
+            },
+          ],
         },
       ],
     });

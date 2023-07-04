@@ -2,7 +2,8 @@ import { type RxDocument } from 'rxdb';
 import { z } from 'zod';
 
 const ZSplitGroupParticipant = z.object({
-  name: z.string(),
+  id: z.string().nonempty().max(64),
+  name: z.string().nonempty(),
 });
 
 export type SplitGroupParticipant = z.infer<typeof ZSplitGroupParticipant>;
@@ -23,6 +24,22 @@ export const ZDineroSnapshot = z.object({
 
 export type DineroSnapshot = z.infer<typeof ZDineroSnapshot>;
 
+export enum SplitGroupExpenseSplitType {
+  Equal = 'equal',
+  Exact = 'exact',
+}
+
+export const ZSplitGroupExpenseSplitType = z.nativeEnum(
+  SplitGroupExpenseSplitType,
+);
+
+export const ZSplitGroupExpenseSplit = z.object({
+  participantId: z.string(),
+  share: ZDineroSnapshot,
+});
+
+export type SplitGroupExpenseSplit = z.infer<typeof ZSplitGroupExpenseSplit>;
+
 export const ZSplitGroupExpense = z.object({
   id: z.string().nonempty().max(64),
   money: ZDineroSnapshot,
@@ -30,6 +47,8 @@ export const ZSplitGroupExpense = z.object({
   spentAt: z.number().positive(),
   category: z.string(),
   notes: z.string(),
+  splitBy: ZSplitGroupExpenseSplitType,
+  splits: z.array(ZSplitGroupExpenseSplit),
 });
 
 export type SplitGroupExpense = z.infer<typeof ZSplitGroupExpense>;
