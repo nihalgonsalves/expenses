@@ -2,7 +2,7 @@ import { PlaylistAdd } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
 import { ExpensesList } from '../components/ExpensesList';
-import { useGroup } from '../db/splitGroup';
+import { getParticipantNamesById, useGroup } from '../db/splitGroup';
 import { GroupParams, RouterLink, useParams } from '../router';
 
 export const ExpensesIndex = () => {
@@ -13,7 +13,11 @@ export const ExpensesIndex = () => {
 
   return (
     <>
-      <ExpensesList expenses={group.expenses} sx={{ flexGrow: 1 }} />
+      <ExpensesList
+        expenses={group.expenses}
+        sx={{ flexGrow: 1 }}
+        participantNamesById={getParticipantNamesById(group)}
+      />
       <Button
         fullWidth
         variant="outlined"

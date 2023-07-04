@@ -15,9 +15,11 @@ import { formatCurrency } from '../money';
 
 export const ExpensesList = ({
   expenses,
+  participantNamesById,
   sx,
 }: {
   expenses: SplitGroupExpense[];
+  participantNamesById: Record<string, string>;
   sx?: SxProps;
 }) => {
   return (
@@ -33,11 +35,13 @@ export const ExpensesList = ({
             <ListItemText
               primary={
                 <Stack direction="row" justifyContent="space-between">
-                  <span>{expense.category}</span>
+                  <span>{expense.notes || expense.category}</span>
                   <span>{formatCurrency(expense.money)}</span>
                 </Stack>
               }
-              secondary="Pizza"
+              secondary={`Paid by ${
+                participantNamesById[expense.paidById] ?? 'Unknown'
+              }`}
             />
           </ListItem>
         </Fragment>

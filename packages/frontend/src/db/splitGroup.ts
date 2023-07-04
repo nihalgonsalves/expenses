@@ -22,6 +22,12 @@ export const useGroup = (id: string): SplitGroupDocument | null => {
   return value ?? null;
 };
 
+// TODO: Investigate RXDB populate / whether it works with TypeScript
+export const getParticipantNamesById = (group: SplitGroupDocument) =>
+  Object.fromEntries(
+    [group.owner, ...group.participants].map(({ id, name }) => [id, name]),
+  );
+
 const addId = <T>(obj: T): T & { id: string } => ({
   ...obj,
   id: generateId(),

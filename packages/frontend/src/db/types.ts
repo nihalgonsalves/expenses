@@ -42,12 +42,13 @@ export type SplitGroupExpenseSplit = z.infer<typeof ZSplitGroupExpenseSplit>;
 
 export const ZSplitGroupExpense = z.object({
   id: z.string().nonempty().max(64),
+  paidById: z.string().nonempty().max(64),
   money: ZDineroSnapshot,
   createdAt: z.number().positive(),
   spentAt: z.number().positive(),
   category: z.string(),
   notes: z.string(),
-  splitBy: ZSplitGroupExpenseSplitType,
+  splitType: ZSplitGroupExpenseSplitType,
   splits: z.array(ZSplitGroupExpenseSplit),
 });
 

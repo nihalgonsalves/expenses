@@ -17,7 +17,7 @@ import { type Dinero, allocate } from 'dinero.js';
 import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { addExpense } from '../db/splitGroup';
+import { addExpense, getParticipantNamesById } from '../db/splitGroup';
 import {
   SplitGroupExpenseSplitType,
   type SplitGroupDocument,
@@ -77,9 +77,11 @@ const calcSplits = (
 };
 
 export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
+  const paidByIdSelectId = useId();
   const categorySelectId = useId();
   const navigate = useNavigate();
 
+  const [paidById, setPaidById] = useState(group.owner.id);
   const [currencyCode, setCurrencyCode] = useState(group.currency);
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('food');
@@ -87,18 +89,16 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
   const [when, setWhen] = useState(
     Temporal.Now.plainDateTimeISO().round('minutes').toString(),
   );
-  const [splitBy, setSplitBy] = useState<SplitGroupExpenseSplitType>(
+  const [splitType, setSplitType] = useState<SplitGroupExpenseSplitType>(
     SplitGroupExpenseSplitType.Equal,
   );
 
   const money = toMoney(amount, currencyCode);
   const moneySnapshot = toMoneySnapshot(money);
 
-  const splits = calcSplits(group, money, splitBy);
+  const splits = calcSplits(group, money, splitType);
 
-  const participantsById = Object.fromEntries(
-    [group.owner, ...group.participants].map(({ id, name }) => [id, name]),
-  );
+  const participantNamesById = getParticipantNamesById(group);
 
   const handleChangeCurrency = (e: SelectChangeEvent) => {
     setCurrencyCode(e.target.value);
@@ -116,8 +116,9 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
       category,
       notes,
       spentAt: dateTimeLocalToEpoch(when),
-      splitBy,
+      splitType,
       splits,
+      paidById,
     });
 
     navigate(`/groups/${group.id}`);
@@ -138,6 +139,26 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
       }}
     >
       <Stack spacing={3}>
+        <FormControl fullWidth>
+          <InputLabel id={paidByIdSelectId}>Who paid?</InputLabel>
+          <Select
+            labelId={paidByIdSelectId}
+            label="Who paid?"
+            value={paidById}
+            onChange={(e) => {
+              setPaidById(e.target.value);
+            }}
+          >
+            {Object.values([group.owner, ...group.participants]).map(
+              ({ id, name }) => (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              ),
+            )}
+          </Select>
+        </FormControl>
+
         <Stack direction="row" spacing={1}>
           <TextField
             fullWidth
@@ -193,10 +214,10 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
 
         <ToggleButtonGroup
           color="primary"
-          value={splitBy}
+          value={splitType}
           exclusive
           onChange={(_e, value) => {
-            setSplitBy(ZSplitGroupExpenseSplitType.parse(value));
+            setSplitType(ZSplitGroupExpenseSplitType.parse(value));
           }}
           fullWidth
           orientation="vertical"
@@ -210,7 +231,7 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
           {splits.map(({ participantId, share }) => (
             <ParticipantListItem
               key={participantId}
-              primary={participantsById[participantId] ?? 'Unknown'}
+              primary={participantNamesById[participantId] ?? 'Unknown'}
               secondary={formatCurrency(share)}
             />
           ))}

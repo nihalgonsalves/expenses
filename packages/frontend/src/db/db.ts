@@ -74,12 +74,13 @@ if (import.meta.env.DEV) {
       expenses: [
         {
           id: 'test-expense',
+          paidById: 'uuid-amy',
           createdAt: 0,
           spentAt: 0,
           money: { amount: 100, scale: 2, currency: getCurrency('EUR') },
           category: 'food',
-          notes: '',
-          splitBy: SplitGroupExpenseSplitType.Equal,
+          notes: 'Dinner',
+          splitType: SplitGroupExpenseSplitType.Equal,
           splits: [
             {
               participantId: 'uuid-amy',

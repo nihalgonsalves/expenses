@@ -10,7 +10,7 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { deleteGroup } from '../db/splitGroup';
+import { deleteGroup, getParticipantNamesById } from '../db/splitGroup';
 import { type SplitGroupDocument } from '../db/types';
 import { RouterLink } from '../router';
 
@@ -49,7 +49,10 @@ export const Group = ({ group }: { group: SplitGroupDocument }) => {
             Expenses ({group.expenses.length})
           </Typography>
           {/* TODO: order/limit */}
-          <ExpensesList expenses={group.expenses} />
+          <ExpensesList
+            expenses={group.expenses}
+            participantNamesById={getParticipantNamesById(group)}
+          />
           <Stack spacing={1}>
             <Button
               fullWidth
