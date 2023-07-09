@@ -14,7 +14,7 @@ import {
   List,
 } from '@mui/material';
 import { type Dinero, allocate } from 'dinero.js';
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { addExpense, getParticipantNamesById } from '../db/splitGroup';
@@ -33,12 +33,6 @@ import {
 import { dateTimeLocalToEpoch, getUserLanguage } from '../utils';
 
 import { ParticipantListItem } from './ParticipantListItem';
-
-const stringInputToInt = (val: string) => {
-  const digits = val.replace(/[^0-9]/g, '');
-
-  return digits === '' ? 0 : parseInt(digits);
-};
 
 const calcSplitEqually = (
   group: SplitGroupDocument,
@@ -79,6 +73,8 @@ const calcSplits = (
 export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
   const paidByIdSelectId = useId();
   const categorySelectId = useId();
+  const amountRef = useRef<HTMLInputElement>(null);
+
   const navigate = useNavigate();
 
   const [paidById, setPaidById] = useState(group.owner.id);
@@ -104,10 +100,61 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
     setCurrencyCode(e.target.value);
   };
 
-  const handleChangeAmount: React.ChangeEventHandler<HTMLInputElement> = (
+  /**
+   * This solves the problem of displaying a formatted currency value while
+   * still storing the value as a money (dinero) object. This allows the value
+   * to be rendered with currency symbols and commas without having to strip
+   * them out and reparse on every change, and without having to be aware of
+   * whether the current locale uses commas or periods as decimal separators.
+   */
+  const handleAmountKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
     e,
   ) => {
-    setAmount(stringInputToInt(e.target.value));
+    const element = amountRef.current;
+    if (!element) {
+      return;
+    }
+
+    const amountAsString = amount.toFixed(0);
+
+    const newValue: string = (() => {
+      const {
+        selectionStart,
+        selectionEnd,
+        value: { length },
+      } = element;
+
+      const hasSelection = selectionStart !== selectionEnd;
+
+      if (hasSelection) {
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+          // Special case for clearing the field (select all, delete/backspace).
+          // This doesn't support deleting individual selections because that would
+          // go back to trying to reverse engineer the formatted value.
+          return selectionStart === 0 && selectionEnd === length
+            ? '0'
+            : amountAsString;
+        }
+      } else if (selectionEnd !== length) {
+        // Don't allow editing the value in the middle of the string
+        element.setSelectionRange(length, length);
+        return amountAsString;
+      }
+
+      if (e.key === 'Backspace') {
+        return amountAsString.slice(0, -1) || '0';
+      } else if (e.key.match(/^[0-9]$/)) {
+        return `${amountAsString}${e.key}`;
+      }
+
+      return amountAsString;
+    })();
+
+    const newValueInt = parseInt(newValue, 10);
+
+    if (newValueInt <= Number.MAX_SAFE_INTEGER) {
+      setAmount(newValueInt);
+    }
   };
 
   const handleCreateExpense = async () => {
@@ -164,11 +211,13 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
             fullWidth
             autoFocus
             label="How much did you spend?"
-            InputProps={{ endAdornment: formatCurrency(moneySnapshot) }}
+            inputRef={amountRef}
             inputProps={{ inputMode: 'numeric' }}
             placeholder={new Intl.NumberFormat(getUserLanguage()).format(12.34)}
-            value={amount}
-            onChange={handleChangeAmount}
+            value={formatCurrency(moneySnapshot, {
+              currencyDisplay: 'narrowSymbol',
+            })}
+            onKeyDown={handleAmountKeyDown}
           />
           <Select value={currencyCode} onChange={handleChangeCurrency}>
             {Object.values(CURRENCY_CODES).map((c) => (

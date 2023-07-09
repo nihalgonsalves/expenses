@@ -33,10 +33,14 @@ export const getDefaultCurrency = () => {
     );
 };
 
-export const formatCurrency = ({ amount, scale, currency }: DineroSnapshot) => {
+export const formatCurrency = (
+  { amount, scale, currency }: DineroSnapshot,
+  options: Pick<Intl.NumberFormatOptions, 'currencyDisplay'> = {},
+) => {
   const floatValue = amount / Math.pow(10, scale);
 
   return new Intl.NumberFormat(getUserLanguage(), {
+    ...options,
     style: 'currency',
     currency: currency.code,
   }).format(floatValue);
