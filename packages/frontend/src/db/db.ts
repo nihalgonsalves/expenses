@@ -11,11 +11,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 
 import { getCurrency } from '../money';
 
-import {
-  ZSplitGroup,
-  type SplitGroup,
-  SplitGroupExpenseSplitType,
-} from './types';
+import { ZSplitGroup, type SplitGroup } from './types';
 
 if (import.meta.env.DEV) {
   const { RxDBDevModePlugin } = await import('rxdb/plugins/dev-mode');
@@ -86,7 +82,6 @@ if (import.meta.env.DEV) {
           money: { amount: 100, scale: 2, currency: getCurrency('EUR') },
           category: 'food',
           notes: 'Dinner',
-          splitType: SplitGroupExpenseSplitType.Equal,
           splits: [
             {
               participantId: 'uuid-amy',

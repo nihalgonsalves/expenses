@@ -14,13 +14,13 @@ import { RouterLink } from '../router';
 
 export const GroupsList = ({
   groups,
-  sx,
+  sx = {},
 }: {
   groups: SplitGroup[];
   sx?: SxProps;
 }) => {
   return (
-    <List sx={sx ?? {}}>
+    <List sx={sx}>
       {groups.map((group) => (
         <ListItem key={group.id}>
           <ListItemButton

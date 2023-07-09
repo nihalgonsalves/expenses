@@ -16,14 +16,14 @@ import { formatCurrency } from '../money';
 export const ExpensesList = ({
   expenses,
   participantNamesById,
-  sx,
+  sx = {},
 }: {
   expenses: SplitGroupExpense[];
   participantNamesById: Record<string, string>;
   sx?: SxProps;
 }) => {
   return (
-    <List sx={sx ?? {}} dense>
+    <List sx={sx} dense>
       {expenses.map((expense) => (
         <Fragment key={expense.id}>
           <ListItem>

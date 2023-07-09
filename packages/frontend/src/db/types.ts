@@ -24,15 +24,6 @@ export const ZDineroSnapshot = z.object({
 
 export type DineroSnapshot = z.infer<typeof ZDineroSnapshot>;
 
-export enum SplitGroupExpenseSplitType {
-  Equal = 'equal',
-  Exact = 'exact',
-}
-
-export const ZSplitGroupExpenseSplitType = z.nativeEnum(
-  SplitGroupExpenseSplitType,
-);
-
 export const ZSplitGroupExpenseSplit = z.object({
   participantId: z.string(),
   share: ZDineroSnapshot,
@@ -48,7 +39,6 @@ export const ZSplitGroupExpense = z.object({
   spentAt: z.number().positive(),
   category: z.string(),
   notes: z.string(),
-  splitType: ZSplitGroupExpenseSplitType,
   splits: z.array(ZSplitGroupExpenseSplit),
 });
 

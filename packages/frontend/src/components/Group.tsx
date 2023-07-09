@@ -15,7 +15,7 @@ import { type SplitGroupDocument } from '../db/types';
 import { RouterLink } from '../router';
 
 import { ExpensesList } from './ExpensesList';
-import { ParticipantListItem } from './ParticipantListItem';
+import { ParticipantTextListItem } from './ParticipantListItem';
 
 export const Group = ({ group }: { group: SplitGroupDocument }) => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export const Group = ({ group }: { group: SplitGroupDocument }) => {
           <Typography variant="h6">People</Typography>
           <List>
             {[group.owner, ...group.participants].map(({ id, name }) => (
-              <ParticipantListItem
+              <ParticipantTextListItem
                 key={id}
                 primary={name}
                 secondary="Spent X, Received Y, Owed Z"
