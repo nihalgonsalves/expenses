@@ -1,4 +1,4 @@
-import { epochNowSeconds, generateId } from '../utils';
+import { epochNowSeconds, generateId } from '../utils/utils';
 
 import { db } from './db';
 import {

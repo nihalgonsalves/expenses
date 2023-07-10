@@ -4,7 +4,8 @@ import { type Dinero, dinero, toSnapshot } from 'dinero.js';
 import { type DeepReadonly } from 'ts-essentials';
 import { z } from 'zod';
 
-import { ZDineroSnapshot, type DineroSnapshot } from './db/types';
+import { ZDineroSnapshot, type DineroSnapshot } from '../db/types';
+
 import { getUserLanguage } from './utils';
 
 type Currency = { code: string; base: number; exponent: number };

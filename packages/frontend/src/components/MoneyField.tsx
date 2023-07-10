@@ -1,7 +1,7 @@
 import { TextField, type TextFieldProps } from '@mui/material';
 import React, { useCallback, useRef } from 'react';
 
-import { formatCurrency, toMoney, toMoneySnapshot } from '../money';
+import { formatCurrency, toMoney, toMoneySnapshot } from '../utils/money';
 
 export const MoneyField = ({
   amount,

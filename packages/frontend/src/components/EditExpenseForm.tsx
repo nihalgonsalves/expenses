@@ -41,8 +41,8 @@ import {
   formatCurrency,
   toMoney,
   toMoneySnapshot,
-} from '../money';
-import { dateTimeLocalToEpoch } from '../utils';
+} from '../utils/money';
+import { dateTimeLocalToEpoch } from '../utils/utils';
 
 import { MoneyField } from './MoneyField';
 import { ParticipantListItem } from './ParticipantListItem';

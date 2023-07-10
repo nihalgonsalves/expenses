@@ -11,7 +11,7 @@ import {
 import { Fragment } from 'react';
 
 import { type SplitGroupExpense } from '../db/types';
-import { formatCurrency } from '../money';
+import { formatCurrency } from '../utils/money';
 
 export const ExpensesList = ({
   expenses,

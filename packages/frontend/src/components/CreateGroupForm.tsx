@@ -14,7 +14,7 @@ import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { createGroup } from '../db/splitGroup';
-import { CURRENCY_CODES, getDefaultCurrency } from '../money';
+import { CURRENCY_CODES, getDefaultCurrency } from '../utils/money';
 
 type InputParticipant = { name: string };
 

@@ -9,7 +9,7 @@ import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 import { RxDBUpdatePlugin } from 'rxdb/plugins/update';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 
-import { getCurrency } from '../money';
+import { getCurrency } from '../utils/money';
 
 import { ZSplitGroup, type SplitGroup } from './types';
 
