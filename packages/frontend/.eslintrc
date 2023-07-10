@@ -1,6 +1,5 @@
 {
   "extends": "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react",
-  "settings": { "react": { "version": "detect" } },
   "overrides": [
     {
       "files": ["vite.config.ts", "pwa-assets.config.ts"],

@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "run-p --print-label dev:*",
     "build": "tsc --build",
+    "clean": "git clean -Xdf",
     "test": "exit 0",
     "lint": "eslint --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx ./packages/*/src/",
     "format": "prettier . --write",
@@ -22,7 +23,7 @@
     "dev:be": "yarn be dev"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.3.6",
+    "@nihalgonsalves/esconfig": "^0.3.8",
     "@types/node": "18",
     "eslint": "^8.44.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -33,7 +34,6 @@
     "eslint-plugin-react-refresh": "^0.4.1",
     "npm-run-all2": "^6.0.5",
     "prettier": "^2.8.8",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^5.1.6"
   }
 }

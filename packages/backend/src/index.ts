@@ -1,1 +1,1 @@
-console.log('Hello World');
+export { type AppRouter } from './app';

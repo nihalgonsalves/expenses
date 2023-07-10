@@ -6,5 +6,10 @@
     "jsx": "react-jsx",
     "skipLibCheck": true
   },
-  "include": ["./src/"]
+  "include": ["./src/"],
+  "references": [
+    {
+      "path": "../backend"
+    }
+  ]
 }
