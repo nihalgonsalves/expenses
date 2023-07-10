@@ -13,8 +13,8 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@js-temporal/polyfill": "^0.4.4",
-    "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.13.6",
+    "@mui/icons-material": "^5.13.7",
+    "@mui/material": "^5.13.7",
     "@nihalgonsalves/expenses-backend": "*",
     "@tanstack/react-query": "^4.29.19",
     "@trpc/client": "^10.34.0",
@@ -24,7 +24,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.1",
-    "rxdb": "^14.14.1",
+    "rxdb": "^14.14.2",
     "rxjs": "^7.8.1",
     "ts-essentials": "^9.3.2",
     "zod": "^3.21.4",
@@ -34,8 +34,8 @@
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@vite-pwa/assets-generator": "^0.0.3",
-    "@vitejs/plugin-react": "^4.0.1",
-    "vite": "^4.3.9",
+    "@vitejs/plugin-react": "^4.0.3",
+    "vite": "^4.4.2",
     "vite-plugin-pwa": "^0.16.4"
   }
 }
