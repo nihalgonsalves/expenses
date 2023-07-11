@@ -2,6 +2,7 @@
   "extends": "@nihalgonsalves/esconfig",
   "compilerOptions": {
     "composite": true,
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true
   }
 }

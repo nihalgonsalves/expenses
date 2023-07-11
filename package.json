@@ -13,8 +13,8 @@
     "dev": "run-p --print-label dev:*",
     "build": "tsc --build",
     "clean": "git clean -Xdf",
-    "test": "exit 0",
-    "lint": "eslint --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx ./packages/*/src/",
+    "test": "vitest",
+    "lint": "eslint --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx ./packages/*",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "fe": "yarn workspace @nihalgonsalves/expenses-frontend",
@@ -34,6 +34,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "npm-run-all2": "^6.0.6",
     "prettier": "^2.8.8",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "vitest": "^0.33.0"
   }
 }
