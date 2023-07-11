@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  postgresql:
+    image: 'postgres:15.3-alpine'
+    environment:
+      POSTGRES_USER: expenses
+      POSTGRES_PASSWORD: expenses
+    ports:
+      - '5432:5432'

@@ -1,12 +1,13 @@
 import { trpc } from '../api/trpc';
 
 export const Index = () => {
-  const { data, isLoading } = trpc.ping.useQuery('frontend');
+  const pingResult = trpc.ping.useQuery('frontend');
+  const healthResult = trpc.health.useQuery();
 
   return (
     <>
-      Hello world. Ping result: isLoading=`{isLoading ? 'yes' : 'no'}` data=`
-      {data}`
+      Hello world.
+      <pre>{JSON.stringify({ pingResult, healthResult }, null, 2)}</pre>
     </>
   );
 };

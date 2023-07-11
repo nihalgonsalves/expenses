@@ -7,14 +7,18 @@
   "scripts": {
     "dev": "run-p 'build --watch' 'start'",
     "start": "node --watch ./dist/app.js",
-    "build": "esbuild --platform=node --bundle ./src/app.ts --outdir=./dist/"
+    "build": "esbuild --platform=node --bundle ./src/app.ts --outdir=./dist/",
+    "test": "vitest",
+    "db:migrate": "prisma migrate dev --name"
   },
   "dependencies": {
+    "@prisma/client": "^4.16.2",
     "@trpc/server": "^10.34.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "esbuild": "^0.18.11",
+    "prisma": "^4.16.2",
     "vitest": "*"
   }
 }
