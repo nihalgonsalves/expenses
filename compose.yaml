@@ -15,6 +15,9 @@ services:
       context: .
       dockerfile: ./infra/Dockerfile-backend
     init: true
+    env_file:
+      # must contain DATABASE_URL
+      - .env.backend
     environment:
       PORT: 5174
     expose:
@@ -33,3 +36,13 @@ services:
         traefik.enable: true
         traefik.http.routers.frontend.rule: Host(`localhost`)
         traefik.http.routers.frontend.entrypoints: web
+  postgresql:
+    image: postgres:15.3-alpine
+    env_file:
+      # must contain POSTGRES_PASSWORD
+      - .env.postgres
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+
+volumes:
+  postgresql:
