@@ -12,13 +12,13 @@
     "db:migrate": "prisma migrate dev --name"
   },
   "dependencies": {
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.0.0",
     "@trpc/server": "^10.34.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "esbuild": "^0.18.11",
-    "prisma": "^4.16.2",
+    "prisma": "^5.0.0",
     "vitest": "*"
   }
 }
