@@ -12,9 +12,7 @@ let prisma: PrismaClient;
 let caller: ReturnType<typeof appRouter.createCaller>;
 
 beforeAll(async () => {
-  container = await new PostgreSqlContainer('postgres:15.3-alpine')
-    .withExposedPorts(5432)
-    .start();
+  container = await new PostgreSqlContainer('postgres:15.3-alpine').start();
 
   prisma = new PrismaClient({
     datasources: {
