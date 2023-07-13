@@ -9,19 +9,24 @@ import { afterAll, beforeEach } from 'vitest';
 import { appRouter } from '../src/router/appRouter';
 import { UserService } from '../src/service/UserService';
 
+let migrated = false;
+
 export const getPostgresContainer = async () => {
   const container = await new PostgreSqlContainer('postgres:15.3-alpine')
     .withDatabase(`${process.env['VITEST_WORKER_ID'] ?? '0'}`)
     .withReuse()
     .start();
 
-  await promisify(exec)(`yarn prisma db push --skip-generate`, {
-    cwd: path.join(__dirname, '../'),
-    env: {
-      ...process.env,
-      DATABASE_URL: container.getConnectionUri(),
-    },
-  });
+  if (!migrated) {
+    migrated = true;
+    await promisify(exec)(`yarn prisma db push --skip-generate`, {
+      cwd: path.join(__dirname, '../'),
+      env: {
+        ...process.env,
+        DATABASE_URL: container.getConnectionUri(),
+      },
+    });
+  }
 
   return container;
 };
