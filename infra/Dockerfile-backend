@@ -40,6 +40,8 @@ WORKDIR /opt/app
 COPY --from=builder /opt/app/node_modules/.prisma/client/libquery_engine* ./
 COPY --from=builder /opt/app/node_modules/.prisma/client/schema.prisma ./
 
+RUN yarn install
+
 ENV NODE_ENV=production
 
 USER node

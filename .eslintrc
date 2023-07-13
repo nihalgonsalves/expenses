@@ -1,4 +1,16 @@
 {
   "extends": "./node_modules/@nihalgonsalves/esconfig/.eslintrc",
-  "ignorePatterns": ["**/build/", "**/dist/", "*.config.ts"]
+  "ignorePatterns": ["**/build/", "**/dist/", "*.config.ts"],
+  "overrides": [
+    {
+      "files": ["*.test.ts", "./packages/*/test/**/*"],
+      "rules": {
+        "@typescript-eslint/no-unsafe-assignment": "off",
+        "import/no-extraneous-dependencies": [
+          "error",
+          { "devDependencies": true }
+        ]
+      }
+    }
+  ]
 }

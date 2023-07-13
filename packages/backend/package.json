@@ -5,21 +5,27 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "dev": "run-p 'build --watch' 'start'",
+    "dev": "run-p 'build --watch' 'start' 'db:generate --watch'",
     "start": "node --watch ./dist/app.js",
-    "build": "esbuild --platform=node --bundle ./src/app.ts --outdir=./dist/",
+    "build": "node bin/bundle.mjs",
     "test": "vitest",
-    "db:migrate": "prisma migrate dev --name"
+    "db:migrate": "prisma migrate dev --name",
+    "db:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.0.0",
     "@trpc/server": "^10.34.0",
+    "bcrypt": "*",
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "esbuild": "^0.18.11",
     "prisma": "^5.0.0",
     "testcontainers": "^9.10.0",
     "vitest": "*"
+  },
+  "resolutions": {
+    "bcrypt": "5.1.0"
   }
 }

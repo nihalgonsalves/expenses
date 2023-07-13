@@ -2,7 +2,7 @@ import { createHTTPServer } from '@trpc/server/adapters/standalone';
 
 import { config } from './config';
 import { createContext } from './context';
-import { appRouter } from './router';
+import { appRouter } from './router/appRouter';
 
 const server = createHTTPServer({
   router: appRouter,

@@ -1,12 +1,11 @@
 import { z } from 'zod';
 
-import { config } from './config';
-import { publicProcedure, router } from './trpc';
+import { config } from '../config';
+import { publicProcedure, router } from '../trpc';
+
+import { userRouter } from './userRouter';
 
 export const appRouter = router({
-  ping: publicProcedure
-    .input(z.string())
-    .query(({ input }) => `pong: ${input}`),
   health: publicProcedure.query(async ({ ctx }) => {
     try {
       const response = await ctx.prisma.$queryRaw`SELECT 1 as one`;
@@ -24,6 +23,8 @@ export const appRouter = router({
       };
     }
   }),
+
+  user: userRouter,
 });
 
 export type AppRouter = typeof appRouter;
