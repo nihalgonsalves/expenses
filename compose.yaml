@@ -16,7 +16,7 @@ services:
       dockerfile: ./infra/Dockerfile-backend
     init: true
     env_file:
-      # must contain DATABASE_URL
+      # must contain DATABASE_URL, JWT_SECRET
       - .env.backend
     environment:
       PORT: 5174

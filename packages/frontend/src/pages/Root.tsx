@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 
+import { NavBarAvatar } from '../components/NavBarAvatar';
 import { RouterLink } from '../router';
 
 export const Root = () => {
@@ -20,6 +21,8 @@ export const Root = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Expenses
           </Typography>
+
+          <NavBarAvatar />
         </Toolbar>
       </AppBar>
 
