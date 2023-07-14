@@ -1,4 +1,4 @@
-FROM node:18-slim as builder
+FROM node:20-slim as builder
 
 RUN apt-get update -y && \
   apt-get install -y \
@@ -25,7 +25,7 @@ ADD ./packages/backend/ ./packages/backend/
 
 RUN cd packages/backend && yarn prisma generate && yarn build
 
-FROM node:18-slim
+FROM node:20-slim
 
 RUN apt-get update -y && \
   apt-get install -y \
