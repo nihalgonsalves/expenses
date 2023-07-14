@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { z, type ZodRawShape } from 'zod';
 
+import { AuthenticationPage } from './pages/AuthenticationPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { ExpenseNew } from './pages/ExpenseNew';
 import { ExpensesIndex } from './pages/ExpensesIndex';
@@ -35,6 +36,16 @@ export const router = createBrowserRouter([
       {
         path: '',
         element: <Index />,
+        errorElement,
+      },
+      {
+        path: '/auth/sign-in',
+        element: <AuthenticationPage />,
+        errorElement,
+      },
+      {
+        path: '/auth/sign-up',
+        element: <AuthenticationPage />,
         errorElement,
       },
       {

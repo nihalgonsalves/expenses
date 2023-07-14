@@ -6,33 +6,24 @@ import { PrismaClient } from '@prisma/client';
 import { PostgreSqlContainer } from 'testcontainers';
 import { afterAll, beforeEach } from 'vitest';
 
+import { type ContextObj } from '../src/context';
 import { appRouter } from '../src/router/appRouter';
-import { UserService } from '../src/service/UserService';
+import { UserService } from '../src/service/user/UserService';
+import { type User, type JWTToken } from '../src/service/user/types';
 
-let migrated = false;
-
-export const getPostgresContainer = async () => {
+export const getTRPCCaller = async () => {
   const container = await new PostgreSqlContainer('postgres:15.3-alpine')
-    .withDatabase(`${process.env['VITEST_WORKER_ID'] ?? '0'}`)
+    .withName(`vitest-backend-${process.env['VITEST_WORKER_ID']}`)
     .withReuse()
     .start();
 
-  if (!migrated) {
-    migrated = true;
-    await promisify(exec)(`yarn prisma db push --skip-generate`, {
-      cwd: path.join(__dirname, '../'),
-      env: {
-        ...process.env,
-        DATABASE_URL: container.getConnectionUri(),
-      },
-    });
-  }
-
-  return container;
-};
-
-export const useTRPCCaller = async () => {
-  const container = await getPostgresContainer();
+  await promisify(exec)(`yarn prisma db push --skip-generate`, {
+    cwd: path.join(__dirname, '../'),
+    env: {
+      ...process.env,
+      DATABASE_URL: container.getConnectionUri(),
+    },
+  });
 
   const prisma = new PrismaClient({
     datasources: {
@@ -41,10 +32,6 @@ export const useTRPCCaller = async () => {
       },
     },
   });
-
-  const userService = new UserService(prisma);
-
-  const context = { prisma, userService };
 
   beforeEach(async () => {
     const tablenames = await prisma.$queryRaw<
@@ -64,5 +51,19 @@ export const useTRPCCaller = async () => {
     await container.stop();
   });
 
-  return appRouter.createCaller(context);
+  return (
+    user: User | undefined = undefined,
+    setJwtToken = (_token: JWTToken | null) => {},
+  ) => {
+    const userService = new UserService(prisma);
+
+    const context: ContextObj = {
+      prisma,
+      userService,
+      user,
+      setJwtToken,
+    };
+
+    return appRouter.createCaller(context);
+  };
 };
