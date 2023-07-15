@@ -46,4 +46,4 @@ ENV NODE_ENV=production
 
 USER node
 
-CMD ["node", "/opt/app/app.js"]
+CMD ["node", "--enable-source-maps", "/opt/app/app.js"]

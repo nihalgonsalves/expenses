@@ -6,7 +6,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "dev": "run-p 'build --watch' 'start' 'db:generate --watch'",
-    "start": "node --watch ./dist/app.js",
+    "start": "node --enable-source-maps --watch ./dist/app.js",
     "build": "node bin/bundle.mjs",
     "test": "vitest",
     "db:migrate": "prisma migrate dev --name",

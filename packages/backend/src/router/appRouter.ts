@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { config } from '../config';
 import { publicProcedure, router } from '../trpc';
 
 import { userRouter } from './userRouter';
@@ -16,10 +15,7 @@ export const appRouter = router({
     } catch (e) {
       return {
         status: 'error',
-        message:
-          config.NODE_ENV !== 'production' && e instanceof Error
-            ? e.message
-            : 'database error',
+        message: !IS_PROD && e instanceof Error ? e.message : 'Database Error',
       };
     }
   }),
