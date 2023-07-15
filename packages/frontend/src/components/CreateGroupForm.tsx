@@ -1,5 +1,6 @@
 import { AddCircle, DeleteOutline, PersonAdd } from '@mui/icons-material';
 import {
+  Alert,
   Button,
   Divider,
   FormControl,
@@ -13,66 +14,55 @@ import {
 import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { createGroup } from '../db/splitGroup';
+import { trpc } from '../api/trpc';
 import { CURRENCY_CODES, getDefaultCurrency } from '../utils/money';
-
-type InputParticipant = { name: string };
-
-const blankParticipant: InputParticipant = { name: '' };
+import { prevalidateEmail } from '../utils/utils';
 
 export const CreateGroupForm = () => {
   const currencySelectId = useId();
   const navigate = useNavigate();
 
+  const createGroup = trpc.group.createGroup.useMutation();
+
   const [groupName, setGroupName] = useState('');
   const [currency, setCurrency] = useState(getDefaultCurrency());
 
-  const [participants, setParticipants] = useState([
-    blankParticipant,
-    blankParticipant,
-  ]);
+  const [participantEmails, setParticipantEmails] = useState<string[]>([]);
 
   const handleAddParticipant = () => {
-    setParticipants((prev) => [...prev, blankParticipant]);
+    setParticipantEmails((prev) => [...prev, '']);
   };
 
-  const handleChangeParticipant = (
-    index: number,
-    field: keyof InputParticipant,
-    value: string,
-  ) => {
-    setParticipants((prev) =>
-      prev.map((p, i) => (i === index ? { ...p, [field]: value } : p)),
+  const handleChangeParticipant = (index: number, value: string) => {
+    setParticipantEmails((prev) =>
+      prev.map((p, i) => (i === index ? value : p)),
     );
   };
 
   const handleDeleteParticipant = (index: number) => {
-    setParticipants((prev) => prev.filter((_, i) => i !== index));
+    setParticipantEmails((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleCreateGroup = async () => {
-    const [owner, ...others] = participants;
-
-    if (!owner) {
-      return;
-    }
-
-    const { id } = await createGroup({
+    const { id } = await createGroup.mutateAsync({
       name: groupName,
-      currency,
-      owner,
-      participants: others,
-      expenses: [],
+      defaultCurrency: currency,
+      additionalParticipantEmailAddresses: participantEmails,
     });
 
     navigate(`/groups/${id}`);
   };
 
-  const valid = groupName && participants.every((p) => p.name);
+  const valid =
+    groupName && participantEmails.every((e) => prevalidateEmail(e));
 
   return (
     <form>
       <Stack spacing={3}>
+        {createGroup.error && (
+          <Alert severity="error">{createGroup.error.message}</Alert>
+        )}
+
         <TextField
           fullWidth
           label="Group name"
@@ -105,20 +95,20 @@ export const CreateGroupForm = () => {
 
         <Divider />
 
-        {participants.map((participant, i) => (
+        {participantEmails.map((participant, i) => (
           // this is a list of inputs without an ID that won't be re-ordered
           // eslint-disable-next-line react/no-array-index-key
           <Stack key={i} direction="row" spacing={1}>
             <TextField
               fullWidth
-              label={i === 0 ? 'Your Name' : `Person ${i}'s name`}
-              value={participant.name}
+              label={`Person ${i + 1}'s email address`}
+              value={participant}
               required
               onChange={(e) => {
-                handleChangeParticipant(i, 'name', e.target.value);
+                handleChangeParticipant(i, e.target.value);
               }}
               InputProps={{
-                endAdornment: i > 1 && (
+                endAdornment: (
                   <IconButton
                     aria-label="Delete"
                     onClick={() => handleDeleteParticipant(i)}

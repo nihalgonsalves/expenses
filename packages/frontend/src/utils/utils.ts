@@ -13,6 +13,10 @@ export const generateId = () => {
   return btoa(binString).replace(/\+/g, '-').replace(/\//g, '_');
 };
 
+// simply check for anything@anything.anytld
+export const prevalidateEmail = (email: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
 export const epochNowSeconds = () => Temporal.Now.instant().epochSeconds;
 
 export const dateTimeLocalToEpoch = (val: string) =>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
+import { prevalidateEmail } from '../utils/utils';
 
 export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const navigate = useNavigate();
@@ -28,8 +29,7 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
     onSuccess: redirect,
   });
 
-  // simply check for anything@anything.anytld
-  const emailValid = /^.+@.+\..+$/.test(email);
+  const emailValid = prevalidateEmail(email);
   const passwordValid = password.length >= 10;
 
   const signInValid = emailValid && passwordValid;

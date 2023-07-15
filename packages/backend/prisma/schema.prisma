@@ -36,11 +36,11 @@ model GroupParticipants {
   participant   User   @relation(fields: [participantId], references: [id])
   participantId String
 
-  group   Group  @relation(fields: [groupId], references: [id])
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId String
 
   joinedAt DateTime             @default(now()) @db.Timestamptz()
-  role     GroupParticipantRole
+  role     GroupParticipantRole @default(MEMBER)
 
   @@id([participantId, groupId])
 }

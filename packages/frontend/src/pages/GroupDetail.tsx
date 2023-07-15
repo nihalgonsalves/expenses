@@ -1,10 +1,10 @@
+import { trpc } from '../api/trpc';
 import { Group } from '../components/Group';
-import { useGroup } from '../db/splitGroup';
 import { GroupParams, useParams } from '../router';
 
 export const GroupDetail = () => {
   const { groupId } = useParams(GroupParams);
-  const group = useGroup(groupId);
+  const { data: group } = trpc.group.groupById.useQuery(groupId);
 
   if (!group) return null;
 

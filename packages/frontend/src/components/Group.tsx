@@ -10,20 +10,27 @@ import {
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { deleteGroup, getParticipantNamesById } from '../db/splitGroup';
-import { type SplitGroupDocument } from '../db/types';
+import { type GroupByIdResponse } from '@nihalgonsalves/expenses-backend';
+
+import { trpc } from '../api/trpc';
 import { RouterLink } from '../router';
 
 import { ExpensesList } from './ExpensesList';
 import { ParticipantTextListItem } from './ParticipantListItem';
 
-export const Group = ({ group }: { group: SplitGroupDocument }) => {
+export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
+
+  const deleteGroup = trpc.group.deleteGroup.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const handleDelete = async () => {
-    await deleteGroup(group);
-    navigate('/groups');
+    try {
+      await deleteGroup.mutateAsync(group.id);
+      navigate('/groups');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -32,7 +39,7 @@ export const Group = ({ group }: { group: SplitGroupDocument }) => {
         <CardContent>
           <Typography variant="h6">People</Typography>
           <List>
-            {[group.owner, ...group.participants].map(({ id, name }) => (
+            {group.participants.map(({ id, name }) => (
               <ParticipantTextListItem
                 key={id}
                 primary={name}
@@ -45,14 +52,9 @@ export const Group = ({ group }: { group: SplitGroupDocument }) => {
 
       <Card variant="outlined">
         <CardContent>
-          <Typography variant="h6">
-            Expenses ({group.expenses.length})
-          </Typography>
+          <Typography variant="h6">Expenses (0)</Typography>
           {/* TODO: order/limit */}
-          <ExpensesList
-            expenses={group.expenses}
-            participantNamesById={getParticipantNamesById(group)}
-          />
+          <ExpensesList expenses={[]} participantNamesById={{}} />
           <Stack spacing={1}>
             <Button
               fullWidth

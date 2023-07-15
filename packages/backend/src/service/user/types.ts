@@ -1,6 +1,15 @@
 import { z } from 'zod';
 
-export type User = { id: string; name: string; email: string };
+export const ZUser = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+});
+
+export type User = z.infer<typeof ZUser>;
+
+export const ZJWTToken = z.string().brand<'JWTToken'>();
+export type JWTToken = z.infer<typeof ZJWTToken>;
 
 export const ZCreateUserInput = z.object({
   name: z.string(),
@@ -14,6 +23,3 @@ export const ZAuthorizeUserInput = z.object({
   password: z.string(),
 });
 export type AuthorizeUserInput = z.infer<typeof ZAuthorizeUserInput>;
-
-export const ZJWTToken = z.string().brand<'JWTToken'>();
-export type JWTToken = z.infer<typeof ZJWTToken>;

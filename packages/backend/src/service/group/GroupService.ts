@@ -5,7 +5,7 @@ import {
 } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
-import { getErrorMessage } from '../../utils';
+import { getTRPCError } from '../../utils';
 import { type User } from '../user/types';
 
 import { type CreateGroupInput } from './types';
@@ -27,9 +27,14 @@ export class GroupService {
                 role: GroupParticipantRole.ADMIN,
                 participant: { connect: { id: owner.id } },
               },
-              ...input.additionalParticipantIds.map((id) => ({
-                participant: { connect: { id } },
+              ...input.additionalParticipantEmailAddresses.map((email) => ({
                 role: GroupParticipantRole.MEMBER,
+                participant: {
+                  connectOrCreate: {
+                    create: { name: email.split('@')?.[0] ?? email, email },
+                    where: { email },
+                  },
+                },
               })),
             ],
           },
@@ -48,11 +53,43 @@ export class GroupService {
         });
       }
 
-      throw new GroupServiceError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: getErrorMessage(error),
-        cause: error,
+      throw new GroupServiceError(getTRPCError(error));
+    }
+  }
+
+  async getGroupById(id: string, viewer: User) {
+    return this.prismaClient.group.findUnique({
+      where: { id, participants: { some: { participantId: viewer.id } } },
+      include: { participants: { include: { participant: true } } },
+    });
+  }
+
+  async deleteGroup(id: string, deletedBy: User) {
+    try {
+      return await this.prismaClient.group.delete({
+        where: {
+          id,
+          participants: {
+            some: {
+              participantId: deletedBy.id,
+              role: GroupParticipantRole.ADMIN,
+            },
+          },
+        },
       });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new GroupServiceError({
+          code: 'NOT_FOUND',
+          message: 'Group not found',
+          cause: error,
+        });
+      }
+
+      throw new GroupServiceError(getTRPCError(error));
     }
   }
 }

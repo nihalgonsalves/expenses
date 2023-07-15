@@ -12,8 +12,6 @@ import { GroupService } from '../src/service/group/GroupService';
 import { UserService } from '../src/service/user/UserService';
 import { type User, type JWTToken } from '../src/service/user/types';
 
-import { userFactory } from './factories';
-
 export const getTRPCCaller = async () => {
   const container = await new PostgreSqlContainer('postgres:15.3-alpine')
     .withName(`vitest-backend-${process.env['VITEST_WORKER_ID']}`)
@@ -36,8 +34,6 @@ export const getTRPCCaller = async () => {
     },
   });
 
-  let defaultUser: User | undefined;
-
   beforeEach(async () => {
     const tablenames = await prisma.$queryRaw<
       { tablename: string }[]
@@ -50,8 +46,6 @@ export const getTRPCCaller = async () => {
       .join(', ');
 
     await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${tables} CASCADE;`);
-
-    defaultUser = await userFactory(prisma);
   });
 
   afterAll(async () => {
@@ -78,10 +72,8 @@ export const getTRPCCaller = async () => {
 
   return {
     prisma,
-    getDefaultUser: () => defaultUser,
     usePublicCaller: (setJwtToken = (_token: JWTToken | null) => {}) =>
       useCaller(undefined, setJwtToken),
-    useProtectedCaller: (overrideUser: User | undefined = undefined) =>
-      useCaller(overrideUser ?? defaultUser, () => {}),
+    useProtectedCaller: (user: User) => useCaller(user, () => {}),
   };
 };
