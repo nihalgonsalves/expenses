@@ -113,6 +113,27 @@ describe('groupById', () => {
   });
 });
 
+describe('myGroups', () => {
+  it('returns all groups where the user is a participant', async () => {
+    const user = await userFactory(prisma);
+
+    const caller = useProtectedCaller(user);
+    const groupWithOwner = await groupFactory(prisma, { withOwnerId: user.id });
+    const groupWithMember = await groupFactory(prisma, {
+      withParticipantIds: [user.id],
+    });
+    const otherGroup = await groupFactory(prisma);
+
+    const myGroups = await caller.group.myGroups();
+
+    expect(myGroups.length).toBe(2);
+
+    expect(myGroups.find(({ id }) => id === groupWithOwner.id)).toBeDefined();
+    expect(myGroups.find(({ id }) => id === groupWithMember.id)).toBeDefined();
+    expect(myGroups.find(({ id }) => id === otherGroup.id)).toBeUndefined();
+  });
+});
+
 describe('deleteGroup', () => {
   it('deletes a group', async () => {
     const user = await userFactory(prisma);

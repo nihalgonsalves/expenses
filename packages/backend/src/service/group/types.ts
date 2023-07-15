@@ -24,3 +24,18 @@ export const ZGroupByIdResponse = z.object({
 });
 
 export type GroupByIdResponse = z.infer<typeof ZGroupByIdResponse>;
+
+export const ZGroupsResponse = z.array(
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    defaultCurrency: z.string(),
+    participants: z.array(
+      z.object({
+        name: z.string(),
+      }),
+    ),
+  }),
+);
+
+export type GroupsResponse = z.infer<typeof ZGroupsResponse>;

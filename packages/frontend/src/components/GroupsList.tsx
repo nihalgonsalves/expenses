@@ -9,14 +9,15 @@ import {
   type SxProps,
 } from '@mui/material';
 
-import { type SplitGroup } from '../db/types';
+import { type GroupsResponse } from '@nihalgonsalves/expenses-backend';
+
 import { RouterLink } from '../router';
 
 export const GroupsList = ({
   groups,
   sx = {},
 }: {
-  groups: SplitGroup[];
+  groups: GroupsResponse;
   sx?: SxProps;
 }) => {
   return (
@@ -34,9 +35,7 @@ export const GroupsList = ({
             </ListItemAvatar>
             <ListItemText
               primary={group.name}
-              secondary={[group.owner, ...group.participants]
-                .map(({ name }) => name)
-                .join(', ')}
+              secondary={group.participants.map(({ name }) => name).join(', ')}
             />
           </ListItemButton>
         </ListItem>

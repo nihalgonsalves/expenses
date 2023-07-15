@@ -64,6 +64,13 @@ export class GroupService {
     });
   }
 
+  async getGroups(viewer: User) {
+    return this.prismaClient.group.findMany({
+      where: { participants: { some: { participantId: viewer.id } } },
+      include: { participants: { include: { participant: true } } },
+    });
+  }
+
   async deleteGroup(id: string, deletedBy: User) {
     try {
       return await this.prismaClient.group.delete({

@@ -1,12 +1,12 @@
 import { GroupAdd } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
+import { trpc } from '../api/trpc';
 import { GroupsList } from '../components/GroupsList';
-import { useGroups } from '../db/splitGroup';
 import { RouterLink } from '../router';
 
 export const GroupsIndex = () => {
-  const groups = useGroups();
+  const { data: groups = [] } = trpc.group.myGroups.useQuery();
 
   return (
     <>

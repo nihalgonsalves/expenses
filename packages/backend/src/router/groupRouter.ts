@@ -1,10 +1,25 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { ZCreateGroupInput, ZGroupByIdResponse } from '../service/group/types';
+import {
+  ZCreateGroupInput,
+  ZGroupByIdResponse,
+  ZGroupsResponse,
+} from '../service/group/types';
 import { protectedProcedure, router } from '../trpc';
 
 export const groupRouter = router({
+  myGroups: protectedProcedure
+    .output(ZGroupsResponse)
+    .query(async ({ ctx }) => {
+      const groups = await ctx.groupService.getGroups(ctx.user);
+
+      return groups.map((group) => ({
+        ...group,
+        participants: group.participants.map(({ participant }) => participant),
+      }));
+    }),
+
   groupById: protectedProcedure
     .input(z.string())
     .output(ZGroupByIdResponse)

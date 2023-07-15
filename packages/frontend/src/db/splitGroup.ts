@@ -2,17 +2,11 @@ import { epochNowSeconds, generateId } from '../utils/utils';
 
 import { db } from './db';
 import {
-  type SplitGroup,
   type SplitGroupDocument,
   type SplitGroupExpense,
   ZSplitGroupExpense,
 } from './types';
 import { useRXDBQuery } from './util';
-
-export const useGroups = (): SplitGroup[] => {
-  const value = useRXDBQuery(() => db.split_groups.find().$, []);
-  return value ?? [];
-};
 
 export const useGroup = (id: string): SplitGroupDocument | null => {
   const value = useRXDBQuery(() => db.split_groups.findOne(id).$, [id]);
