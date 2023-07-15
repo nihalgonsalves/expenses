@@ -1,3 +1,4 @@
+import { LoadingButton } from '@mui/lab';
 import { Alert, Button, Stack, TextField } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -35,6 +36,7 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const signInValid = emailValid && passwordValid;
   const valid = isSignUp ? name && signInValid : signInValid;
 
+  const loading = signUpMutation.isLoading || signInMutation.isLoading;
   const error = signUpMutation.error ?? signInMutation.error;
 
   const handleAuthenticate = () => {
@@ -89,15 +91,16 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
         }}
       />
 
-      <Button
+      <LoadingButton
         color="primary"
         variant="contained"
         type="submit"
         size="large"
         disabled={!valid}
+        loading={loading}
       >
-        Sign In
-      </Button>
+        {isSignUp ? 'Sign Up' : 'Sign In'}
+      </LoadingButton>
     </Stack>
   );
 };

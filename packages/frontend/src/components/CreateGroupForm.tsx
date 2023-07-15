@@ -1,4 +1,5 @@
 import { AddCircle, DeleteOutline, PersonAdd } from '@mui/icons-material';
+import { LoadingButton } from '@mui/lab';
 import {
   Alert,
   Button,
@@ -133,15 +134,16 @@ export const CreateGroupForm = () => {
 
         <Divider />
 
-        <Button
+        <LoadingButton
           fullWidth
           variant="contained"
           startIcon={<AddCircle />}
           onClick={() => void handleCreateGroup()}
           disabled={!valid}
+          loading={createGroup.isLoading}
         >
           Create Group
-        </Button>
+        </LoadingButton>
       </Stack>
     </form>
   );
