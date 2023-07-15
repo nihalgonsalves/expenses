@@ -1,9 +1,14 @@
-import { ZAuthorizeUserInput, ZCreateUserInput } from '../service/user/types';
+import {
+  ZAuthorizeUserInput,
+  ZUser,
+  ZCreateUserInput,
+} from '../service/user/types';
 import { publicProcedure, protectedProcedure, router } from '../trpc';
 
 export const userRouter = router({
   createUser: publicProcedure
     .input(ZCreateUserInput)
+    .output(ZUser)
     .mutation(async ({ input, ctx }) => {
       const { user, token } = await ctx.userService.createUser(input);
       ctx.setJwtToken(token);
@@ -12,6 +17,7 @@ export const userRouter = router({
 
   authorizeUser: publicProcedure
     .input(ZAuthorizeUserInput)
+    .output(ZUser)
     .mutation(async ({ input, ctx }) => {
       const { user, token } = await ctx.userService.authorize(input);
       ctx.setJwtToken(token);

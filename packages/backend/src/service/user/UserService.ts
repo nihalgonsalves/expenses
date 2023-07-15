@@ -5,7 +5,6 @@ import { TRPCError } from '@trpc/server';
 import {
   type AuthorizeUserInput,
   type User,
-  safeExactUser,
   type CreateUserInput,
   type JWTToken,
 } from './types';
@@ -63,7 +62,7 @@ export class UserService {
     }
 
     return {
-      user: safeExactUser(user),
+      user,
       token: await signJWT(user),
     };
   }
@@ -80,7 +79,7 @@ export class UserService {
         },
       });
 
-      return { user: safeExactUser(user), token: await signJWT(user) };
+      return { user, token: await signJWT(user) };
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&

@@ -15,11 +15,5 @@ export const ZAuthorizeUserInput = z.object({
 });
 export type AuthorizeUserInput = z.infer<typeof ZAuthorizeUserInput>;
 
-export const safeExactUser = ({ id, name, email }: User): User => ({
-  id,
-  name,
-  email,
-});
-
 export const ZJWTToken = z.string().brand<'JWTToken'>();
 export type JWTToken = z.infer<typeof ZJWTToken>;
