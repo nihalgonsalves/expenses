@@ -14,7 +14,7 @@ export const protectedProcedure = t.procedure.use(
     }
 
     return next({
-      ctx,
+      ctx: { ...ctx, user: ctx.user },
     });
   }),
 );

@@ -9,11 +9,11 @@ const user = {
   password: 'correct-horse-battery-staple',
 };
 
-const useTRPCCaller = await getTRPCCaller();
+const { usePublicCaller } = await getTRPCCaller();
 
 describe('createUser', () => {
   it('creates a user ', async () => {
-    const caller = useTRPCCaller();
+    const caller = usePublicCaller();
 
     expect(await caller.user.createUser(user)).toEqual({
       id: expect.any(String),
@@ -23,7 +23,7 @@ describe('createUser', () => {
   });
 
   it('logs in if the user already exists and the password matches', async () => {
-    const caller = useTRPCCaller();
+    const caller = usePublicCaller();
 
     await caller.user.createUser(user);
     expect(await caller.user.createUser(user)).toEqual({
@@ -34,7 +34,7 @@ describe('createUser', () => {
   });
 
   it('returns an error if the user already exists', async () => {
-    const caller = useTRPCCaller();
+    const caller = usePublicCaller();
 
     await caller.user.createUser({ ...user, password: 'aaa' });
     await expect(caller.user.createUser(user)).rejects.toThrow(
@@ -46,7 +46,7 @@ describe('createUser', () => {
 describe('authorizeUser', () => {
   it('returns a user and logs in', async () => {
     let token: JWTToken | null | undefined;
-    const caller = useTRPCCaller(undefined, (t) => {
+    const caller = usePublicCaller((t) => {
       token = t;
     });
 
@@ -63,7 +63,7 @@ describe('authorizeUser', () => {
   });
 
   it('returns an error if the password is wrong', async () => {
-    const caller = useTRPCCaller();
+    const caller = usePublicCaller();
 
     await expect(
       caller.user.authorizeUser({
@@ -74,7 +74,7 @@ describe('authorizeUser', () => {
   });
 
   it("returns an error if the user doesn't exist", async () => {
-    const caller = useTRPCCaller();
+    const caller = usePublicCaller();
 
     await expect(
       caller.user.authorizeUser({
@@ -88,7 +88,7 @@ describe('authorizeUser', () => {
 describe('signOut', () => {
   it('signs a user out', async () => {
     let token: JWTToken | null | undefined;
-    const caller = useTRPCCaller(undefined, (t) => {
+    const caller = usePublicCaller((t) => {
       token = t;
     });
 

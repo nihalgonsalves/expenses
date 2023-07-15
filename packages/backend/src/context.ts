@@ -3,11 +3,13 @@ import { type CreateHTTPContextOptions } from '@trpc/server/adapters/standalone'
 import cookie from 'cookie';
 
 import { config } from './config';
+import { GroupService } from './service/group/GroupService';
 import { UserService } from './service/user/UserService';
 import { type JWTToken, ZJWTToken, type User } from './service/user/types';
 
 const prisma = new PrismaClient();
 const userService = new UserService(prisma);
+const groupService = new GroupService(prisma);
 
 const AUTH_COOKIE_NAME = 'auth';
 
@@ -36,6 +38,7 @@ export const createContext = async ({ req, res }: CreateHTTPContextOptions) => {
     prisma,
     user: await getMaybeUser(req.headers.cookie),
     userService,
+    groupService,
     setJwtToken: (value: JWTToken | null) => {
       res.setHeader(
         'Set-Cookie',

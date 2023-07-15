@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 import { publicProcedure, router } from '../trpc';
+import { getErrorMessage } from '../utils';
 
+import { groupRouter } from './groupRouter';
 import { userRouter } from './userRouter';
 
 export const appRouter = router({
@@ -15,12 +17,14 @@ export const appRouter = router({
     } catch (e) {
       return {
         status: 'error',
-        message: !IS_PROD && e instanceof Error ? e.message : 'Database Error',
+        message: getErrorMessage(e),
       };
     }
   }),
 
   user: userRouter,
+
+  group: groupRouter,
 });
 
 export type AppRouter = typeof appRouter;

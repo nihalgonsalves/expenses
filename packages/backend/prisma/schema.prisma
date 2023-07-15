@@ -10,8 +10,42 @@ datasource db {
 }
 
 model User {
-  id           String  @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt DateTime @default(now()) @db.Timestamptz()
+  updatedAt DateTime @updatedAt @db.Timestamptz()
+
   name         String
   email        String  @unique
   passwordHash String?
+
+  groups GroupParticipants[]
+}
+
+model Group {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt DateTime @default(now()) @db.Timestamptz()
+  updatedAt DateTime @updatedAt @db.Timestamptz()
+
+  name            String
+  defaultCurrency String
+
+  participants GroupParticipants[]
+}
+
+model GroupParticipants {
+  participant   User   @relation(fields: [participantId], references: [id])
+  participantId String
+
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
+
+  joinedAt DateTime             @default(now()) @db.Timestamptz()
+  role     GroupParticipantRole
+
+  @@id([participantId, groupId])
+}
+
+enum GroupParticipantRole {
+  ADMIN
+  MEMBER
 }

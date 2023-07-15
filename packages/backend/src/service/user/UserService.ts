@@ -39,9 +39,9 @@ export class UserService {
   }
 
   async authorize(
-    data: AuthorizeUserInput,
+    input: AuthorizeUserInput,
   ): Promise<{ user: User; token: JWTToken }> {
-    const user = await this.findByEmail(data.email);
+    const user = await this.findByEmail(input.email);
 
     if (!user?.passwordHash) {
       throw new UserServiceError({
@@ -51,7 +51,7 @@ export class UserService {
     }
 
     const passwordMatches = await comparePassword(
-      data.password,
+      input.password,
       user.passwordHash,
     );
 
@@ -69,14 +69,14 @@ export class UserService {
   }
 
   async createUser(
-    data: CreateUserInput,
+    input: CreateUserInput,
   ): Promise<{ user: User; token: JWTToken }> {
     try {
       const user = await this.prismaClient.user.create({
         data: {
-          name: data.name,
-          email: data.email,
-          passwordHash: await hashPassword(data.password),
+          name: input.name,
+          email: input.email,
+          passwordHash: await hashPassword(input.password),
         },
       });
 
@@ -86,7 +86,7 @@ export class UserService {
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        return this.authorize(data);
+        return this.authorize(input);
       }
 
       throw new UserServiceError({
