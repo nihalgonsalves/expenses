@@ -1,30 +1,26 @@
 import { PlaylistAdd } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
+import { trpc } from '../api/trpc';
 import { ExpensesList } from '../components/ExpensesList';
-import { getParticipantNamesById, useGroup } from '../db/splitGroup';
 import { GroupParams, RouterLink, useParams } from '../router';
 
 export const ExpensesIndex = () => {
   const { groupId } = useParams(GroupParams);
-  const group = useGroup(groupId);
+  const { data: expenses } = trpc.expense.getExpenses.useQuery(groupId);
 
-  if (!group) return null;
+  if (!expenses) return null;
 
   return (
     <>
-      <ExpensesList
-        expenses={group.expenses}
-        sx={{ flexGrow: 1 }}
-        participantNamesById={getParticipantNamesById(group)}
-      />
+      <ExpensesList expenses={expenses} sx={{ flexGrow: 1 }} />
       <Button
         fullWidth
         variant="outlined"
         color="primary"
         startIcon={<PlaylistAdd />}
         LinkComponent={RouterLink}
-        href={`/groups/${group.id}/expenses/new`}
+        href={`/groups/${groupId}/expenses/new`}
       >
         Add Expense
       </Button>

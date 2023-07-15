@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { publicProcedure, router } from '../trpc';
 import { getErrorMessage } from '../utils';
 
+import { expenseRouter } from './expenseRouter';
 import { groupRouter } from './groupRouter';
 import { userRouter } from './userRouter';
 
@@ -25,6 +26,8 @@ export const appRouter = router({
   user: userRouter,
 
   group: groupRouter,
+
+  expense: expenseRouter,
 });
 
 export type AppRouter = typeof appRouter;

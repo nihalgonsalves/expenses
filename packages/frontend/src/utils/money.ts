@@ -1,10 +1,9 @@
 import * as Currencies from '@dinero.js/currencies';
 import countryToCurrency from 'country-to-currency';
 import { type Dinero, dinero, toSnapshot } from 'dinero.js';
-import { type DeepReadonly } from 'ts-essentials';
 import { z } from 'zod';
 
-import { ZDineroSnapshot, type DineroSnapshot } from '../db/types';
+import { type Money } from '@nihalgonsalves/expenses-backend';
 
 import { getUserLanguage } from './utils';
 
@@ -35,7 +34,7 @@ export const getDefaultCurrency = () => {
 };
 
 export const formatCurrency = (
-  { amount, scale, currency }: DineroSnapshot,
+  { amount, scale, currencyCode }: Money,
   options: Pick<Intl.NumberFormatOptions, 'currencyDisplay'> = {},
 ) => {
   const floatValue = amount / Math.pow(10, scale);
@@ -43,15 +42,15 @@ export const formatCurrency = (
   return new Intl.NumberFormat(getUserLanguage(), {
     ...options,
     style: 'currency',
-    currency: currency.code,
+    currency: currencyCode,
   }).format(floatValue);
 };
 
-export const toMoney = (amount: number, currencyCode: string) =>
+export const toDinero = (amount: number, currencyCode: string) =>
   dinero({ amount, currency: getCurrency(currencyCode) });
 
-export const toMoneySnapshot = (money: Dinero<number>) => {
-  return ZDineroSnapshot.parse(
-    toSnapshot(money) satisfies DeepReadonly<DineroSnapshot>,
-  );
+export const toMoney = (money: Dinero<number>): Money => {
+  const { amount, scale, currency } = toSnapshot(money);
+
+  return { amount, scale, currencyCode: currency.code };
 };

@@ -19,7 +19,6 @@
     "bcrypt": "*",
     "cookie": "^0.5.0",
     "jose": "^4.14.4",
-    "ts-pattern": "^5.0.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {

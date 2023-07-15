@@ -8,6 +8,7 @@ import { afterAll, beforeEach } from 'vitest';
 
 import { type ContextObj } from '../src/context';
 import { appRouter } from '../src/router/appRouter';
+import { ExpenseService } from '../src/service/expense/ExpenseService';
 import { GroupService } from '../src/service/group/GroupService';
 import { UserService } from '../src/service/user/UserService';
 import { type User, type JWTToken } from '../src/service/user/types';
@@ -58,11 +59,13 @@ export const getTRPCCaller = async () => {
   ) => {
     const userService = new UserService(prisma);
     const groupService = new GroupService(prisma);
+    const expenseService = new ExpenseService(prisma);
 
     const context: ContextObj = {
       prisma,
       userService,
       groupService,
+      expenseService,
       user,
       setJwtToken,
     };

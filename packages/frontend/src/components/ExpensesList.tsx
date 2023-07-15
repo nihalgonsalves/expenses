@@ -10,16 +10,15 @@ import {
 } from '@mui/material';
 import { Fragment } from 'react';
 
-import { type SplitGroupExpense } from '../db/types';
+import { type GetExpensesResponse } from '@nihalgonsalves/expenses-backend';
+
 import { formatCurrency } from '../utils/money';
 
 export const ExpensesList = ({
   expenses,
-  participantNamesById,
   sx = {},
 }: {
-  expenses: SplitGroupExpense[];
-  participantNamesById: Record<string, string>;
+  expenses: GetExpensesResponse;
   sx?: SxProps;
 }) => {
   return (
@@ -35,13 +34,11 @@ export const ExpensesList = ({
             <ListItemText
               primary={
                 <Stack direction="row" justifyContent="space-between">
-                  <span>{expense.notes || expense.category}</span>
+                  <span>{expense.description}</span>
                   <span>{formatCurrency(expense.money)}</span>
                 </Stack>
               }
-              secondary={`Paid by ${
-                participantNamesById[expense.paidById] ?? 'Unknown'
-              }`}
+              secondary={`Paid by <Unknown>`}
             />
           </ListItem>
         </Fragment>

@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { PlaylistAdd } from '@mui/icons-material';
+import { LoadingButton } from '@mui/lab';
 import {
-  Button,
   FormControl,
   InputLabel,
   MenuItem,
@@ -31,21 +31,28 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
-import { addExpense, getParticipantNamesById } from '../db/splitGroup';
 import {
-  type SplitGroupDocument,
-  type SplitGroupExpenseSplit,
-} from '../db/types';
+  type Money,
+  type GroupByIdResponse,
+} from '@nihalgonsalves/expenses-backend';
+
+import { trpc } from '../api/trpc';
 import {
   CURRENCY_CODES,
   formatCurrency,
+  toDinero,
   toMoney,
-  toMoneySnapshot,
 } from '../utils/money';
-import { dateTimeLocalToEpoch } from '../utils/utils';
+import { dateTimeLocalToISOString } from '../utils/utils';
 
 import { MoneyField } from './MoneyField';
 import { ParticipantListItem } from './ParticipantListItem';
+
+type SplitGroupExpenseSplit = {
+  participantId: string;
+  participantName: string;
+  share: Money;
+};
 
 enum SplitGroupExpenseSplitType {
   Evenly = 'evenly',
@@ -56,32 +63,29 @@ enum SplitGroupExpenseSplitType {
 }
 
 const calcSplits = (
-  group: SplitGroupDocument,
+  group: GroupByIdResponse,
   money: Dinero<number>,
   ratios: Record<string, number>,
 ): SplitGroupExpenseSplit[] => {
-  const contributors = [group.owner, ...group.participants];
-
-  const indexedRatios = contributors.map(({ id }) => ratios[id] ?? 0);
+  const indexedRatios = group.participants.map(({ id }) => ratios[id] ?? 0);
 
   const allocations = indexedRatios.some((ratio) => ratio !== 0)
     ? allocate(money, indexedRatios)
     : [];
 
-  return contributors.map(({ id }, i) => {
+  return group.participants.map(({ id, name }, i) => {
     const alloc = allocations[i];
 
     return {
       participantId: id,
-      share: toMoneySnapshot(alloc ?? toMoney(0, group.currency)),
+      participantName: name,
+      share: toMoney(alloc ?? toDinero(0, group.defaultCurrency)),
     };
   });
 };
 
-const getDefaultRatios = (group: SplitGroupDocument) =>
-  Object.fromEntries(
-    [group.owner, ...group.participants].map(({ id }) => [id, 1]),
-  );
+const getDefaultRatios = (group: GroupByIdResponse) =>
+  Object.fromEntries(group.participants.map(({ id }) => [id, 1]));
 
 type SplitConfig = {
   label: string;
@@ -138,11 +142,11 @@ const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
     expectedSum: (amount) => amount,
     formatErrorTooHigh: (diff: number, currencyCode: string) =>
       `The amounts must add up to the total. You need to account for ${formatCurrency(
-        toMoneySnapshot(toMoney(diff, currencyCode)),
+        toMoney(toDinero(diff, currencyCode)),
       )}.`,
     formatErrorTooLow: (diff: number, currencyCode: string) =>
       `The amounts must add up to the total. You have ${formatCurrency(
-        toMoneySnapshot(toMoney(diff, currencyCode)),
+        toMoney(toDinero(diff, currencyCode)),
       )} too much.`,
     label: 'Enter amounts',
     hasInput: false,
@@ -206,7 +210,7 @@ const SplitsFormSection = ({
   ratios,
   setRatios,
 }: {
-  group: SplitGroupDocument;
+  group: GroupByIdResponse;
   amount: number;
   currencyCode: string;
   splits: SplitGroupExpenseSplit[];
@@ -215,14 +219,12 @@ const SplitsFormSection = ({
   ratios: Record<string, number>;
   setRatios: Dispatch<SetStateAction<Record<string, number>>>;
 }) => {
-  const participantNamesById = getParticipantNamesById(group);
-
   const narrowScreen = useMediaQuery<Theme>((theme) =>
     theme.breakpoints.down('sm'),
   );
 
   const money = useMemo(
-    () => toMoney(amount, currencyCode),
+    () => toDinero(amount, currencyCode),
     [amount, currencyCode],
   );
 
@@ -253,11 +255,11 @@ const SplitsFormSection = ({
 
         case SplitGroupExpenseSplitType.Percentage:
           setRatios(
-            100 % (group.participants.length + 1) === 0
+            100 % group.participants.length === 0
               ? Object.fromEntries(
-                  [group.owner, ...group.participants].map(({ id }) => [
+                  group.participants.map(({ id }) => [
                     id,
-                    100 / (group.participants.length + 1),
+                    100 / group.participants.length,
                   ]),
                 )
               : {},
@@ -304,7 +306,7 @@ const SplitsFormSection = ({
       </ToggleButtonGroup>
 
       <List dense>
-        {splits.map(({ participantId, share }) => (
+        {splits.map(({ participantId, participantName, share }) => (
           <ParticipantListItem
             key={participantId}
             sx={{ paddingInline: 'unset' }}
@@ -316,9 +318,7 @@ const SplitsFormSection = ({
               width="100%"
             >
               <Stack>
-                <Typography>
-                  {participantNamesById[participantId] ?? 'Unknown'}
-                </Typography>
+                <Typography>{participantName}</Typography>
                 <Typography
                   variant="body2"
                   sx={{ color: (theme) => theme.palette.text.secondary }}
@@ -334,9 +334,7 @@ const SplitsFormSection = ({
                   onChange={(e) =>
                     handleChangeRatio(participantId, e.target.value)
                   }
-                  aria-label={`${splitConfig.ariaInputLabel} for ${
-                    participantNamesById[participantId] ?? 'Unknown'
-                  }`}
+                  aria-label={`${splitConfig.ariaInputLabel} for ${participantName}`}
                   InputProps={{
                     endAdornment:
                       ratios[participantId] === 1
@@ -353,16 +351,12 @@ const SplitsFormSection = ({
                   currencyCode={currencyCode}
                   amount={ratios[participantId] ?? 0}
                   setAmount={(val) => handleChangeRatio(participantId, val)}
-                  aria-label={`Amount for ${
-                    participantNamesById[participantId] ?? 'Unknown'
-                  }`}
+                  aria-label={`Amount for ${participantName}`}
                 />
               )}
               {splitType === SplitGroupExpenseSplitType.Selected && (
                 <Checkbox
-                  aria-label={`Include ${
-                    participantNamesById[participantId] ?? 'Unknown'
-                  }`}
+                  aria-label={`Include ${participantName}`}
                   checked={ratios[participantId] === 1}
                   onChange={(_e, checked) => {
                     handleChangeRatio(participantId, checked ? 1 : 0);
@@ -385,17 +379,19 @@ const SplitsFormSection = ({
   );
 };
 
-export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
+export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
   const paidByIdSelectId = useId();
   const categorySelectId = useId();
 
+  const createExpense = trpc.expense.createExpense.useMutation();
+
   const navigate = useNavigate();
 
-  const [paidById, setPaidById] = useState(group.owner.id);
-  const [currencyCode, setCurrencyCode] = useState(group.currency);
+  const [paidById, setPaidById] = useState(group.participants[0]?.id);
+  const [currencyCode, setCurrencyCode] = useState(group.defaultCurrency);
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('food');
-  const [notes, setNotes] = useState('');
+  const [description, setDescription] = useState('');
   const [when, setWhen] = useState(
     Temporal.Now.plainDateTimeISO().round('minutes').toString(),
   );
@@ -404,10 +400,10 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
     SplitGroupExpenseSplitType.Evenly,
   );
   const [ratios, setRatios] = useState(getDefaultRatios(group));
-  const splits = calcSplits(group, toMoney(amount, currencyCode), ratios);
+  const splits = calcSplits(group, toDinero(amount, currencyCode), ratios);
 
-  const money = toMoney(amount, currencyCode);
-  const moneySnapshot = toMoneySnapshot(money);
+  const money = toDinero(amount, currencyCode);
+  const moneySnapshot = toMoney(money);
 
   const handleChangeCurrency = useCallback(
     (e: SelectChangeEvent) => {
@@ -415,14 +411,19 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
     },
     [setCurrencyCode],
   );
+
   const handleCreateExpense = async () => {
-    await addExpense(group, {
-      money: moneySnapshot,
-      category,
-      notes,
-      spentAt: dateTimeLocalToEpoch(when),
-      splits,
+    if (!paidById) {
+      return;
+    }
+
+    await createExpense.mutateAsync({
+      groupId: group.id,
       paidById,
+      description,
+      money: moneySnapshot,
+      spentAt: dateTimeLocalToISOString(when),
+      splits,
     });
 
     navigate(`/groups/${group.id}`);
@@ -445,6 +446,10 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
         void handleCreateExpense();
       }}
     >
+      {createExpense.error && (
+        <Alert severity="error">{createExpense.error.message}</Alert>
+      )}
+
       <FormControl fullWidth>
         <InputLabel id={paidByIdSelectId}>Who paid?</InputLabel>
         <Select
@@ -455,13 +460,11 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
             setPaidById(e.target.value);
           }}
         >
-          {Object.values([group.owner, ...group.participants]).map(
-            ({ id, name }) => (
-              <MenuItem key={id} value={id}>
-                {name}
-              </MenuItem>
-            ),
-          )}
+          {Object.values(group.participants).map(({ id, name }) => (
+            <MenuItem key={id} value={id}>
+              {name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
 
@@ -499,10 +502,10 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
 
       <TextField
         fullWidth
-        label="Notes"
-        value={notes}
+        label="Description"
+        value={description}
         onChange={(e) => {
-          setNotes(e.target.value);
+          setDescription(e.target.value);
         }}
       />
 
@@ -527,7 +530,8 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
         setRatios={setRatios}
       />
 
-      <Button
+      <LoadingButton
+        loading={createExpense.isLoading}
         color="primary"
         variant="contained"
         startIcon={<PlaylistAdd />}
@@ -537,7 +541,7 @@ export const EditExpenseForm = ({ group }: { group: SplitGroupDocument }) => {
         sx={{ marginTop: '12px !important' }}
       >
         Add Expense
-      </Button>
+      </LoadingButton>
     </Stack>
   );
 };

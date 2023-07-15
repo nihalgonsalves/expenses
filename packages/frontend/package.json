@@ -25,9 +25,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.1",
-    "rxdb": "^14.14.2",
-    "rxjs": "^7.8.1",
-    "ts-essentials": "^9.3.2",
     "zod": "^3.21.4",
     "zod-to-json-schema": "^3.21.3"
   },

@@ -21,6 +21,8 @@ import { ParticipantTextListItem } from './ParticipantListItem';
 export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
 
+  const { data: expenses } = trpc.expense.getExpenses.useQuery(group.id);
+
   const deleteGroup = trpc.group.deleteGroup.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
@@ -54,7 +56,7 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
         <CardContent>
           <Typography variant="h6">Expenses (0)</Typography>
           {/* TODO: order/limit */}
-          <ExpensesList expenses={[]} participantNamesById={{}} />
+          <ExpensesList expenses={expenses ?? []} />
           <Stack spacing={1}>
             <Button
               fullWidth

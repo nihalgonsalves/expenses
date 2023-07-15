@@ -99,4 +99,27 @@ export class GroupService {
       throw new GroupServiceError(getTRPCError(error));
     }
   }
+
+  async groupMembership(
+    groupId: string,
+    participantId: string,
+  ): Promise<[group: { id: string }, role: GroupParticipantRole | undefined]> {
+    const group = await this.prismaClient.group.findUnique({
+      where: { id: groupId },
+      include: { participants: true },
+    });
+
+    if (!group) {
+      throw new GroupServiceError({
+        code: 'NOT_FOUND',
+        message: 'Group not found',
+      });
+    }
+
+    const participant = group.participants.find(
+      ({ participantId: id }) => id === participantId,
+    );
+
+    return [group, participant?.role];
+  }
 }

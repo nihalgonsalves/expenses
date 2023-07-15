@@ -10,12 +10,12 @@ export const ZCreateGroupInput = z.object({
 export type CreateGroupInput = z.infer<typeof ZCreateGroupInput>;
 
 export const ZGroupByIdResponse = z.object({
-  id: z.string(),
+  id: z.string().uuid(),
   name: z.string(),
   defaultCurrency: z.string(),
   participants: z.array(
     z.object({
-      id: z.string(),
+      id: z.string().uuid(),
       name: z.string(),
       email: z.string(),
       role: z.nativeEnum(GroupParticipantRole),
@@ -27,7 +27,7 @@ export type GroupByIdResponse = z.infer<typeof ZGroupByIdResponse>;
 
 export const ZGroupsResponse = z.array(
   z.object({
-    id: z.string(),
+    id: z.string().uuid(),
     name: z.string(),
     defaultCurrency: z.string(),
     participants: z.array(

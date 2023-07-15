@@ -1,7 +1,7 @@
 import { TextField, type TextFieldProps } from '@mui/material';
 import React, { useCallback, useRef } from 'react';
 
-import { formatCurrency, toMoney, toMoneySnapshot } from '../utils/money';
+import { formatCurrency, toDinero, toMoney } from '../utils/money';
 
 export const MoneyField = ({
   amount,
@@ -77,7 +77,7 @@ export const MoneyField = ({
       [amount, setAmount],
     );
 
-  const moneySnapshot = toMoneySnapshot(toMoney(amount, currencyCode));
+  const moneySnapshot = toMoney(toDinero(amount, currencyCode));
 
   return (
     <TextField

@@ -18,7 +18,8 @@ model User {
   email        String  @unique
   passwordHash String?
 
-  groups GroupParticipants[]
+  groups              GroupParticipants[]
+  expenseTransactions ExpenseTransactions[]
 }
 
 model Group {
@@ -30,6 +31,7 @@ model Group {
   defaultCurrency String
 
   participants GroupParticipants[]
+  expenses     Expense[]
 }
 
 model GroupParticipants {
@@ -48,4 +50,34 @@ model GroupParticipants {
 enum GroupParticipantRole {
   ADMIN
   MEMBER
+}
+
+model Expense {
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt DateTime @default(now()) @db.Timestamptz()
+  updatedAt DateTime @updatedAt @db.Timestamptz()
+
+  group   Group  @relation(fields: [groupId], references: [id])
+  groupId String
+
+  description String
+  currency    String
+  amount      Int
+  scale       Int      @db.SmallInt()
+  spentAt     DateTime
+
+  transactions ExpenseTransactions[]
+}
+
+model ExpenseTransactions {
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+
+  expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseId String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  amount Int
+  scale  Int @db.SmallInt()
 }

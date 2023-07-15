@@ -41,3 +41,28 @@ export const groupFactory = async (
     },
   });
 };
+
+export const expenseFactory = async (
+  prisma: PrismaClient,
+  group: Awaited<ReturnType<typeof groupFactory>>,
+  paidById: string,
+) => {
+  const amount = faker.number.int(100_00);
+
+  return prisma.expense.create({
+    data: {
+      currency: group.defaultCurrency,
+      amount,
+      scale: 2,
+      description: '',
+      spentAt: new Date(),
+      groupId: group.id,
+      transactions: {
+        create: [
+          { userId: paidById, amount: -amount, scale: 2 },
+          { userId: paidById, amount: +amount, scale: 2 },
+        ],
+      },
+    },
+  });
+};
