@@ -1,54 +1,80 @@
+import { type GroupParticipantRole } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
+import { type ContextObj } from '../context';
 import {
   ZCreateExpenseInput,
   ZCreateExpenseResponse,
+  ZExpenseSummaryResponse,
   ZGetExpensesResponse,
 } from '../service/expense/types';
+import { type GroupWithParticipants } from '../service/group/types';
+import { type User } from '../service/user/types';
 import { protectedProcedure, router } from '../trpc';
+
+const assertGroupView = async (
+  ctx: ContextObj & { user: User },
+  groupId: string,
+): Promise<{ group: GroupWithParticipants; role: GroupParticipantRole }> => {
+  const { group, role } = await ctx.groupService.groupMembership(
+    groupId,
+    ctx.user.id,
+  );
+
+  if (!role) {
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: 'Group not found',
+    });
+  }
+
+  return { group, role };
+};
 
 export const expenseRouter = router({
   createExpense: protectedProcedure
     .input(ZCreateExpenseInput)
     .output(ZCreateExpenseResponse)
     .mutation(async ({ input, ctx }) => {
-      const [, membership] = await ctx.groupService.groupMembership(
-        input.groupId,
-        ctx.user.id,
-      );
+      const { group } = await assertGroupView(ctx, input.groupId);
 
-      if (!membership) {
+      const groupParticipants = new Set(group.participants.map(({ id }) => id));
+      const expenseParticipants = [
+        input.paidById,
+        ...input.splits.map(({ participantId }) => participantId),
+      ];
+
+      if (expenseParticipants.some((id) => !groupParticipants.has(id))) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Group not found',
+          code: 'BAD_REQUEST',
+          message: 'Invalid participants',
         });
       }
 
-      return ctx.expenseService.createExpense(input);
+      return ctx.expenseService.createExpense(input, group);
     }),
 
   getExpenses: protectedProcedure
-    .input(z.string())
+    .input(z.string().uuid())
     .output(ZGetExpensesResponse)
     .query(async ({ input, ctx }) => {
-      const [, membership] = await ctx.groupService.groupMembership(
-        input,
-        ctx.user.id,
-      );
-
-      if (!membership) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Group not found',
-        });
-      }
+      const { group } = await assertGroupView(ctx, input);
 
       return (await ctx.expenseService.getExpenses(input)).map(
-        ({ amount, scale, currency, ...expense }) => ({
+        ({ amount, scale, ...expense }) => ({
           ...expense,
-          money: { amount, scale, currencyCode: currency },
+          money: { amount, scale, currencyCode: group.currencyCode },
         }),
       );
+    }),
+
+  getParticipantSummaries: protectedProcedure
+    .input(z.string().uuid())
+    .output(ZExpenseSummaryResponse)
+    .query(async ({ input, ctx }) => {
+      const { group } = await assertGroupView(ctx, input);
+
+      return ctx.expenseService.getParticipantSummaries(group);
     }),
 });

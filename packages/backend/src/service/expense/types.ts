@@ -2,11 +2,9 @@ import { z } from 'zod';
 
 export const ZMoney = z.object({
   amount: z.number().int(),
-  scale: z.number().int().positive(),
-  currencyCode: z.string(),
+  scale: z.number().int().nonnegative(),
+  currencyCode: z.string().length(3),
 });
-
-export type Money = z.infer<typeof ZMoney>;
 
 export const ZCreateExpenseInput = z.object({
   groupId: z.string().uuid(),
@@ -37,3 +35,15 @@ export const ZGetExpensesResponse = z.array(
 );
 
 export type GetExpensesResponse = z.infer<typeof ZGetExpensesResponse>;
+
+export const ZExpenseSummaryResponse = z.array(
+  z.object({
+    participantId: z.string().uuid(),
+    name: z.string(),
+    cost: ZMoney,
+    spent: ZMoney,
+    balance: ZMoney,
+  }),
+);
+
+export type ExpenseSummaryResponse = z.infer<typeof ZExpenseSummaryResponse>;

@@ -16,14 +16,14 @@ describe('createGroup', () => {
 
     const group = await caller.group.createGroup({
       name: 'WG Expenses',
-      defaultCurrency: 'EUR',
+      currencyCode: 'EUR',
       additionalParticipantEmailAddresses: [otherMember.email],
     });
 
     expect(group).toEqual({
       id: expect.any(String),
       name: 'WG Expenses',
-      defaultCurrency: 'EUR',
+      currencyCode: 'EUR',
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
       participants: expect.arrayContaining([
@@ -51,7 +51,7 @@ describe('createGroup', () => {
 
     const { participants } = await caller.group.createGroup({
       name: 'WG Expenses',
-      defaultCurrency: 'EUR',
+      currencyCode: 'EUR',
       additionalParticipantEmailAddresses: [otherEmail],
     });
 
@@ -80,13 +80,11 @@ describe('groupById', () => {
     expect(groupById).toEqual({
       id: group.id,
       name: group.name,
-      defaultCurrency: group.defaultCurrency,
+      currencyCode: group.currencyCode,
       participants: [
         {
           id: user.id,
           name: user.name,
-          email: user.email,
-          role: GroupParticipantRole.ADMIN,
         },
       ],
     });

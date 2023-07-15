@@ -27,8 +27,8 @@ model Group {
   createdAt DateTime @default(now()) @db.Timestamptz()
   updatedAt DateTime @updatedAt @db.Timestamptz()
 
-  name            String
-  defaultCurrency String
+  name         String
+  currencyCode String
 
   participants GroupParticipants[]
   expenses     Expense[]
@@ -61,7 +61,6 @@ model Expense {
   groupId String
 
   description String
-  currency    String
   amount      Int
   scale       Int      @db.SmallInt()
   spentAt     DateTime

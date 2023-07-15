@@ -16,7 +16,7 @@ import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
-import { CURRENCY_CODES, getDefaultCurrency } from '../utils/money';
+import { CURRENCY_CODES, getCurrencyCode } from '../utils/money';
 import { prevalidateEmail } from '../utils/utils';
 
 export const CreateGroupForm = () => {
@@ -26,7 +26,7 @@ export const CreateGroupForm = () => {
   const createGroup = trpc.group.createGroup.useMutation();
 
   const [groupName, setGroupName] = useState('');
-  const [currency, setCurrency] = useState(getDefaultCurrency());
+  const [currency, setCurrency] = useState(getCurrencyCode());
 
   const [participantEmails, setParticipantEmails] = useState<string[]>([]);
 
@@ -47,7 +47,7 @@ export const CreateGroupForm = () => {
   const handleCreateGroup = async () => {
     const { id } = await createGroup.mutateAsync({
       name: groupName,
-      defaultCurrency: currency,
+      currencyCode: currency,
       additionalParticipantEmailAddresses: participantEmails,
     });
 

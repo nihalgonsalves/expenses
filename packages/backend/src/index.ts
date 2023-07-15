@@ -5,4 +5,13 @@ export {
   type GroupsResponse,
 } from './service/group/types';
 
-export { type GetExpensesResponse, type Money } from './service/expense/types';
+export { type GetExpensesResponse } from './service/expense/types';
+
+export {
+  type Currency,
+  type Money,
+  dineroToMoney,
+  getCurrency,
+  zeroMoney,
+  CURRENCY_CODES,
+} from './money';

@@ -32,10 +32,12 @@ export const groupRouter = router({
 
       return {
         ...group,
-        participants: group.participants.map(({ participant, role }) => ({
-          ...participant,
-          role,
-        })),
+        participants: group.participants.map(
+          ({ participant: { id, name } }) => ({
+            id,
+            name,
+          }),
+        ),
       };
     }),
 

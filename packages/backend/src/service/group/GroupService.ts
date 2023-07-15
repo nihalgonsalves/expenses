@@ -8,7 +8,7 @@ import { TRPCError } from '@trpc/server';
 import { getTRPCError } from '../../utils';
 import { type User } from '../user/types';
 
-import { type CreateGroupInput } from './types';
+import { type CreateGroupInput, type GroupWithParticipants } from './types';
 
 class GroupServiceError extends TRPCError {}
 
@@ -20,7 +20,7 @@ export class GroupService {
       return await this.prismaClient.group.create({
         data: {
           name: input.name,
-          defaultCurrency: input.defaultCurrency,
+          currencyCode: input.currencyCode,
           participants: {
             create: [
               {
@@ -103,7 +103,10 @@ export class GroupService {
   async groupMembership(
     groupId: string,
     participantId: string,
-  ): Promise<[group: { id: string }, role: GroupParticipantRole | undefined]> {
+  ): Promise<{
+    group: GroupWithParticipants;
+    role: GroupParticipantRole | undefined;
+  }> {
     const group = await this.prismaClient.group.findUnique({
       where: { id: groupId },
       include: { participants: true },
@@ -120,6 +123,14 @@ export class GroupService {
       ({ participantId: id }) => id === participantId,
     );
 
-    return [group, participant?.role];
+    return {
+      group: {
+        ...group,
+        participants: group.participants.map(({ participantId: id }) => ({
+          id,
+        })),
+      },
+      role: participant?.role,
+    };
   }
 }

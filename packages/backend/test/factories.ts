@@ -11,7 +11,11 @@ export const userFactory = async (prisma: PrismaClient) =>
 
 export const groupFactory = async (
   prisma: PrismaClient,
-  opts: { withOwnerId?: string; withParticipantIds?: string[] } = {},
+  opts: {
+    withOwnerId?: string;
+    withParticipantIds?: string[];
+    currencyCode?: string;
+  } = {},
 ) => {
   const createOptions = [];
 
@@ -34,7 +38,7 @@ export const groupFactory = async (
   return prisma.group.create({
     data: {
       name: `${faker.location.city()} trip`,
-      defaultCurrency: faker.finance.currencyCode(),
+      currencyCode: opts.currencyCode ?? faker.finance.currencyCode(),
       participants: {
         create: createOptions,
       },
@@ -51,7 +55,6 @@ export const expenseFactory = async (
 
   return prisma.expense.create({
     data: {
-      currency: group.defaultCurrency,
       amount,
       scale: 2,
       description: '',

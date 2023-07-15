@@ -20,7 +20,9 @@
     "fe": "yarn workspace @nihalgonsalves/expenses-frontend",
     "be": "yarn workspace @nihalgonsalves/expenses-backend",
     "dev:fe": "yarn fe dev",
-    "dev:be": "yarn be dev"
+    "dev:be": "yarn be dev",
+    "dev:build": "yarn build --watch",
+    "validate": "run-p build lint 'test --no-watch' 'format'"
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "^0.4.0",

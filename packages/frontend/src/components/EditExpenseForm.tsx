@@ -34,15 +34,12 @@ import { z } from 'zod';
 import {
   type Money,
   type GroupByIdResponse,
+  dineroToMoney,
+  zeroMoney,
 } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
-import {
-  CURRENCY_CODES,
-  formatCurrency,
-  toDinero,
-  toMoney,
-} from '../utils/money';
+import { CURRENCY_CODES, formatCurrency, toDinero } from '../utils/money';
 import { dateTimeLocalToISOString } from '../utils/utils';
 
 import { MoneyField } from './MoneyField';
@@ -79,7 +76,7 @@ const calcSplits = (
     return {
       participantId: id,
       participantName: name,
-      share: toMoney(alloc ?? toDinero(0, group.defaultCurrency)),
+      share: alloc ? dineroToMoney(alloc) : zeroMoney(group.currencyCode),
     };
   });
 };
@@ -142,12 +139,14 @@ const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
     expectedSum: (amount) => amount,
     formatErrorTooHigh: (diff: number, currencyCode: string) =>
       `The amounts must add up to the total. You need to account for ${formatCurrency(
-        toMoney(toDinero(diff, currencyCode)),
+        { amount: diff, scale: 0, currencyCode },
       )}.`,
     formatErrorTooLow: (diff: number, currencyCode: string) =>
-      `The amounts must add up to the total. You have ${formatCurrency(
-        toMoney(toDinero(diff, currencyCode)),
-      )} too much.`,
+      `The amounts must add up to the total. You have ${formatCurrency({
+        amount: diff,
+        scale: 0,
+        currencyCode,
+      })} too much.`,
     label: 'Enter amounts',
     hasInput: false,
   },
@@ -388,7 +387,7 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
 
   const [paidById, setPaidById] = useState(group.participants[0]?.id);
-  const [currencyCode, setCurrencyCode] = useState(group.defaultCurrency);
+  const [currencyCode, setCurrencyCode] = useState(group.currencyCode);
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState('food');
   const [description, setDescription] = useState('');
@@ -402,8 +401,7 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
   const [ratios, setRatios] = useState(getDefaultRatios(group));
   const splits = calcSplits(group, toDinero(amount, currencyCode), ratios);
 
-  const money = toDinero(amount, currencyCode);
-  const moneySnapshot = toMoney(money);
+  const moneySnapshot: Money = dineroToMoney(toDinero(amount, currencyCode));
 
   const handleChangeCurrency = useCallback(
     (e: SelectChangeEvent) => {

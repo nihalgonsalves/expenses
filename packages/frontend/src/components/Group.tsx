@@ -14,6 +14,7 @@ import { type GroupByIdResponse } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 import { RouterLink } from '../router';
+import { formatCurrency } from '../utils/money';
 
 import { ExpensesList } from './ExpensesList';
 import { ParticipantTextListItem } from './ParticipantListItem';
@@ -22,6 +23,9 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
 
   const { data: expenses } = trpc.expense.getExpenses.useQuery(group.id);
+  const { data: summaries } = trpc.expense.getParticipantSummaries.useQuery(
+    group.id,
+  );
 
   const deleteGroup = trpc.group.deleteGroup.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -41,11 +45,15 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
         <CardContent>
           <Typography variant="h6">People</Typography>
           <List>
-            {group.participants.map(({ id, name }) => (
+            {summaries?.map(({ participantId, name, spent, cost, balance }) => (
               <ParticipantTextListItem
-                key={id}
+                key={participantId}
                 primary={name}
-                secondary="Spent X, Received Y, Owed Z"
+                secondary={`Spent ${formatCurrency(
+                  spent,
+                )}, Cost ${formatCurrency(cost)}, Balance ${formatCurrency(
+                  balance,
+                )}`}
               />
             ))}
           </List>
