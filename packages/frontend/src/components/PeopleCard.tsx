@@ -22,8 +22,8 @@ import {
 
 import { trpc } from '../api/trpc';
 import { formatCurrency } from '../utils/money';
-
 import { getInitials } from '../utils/utils';
+
 import { AddParticipantButton } from './AddParticipantButton';
 import { ParticipantListItem } from './ParticipantListItem';
 
