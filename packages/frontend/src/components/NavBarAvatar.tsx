@@ -23,9 +23,7 @@ export const NavBarAvatar = () => {
   const queryClient = useQueryClient();
 
   const { data } = trpc.user.me.useQuery();
-  const { mutate: signOut } = trpc.user.signOut.useMutation({
-    onSuccess: () => queryClient.invalidateQueries(),
-  });
+  const signOut = trpc.user.signOut.useMutation();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -33,6 +31,11 @@ export const NavBarAvatar = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSignOut = async () => {
+    await signOut.mutateAsync();
+    await queryClient.resetQueries();
   };
 
   const handleClickProfile = () => {
@@ -76,7 +79,7 @@ export const NavBarAvatar = () => {
               {data.name}
             </MenuItem>
             <Divider />
-            <MenuItem onClick={() => signOut()}>
+            <MenuItem onClick={handleSignOut}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
