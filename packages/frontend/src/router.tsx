@@ -15,6 +15,7 @@ import { ExpensesIndex } from './pages/ExpensesIndex';
 import { GroupDetail } from './pages/GroupDetail';
 import { GroupNew } from './pages/GroupNew';
 import { GroupsIndex } from './pages/GroupsIndex';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { Root } from './pages/Root';
 
 export const RouterLink = forwardRef<
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
         path: 'groups/:groupId/expenses/new',
         element: <ExpenseNew />,
         errorElement,
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },
