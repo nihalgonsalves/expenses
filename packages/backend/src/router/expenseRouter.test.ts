@@ -15,6 +15,7 @@ const createExpenseInput = (
 ) => ({
   groupId,
   description: 'Test expense',
+  category: 'other',
   money: { amount: 100_00, scale: 2, currencyCode },
   paidById,
   spentAt: Temporal.Now.zonedDateTimeISO().toString(),

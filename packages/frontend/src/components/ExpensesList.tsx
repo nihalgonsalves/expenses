@@ -1,4 +1,4 @@
-import { Restaurant } from '@mui/icons-material';
+import { QuestionMark } from '@mui/icons-material';
 import {
   Avatar,
   List,
@@ -12,8 +12,9 @@ import { Fragment } from 'react';
 
 import { type GetExpensesResponse } from '@nihalgonsalves/expenses-backend';
 
+import { categoryById } from '../data/categories';
 import { formatCurrency } from '../utils/money';
-import { joinList } from '../utils/utils';
+import { formatDateTime, joinList } from '../utils/utils';
 
 export const ExpensesList = ({
   expenses,
@@ -29,22 +30,28 @@ export const ExpensesList = ({
           <ListItem>
             <ListItemAvatar>
               <Avatar>
-                <Restaurant />
+                {categoryById[expense.category]?.icon ?? <QuestionMark />}
               </Avatar>
             </ListItemAvatar>
             <ListItemText
               primary={
                 <Stack direction="row" justifyContent="space-between">
-                  <span>{expense.description || 'No description'}</span>
+                  <span>
+                    {expense.description ||
+                      categoryById[expense.category]?.name}
+                  </span>
                   <span>{formatCurrency(expense.money)}</span>
                 </Stack>
               }
               secondary={
-                <>
-                  <i>{joinList(expense.paidBy.map(({ name }) => name))}</i>
-                  {' paid for '}
-                  <i>{joinList(expense.paidFor.map(({ name }) => name))}</i>
-                </>
+                <Stack direction="row" justifyContent="space-between">
+                  <span>
+                    {joinList(expense.paidBy.map(({ name }) => name))}
+                    {' paid for '}
+                    {joinList(expense.paidFor.map(({ name }) => name))}
+                  </span>
+                  <span>{formatDateTime(expense.spentAt)}</span>
+                </Stack>
               }
             />
           </ListItem>

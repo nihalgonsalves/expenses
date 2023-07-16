@@ -22,7 +22,7 @@
     "dev:fe": "yarn fe dev",
     "dev:be": "yarn be dev",
     "dev:build": "yarn build --watch",
-    "validate": "run-p build lint 'test --no-watch' 'format'"
+    "validate": "run-p build 'lint --fix' 'test --no-watch' 'format'"
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "^0.4.0",

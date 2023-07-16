@@ -31,6 +31,7 @@ export class ExpenseService {
           },
         },
       },
+      orderBy: { spentAt: 'desc' },
     });
   }
 
@@ -81,6 +82,7 @@ export class ExpenseService {
         group: { connect: { id: group.id } },
         amount: input.money.amount,
         scale: input.money.scale,
+        category: input.category,
         description: input.description,
         spentAt: new Date(
           Temporal.ZonedDateTime.from(

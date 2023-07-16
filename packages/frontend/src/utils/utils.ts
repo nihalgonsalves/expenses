@@ -22,6 +22,12 @@ export const dateTimeLocalToISOString = (val: string) =>
     .toZonedDateTime(Intl.DateTimeFormat().resolvedOptions().timeZone)
     .toString();
 
+export const formatDateTime = (iso8601: string) =>
+  new Intl.DateTimeFormat(getUserLanguage(), {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(Temporal.Instant.from(iso8601).epochMilliseconds);
+
 export const joinList = (list: string[]): string => {
   if (list.length === 0) {
     return '';

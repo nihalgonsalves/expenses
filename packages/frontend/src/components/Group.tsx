@@ -72,7 +72,7 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
 
       <Card variant="outlined">
         <CardContent>
-          <Typography variant="h6">Expenses (0)</Typography>
+          <Typography variant="h6">Expenses ({expenses?.length})</Typography>
           {/* TODO: order/limit */}
           <ExpensesList expenses={expenses ?? []} />
           <Stack spacing={1}>

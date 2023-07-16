@@ -18,6 +18,7 @@ import {
   useMediaQuery,
   type Theme,
   Checkbox,
+  ListItemIcon,
 } from '@mui/material';
 import { type Dinero, allocate } from 'dinero.js';
 import {
@@ -39,6 +40,7 @@ import {
 } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
+import { CategoryId, categories } from '../data/categories';
 import { CURRENCY_CODES, formatCurrency, toDinero } from '../utils/money';
 import { dateTimeLocalToISOString } from '../utils/utils';
 
@@ -389,7 +391,7 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
   const [paidById, setPaidById] = useState(group.participants[0]?.id);
   const [currencyCode, setCurrencyCode] = useState(group.currencyCode);
   const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState('food');
+  const [category, setCategory] = useState<CategoryId>(CategoryId.Other);
   const [description, setDescription] = useState('');
   const [when, setWhen] = useState(
     Temporal.Now.plainDateTimeISO().round('minutes').toString(),
@@ -419,6 +421,7 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
       groupId: group.id,
       paidById,
       description,
+      category,
       money: moneySnapshot,
       spentAt: dateTimeLocalToISOString(when),
       splits,
@@ -491,10 +494,16 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
           label="Category"
           value={category}
           onChange={(e) => {
-            setCategory(e.target.value);
+            setCategory(z.nativeEnum(CategoryId).parse(e.target.value));
           }}
+          SelectDisplayProps={{ style: { display: 'flex', gap: '0.5rem' } }}
         >
-          <MenuItem value="food">Food</MenuItem>
+          {categories.map(({ id, name, icon }) => (
+            <MenuItem key={id} value={id}>
+              <ListItemIcon sx={{ minWidth: 'unset' }}>{icon}</ListItemIcon>
+              {name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
 

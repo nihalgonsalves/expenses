@@ -14,6 +14,7 @@ export const ZCreateExpenseInput = z.object({
   money: ZMoney,
   spentAt: z.string(),
   description: z.string(),
+  category: z.string(),
   splits: z.array(
     z.object({
       participantId: z.string(),
@@ -32,8 +33,10 @@ export const ZCreateExpenseResponse = z.object({
 export const ZGetExpensesResponse = z.array(
   z.object({
     id: z.string().uuid(),
-    description: z.string(),
     money: ZMoney,
+    spentAt: z.string(),
+    description: z.string(),
+    category: z.string(),
     paidBy: z.array(ZParticipantWithName),
     paidFor: z.array(ZParticipantWithName),
   }),

@@ -79,6 +79,7 @@ export const expenseRouter = router({
 
           return {
             ...expense,
+            spentAt: expense.spentAt.toISOString(),
             money: { amount, scale, currencyCode: group.currencyCode },
             paidBy: mapUniqueParticipants(paidBy),
             paidFor: mapUniqueParticipants(paidFor),
