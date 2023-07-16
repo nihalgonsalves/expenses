@@ -10,11 +10,14 @@ import {
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
 import { RouterLink } from '../router';
 
 export const NavBarAvatar = () => {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const queryClient = useQueryClient();
@@ -30,6 +33,11 @@ export const NavBarAvatar = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClickProfile = () => {
+    handleClose();
+    navigate('/settings');
   };
 
   return (
@@ -61,7 +69,7 @@ export const NavBarAvatar = () => {
             open={anchorEl != null}
             onClose={handleClose}
           >
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={handleClickProfile}>
               <ListItemIcon>
                 <Avatar sx={{ width: '1.5rem', height: '1.5rem' }} />
               </ListItemIcon>

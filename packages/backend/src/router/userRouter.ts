@@ -2,6 +2,7 @@ import {
   ZAuthorizeUserInput,
   ZUser,
   ZCreateUserInput,
+  ZUpdateUserInput,
 } from '../service/user/types';
 import { publicProcedure, protectedProcedure, router } from '../trpc';
 
@@ -22,6 +23,12 @@ export const userRouter = router({
       const { user, token } = await ctx.userService.authorize(input);
       ctx.setJwtToken(token);
       return user;
+    }),
+
+  updateUser: protectedProcedure
+    .input(ZUpdateUserInput)
+    .mutation(async ({ input, ctx }) => {
+      return ctx.userService.updateUser(ctx.user.id, input);
     }),
 
   signOut: publicProcedure.mutation(({ ctx }) => {

@@ -7,6 +7,7 @@ import {
   type User,
   type CreateUserInput,
   type JWTToken,
+  type UpdateUserInput,
 } from './types';
 import { comparePassword, hashPassword, signJWT, verifyJWT } from './utils';
 
@@ -94,6 +95,51 @@ export class UserService {
         cause: error,
       });
     }
+  }
+
+  async updateUser(id: string, input: UpdateUserInput): Promise<User> {
+    if (input.newPassword != null) {
+      if (input.password == null) {
+        throw new UserServiceError({
+          message: 'The old password is required to set a new password',
+          code: 'BAD_REQUEST',
+        });
+      }
+
+      const user = await this.prismaClient.user.findUniqueOrThrow({
+        where: { id },
+      });
+
+      if (!user.passwordHash) {
+        throw new UserServiceError({
+          message: "Can't update if there's no existing password",
+          code: 'BAD_REQUEST',
+        });
+      }
+
+      const passwordMatches = await comparePassword(
+        input.password,
+        user.passwordHash,
+      );
+
+      if (!passwordMatches) {
+        throw new UserServiceError({
+          message: 'Invalid credentials',
+          code: 'FORBIDDEN',
+        });
+      }
+    }
+
+    return this.prismaClient.user.update({
+      where: { id },
+      data: {
+        name: input.name,
+        email: input.email,
+        ...(input.newPassword
+          ? { passwordHash: await hashPassword(input.newPassword) }
+          : {}),
+      },
+    });
   }
 
   private async findByEmail(email: string) {

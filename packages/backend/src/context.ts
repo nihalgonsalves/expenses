@@ -17,6 +17,7 @@ const AUTH_COOKIE_NAME = 'auth';
 
 const getMaybeUser = async (
   cookieHeader: string | undefined,
+  setJwtToken: (value: JWTToken | null) => void,
 ): Promise<User | undefined> => {
   if (!cookieHeader) {
     return undefined;
@@ -31,27 +32,30 @@ const getMaybeUser = async (
   try {
     return await userService.exchangeToken(ZJWTToken.parse(token));
   } catch (e) {
+    setJwtToken(null);
     return undefined;
   }
 };
 
 export const createContext = async ({ req, res }: CreateHTTPContextOptions) => {
+  const setJwtToken = (value: JWTToken | null) => {
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
+        httpOnly: true,
+        secure: config.SECURE,
+        maxAge: config.JWT_EXPIRY_SECONDS,
+      }),
+    );
+  };
+
   return {
     prisma,
-    user: await getMaybeUser(req.headers.cookie),
+    user: await getMaybeUser(req.headers.cookie, setJwtToken),
     userService,
     groupService,
     expenseService,
-    setJwtToken: (value: JWTToken | null) => {
-      res.setHeader(
-        'Set-Cookie',
-        cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
-          httpOnly: true,
-          secure: config.SECURE,
-          maxAge: config.JWT_EXPIRY_SECONDS,
-        }),
-      );
-    },
+    setJwtToken,
   };
 };
 

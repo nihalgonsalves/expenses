@@ -54,7 +54,12 @@ export const Root = () => {
           LinkComponent={RouterLink}
           href="/groups"
         />
-        <BottomNavigationAction label="Setings" icon={<Settings />} />
+        <BottomNavigationAction
+          label="Setings"
+          icon={<Settings />}
+          LinkComponent={RouterLink}
+          href="/settings"
+        />
       </BottomNavigation>
     </Stack>
   );

@@ -1,5 +1,7 @@
 export { type AppRouter } from './router/appRouter';
 
+export { type User } from './service/user/types';
+
 export {
   type GroupByIdResponse,
   type GroupsResponse,

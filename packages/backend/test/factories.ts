@@ -1,5 +1,9 @@
 import { faker } from '@faker-js/faker';
-import { type PrismaClient, GroupParticipantRole } from '@prisma/client';
+import {
+  type PrismaClient,
+  type Prisma,
+  GroupParticipantRole,
+} from '@prisma/client';
 
 import { CURRENCY_CODES } from '../src';
 
@@ -8,11 +12,15 @@ const randomItem = <T>(items: T[]): T =>
 
 export const currencyCodeFactory = () => randomItem(CURRENCY_CODES);
 
-export const userFactory = async (prisma: PrismaClient) =>
+export const userFactory = async (
+  prisma: PrismaClient,
+  overrides: Partial<Prisma.UserCreateInput> = {},
+) =>
   prisma.user.create({
     data: {
       name: faker.person.fullName(),
       email: faker.internet.email(),
+      ...overrides,
     },
   });
 
