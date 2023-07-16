@@ -131,7 +131,20 @@ const ExpenseListItem = ({
           <Typography variant="body2" color="text.primary">
             {expense.description || categoryById[expense.category]?.name}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              overflow: 'hidden',
+              // non-standard but does work in all browsers, should
+              // be replaced with `lineClamp` eventually
+              // https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
+              // https://drafts.csswg.org/css-overflow-4/#propdef-line-clamp
+              display: '-webkit-box',
+              WebkitLineClamp: '1',
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
             {[
               joinList(expense.paidBy.map(({ name }) => name)),
               ' paid for ',
@@ -140,7 +153,7 @@ const ExpenseListItem = ({
           </Typography>
         </div>
         <div style={{ flexGrow: 1 }} />
-        <div style={{ textAlign: 'right' }}>
+        <div style={{ textAlign: 'right', flexShrink: 0 }}>
           <Typography variant="body2" color="text.primary">
             {formatCurrency(expense.money)}
           </Typography>
