@@ -392,7 +392,7 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
   const [paidById, setPaidById] = useState(group.participants[0]?.id);
   const [currencyCode, setCurrencyCode] = useState(group.currencyCode);
   const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState<CategoryId>(CategoryId.Other);
+  const [category, setCategory] = useState<CategoryId>();
   const [description, setDescription] = useState('');
   const [when, setWhen] = useState(
     Temporal.Now.plainDateTimeISO().round('minutes').toString(),
@@ -422,7 +422,7 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
       groupId: group.id,
       paidById,
       description,
-      category,
+      category: category ?? CategoryId.Other,
       money: moneySnapshot,
       spentAt: dateTimeLocalToISOString(when),
       splits,
@@ -493,12 +493,17 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
         <Select
           labelId={categorySelectId}
           label="Category"
-          value={category}
+          value={category ?? ''}
           onChange={(e) => {
-            setCategory(z.nativeEnum(CategoryId).parse(e.target.value));
+            setCategory(
+              e.target.value
+                ? z.nativeEnum(CategoryId).parse(e.target.value)
+                : undefined,
+            );
           }}
           SelectDisplayProps={{ style: { display: 'flex', gap: '0.5rem' } }}
         >
+          <MenuItem value="">No Category</MenuItem>
           {categories.map(({ id, name, icon }) => (
             <MenuItem key={id} value={id}>
               <ListItemIcon sx={{ minWidth: 'unset' }}>{icon}</ListItemIcon>
