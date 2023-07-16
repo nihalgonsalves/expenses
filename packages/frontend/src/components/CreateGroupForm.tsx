@@ -138,7 +138,7 @@ export const CreateGroupForm = () => {
           fullWidth
           variant="contained"
           startIcon={<AddCircle />}
-          onClick={() => void handleCreateGroup()}
+          onClick={handleCreateGroup}
           disabled={!valid}
           loading={createGroup.isLoading}
         >

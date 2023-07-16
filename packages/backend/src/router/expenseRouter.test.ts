@@ -182,6 +182,97 @@ describe('createExpense', () => {
   });
 });
 
+describe('deleteExpense', () => {
+  it('deletes an expense', async () => {
+    const user = await userFactory(prisma);
+
+    const member = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [member.id],
+    });
+
+    const expense = await caller.expense.createExpense(
+      createExpenseInput(group.id, group.currencyCode, user.id, member.id),
+    );
+
+    await caller.expense.deleteExpense({
+      groupId: group.id,
+      expenseId: expense.id,
+    });
+
+    expect(
+      await prisma.expense.findUnique({ where: { id: expense.id } }),
+    ).toBeNull();
+  });
+
+  it('returns 404 if the user is not a member of the group', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const otherGroupUser = await userFactory(prisma);
+    const otherGroupCaller = useProtectedCaller(otherGroupUser);
+
+    const group = await groupFactory(prisma, {
+      withOwnerId: otherGroupUser.id,
+    });
+
+    const expense = await otherGroupCaller.expense.createExpense(
+      createExpenseInput(
+        group.id,
+        group.currencyCode,
+        otherGroupUser.id,
+        otherGroupUser.id,
+      ),
+    );
+
+    await expect(
+      caller.expense.deleteExpense({
+        groupId: group.id,
+        expenseId: expense.id,
+      }),
+    ).rejects.toThrow('Group not found');
+  });
+
+  it('returns 404 if the expense is from another group', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    const expense = await caller.expense.createExpense(
+      createExpenseInput(group.id, group.currencyCode, user.id, user.id),
+    );
+
+    await expect(
+      caller.expense.deleteExpense({
+        groupId: faker.string.uuid(),
+        expenseId: expense.id,
+      }),
+    ).rejects.toThrow('Group not found');
+  });
+
+  it('returns 404 if the expense does not exist', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    await expect(
+      caller.expense.deleteExpense({
+        groupId: group.id,
+        expenseId: faker.string.uuid(),
+      }),
+    ).rejects.toThrow('Expense not found');
+  });
+});
+
 describe('getExpenses', () => {
   it('returns all expenses for the group', async () => {
     const user = await userFactory(prisma);

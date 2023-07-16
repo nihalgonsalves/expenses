@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { type PrismaClient, type Prisma } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 import { dinero, equal } from 'dinero.js';
 
@@ -119,6 +120,26 @@ export class ExpenseService {
         },
       },
     });
+  }
+
+  async deleteExpense(id: string, group: Group) {
+    try {
+      await this.prismaClient.expense.delete({
+        where: { id, groupId: group.id },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new ExpenseServiceError({
+          code: 'NOT_FOUND',
+          message: 'Expense not found',
+        });
+      }
+
+      throw error;
+    }
   }
 
   async getParticipantSummaries(

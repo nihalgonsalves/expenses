@@ -13,7 +13,12 @@ export const ExpensesIndex = () => {
 
   return (
     <>
-      <ExpensesList expenses={expenses} sx={{ flexGrow: 1 }} />
+      <ExpensesList
+        groupId={groupId}
+        expenses={expenses}
+        sx={{ flexGrow: 1 }}
+        showActions
+      />
       <Button
         fullWidth
         variant="outlined"

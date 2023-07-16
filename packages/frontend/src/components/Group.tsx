@@ -91,7 +91,7 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h6">Latest Expenses</Typography>
-          <ExpensesList expenses={expenses ?? []} />
+          <ExpensesList groupId={group.id} expenses={expenses ?? []} />
           <Stack spacing={1}>
             <Button
               fullWidth
@@ -130,7 +130,7 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
             fullWidth
             variant="contained"
             color="error"
-            onClick={() => void handleDelete()}
+            onClick={handleDelete}
           >
             Confirm Delete (Irreversible)
           </Button>

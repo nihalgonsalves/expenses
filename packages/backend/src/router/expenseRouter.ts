@@ -41,6 +41,20 @@ export const expenseRouter = router({
       return ctx.expenseService.createExpense(input, group);
     }),
 
+  deleteExpense: protectedProcedure
+    .input(
+      z.object({ groupId: z.string().uuid(), expenseId: z.string().uuid() }),
+    )
+    .output(z.void())
+    .mutation(async ({ input: { groupId, expenseId }, ctx }) => {
+      const { group } = await ctx.groupService.ensureGroupMembership(
+        groupId,
+        ctx.user.id,
+      );
+
+      await ctx.expenseService.deleteExpense(expenseId, group);
+    }),
+
   getExpenses: protectedProcedure
     .input(
       z.object({

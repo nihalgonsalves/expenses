@@ -36,9 +36,12 @@ export const AddParticipantButton = ({ groupId }: { groupId: string }) => {
 
       handleClose();
     } catch (e) {
-      if (e instanceof TRPCClientError) {
-        enqueueSnackbar(e.message, { variant: 'error' });
-      }
+      enqueueSnackbar(
+        `Error adding participant: ${
+          e instanceof TRPCClientError ? e.message : 'Unknown Error'
+        }`,
+        { variant: 'error' },
+      );
     }
   };
 

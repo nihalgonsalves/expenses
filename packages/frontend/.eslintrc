@@ -1,3 +1,13 @@
 {
-  "extends": "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react"
+  "extends": "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react",
+  "rules": {
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": {
+          "attributes": false
+        }
+      }
+    ]
+  }
 }
