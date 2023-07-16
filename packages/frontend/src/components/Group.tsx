@@ -58,11 +58,22 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
                   primary={name}
                   secondary={
                     <>
-                      {balance.amount > 0 ? 'owes' : 'is owed'}{' '}
-                      {formatCurrency({
-                        ...balance,
-                        amount: Math.abs(balance.amount),
-                      })}
+                      {(() => {
+                        if (balance.amount === 0) {
+                          return 'Settled up';
+                        }
+
+                        const amount = formatCurrency({
+                          ...balance,
+                          amount: Math.abs(balance.amount),
+                        });
+
+                        if (balance.amount > 0) {
+                          return `owes ${amount}`;
+                        } else {
+                          return `is owed ${amount}`;
+                        }
+                      })()}
                     </>
                   }
                   secondaryTypographyProps={{
