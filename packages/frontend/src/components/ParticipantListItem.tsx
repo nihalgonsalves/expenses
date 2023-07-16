@@ -9,18 +9,18 @@ import {
 
 export const ParticipantListItem = ({
   children,
+  avatar,
   sx = {},
   disablePadding = true,
 }: {
   children: React.ReactNode;
+  avatar?: React.ReactNode;
   sx?: SxProps;
   disablePadding?: boolean;
 }) => (
   <ListItem sx={sx} disablePadding={disablePadding}>
     <ListItemAvatar>
-      <Avatar>
-        <Person />
-      </Avatar>
+      <Avatar>{avatar ?? <Person />}</Avatar>
     </ListItemAvatar>
     {children}
   </ListItem>

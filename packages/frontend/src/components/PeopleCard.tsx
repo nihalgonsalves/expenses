@@ -23,6 +23,7 @@ import {
 import { trpc } from '../api/trpc';
 import { formatCurrency } from '../utils/money';
 
+import { getInitials } from '../utils/utils';
 import { AddParticipantButton } from './AddParticipantButton';
 import { ParticipantListItem } from './ParticipantListItem';
 
@@ -168,7 +169,10 @@ const SummaryCard = ({
   const [isInvalidating, setIsInvalidating] = useState(false);
 
   return (
-    <ParticipantListItem sx={{ opacity: isInvalidating ? 0.5 : 'unset' }}>
+    <ParticipantListItem
+      avatar={getInitials(summary.name)}
+      sx={{ opacity: isInvalidating ? 0.5 : 'unset' }}
+    >
       <ListItemText
         primary={summary.name}
         secondary={getBalanceText(summary.balance)}

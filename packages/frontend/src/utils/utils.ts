@@ -28,6 +28,12 @@ export const formatDateTime = (iso8601: string) =>
     timeStyle: 'short',
   }).format(Temporal.Instant.from(iso8601).epochMilliseconds);
 
+export const getInitials = (name: string): string => {
+  const [first, last] = name.split(' ');
+
+  return `${first?.[0] ?? ''}${last?.[0] ?? ''}`.toUpperCase();
+};
+
 export const joinList = (list: string[]): string => {
   if (list.length === 0) {
     return '';
