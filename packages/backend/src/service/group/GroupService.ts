@@ -128,6 +128,32 @@ export class GroupService {
     }
   }
 
+  async deleteParticipant(group: Group, participantId: string) {
+    const expenseTransactionCount =
+      await this.prismaClient.expenseTransactions.count({
+        where: {
+          expense: { groupId: group.id },
+          userId: participantId,
+        },
+      });
+
+    if (expenseTransactionCount > 0) {
+      throw new GroupServiceError({
+        code: 'BAD_REQUEST',
+        message: 'Cannot delete participant with existing expenses',
+      });
+    }
+
+    await this.prismaClient.groupParticipants.delete({
+      where: {
+        participantId_groupId: {
+          participantId,
+          groupId: group.id,
+        },
+      },
+    });
+  }
+
   async ensureGroupMembership(groupId: string, userId: string) {
     const { group, role } = await this.groupMembership(groupId, userId);
 

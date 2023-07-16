@@ -254,3 +254,81 @@ describe('addParticipant', () => {
     ).rejects.toThrow('Only admins can add participants');
   });
 });
+
+describe('deleteParticipant', () => {
+  it('deletes a participant', async () => {
+    const user = await userFactory(prisma);
+    const member = await userFactory(prisma);
+
+    const caller = useProtectedCaller(user);
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [member.id],
+    });
+
+    await caller.group.deleteParticipant({
+      groupId: group.id,
+      participantId: member.id,
+    });
+
+    expect(
+      await prisma.groupParticipants.findUnique({
+        where: {
+          participantId_groupId: {
+            participantId: member.id,
+            groupId: group.id,
+          },
+        },
+      }),
+    ).toBe(null);
+  });
+
+  it('returns a 400 if the admin tries to remove themselves', async () => {
+    const admin = await userFactory(prisma);
+
+    const caller = useProtectedCaller(admin);
+    const group = await groupFactory(prisma, {
+      withOwnerId: admin.id,
+    });
+
+    await expect(
+      caller.group.deleteParticipant({
+        groupId: group.id,
+        participantId: admin.id,
+      }),
+    ).rejects.toThrow('You cannot delete yourself as the last admin');
+  });
+
+  it('returns a 404 if the participant has no access', async () => {
+    const user = await userFactory(prisma);
+    const member = await userFactory(prisma);
+
+    const caller = useProtectedCaller(user);
+    const group = await groupFactory(prisma, {
+      withParticipantIds: [member.id],
+    });
+
+    await expect(
+      caller.group.deleteParticipant({
+        groupId: group.id,
+        participantId: member.id,
+      }),
+    ).rejects.toThrow('Group not found');
+  });
+
+  it('returns a 403 if the participant is not an admin', async () => {
+    const member = await userFactory(prisma);
+
+    const caller = useProtectedCaller(member);
+    const group = await groupFactory(prisma, {
+      withParticipantIds: [member.id],
+    });
+
+    await expect(
+      caller.group.deleteParticipant({
+        groupId: group.id,
+        participantId: member.id,
+      }),
+    ).rejects.toThrow('Only admins can remove participants');
+  });
+});

@@ -95,4 +95,34 @@ export const groupRouter = router({
         role,
       };
     }),
+
+  deleteParticipant: protectedProcedure
+    .input(
+      z.object({
+        groupId: z.string().uuid(),
+        participantId: z.string().uuid(),
+      }),
+    )
+    .output(z.void())
+    .mutation(async ({ input: { groupId, participantId }, ctx }) => {
+      const { group, role: actorRole } =
+        await ctx.groupService.ensureGroupMembership(groupId, ctx.user.id);
+
+      if (actorRole !== GroupParticipantRole.ADMIN) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Only admins can remove participants',
+        });
+      }
+
+      // TODO: modify when adding more admins is possible
+      if (participantId === ctx.user.id) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You cannot delete yourself as the last admin',
+        });
+      }
+
+      await ctx.groupService.deleteParticipant(group, participantId);
+    }),
 });

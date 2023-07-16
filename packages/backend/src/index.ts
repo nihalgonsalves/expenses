@@ -5,7 +5,10 @@ export {
   type GroupsResponse,
 } from './service/group/types';
 
-export { type GetExpensesResponse } from './service/expense/types';
+export {
+  type GetExpensesResponse,
+  type ExpenseSummaryResponse,
+} from './service/expense/types';
 
 export {
   type Currency,
