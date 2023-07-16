@@ -35,7 +35,11 @@ export const ExpensesList = ({
             </ListItemAvatar>
             <ListItemText
               primary={
-                <Stack direction="row" justifyContent="space-between">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  component="span"
+                >
                   <span>
                     {expense.description ||
                       categoryById[expense.category]?.name}
@@ -44,7 +48,11 @@ export const ExpensesList = ({
                 </Stack>
               }
               secondary={
-                <Stack direction="row" justifyContent="space-between">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  component="span"
+                >
                   <span>
                     {joinList(expense.paidBy.map(({ name }) => name))}
                     {' paid for '}
@@ -53,6 +61,7 @@ export const ExpensesList = ({
                   <span>{formatDateTime(expense.spentAt)}</span>
                 </Stack>
               }
+              sx={{ marginRight: '3px' }}
             />
           </ListItem>
         </Fragment>
