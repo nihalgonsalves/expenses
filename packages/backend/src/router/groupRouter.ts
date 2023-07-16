@@ -1,8 +1,10 @@
+import { GroupParticipantRole } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import {
   ZCreateGroupInput,
+  ZFullParticipant,
   ZGroupByIdResponse,
   ZGroupsResponse,
 } from '../service/group/types';
@@ -21,7 +23,7 @@ export const groupRouter = router({
     }),
 
   groupById: protectedProcedure
-    .input(z.string())
+    .input(z.string().uuid())
     .output(ZGroupByIdResponse)
     .query(async ({ input, ctx }) => {
       const group = await ctx.groupService.getGroupById(input, ctx.user);
@@ -48,8 +50,37 @@ export const groupRouter = router({
     ),
 
   deleteGroup: protectedProcedure
-    .input(z.string())
+    .input(z.string().uuid())
     .mutation(async ({ input, ctx }) => {
       await ctx.groupService.deleteGroup(input, ctx.user);
+    }),
+
+  addParticipant: protectedProcedure
+    .input(
+      z.object({ groupId: z.string().uuid(), participantEmail: z.string() }),
+    )
+    .output(ZFullParticipant)
+    .mutation(async ({ input: { groupId, participantEmail }, ctx }) => {
+      const { group, role: actorRole } =
+        await ctx.groupService.ensureGroupMembership(groupId, ctx.user.id);
+
+      if (actorRole !== GroupParticipantRole.ADMIN) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Only admins can add participants',
+        });
+      }
+
+      const { participant, role } = await ctx.groupService.addParticipant(
+        group,
+        participantEmail,
+      );
+
+      return {
+        id: participant.id,
+        name: participant.name,
+        email: participant.email,
+        role,
+      };
     }),
 });

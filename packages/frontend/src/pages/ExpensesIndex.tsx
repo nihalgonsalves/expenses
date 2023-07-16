@@ -7,7 +7,7 @@ import { GroupParams, RouterLink, useParams } from '../router';
 
 export const ExpensesIndex = () => {
   const { groupId } = useParams(GroupParams);
-  const { data: expenses } = trpc.expense.getExpenses.useQuery(groupId);
+  const { data: expenses } = trpc.expense.getExpenses.useQuery({ groupId });
 
   if (!expenses) return null;
 

@@ -166,3 +166,90 @@ describe('deleteGroup', () => {
     );
   });
 });
+
+describe('addParticipant', () => {
+  it('adds a participant', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, { withOwnerId: user.id });
+    const otherUser = await userFactory(prisma);
+
+    expect(
+      await caller.group.addParticipant({
+        groupId: group.id,
+        participantEmail: otherUser.email,
+      }),
+    ).toMatchObject({
+      id: otherUser.id,
+      name: otherUser.name,
+      email: otherUser.email,
+      role: GroupParticipantRole.MEMBER,
+    });
+  });
+
+  it('creates a new user if the participant is not signed up', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, { withOwnerId: user.id });
+
+    const participantEmail = 'jessica@example.com';
+
+    expect(
+      await caller.group.addParticipant({
+        groupId: group.id,
+        participantEmail,
+      }),
+    ).toMatchObject({
+      id: expect.any(String),
+      name: 'jessica',
+      email: participantEmail,
+      role: GroupParticipantRole.MEMBER,
+    });
+  });
+
+  it('returns a 409 for an existing participant', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const otherUser = await userFactory(prisma);
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [otherUser.id],
+    });
+
+    await expect(
+      caller.group.addParticipant({
+        groupId: group.id,
+        participantEmail: otherUser.email,
+      }),
+    ).rejects.toThrow('Participant already exists');
+  });
+
+  it('returns a 404 if the participant has no access', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+    const group = await groupFactory(prisma);
+
+    await expect(
+      caller.group.addParticipant({
+        groupId: group.id,
+        participantEmail: faker.internet.email(),
+      }),
+    ).rejects.toThrow('Group not found');
+  });
+
+  it('returns a 403 if the participant is not an admin', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+    const group = await groupFactory(prisma, { withParticipantIds: [user.id] });
+
+    await expect(
+      caller.group.addParticipant({
+        groupId: group.id,
+        participantEmail: faker.internet.email(),
+      }),
+    ).rejects.toThrow('Only admins can add participants');
+  });
+});

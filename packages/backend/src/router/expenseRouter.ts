@@ -1,36 +1,13 @@
-import { type GroupParticipantRole } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { type ContextObj } from '../context';
 import {
   ZCreateExpenseInput,
   ZCreateExpenseResponse,
   ZExpenseSummaryResponse,
   ZGetExpensesResponse,
 } from '../service/expense/types';
-import { type GroupWithParticipants } from '../service/group/types';
-import { type User } from '../service/user/types';
 import { protectedProcedure, router } from '../trpc';
-
-const assertGroupView = async (
-  ctx: ContextObj & { user: User },
-  groupId: string,
-): Promise<{ group: GroupWithParticipants; role: GroupParticipantRole }> => {
-  const { group, role } = await ctx.groupService.groupMembership(
-    groupId,
-    ctx.user.id,
-  );
-
-  if (!role) {
-    throw new TRPCError({
-      code: 'NOT_FOUND',
-      message: 'Group not found',
-    });
-  }
-
-  return { group, role };
-};
 
 const mapUniqueParticipants = (
   list: { user: { id: string; name: string } }[],
@@ -43,7 +20,10 @@ export const expenseRouter = router({
     .input(ZCreateExpenseInput)
     .output(ZCreateExpenseResponse)
     .mutation(async ({ input, ctx }) => {
-      const { group } = await assertGroupView(ctx, input.groupId);
+      const { group } = await ctx.groupService.ensureGroupMembership(
+        input.groupId,
+        ctx.user.id,
+      );
 
       const groupParticipants = new Set(group.participants.map(({ id }) => id));
       const expenseParticipants = [
@@ -62,12 +42,20 @@ export const expenseRouter = router({
     }),
 
   getExpenses: protectedProcedure
-    .input(z.string().uuid())
+    .input(
+      z.object({
+        groupId: z.string().uuid(),
+        limit: z.number().positive().optional(),
+      }),
+    )
     .output(ZGetExpensesResponse)
-    .query(async ({ input, ctx }) => {
-      const { group } = await assertGroupView(ctx, input);
+    .query(async ({ input: { groupId, limit }, ctx }) => {
+      const { group } = await ctx.groupService.ensureGroupMembership(
+        groupId,
+        ctx.user.id,
+      );
 
-      return (await ctx.expenseService.getExpenses(input)).map(
+      return (await ctx.expenseService.getExpenses({ groupId, limit })).map(
         ({ amount, scale, transactions, ...expense }) => {
           const paidBy = transactions.filter(
             ({ amount: txnAmount }) => txnAmount < 0,
@@ -92,7 +80,10 @@ export const expenseRouter = router({
     .input(z.string().uuid())
     .output(ZExpenseSummaryResponse)
     .query(async ({ input, ctx }) => {
-      const { group } = await assertGroupView(ctx, input);
+      const { group } = await ctx.groupService.ensureGroupMembership(
+        input,
+        ctx.user.id,
+      );
 
       return ctx.expenseService.getParticipantSummaries(group);
     }),

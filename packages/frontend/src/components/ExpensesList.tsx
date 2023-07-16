@@ -27,7 +27,7 @@ export const ExpensesList = ({
     <List sx={sx} dense>
       {expenses.map((expense) => (
         <Fragment key={expense.id}>
-          <ListItem>
+          <ListItem disablePadding>
             <ListItemAvatar>
               <Avatar>
                 {categoryById[expense.category]?.icon ?? <QuestionMark />}

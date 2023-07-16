@@ -20,7 +20,13 @@ class ExpenseServiceError extends TRPCError {}
 export class ExpenseService {
   constructor(private prismaClient: PrismaClient) {}
 
-  async getExpenses(groupId: string) {
+  async getExpenses({
+    groupId,
+    limit,
+  }: {
+    groupId: string;
+    limit?: number | undefined;
+  }) {
     return this.prismaClient.expense.findMany({
       where: { groupId },
       include: {
@@ -32,6 +38,7 @@ export class ExpenseService {
         },
       },
       orderBy: { spentAt: 'desc' },
+      ...(limit ? { take: limit } : {}),
     });
   }
 

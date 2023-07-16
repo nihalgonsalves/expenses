@@ -311,6 +311,7 @@ const SplitsFormSection = ({
           <ParticipantListItem
             key={participantId}
             sx={{ paddingInline: 'unset' }}
+            disablePadding={false}
           >
             <Stack
               direction="row"
@@ -451,6 +452,24 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
         <Alert severity="error">{createExpense.error.message}</Alert>
       )}
 
+      <Stack direction="row" spacing={1}>
+        <MoneyField
+          fullWidth
+          autoFocus
+          label="How much was spent?"
+          currencyCode={currencyCode}
+          amount={amount}
+          setAmount={setAmount}
+        />
+        <Select value={currencyCode} onChange={handleChangeCurrency}>
+          {Object.values(CURRENCY_CODES).map((c) => (
+            <MenuItem key={c} value={c}>
+              {c}
+            </MenuItem>
+          ))}
+        </Select>
+      </Stack>
+
       <FormControl fullWidth>
         <InputLabel id={paidByIdSelectId}>Who paid?</InputLabel>
         <Select
@@ -468,24 +487,6 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
           ))}
         </Select>
       </FormControl>
-
-      <Stack direction="row" spacing={1}>
-        <MoneyField
-          fullWidth
-          autoFocus
-          label="How much did they spend?"
-          currencyCode={currencyCode}
-          amount={amount}
-          setAmount={setAmount}
-        />
-        <Select value={currencyCode} onChange={handleChangeCurrency}>
-          {Object.values(CURRENCY_CODES).map((c) => (
-            <MenuItem key={c} value={c}>
-              {c}
-            </MenuItem>
-          ))}
-        </Select>
-      </Stack>
 
       <FormControl fullWidth>
         <InputLabel id={categorySelectId}>Category</InputLabel>

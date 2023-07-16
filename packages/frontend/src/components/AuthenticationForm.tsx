@@ -66,6 +66,7 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
       {isSignUp && (
         <TextField
           label="Name"
+          autoFocus
           value={name}
           onChange={(e) => {
             setName(e.target.value);
@@ -75,6 +76,7 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
 
       <TextField
         type="email"
+        autoFocus={!isSignUp}
         label="Email"
         value={email}
         onChange={(e) => {

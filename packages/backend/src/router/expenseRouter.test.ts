@@ -2,7 +2,11 @@ import { faker } from '@faker-js/faker';
 import { Temporal } from '@js-temporal/polyfill';
 import { describe, expect, it } from 'vitest';
 
-import { groupFactory, userFactory } from '../../test/factories';
+import {
+  currencyCodeFactory,
+  groupFactory,
+  userFactory,
+} from '../../test/factories';
 import { getTRPCCaller } from '../../test/getTRPCCaller';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
@@ -156,7 +160,7 @@ describe('createExpense', () => {
       caller.expense.createExpense(
         createExpenseInput(
           faker.string.uuid(),
-          faker.finance.currencyCode(),
+          currencyCodeFactory(),
           user.id,
           user.id,
         ),
@@ -193,7 +197,7 @@ describe('getExpenses', () => {
       createExpenseInput(group.id, group.currencyCode, user.id, member.id),
     );
 
-    const response = await caller.expense.getExpenses(group.id);
+    const response = await caller.expense.getExpenses({ groupId: group.id });
 
     expect(response).toMatchObject([
       {
@@ -210,7 +214,7 @@ describe('getExpenses', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.getExpenses(faker.string.uuid()),
+      caller.expense.getExpenses({ groupId: faker.string.uuid() }),
     ).rejects.toThrow('Group not found');
   });
 
@@ -220,9 +224,9 @@ describe('getExpenses', () => {
 
     const group = await groupFactory(prisma);
 
-    await expect(caller.expense.getExpenses(group.id)).rejects.toThrow(
-      'Group not found',
-    );
+    await expect(
+      caller.expense.getExpenses({ groupId: group.id }),
+    ).rejects.toThrow('Group not found');
   });
 });
 

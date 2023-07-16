@@ -17,13 +17,18 @@ import { trpc } from '../api/trpc';
 import { RouterLink } from '../router';
 import { formatCurrency } from '../utils/money';
 
+import { AddParticipantButton } from './AddParticipantButton';
 import { ExpensesList } from './ExpensesList';
 import { ParticipantListItem } from './ParticipantListItem';
 
 export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
 
-  const { data: expenses } = trpc.expense.getExpenses.useQuery(group.id);
+  const { data: expenses } = trpc.expense.getExpenses.useQuery({
+    groupId: group.id,
+    limit: 2,
+  });
+
   const { data: summaries } = trpc.expense.getParticipantSummaries.useQuery(
     group.id,
   );
@@ -67,13 +72,14 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
               </ParticipantListItem>
             ))}
           </List>
+
+          <AddParticipantButton groupId={group.id} />
         </CardContent>
       </Card>
 
       <Card variant="outlined">
         <CardContent>
-          <Typography variant="h6">Expenses ({expenses?.length})</Typography>
-          {/* TODO: order/limit */}
+          <Typography variant="h6">Latest Expenses</Typography>
           <ExpensesList expenses={expenses ?? []} />
           <Stack spacing={1}>
             <Button
@@ -84,11 +90,11 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
               LinkComponent={RouterLink}
               href={`/groups/${group.id}/expenses`}
             >
-              All Expenses
+              All Expenses ({expenses?.length})
             </Button>
             <Button
               fullWidth
-              variant="outlined"
+              variant="contained"
               color="primary"
               startIcon={<PlaylistAdd />}
               LinkComponent={RouterLink}

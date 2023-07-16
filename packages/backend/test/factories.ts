@@ -3,7 +3,8 @@ import { type PrismaClient, GroupParticipantRole } from '@prisma/client';
 
 import { CURRENCY_CODES } from '../src';
 
-const randomItem = <T>(items: T[]) => Math.floor(Math.random() * items.length);
+const randomItem = <T>(items: T[]): T =>
+  items[Math.floor(Math.random() * items.length)]!;
 
 export const currencyCodeFactory = () => randomItem(CURRENCY_CODES);
 
@@ -44,7 +45,7 @@ export const groupFactory = async (
   return prisma.group.create({
     data: {
       name: `${faker.location.city()} trip`,
-      currencyCode: opts.currencyCode ?? faker.finance.currencyCode(),
+      currencyCode: opts.currencyCode ?? currencyCodeFactory(),
       participants: {
         create: createOptions,
       },

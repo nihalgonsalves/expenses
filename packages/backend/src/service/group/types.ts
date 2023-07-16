@@ -1,3 +1,4 @@
+import { GroupParticipantRole } from '@prisma/client';
 import { z } from 'zod';
 
 export const ZGroup = z.object({
@@ -8,16 +9,18 @@ export const ZGroup = z.object({
 
 export type Group = z.infer<typeof ZGroup>;
 
-const ZParticipant = z.object({
+export const ZParticipantWithName = z.object({
   id: z.string().uuid(),
-});
-
-export const ZParticipantWithName = ZParticipant.extend({
   name: z.string(),
 });
 
+export const ZFullParticipant = ZParticipantWithName.extend({
+  email: z.string(),
+  role: z.nativeEnum(GroupParticipantRole),
+});
+
 export const ZGroupWithParticipants = ZGroup.extend({
-  participants: z.array(ZParticipant),
+  participants: z.array(z.object({ id: z.string() })),
 });
 
 export type GroupWithParticipants = z.infer<typeof ZGroupWithParticipants>;
