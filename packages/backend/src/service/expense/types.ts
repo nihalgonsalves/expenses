@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { ZParticipantWithName } from '../group/types';
+
 export const ZMoney = z.object({
   amount: z.number().int(),
   scale: z.number().int().nonnegative(),
@@ -24,6 +26,7 @@ export type CreateExpenseInput = z.infer<typeof ZCreateExpenseInput>;
 
 export const ZCreateExpenseResponse = z.object({
   id: z.string().uuid(),
+  description: z.string(),
 });
 
 export const ZGetExpensesResponse = z.array(
@@ -31,6 +34,8 @@ export const ZGetExpensesResponse = z.array(
     id: z.string().uuid(),
     description: z.string(),
     money: ZMoney,
+    paidBy: z.array(ZParticipantWithName),
+    paidFor: z.array(ZParticipantWithName),
   }),
 );
 

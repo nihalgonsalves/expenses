@@ -2,11 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Temporal } from '@js-temporal/polyfill';
 import { describe, expect, it } from 'vitest';
 
-import {
-  expenseFactory,
-  groupFactory,
-  userFactory,
-} from '../../test/factories';
+import { groupFactory, userFactory } from '../../test/factories';
 import { getTRPCCaller } from '../../test/getTRPCCaller';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
@@ -184,10 +180,17 @@ describe('createExpense', () => {
 describe('getExpenses', () => {
   it('returns all expenses for the group', async () => {
     const user = await userFactory(prisma);
+    const member = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupFactory(prisma, { withOwnerId: user.id });
-    const expense = await expenseFactory(prisma, group, user.id);
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [member.id],
+    });
+
+    const expense = await caller.expense.createExpense(
+      createExpenseInput(group.id, group.currencyCode, user.id, member.id),
+    );
 
     const response = await caller.expense.getExpenses(group.id);
 
@@ -195,6 +198,8 @@ describe('getExpenses', () => {
       {
         id: expense.id,
         description: expense.description,
+        paidBy: [{ id: user.id }],
+        paidFor: [{ id: member.id }, { id: user.id }],
       },
     ]);
   });

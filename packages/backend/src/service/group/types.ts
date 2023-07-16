@@ -12,7 +12,7 @@ const ZParticipant = z.object({
   id: z.string().uuid(),
 });
 
-const ZParticipantWithName = ZParticipant.extend({
+export const ZParticipantWithName = ZParticipant.extend({
   name: z.string(),
 });
 

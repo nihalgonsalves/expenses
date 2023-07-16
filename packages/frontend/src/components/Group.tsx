@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   List,
+  ListItemText,
   Stack,
   Typography,
 } from '@mui/material';
@@ -17,7 +18,7 @@ import { RouterLink } from '../router';
 import { formatCurrency } from '../utils/money';
 
 import { ExpensesList } from './ExpensesList';
-import { ParticipantTextListItem } from './ParticipantListItem';
+import { ParticipantListItem } from './ParticipantListItem';
 
 export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
@@ -44,17 +45,26 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h6">People</Typography>
+
           <List>
-            {summaries?.map(({ participantId, name, spent, cost, balance }) => (
-              <ParticipantTextListItem
-                key={participantId}
-                primary={name}
-                secondary={`Spent ${formatCurrency(
-                  spent,
-                )}, Cost ${formatCurrency(cost)}, Balance ${formatCurrency(
-                  balance,
-                )}`}
-              />
+            {summaries?.map(({ participantId, name, balance }) => (
+              <ParticipantListItem key={participantId}>
+                <ListItemText
+                  primary={name}
+                  secondary={
+                    <>
+                      {balance.amount > 0 ? 'owes' : 'is owed'}{' '}
+                      {formatCurrency({
+                        ...balance,
+                        amount: Math.abs(balance.amount),
+                      })}
+                    </>
+                  }
+                  secondaryTypographyProps={{
+                    sx: { display: 'flex', alignItems: 'center' },
+                  }}
+                />
+              </ParticipantListItem>
             ))}
           </List>
         </CardContent>

@@ -32,6 +32,12 @@ const assertGroupView = async (
   return { group, role };
 };
 
+const mapUniqueParticipants = (
+  list: { user: { id: string; name: string } }[],
+) => [
+  ...new Map(list.map(({ user: { id, name } }) => [id, { id, name }])).values(),
+];
+
 export const expenseRouter = router({
   createExpense: protectedProcedure
     .input(ZCreateExpenseInput)
@@ -62,10 +68,22 @@ export const expenseRouter = router({
       const { group } = await assertGroupView(ctx, input);
 
       return (await ctx.expenseService.getExpenses(input)).map(
-        ({ amount, scale, ...expense }) => ({
-          ...expense,
-          money: { amount, scale, currencyCode: group.currencyCode },
-        }),
+        ({ amount, scale, transactions, ...expense }) => {
+          const paidBy = transactions.filter(
+            ({ amount: txnAmount }) => txnAmount < 0,
+          );
+
+          const paidFor = transactions.filter(
+            ({ amount: txnAmount }) => txnAmount > 0,
+          );
+
+          return {
+            ...expense,
+            money: { amount, scale, currencyCode: group.currencyCode },
+            paidBy: mapUniqueParticipants(paidBy),
+            paidFor: mapUniqueParticipants(paidFor),
+          };
+        },
       );
     }),
 

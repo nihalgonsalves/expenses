@@ -1,6 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { type PrismaClient, GroupParticipantRole } from '@prisma/client';
 
+import { CURRENCY_CODES } from '../src';
+
+const randomItem = <T>(items: T[]) => Math.floor(Math.random() * items.length);
+
+export const currencyCodeFactory = () => randomItem(CURRENCY_CODES);
+
 export const userFactory = async (prisma: PrismaClient) =>
   prisma.user.create({
     data: {
@@ -41,30 +47,6 @@ export const groupFactory = async (
       currencyCode: opts.currencyCode ?? faker.finance.currencyCode(),
       participants: {
         create: createOptions,
-      },
-    },
-  });
-};
-
-export const expenseFactory = async (
-  prisma: PrismaClient,
-  group: Awaited<ReturnType<typeof groupFactory>>,
-  paidById: string,
-) => {
-  const amount = faker.number.int(100_00);
-
-  return prisma.expense.create({
-    data: {
-      amount,
-      scale: 2,
-      description: '',
-      spentAt: new Date(),
-      groupId: group.id,
-      transactions: {
-        create: [
-          { userId: paidById, amount: -amount, scale: 2 },
-          { userId: paidById, amount: +amount, scale: 2 },
-        ],
       },
     },
   });
