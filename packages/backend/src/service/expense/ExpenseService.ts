@@ -28,19 +28,24 @@ export class ExpenseService {
     groupId: string;
     limit?: number | undefined;
   }) {
-    return this.prismaClient.expense.findMany({
-      where: { groupId },
-      include: {
-        group: true,
-        transactions: {
-          include: {
-            user: true,
+    const [expenses, total] = await this.prismaClient.$transaction([
+      this.prismaClient.expense.findMany({
+        where: { groupId },
+        include: {
+          group: true,
+          transactions: {
+            include: {
+              user: true,
+            },
           },
         },
-      },
-      orderBy: { spentAt: 'desc' },
-      ...(limit ? { take: limit } : {}),
-    });
+        orderBy: { spentAt: 'desc' },
+        ...(limit ? { take: limit } : {}),
+      }),
+      this.prismaClient.expense.count({ where: { groupId } }),
+    ]);
+
+    return { expenses, total };
   }
 
   async createExpense(

@@ -19,7 +19,7 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const utils = trpc.useContext();
-  const { data: expenses } = trpc.expense.getExpenses.useQuery({
+  const { data: expensesResponse } = trpc.expense.getExpenses.useQuery({
     groupId: group.id,
     limit: 2,
   });
@@ -52,7 +52,10 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h6">Latest Expenses</Typography>
-          <ExpensesList groupId={group.id} expenses={expenses ?? []} />
+          <ExpensesList
+            groupId={group.id}
+            expenses={expensesResponse?.expenses ?? []}
+          />
           <Stack spacing={1}>
             <Button
               fullWidth
@@ -62,7 +65,7 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
               LinkComponent={RouterLink}
               href={`/groups/${group.id}/expenses`}
             >
-              All Expenses ({expenses?.length})
+              All Expenses ({expensesResponse?.total})
             </Button>
             <Button
               fullWidth

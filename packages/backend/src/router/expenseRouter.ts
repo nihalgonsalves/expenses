@@ -69,25 +69,33 @@ export const expenseRouter = router({
         ctx.user.id,
       );
 
-      return (await ctx.expenseService.getExpenses({ groupId, limit })).map(
-        ({ amount, scale, transactions, ...expense }) => {
-          const paidBy = transactions.filter(
-            ({ amount: txnAmount }) => txnAmount < 0,
-          );
+      const { expenses, total } = await ctx.expenseService.getExpenses({
+        groupId,
+        limit,
+      });
 
-          const paidFor = transactions.filter(
-            ({ amount: txnAmount }) => txnAmount > 0,
-          );
+      return {
+        expenses: expenses.map(
+          ({ amount, scale, transactions, ...expense }) => {
+            const paidBy = transactions.filter(
+              ({ amount: txnAmount }) => txnAmount < 0,
+            );
 
-          return {
-            ...expense,
-            spentAt: expense.spentAt.toISOString(),
-            money: { amount, scale, currencyCode: group.currencyCode },
-            paidBy: mapUniqueParticipants(paidBy),
-            paidFor: mapUniqueParticipants(paidFor),
-          };
-        },
-      );
+            const paidFor = transactions.filter(
+              ({ amount: txnAmount }) => txnAmount > 0,
+            );
+
+            return {
+              ...expense,
+              spentAt: expense.spentAt.toISOString(),
+              money: { amount, scale, currencyCode: group.currencyCode },
+              paidBy: mapUniqueParticipants(paidBy),
+              paidFor: mapUniqueParticipants(paidFor),
+            };
+          },
+        ),
+        total,
+      };
     }),
 
   getParticipantSummaries: protectedProcedure

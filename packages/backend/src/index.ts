@@ -8,6 +8,7 @@ export {
 export {
   type GetExpensesResponse,
   type ExpenseSummaryResponse,
+  type ExpenseListItem,
 } from './service/expense/types';
 
 export {

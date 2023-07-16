@@ -30,17 +30,22 @@ export const ZCreateExpenseResponse = z.object({
   description: z.string(),
 });
 
-export const ZGetExpensesResponse = z.array(
-  z.object({
-    id: z.string().uuid(),
-    money: ZMoney,
-    spentAt: z.string(),
-    description: z.string(),
-    category: z.string(),
-    paidBy: z.array(ZParticipantWithName),
-    paidFor: z.array(ZParticipantWithName),
-  }),
-);
+const ZExpenseListItem = z.object({
+  id: z.string().uuid(),
+  money: ZMoney,
+  spentAt: z.string(),
+  description: z.string(),
+  category: z.string(),
+  paidBy: z.array(ZParticipantWithName),
+  paidFor: z.array(ZParticipantWithName),
+});
+
+export type ExpenseListItem = z.infer<typeof ZExpenseListItem>;
+
+export const ZGetExpensesResponse = z.object({
+  expenses: z.array(ZExpenseListItem),
+  total: z.number().nonnegative(),
+});
 
 export type GetExpensesResponse = z.infer<typeof ZGetExpensesResponse>;
 

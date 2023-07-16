@@ -15,7 +15,7 @@ import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
 import { useId, useState } from 'react';
 
-import { type GetExpensesResponse } from '@nihalgonsalves/expenses-backend';
+import { type ExpenseListItem as ExpenseListItemAPI } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 import { categoryById } from '../data/categories';
@@ -28,7 +28,7 @@ const ExpenseMenu = ({
   setIsInvalidating,
 }: {
   groupId: string;
-  expense: GetExpensesResponse[number];
+  expense: ExpenseListItemAPI;
   setIsInvalidating: (isInvalidating: boolean) => void;
 }) => {
   const buttonId = useId();
@@ -111,7 +111,7 @@ const ExpenseListItem = ({
   groupId,
   showActions,
 }: {
-  expense: GetExpensesResponse[number];
+  expense: ExpenseListItemAPI;
   groupId: string;
   showActions: boolean;
 }) => {
@@ -167,7 +167,7 @@ export const ExpensesList = ({
   showActions = false,
 }: {
   groupId: string;
-  expenses: GetExpensesResponse;
+  expenses: ExpenseListItemAPI[];
   sx?: SxProps;
   showActions?: boolean;
 }) => {

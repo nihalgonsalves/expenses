@@ -288,9 +288,11 @@ describe('getExpenses', () => {
       createExpenseInput(group.id, group.currencyCode, user.id, member.id),
     );
 
-    const response = await caller.expense.getExpenses({ groupId: group.id });
+    const { expenses, total } = await caller.expense.getExpenses({
+      groupId: group.id,
+    });
 
-    expect(response).toMatchObject([
+    expect(expenses).toMatchObject([
       {
         id: expense.id,
         description: expense.description,
@@ -298,6 +300,8 @@ describe('getExpenses', () => {
         paidFor: [{ id: member.id }, { id: user.id }],
       },
     ]);
+
+    expect(total).toBe(1);
   });
 
   it('returns 404 if the group does not exist', async () => {
