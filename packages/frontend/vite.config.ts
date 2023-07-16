@@ -1,11 +1,16 @@
 import react from '@vitejs/plugin-react';
+import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const relativePath = (path: string) =>
+  fileURLToPath(new URL(path, import.meta.url).toString());
+
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   build: {
     target: 'es2022',
+    sourcemap: true,
   },
   server: {
     proxy: {
@@ -18,9 +23,16 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      injectRegister: false,
+      srcDir: 'src',
+      filename: 'sw.ts',
+      registerType: 'autoUpdate',
+      injectRegister: null,
+      strategies: 'injectManifest',
+      selfDestroying: mode === 'development',
       devOptions: {
-        enabled: true,
+        enabled: process.env.ENABLE_DEV_PWA != null,
+        type: 'module',
+        resolveTempFolder: () => relativePath('./dist/vite-pwa-dev/'),
       },
       manifest: {
         name: 'Expenses',
@@ -54,4 +66,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));

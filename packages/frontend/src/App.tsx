@@ -2,6 +2,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 
 import { TrpcProvider } from './api/TrpcProvider';
+import { registerSW } from './registerSW';
 import { RouterProvider, router } from './router';
 
 const theme = createTheme({
@@ -9,6 +10,8 @@ const theme = createTheme({
     fontFamily: 'unset',
   },
 });
+
+void registerSW();
 
 export const App = () => (
   <ThemeProvider theme={theme}>
