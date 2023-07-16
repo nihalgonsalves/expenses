@@ -45,16 +45,16 @@ const InfoMenuItem = ({
 const PersonMenu = ({
   groupId,
   participantId,
+  balance,
   spent,
   cost,
+  sent,
+  received,
   setIsInvalidating,
 }: {
   groupId: string;
-  participantId: string;
-  spent: Money;
-  cost: Money;
   setIsInvalidating: (val: boolean) => void;
-}) => {
+} & ExpenseSummaryResponse[number]) => {
   const buttonId = useId();
   const menuId = useId();
 
@@ -131,6 +131,10 @@ const PersonMenu = ({
         <InfoMenuItem label="Cost to group">
           {formatCurrency(cost)}
         </InfoMenuItem>
+        <InfoMenuItem label="Sent">{formatCurrency(sent)}</InfoMenuItem>
+        <InfoMenuItem label="Received">{formatCurrency(received)}</InfoMenuItem>
+        <Divider />
+        <InfoMenuItem label="=">{formatCurrency(balance)}</InfoMenuItem>
         <Divider />
         <MenuItem onClick={handleDelete}>
           <ListItemIcon>
@@ -182,10 +186,8 @@ const SummaryCard = ({
       />
       <PersonMenu
         groupId={groupId}
-        participantId={summary.participantId}
-        spent={summary.spent}
-        cost={summary.cost}
         setIsInvalidating={setIsInvalidating}
+        {...summary}
       />
     </ParticipantListItem>
   );

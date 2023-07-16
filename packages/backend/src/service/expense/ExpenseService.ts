@@ -1,20 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { type PrismaClient, type Prisma } from '@prisma/client';
+import { type PrismaClient, type Prisma, ExpenseType } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 import { dinero, equal } from 'dinero.js';
 
 import { getCurrency } from '../..';
-import {
-  type Money,
-  sumMoney,
-  zeroMoney,
-  moneyToDinero,
-  addMoney,
-} from '../../money';
+import { type Money, sumMoney, zeroMoney, moneyToDinero } from '../../money';
 import { type GroupWithParticipants, type Group } from '../group/types';
 
-import { type ExpenseSummaryResponse, type CreateExpenseInput } from './types';
+import {
+  type ExpenseSummaryResponse,
+  type CreateExpenseInput,
+  type CreateSettlementInput,
+} from './types';
 
 class ExpenseServiceError extends TRPCError {}
 
@@ -95,6 +93,7 @@ export class ExpenseService {
         group: { connect: { id: group.id } },
         amount: input.money.amount,
         scale: input.money.scale,
+        type: ExpenseType.EXPENSE,
         category: input.category,
         description: input.description,
         spentAt: new Date(
@@ -122,6 +121,44 @@ export class ExpenseService {
               },
             ],
           ),
+        },
+      },
+    });
+  }
+
+  async createSettlement(
+    input: Omit<CreateSettlementInput, 'groupId'>,
+    group: Group,
+  ) {
+    if (group.currencyCode !== input.money.currencyCode) {
+      throw new ExpenseServiceError({
+        code: 'BAD_REQUEST',
+        message: 'Currencies do not match',
+      });
+    }
+
+    return this.prismaClient.expense.create({
+      data: {
+        group: { connect: { id: group.id } },
+        amount: input.money.amount,
+        scale: input.money.scale,
+        type: ExpenseType.TRANSFER,
+        category: 'transfer',
+        description: '',
+        spentAt: new Date(Temporal.Now.instant().epochMilliseconds),
+        transactions: {
+          create: [
+            {
+              user: { connect: { id: input.fromId } },
+              amount: -input.money.amount,
+              scale: input.money.scale,
+            },
+            {
+              user: { connect: { id: input.toId } },
+              amount: input.money.amount,
+              scale: input.money.scale,
+            },
+          ],
         },
       },
     });
@@ -178,42 +215,75 @@ export class ExpenseService {
         ]),
       );
 
-    const [costMap, spentMap, participants] = await Promise.all([
-      this.prismaClient.expenseTransactions
-        .groupBy({
-          by: ['userId', 'scale'],
-          // amount > 0 means this is money spent _for_ the user by someone else (or themselves)
-          where: { expense: { groupId: group.id }, amount: { gt: 0 } },
-          _sum: { amount: true },
-        })
-        .then(mapSummary),
-      this.prismaClient.expenseTransactions
-        .groupBy({
-          by: ['userId', 'scale'],
-          // amount < 0 means this is money spent _by_ the user for someone else (or themselves)
-          where: { expense: { groupId: group.id }, amount: { lt: 0 } },
-          _sum: { amount: true },
-        })
-        .then(mapSummary),
-      this.prismaClient.groupParticipants.findMany({
-        where: { groupId: group.id },
-        include: { participant: true },
-      }),
-    ]);
+    const [costMap, spentMap, sentMap, receivedMap, participants] =
+      await Promise.all([
+        this.prismaClient.expenseTransactions
+          .groupBy({
+            by: ['userId', 'scale'],
+            // amount > 0 means this is money spent _for_ the user by someone else (or themselves)
+            where: {
+              expense: { groupId: group.id, type: ExpenseType.EXPENSE },
+              amount: { gt: 0 },
+            },
+            _sum: { amount: true },
+          })
+          .then(mapSummary),
+        this.prismaClient.expenseTransactions
+          .groupBy({
+            by: ['userId', 'scale'],
+            // amount < 0 means this is money spent _by_ the user for someone else (or themselves)
+            where: {
+              expense: { groupId: group.id, type: ExpenseType.EXPENSE },
+              amount: { lt: 0 },
+            },
+            _sum: { amount: true },
+          })
+          .then(mapSummary),
+        this.prismaClient.expenseTransactions
+          .groupBy({
+            by: ['userId', 'scale'],
+            // amount < 0 means this is money sent to the user from someone else
+            where: {
+              expense: { groupId: group.id, type: ExpenseType.TRANSFER },
+              amount: { lt: 0 },
+            },
+            _sum: { amount: true },
+          })
+          .then(mapSummary),
+        this.prismaClient.expenseTransactions
+          .groupBy({
+            by: ['userId', 'scale'],
+            // amount > 0 means this is money received from someone else
+            where: {
+              expense: { groupId: group.id, type: ExpenseType.TRANSFER },
+              amount: { gt: 0 },
+            },
+            _sum: { amount: true },
+          })
+          .then(mapSummary),
+        this.prismaClient.groupParticipants.findMany({
+          where: { groupId: group.id },
+          include: { participant: true },
+        }),
+      ]);
+
+    const zero = zeroMoney(group.currencyCode);
 
     return participants.map(({ participant: { name, id } }) => {
-      const cost = costMap[id] ?? zeroMoney(group.currencyCode);
+      const cost = costMap[id] ?? zero;
+      const spent = spentMap[id] ?? zero;
+      const sent = sentMap[id] ?? zero;
+      const received = receivedMap[id] ?? zero;
 
-      const spentRaw = spentMap[id] ?? zeroMoney(group.currencyCode);
-      const spent = { ...spentRaw, amount: Math.abs(spentRaw.amount) };
-
-      const balance = addMoney(cost, spentRaw);
+      const balance = sumMoney([cost, spent, sent, received]) ?? zero;
 
       return {
         name,
         participantId: id,
         cost,
         spent,
+        sent,
+        received,
         balance,
       };
     });

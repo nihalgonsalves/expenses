@@ -20,7 +20,7 @@ import { type ExpenseListItem as ExpenseListItemAPI } from '@nihalgonsalves/expe
 import { trpc } from '../api/trpc';
 import { categoryById } from '../data/categories';
 import { formatCurrency } from '../utils/money';
-import { formatDateTime, joinList } from '../utils/utils';
+import { formatDateTime, getShortName, joinList } from '../utils/utils';
 
 const ExpenseMenu = ({
   groupId,
@@ -146,9 +146,9 @@ const ExpenseListItem = ({
             }}
           >
             {[
-              joinList(expense.paidBy.map(({ name }) => name)),
-              ' paid for ',
-              joinList(expense.paidFor.map(({ name }) => name)),
+              joinList(expense.paidBy.map(({ name }) => getShortName(name))),
+              expense.type === 'EXPENSE' ? ' paid for ' : ' paid ',
+              joinList(expense.paidFor.map(({ name }) => getShortName(name))),
             ]}
           </Typography>
         </div>

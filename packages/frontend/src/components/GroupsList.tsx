@@ -23,7 +23,7 @@ export const GroupsList = ({
   return (
     <List sx={sx}>
       {groups.map((group) => (
-        <ListItem key={group.id}>
+        <ListItem key={group.id} disablePadding>
           <ListItemButton
             LinkComponent={RouterLink}
             href={`/groups/${group.id}`}

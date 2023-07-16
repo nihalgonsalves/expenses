@@ -1,3 +1,4 @@
+import { ExpenseType } from '@prisma/client';
 import { z } from 'zod';
 
 import { ZParticipantWithName } from '../group/types';
@@ -30,12 +31,26 @@ export const ZCreateExpenseResponse = z.object({
   description: z.string(),
 });
 
+export const ZCreateSettlementInput = z.object({
+  groupId: z.string().uuid(),
+  fromId: z.string().uuid(),
+  toId: z.string().uuid(),
+  money: ZMoney,
+});
+
+export type CreateSettlementInput = z.infer<typeof ZCreateSettlementInput>;
+
+export const ZCreateSettlementResponse = z.object({
+  id: z.string().uuid(),
+});
+
 const ZExpenseListItem = z.object({
   id: z.string().uuid(),
   money: ZMoney,
   spentAt: z.string(),
   description: z.string(),
   category: z.string(),
+  type: z.nativeEnum(ExpenseType),
   paidBy: z.array(ZParticipantWithName),
   paidFor: z.array(ZParticipantWithName),
 });
@@ -55,6 +70,8 @@ export const ZExpenseSummaryResponse = z.array(
     name: z.string(),
     cost: ZMoney,
     spent: ZMoney,
+    sent: ZMoney,
+    received: ZMoney,
     balance: ZMoney,
   }),
 );

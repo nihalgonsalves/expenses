@@ -34,6 +34,11 @@ model Group {
   expenses     Expense[]
 }
 
+enum GroupParticipantRole {
+  ADMIN
+  MEMBER
+}
+
 model GroupParticipants {
   participant   User   @relation(fields: [participantId], references: [id])
   participantId String
@@ -47,15 +52,17 @@ model GroupParticipants {
   @@id([participantId, groupId])
 }
 
-enum GroupParticipantRole {
-  ADMIN
-  MEMBER
+enum ExpenseType {
+  EXPENSE
+  TRANSFER
 }
 
 model Expense {
   id        String   @id @default(dbgenerated("gen_random_uuid()"))
   createdAt DateTime @default(now()) @db.Timestamptz()
   updatedAt DateTime @updatedAt @db.Timestamptz()
+
+  type ExpenseType @default(EXPENSE)
 
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId String

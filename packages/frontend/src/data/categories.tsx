@@ -8,6 +8,7 @@ import {
   LocalDining,
   LocalGroceryStore,
   Movie,
+  Payments,
   QuestionMark,
   Store,
   TravelExplore,
@@ -34,6 +35,7 @@ export enum CategoryId {
   Rent = 'rent',
   Utilities = 'utilities',
   Other = 'other',
+  Transfer = 'transfer',
 }
 
 // prettier-ignore
@@ -50,6 +52,7 @@ export const categories: Category[] = [
   { id: CategoryId.Rent,           name: 'Rent',           icon: <Apartment /> },
   { id: CategoryId.Utilities,      name: 'Utilities',      icon: <ElectricBolt /> },
   { id: CategoryId.Other,          name: 'Other',          icon: <QuestionMark /> },
+  { id: CategoryId.Transfer,       name: 'Transfer',       icon: <Payments /> },
 ];
 
 export const categoryById = Object.fromEntries(

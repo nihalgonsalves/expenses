@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Temporal } from '@js-temporal/polyfill';
+import { ExpenseType } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -60,6 +61,10 @@ describe('createExpense', () => {
     const expense = await prisma.expense.findUnique({
       where: { id: response.id },
       include: { transactions: true },
+    });
+
+    expect(expense).toMatchObject({
+      type: ExpenseType.EXPENSE,
     });
 
     expect(expense?.transactions).toMatchObject([
@@ -182,6 +187,121 @@ describe('createExpense', () => {
   });
 });
 
+describe('createSettlement', () => {
+  it('creates an settlement', async () => {
+    const [user, member] = await Promise.all([
+      userFactory(prisma),
+      userFactory(prisma),
+    ]);
+
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [member.id],
+    });
+
+    const response = await caller.expense.createSettlement({
+      groupId: group.id,
+      money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+      fromId: user.id,
+      toId: member.id,
+    });
+
+    expect(response).toMatchObject({
+      id: expect.any(String),
+    });
+
+    const expense = await prisma.expense.findUnique({
+      where: { id: response.id },
+      include: { transactions: true },
+    });
+
+    expect(expense).toMatchObject({
+      type: ExpenseType.TRANSFER,
+    });
+
+    expect(expense?.transactions).toMatchObject([
+      { scale: 2, amount: +100_00, userId: member.id },
+      { scale: 2, amount: -100_00, userId: user.id },
+    ]);
+  });
+
+  it("returns 400 if the expense currency doesn't match", async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: 'EUR',
+    });
+
+    await expect(
+      caller.expense.createSettlement({
+        groupId: group.id,
+        money: { amount: 100_00, scale: 2, currencyCode: 'GBP' },
+        fromId: user.id,
+        toId: user.id,
+      }),
+    ).rejects.toThrow('Currencies do not match');
+  });
+
+  it('returns 400 if participants are not part of the group', async () => {
+    const [user, otherUser] = await Promise.all([
+      userFactory(prisma),
+      userFactory(prisma),
+    ]);
+
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    await expect(
+      caller.expense.createSettlement({
+        groupId: group.id,
+        money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+        fromId: user.id,
+        toId: otherUser.id,
+      }),
+    ).rejects.toThrow('Invalid participants');
+  });
+
+  it('returns 404 if the group does not exist', async () => {
+    const [user, member] = await Promise.all([
+      userFactory(prisma),
+      userFactory(prisma),
+    ]);
+
+    const caller = useProtectedCaller(user);
+
+    await expect(
+      caller.expense.createSettlement({
+        groupId: faker.string.uuid(),
+        money: { amount: 100_00, scale: 2, currencyCode: 'EUR' },
+        fromId: user.id,
+        toId: member.id,
+      }),
+    ).rejects.toThrow('Group not found');
+  });
+
+  it('returns 404 if the user is not a member of the group', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const group = await groupFactory(prisma);
+
+    await expect(
+      caller.expense.createSettlement({
+        groupId: group.id,
+        money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+        fromId: user.id,
+        toId: user.id,
+      }),
+    ).rejects.toThrow('Group not found');
+  });
+});
 describe('deleteExpense', () => {
   it('deletes an expense', async () => {
     const user = await userFactory(prisma);
@@ -326,7 +446,7 @@ describe('getExpenses', () => {
 });
 
 describe('getParticipantSummaries', () => {
-  it('returns spent, cost and balance amount for each participant', async () => {
+  it('returns spent, cost, sent, received and balance amount for each participant', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -346,22 +466,33 @@ describe('getParticipantSummaries', () => {
       createExpenseInput(group.id, group.currencyCode, paidById, otherId),
     );
 
+    await caller.expense.createSettlement({
+      groupId: group.id,
+      fromId: member.id,
+      toId: user.id,
+      money: { currencyCode: group.currencyCode, amount: 13_00, scale: 2 },
+    });
+
     const summary = await caller.expense.getParticipantSummaries(group.id);
 
     expect(summary).toMatchObject([
       {
-        balance: { amount: -75_00, scale: 2 },
+        balance: { amount: -62_00, scale: 2 },
         cost: { amount: 25_00, scale: 2 },
         participantId: user.id,
         name: user.name,
-        spent: { amount: 100_00, scale: 2 },
+        spent: { amount: -100_00, scale: 2 },
+        sent: { amount: 0, scale: 0 },
+        received: { amount: 13_00, scale: 2 },
       },
       {
-        balance: { amount: 75_00, scale: 2 },
+        balance: { amount: 62_00, scale: 2 },
         cost: { amount: 75_00, scale: 2 },
         participantId: member.id,
         name: member.name,
         spent: { amount: 0, scale: 0 },
+        sent: { amount: -13_00, scale: 2 },
+        received: { amount: 0, scale: 0 },
       },
     ]);
   });

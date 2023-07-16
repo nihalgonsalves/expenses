@@ -4,6 +4,8 @@ import { z } from 'zod';
 import {
   ZCreateExpenseInput,
   ZCreateExpenseResponse,
+  ZCreateSettlementInput,
+  ZCreateSettlementResponse,
   ZExpenseSummaryResponse,
   ZGetExpensesResponse,
 } from '../service/expense/types';
@@ -39,6 +41,30 @@ export const expenseRouter = router({
       }
 
       return ctx.expenseService.createExpense(input, group);
+    }),
+
+  createSettlement: protectedProcedure
+    .input(ZCreateSettlementInput)
+    .output(ZCreateSettlementResponse)
+    .mutation(async ({ input, ctx }) => {
+      const { group } = await ctx.groupService.ensureGroupMembership(
+        input.groupId,
+        ctx.user.id,
+      );
+
+      const groupParticipants = new Set(group.participants.map(({ id }) => id));
+
+      if (
+        !groupParticipants.has(input.fromId) ||
+        !groupParticipants.has(input.toId)
+      ) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Invalid participants',
+        });
+      }
+
+      return ctx.expenseService.createSettlement(input, group);
     }),
 
   deleteExpense: protectedProcedure

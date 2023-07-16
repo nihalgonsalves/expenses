@@ -34,6 +34,9 @@ export const getInitials = (name: string): string => {
   return `${first?.[0] ?? ''}${last?.[0] ?? ''}`.toUpperCase();
 };
 
+export const getShortName = (name: string): string =>
+  name.split(' ')?.[0] ?? '';
+
 export const joinList = (list: string[]): string => {
   if (list.length === 0) {
     return '';

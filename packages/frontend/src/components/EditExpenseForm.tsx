@@ -42,7 +42,7 @@ import {
 import { trpc } from '../api/trpc';
 import { CategoryId, categories } from '../data/categories';
 import { CURRENCY_CODES, formatCurrency, toDinero } from '../utils/money';
-import { dateTimeLocalToISOString } from '../utils/utils';
+import { dateTimeLocalToISOString, getInitials } from '../utils/utils';
 
 import { MoneyField } from './MoneyField';
 import { ParticipantListItem } from './ParticipantListItem';
@@ -312,6 +312,7 @@ const SplitsFormSection = ({
             key={participantId}
             sx={{ paddingInline: 'unset' }}
             disablePadding={false}
+            avatar={getInitials(participantName)}
           >
             <Stack
               direction="row"
@@ -378,8 +379,41 @@ const SplitsFormSection = ({
   );
 };
 
-export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
-  const paidByIdSelectId = useId();
+const ParticipantSelect = ({
+  group,
+  label,
+  selectedId,
+  setSelectedId,
+}: {
+  group: GroupByIdResponse;
+  label: string;
+  selectedId: string | undefined;
+  setSelectedId: (val: string | undefined) => void;
+}) => {
+  const selectId = useId();
+
+  return (
+    <FormControl fullWidth>
+      <InputLabel id={selectId}>{label}</InputLabel>
+      <Select
+        labelId={selectId}
+        label={label}
+        value={selectedId ?? ''}
+        onChange={(e) => {
+          setSelectedId(e.target.value);
+        }}
+      >
+        {Object.values(group.participants).map(({ id, name }) => (
+          <MenuItem key={id} value={id}>
+            {name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
+
+export const RegularExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
   const categorySelectId = useId();
 
   const createExpense = trpc.expense.createExpense.useMutation();
@@ -467,23 +501,12 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
         </Select>
       </Stack>
 
-      <FormControl fullWidth>
-        <InputLabel id={paidByIdSelectId}>Who paid?</InputLabel>
-        <Select
-          labelId={paidByIdSelectId}
-          label="Who paid?"
-          value={paidById}
-          onChange={(e) => {
-            setPaidById(e.target.value);
-          }}
-        >
-          {Object.values(group.participants).map(({ id, name }) => (
-            <MenuItem key={id} value={id}>
-              {name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <ParticipantSelect
+        group={group}
+        label="Who paid?"
+        selectedId={paidById}
+        setSelectedId={setPaidById}
+      />
 
       <FormControl fullWidth>
         <InputLabel id={categorySelectId}>Category</InputLabel>
@@ -552,6 +575,104 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
       >
         Add Expense
       </LoadingButton>
+    </Stack>
+  );
+};
+
+export const SettlementForm = ({ group }: { group: GroupByIdResponse }) => {
+  const navigate = useNavigate();
+
+  const [amount, setAmount] = useState(0);
+  const [fromId, setFromId] = useState<string>();
+  const [toId, setToId] = useState<string>();
+
+  const utils = trpc.useContext();
+  const createSettlement = trpc.expense.createSettlement.useMutation();
+
+  const valid = fromId && toId && fromId !== toId && amount > 0;
+
+  const handleCreateSettlement = async () => {
+    if (!fromId || !toId) {
+      return;
+    }
+
+    await createSettlement.mutateAsync({
+      groupId: group.id,
+      fromId,
+      toId,
+      money: dineroToMoney(toDinero(amount, group.currencyCode)),
+    });
+
+    await Promise.all([
+      utils.expense.getExpenses.invalidate({ groupId: group.id }),
+      utils.expense.getParticipantSummaries.invalidate(group.id),
+    ]);
+
+    navigate(`/groups/${group.id}`);
+  };
+
+  return (
+    <Stack spacing={3}>
+      {createSettlement.error && (
+        <Alert severity="error">{createSettlement.error.message}</Alert>
+      )}
+
+      <ParticipantSelect
+        group={group}
+        label="From"
+        selectedId={fromId}
+        setSelectedId={setFromId}
+      />
+
+      <ParticipantSelect
+        group={group}
+        label="To"
+        selectedId={toId}
+        setSelectedId={setToId}
+      />
+
+      <MoneyField
+        label="How much was given"
+        fullWidth
+        currencyCode={group.currencyCode}
+        amount={amount}
+        setAmount={setAmount}
+      />
+
+      <LoadingButton
+        disabled={!valid}
+        variant="contained"
+        loading={createSettlement.isLoading}
+        onClick={handleCreateSettlement}
+      >
+        Log Settlement
+      </LoadingButton>
+    </Stack>
+  );
+};
+
+const ZExpenseType = z.enum(['expense', 'settlement']);
+
+export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
+  const [type, setType] = useState<z.infer<typeof ZExpenseType>>('expense');
+
+  return (
+    <Stack spacing={3}>
+      <ToggleButtonGroup
+        color="primary"
+        value={type}
+        exclusive
+        onChange={(_e, value) => {
+          setType(ZExpenseType.parse(value));
+        }}
+        fullWidth
+      >
+        <ToggleButton value="expense">Expense</ToggleButton>
+        <ToggleButton value="settlement">Settlement</ToggleButton>
+      </ToggleButtonGroup>
+
+      {type === 'expense' && <RegularExpenseForm group={group} />}
+      {type === 'settlement' && <SettlementForm group={group} />}
     </Stack>
   );
 };
