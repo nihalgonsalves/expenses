@@ -84,7 +84,6 @@ export const MoneyField = ({
   return (
     <TextField
       fullWidth
-      autoFocus
       inputRef={inputRef}
       inputProps={{ inputMode: 'numeric' }}
       value={formatCurrency(moneySnapshot, {
