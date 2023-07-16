@@ -76,17 +76,11 @@ export class GroupService {
     });
   }
 
-  async deleteGroup(id: string, deletedBy: User) {
+  async deleteGroup(id: string) {
     try {
       return await this.prismaClient.group.delete({
         where: {
           id,
-          participants: {
-            some: {
-              participantId: deletedBy.id,
-              role: GroupParticipantRole.ADMIN,
-            },
-          },
         },
       });
     } catch (error) {

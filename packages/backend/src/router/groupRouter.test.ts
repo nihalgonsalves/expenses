@@ -145,6 +145,8 @@ describe('deleteGroup', () => {
     );
   });
 
+  it.todo('deletes a group with expenses');
+
   it('returns a 404 if the participant has no access', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
@@ -155,14 +157,13 @@ describe('deleteGroup', () => {
     );
   });
 
-  // TODO: This should be a 403, but would require another DB query
-  it('returns a 404 if the participant is not an admin', async () => {
+  it('returns a 403 if the participant is not an admin', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
     const group = await groupFactory(prisma, { withParticipantIds: [user.id] });
 
     await expect(caller.group.deleteGroup(group.id)).rejects.toThrow(
-      'Group not found',
+      'Only admins can delete groups',
     );
   });
 });

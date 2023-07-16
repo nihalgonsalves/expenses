@@ -1,5 +1,7 @@
 import { DeleteOutline, ListAlt, PlaylistAdd } from '@mui/icons-material';
 import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
+import { TRPCClientError } from '@trpc/client';
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +16,9 @@ import { PeopleCard } from './PeopleCard';
 export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const utils = trpc.useContext();
   const { data: expenses } = trpc.expense.getExpenses.useQuery({
     groupId: group.id,
     limit: 2,
@@ -25,9 +30,18 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const handleDelete = async () => {
     try {
       await deleteGroup.mutateAsync(group.id);
+
+      void utils.group.groupById.invalidate(group.id);
+      void utils.group.myGroups.invalidate();
+
       navigate('/groups');
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      enqueueSnackbar(
+        `Error deleting group: ${
+          e instanceof TRPCClientError ? e.message : 'Unknown Error'
+        }`,
+        { variant: 'error' },
+      );
     }
   };
 

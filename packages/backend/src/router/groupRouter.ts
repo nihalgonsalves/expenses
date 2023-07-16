@@ -52,7 +52,19 @@ export const groupRouter = router({
   deleteGroup: protectedProcedure
     .input(z.string().uuid())
     .mutation(async ({ input, ctx }) => {
-      await ctx.groupService.deleteGroup(input, ctx.user);
+      const { role } = await ctx.groupService.ensureGroupMembership(
+        input,
+        ctx.user.id,
+      );
+
+      if (role !== GroupParticipantRole.ADMIN) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Only admins can delete groups',
+        });
+      }
+
+      await ctx.groupService.deleteGroup(input);
     }),
 
   addParticipant: protectedProcedure
