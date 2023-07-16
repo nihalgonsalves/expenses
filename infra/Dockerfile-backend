@@ -23,7 +23,7 @@ ADD ./tsconfig.json ./tsconfig.base.json ./
 ADD ./packages/frontend/ ./packages/frontend/
 ADD ./packages/backend/ ./packages/backend/
 
-RUN cd packages/backend && yarn prisma generate && yarn build
+RUN yarn be build
 
 FROM node:20-slim
 
@@ -36,9 +36,7 @@ RUN apt-get update -y && \
 COPY --from=builder /opt/app/packages/backend/dist /opt/app
 WORKDIR /opt/app
 
-# https://www.prisma.io/docs/concepts/components/prisma-client/module-bundlers
-COPY --from=builder /opt/app/node_modules/.prisma/client/libquery_engine* ./
-COPY --from=builder /opt/app/node_modules/.prisma/client/schema.prisma ./
+COPY --from=builder /opt/app/packages/backend/prisma ./prisma
 
 RUN yarn install
 

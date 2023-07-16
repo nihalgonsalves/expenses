@@ -45,12 +45,6 @@ const newPackage = {
   dependencies: packageJson.resolutions,
 };
 
-await writeFile(
-  relativePath('../dist/package.json'),
-  JSON.stringify(newPackage, null, 2),
-  'utf-8',
-);
-
 if (process.argv.includes('--watch')) {
   await ctx.watch();
   console.log('Watching for changes...');
@@ -58,4 +52,10 @@ if (process.argv.includes('--watch')) {
   const result = await ctx.rebuild();
   console.log(result);
   await ctx.dispose();
+
+  await writeFile(
+    relativePath('../dist/package.json'),
+    JSON.stringify(newPackage, null, 2),
+    'utf-8',
+  );
 }

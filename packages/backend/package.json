@@ -15,7 +15,7 @@
   "dependencies": {
     "@dinero.js/currencies": "^2.0.0-alpha.1",
     "@js-temporal/polyfill": "^0.4.4",
-    "@prisma/client": "^5.0.0",
+    "@prisma/client": "*",
     "@trpc/server": "^10.34.0",
     "bcrypt": "*",
     "cookie": "^0.5.0",
@@ -29,11 +29,13 @@
     "@types/cookie": "^0.5.1",
     "@vitest/coverage-v8": "^0.33.0",
     "esbuild": "^0.18.11",
-    "prisma": "^5.0.0",
+    "prisma": "*",
     "testcontainers": "^9.10.0",
     "vitest": "^0.33.0"
   },
   "resolutions": {
+    "@prisma/client": "5.0.0",
+    "prisma": "5.0.0",
     "bcrypt": "5.1.0"
   }
 }
