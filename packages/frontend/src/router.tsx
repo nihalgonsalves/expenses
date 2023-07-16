@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { z, type ZodRawShape } from 'zod';
 
+import { trpc } from './api/trpc';
 import { AuthenticationPage } from './pages/AuthenticationPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { ExpenseNew } from './pages/ExpenseNew';
@@ -29,6 +30,19 @@ RouterLink.displayName = 'RouterLink';
 
 const errorElement = <ErrorPage />;
 
+const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { error } = trpc.user.me.useQuery(undefined, {
+    retry: false,
+  });
+
+  if (error?.data?.httpStatus === 401) {
+    return <Navigate to="/auth/sign-in" />;
+  }
+
+  return children;
+};
+
+// AuthenticatedRoute
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -37,41 +51,65 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Navigate to="/groups" />,
+        element: (
+          <AuthenticatedRoute>
+            <Navigate to="/groups" />
+          </AuthenticatedRoute>
+        ),
       },
       {
-        path: '/auth/sign-in',
+        path: 'auth/sign-in',
         element: <AuthenticationPage />,
         errorElement,
       },
       {
-        path: '/auth/sign-up',
+        path: 'auth/sign-up',
         element: <AuthenticationPage />,
         errorElement,
       },
       {
         path: 'groups',
-        element: <GroupsIndex />,
+        element: (
+          <AuthenticatedRoute>
+            <GroupsIndex />
+          </AuthenticatedRoute>
+        ),
         errorElement,
       },
       {
         path: 'groups/new',
-        element: <GroupNew />,
+        element: (
+          <AuthenticatedRoute>
+            <GroupNew />
+          </AuthenticatedRoute>
+        ),
         errorElement,
       },
       {
         path: 'groups/:groupId',
-        element: <GroupDetail />,
+        element: (
+          <AuthenticatedRoute>
+            <GroupDetail />
+          </AuthenticatedRoute>
+        ),
         errorElement,
       },
       {
         path: 'groups/:groupId/expenses',
-        element: <ExpensesIndex />,
+        element: (
+          <AuthenticatedRoute>
+            <ExpensesIndex />
+          </AuthenticatedRoute>
+        ),
         errorElement,
       },
       {
         path: 'groups/:groupId/expenses/new',
-        element: <ExpenseNew />,
+        element: (
+          <AuthenticatedRoute>
+            <ExpenseNew />
+          </AuthenticatedRoute>
+        ),
         errorElement,
       },
       {
