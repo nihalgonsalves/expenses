@@ -1,13 +1,5 @@
 import { DeleteOutline, ListAlt, PlaylistAdd } from '@mui/icons-material';
-import {
-  Button,
-  Card,
-  CardContent,
-  List,
-  ListItemText,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, Card, CardContent, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,11 +7,9 @@ import { type GroupByIdResponse } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 import { RouterLink } from '../router';
-import { formatCurrency } from '../utils/money';
 
-import { AddParticipantButton } from './AddParticipantButton';
 import { ExpensesList } from './ExpensesList';
-import { ParticipantListItem } from './ParticipantListItem';
+import { PeopleCard } from './PeopleCard';
 
 export const Group = ({ group }: { group: GroupByIdResponse }) => {
   const navigate = useNavigate();
@@ -28,10 +18,6 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
     groupId: group.id,
     limit: 2,
   });
-
-  const { data: summaries } = trpc.expense.getParticipantSummaries.useQuery(
-    group.id,
-  );
 
   const deleteGroup = trpc.group.deleteGroup.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -47,46 +33,7 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
 
   return (
     <Stack spacing={2}>
-      <Card variant="outlined">
-        <CardContent>
-          <Typography variant="h6">People</Typography>
-
-          <List>
-            {summaries?.map(({ participantId, name, balance }) => (
-              <ParticipantListItem key={participantId}>
-                <ListItemText
-                  primary={name}
-                  secondary={
-                    <>
-                      {(() => {
-                        if (balance.amount === 0) {
-                          return 'Settled up';
-                        }
-
-                        const amount = formatCurrency({
-                          ...balance,
-                          amount: Math.abs(balance.amount),
-                        });
-
-                        if (balance.amount > 0) {
-                          return `owes ${amount}`;
-                        } else {
-                          return `is owed ${amount}`;
-                        }
-                      })()}
-                    </>
-                  }
-                  secondaryTypographyProps={{
-                    sx: { display: 'flex', alignItems: 'center' },
-                  }}
-                />
-              </ParticipantListItem>
-            ))}
-          </List>
-
-          <AddParticipantButton groupId={group.id} />
-        </CardContent>
-      </Card>
+      <PeopleCard groupId={group.id} />
 
       <Card variant="outlined">
         <CardContent>
