@@ -320,11 +320,8 @@ const SplitsFormSection = ({
               width="100%"
             >
               <Stack>
-                <Typography>{participantName}</Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: (theme) => theme.palette.text.secondary }}
-                >
+                <Typography color="text.primary">{participantName}</Typography>
+                <Typography variant="body2" color="text.secondary">
                   {splitValid ? formatCurrency(share) : '...'}
                 </Typography>
               </Stack>

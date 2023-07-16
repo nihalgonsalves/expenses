@@ -128,10 +128,10 @@ const ExpenseListItem = ({
       </ListItemAvatar>
       <Stack direction="row" gap={1} style={{ width: '100%' }}>
         <div>
-          <Typography variant="body2">
+          <Typography variant="body2" color="text.primary">
             {expense.description || categoryById[expense.category]?.name}
           </Typography>
-          <Typography variant="body2" color="grey">
+          <Typography variant="body2" color="text.secondary">
             {[
               joinList(expense.paidBy.map(({ name }) => name)),
               ' paid for ',
@@ -141,10 +141,10 @@ const ExpenseListItem = ({
         </div>
         <div style={{ flexGrow: 1 }} />
         <div style={{ textAlign: 'right' }}>
-          <Typography variant="body2">
+          <Typography variant="body2" color="text.primary">
             {formatCurrency(expense.money)}
           </Typography>
-          <Typography variant="body2" color="grey">
+          <Typography variant="body2" color="text.secondary">
             {formatDateTime(expense.spentAt)}
           </Typography>
         </div>

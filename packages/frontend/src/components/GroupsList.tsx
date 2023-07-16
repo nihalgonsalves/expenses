@@ -35,6 +35,7 @@ export const GroupsList = ({
             </ListItemAvatar>
             <ListItemText
               primary={group.name}
+              primaryTypographyProps={{ color: 'text.primary' }}
               secondary={group.participants.map(({ name }) => name).join(', ')}
             />
           </ListItemButton>

@@ -32,13 +32,19 @@ export const Root = () => {
         flexGrow={1}
         padding={2}
         position="relative"
-        sx={{ overflowY: 'auto' }}
+        sx={(theme) => ({
+          overflowY: 'auto',
+          backgroundColor: theme.palette.background.default,
+        })}
       >
         <Outlet />
       </Box>
 
       <BottomNavigation
-        sx={{ flexShrink: 0, backgroundColor: '#f1f1f1' }}
+        sx={(theme) => ({
+          flexShrink: 0,
+          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f1f1f1',
+        })}
         showLabels
         value="Expenses"
       >
