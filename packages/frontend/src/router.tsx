@@ -4,6 +4,7 @@ import {
   Link,
   type LinkProps,
   useParams as useParamsOriginal,
+  Navigate,
 } from 'react-router-dom';
 import { z, type ZodRawShape } from 'zod';
 
@@ -14,7 +15,6 @@ import { ExpensesIndex } from './pages/ExpensesIndex';
 import { GroupDetail } from './pages/GroupDetail';
 import { GroupNew } from './pages/GroupNew';
 import { GroupsIndex } from './pages/GroupsIndex';
-import { Index } from './pages/Index';
 import { Root } from './pages/Root';
 
 export const RouterLink = forwardRef<
@@ -35,8 +35,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Index />,
-        errorElement,
+        element: <Navigate to="/groups" />,
       },
       {
         path: '/auth/sign-in',
