@@ -331,9 +331,9 @@ const SplitsFormSection = ({
                   size="small"
                   sx={{ width: '10rem' }}
                   value={ratios[participantId]}
-                  onChange={(e) =>
-                    handleChangeRatio(participantId, e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleChangeRatio(participantId, e.target.value);
+                  }}
                   aria-label={`${splitConfig.ariaInputLabel} for ${participantName}`}
                   InputProps={{
                     endAdornment:
@@ -350,7 +350,9 @@ const SplitsFormSection = ({
                   sx={{ width: '10rem' }}
                   currencyCode={currencyCode}
                   amount={ratios[participantId] ?? 0}
-                  setAmount={(val) => handleChangeRatio(participantId, val)}
+                  setAmount={(val) => {
+                    handleChangeRatio(participantId, val);
+                  }}
                   aria-label={`Amount for ${participantName}`}
                 />
               )}

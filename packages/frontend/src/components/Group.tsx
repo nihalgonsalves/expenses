@@ -86,7 +86,9 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
           <Button
             fullWidth
             variant="outlined"
-            onClick={() => setDeleteConfirm(false)}
+            onClick={() => {
+              setDeleteConfirm(false);
+            }}
           >
             Cancel
           </Button>
@@ -105,7 +107,9 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
           variant="outlined"
           color="error"
           startIcon={<DeleteOutline />}
-          onClick={() => setDeleteConfirm(true)}
+          onClick={() => {
+            setDeleteConfirm(true);
+          }}
         >
           Delete Group
         </Button>

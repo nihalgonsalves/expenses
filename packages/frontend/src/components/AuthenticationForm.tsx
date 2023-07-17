@@ -17,18 +17,8 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
 
   const queryClient = useQueryClient();
 
-  const redirect = async () => {
-    await queryClient.invalidateQueries();
-
-    navigate('/');
-  };
-
-  const signUpMutation = trpc.user.createUser.useMutation({
-    onSuccess: redirect,
-  });
-  const signInMutation = trpc.user.authorizeUser.useMutation({
-    onSuccess: redirect,
-  });
+  const signUpMutation = trpc.user.createUser.useMutation();
+  const signInMutation = trpc.user.authorizeUser.useMutation();
 
   const emailValid = prevalidateEmail(email);
   const passwordValid = password.length >= 10;
@@ -39,12 +29,16 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const loading = signUpMutation.isLoading || signInMutation.isLoading;
   const error = signUpMutation.error ?? signInMutation.error;
 
-  const handleAuthenticate = () => {
+  const handleAuthenticate = async () => {
     if (isSignUp) {
-      signUpMutation.mutate({ name, email, password });
+      await signUpMutation.mutateAsync({ name, email, password });
     } else {
-      signInMutation.mutate({ email, password });
+      await signInMutation.mutateAsync({ email, password });
     }
+
+    await queryClient.invalidateQueries();
+
+    navigate('/');
   };
 
   return (

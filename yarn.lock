@@ -1512,10 +1512,10 @@
     prop-types "^15.8.1"
     react-is "^18.2.0"
 
-"@nihalgonsalves/esconfig@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@nihalgonsalves/esconfig/-/esconfig-0.4.0.tgz#621ca03fce854d2c1446dd7f1390edbd86be465d"
-  integrity sha512-wUjRKFwzpGIhKW83i1NTcNnO1uAJG4rNx09KX6iaSUMFSrxhrbueQ0uUBT0bHxNJ4+xY/L7atRNEsBAjNQBanw==
+"@nihalgonsalves/esconfig@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@nihalgonsalves/esconfig/-/esconfig-0.5.0.tgz#22a268ad9856cdb13326f4bda636ccb6286f258b"
+  integrity sha512-i04FQWuRGLGz32bn6ZSoYrCp4BUiT/YAnv7FXS85IR4OypA2RbmZVTBz63v1RYKuadFLmNzjVkw7dy9KwkEJVw==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^6.0.0"
     "@typescript-eslint/parser" "^6.0.0"

@@ -178,7 +178,7 @@ describe('signOut', () => {
     });
 
     expect(token).toBeUndefined();
-    expect(await caller.user.signOut()).toEqual(undefined);
+    await caller.user.signOut();
     expect(token).toBeNull();
   });
 });

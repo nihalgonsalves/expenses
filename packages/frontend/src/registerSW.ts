@@ -12,7 +12,7 @@ export const registerSW = () =>
       }
 
       const updateSW = async () => {
-        if (registration.installing || navigator?.onLine === false) return;
+        if (registration.installing || !navigator.onLine) return;
 
         const resp = await fetch(swUrl, {
           cache: 'no-store',
@@ -22,7 +22,7 @@ export const registerSW = () =>
           },
         });
 
-        if (resp?.status === 200) await registration.update();
+        if (resp.status === 200) await registration.update();
       };
 
       setInterval(() => {

@@ -17,7 +17,7 @@ import {
 class GroupServiceError extends TRPCError {}
 
 const participantConnectOrCreate = (email: string) => ({
-  create: { name: email.split('@')?.[0] ?? email, email },
+  create: { name: email.split('@')[0] ?? email, email },
   where: { email },
 });
 export class GroupService {

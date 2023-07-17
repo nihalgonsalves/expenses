@@ -112,7 +112,9 @@ export const CreateGroupForm = () => {
                 endAdornment: (
                   <IconButton
                     aria-label="Delete"
-                    onClick={() => handleDeleteParticipant(i)}
+                    onClick={() => {
+                      handleDeleteParticipant(i);
+                    }}
                     color="error"
                   >
                     <DeleteOutline />

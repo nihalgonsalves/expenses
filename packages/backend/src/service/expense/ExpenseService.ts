@@ -207,7 +207,7 @@ export class ExpenseService {
               .map(
                 ({ scale, _sum }): Money => ({
                   scale,
-                  amount: _sum?.amount ?? 0,
+                  amount: _sum.amount ?? 0,
                   currencyCode: group.currencyCode,
                 }),
               ),
