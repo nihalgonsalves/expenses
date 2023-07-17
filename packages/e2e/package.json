@@ -1,0 +1,13 @@
+{
+  "name": "@nihalgonsalves/expenses-e2e",
+  "description": "",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "playwright test",
+    "prepare": "playwright install",
+    "prepare-ci": "playwright install --with-deps"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.36.1"
+  }
+}

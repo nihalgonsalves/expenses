@@ -19,6 +19,7 @@
     "format:check": "prettier . --check",
     "fe": "yarn workspace @nihalgonsalves/expenses-frontend",
     "be": "yarn workspace @nihalgonsalves/expenses-backend",
+    "e2e": "yarn workspace @nihalgonsalves/expenses-e2e",
     "dev:fe": "yarn fe dev",
     "dev:be": "yarn be dev",
     "dev:build": "yarn build --watch",

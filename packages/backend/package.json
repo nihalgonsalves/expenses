@@ -6,10 +6,11 @@
   "types": "./src/index.ts",
   "scripts": {
     "dev": "run-p 'build --watch' 'start' 'db:generate --watch'",
-    "start": "node --enable-source-maps --watch ./dist/app.js",
+    "start": "mkdir -p ./dist/ && touch ./dist/app.js && node --enable-source-maps --watch ./dist/app.js",
     "build": "node bin/bundle.mjs",
     "test": "vitest",
     "db:migrate": "prisma migrate dev --name",
+    "db:push": "prisma db push --skip-generate",
     "db:generate": "prisma generate"
   },
   "dependencies": {
