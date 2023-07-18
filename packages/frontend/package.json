@@ -14,11 +14,11 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@js-temporal/polyfill": "^0.4.4",
-    "@mui/icons-material": "^5.13.7",
+    "@mui/icons-material": "^5.14.0",
     "@mui/lab": "^5.0.0-alpha.136",
-    "@mui/material": "^5.13.7",
+    "@mui/material": "^5.14.0",
     "@nihalgonsalves/expenses-backend": "*",
-    "@tanstack/react-query": "^4.29.19",
+    "@tanstack/react-query": "^4.29.25",
     "@trpc/client": "^10.34.0",
     "@trpc/react-query": "^10.34.0",
     "@trpc/server": "^10.34.0",
@@ -27,7 +27,7 @@
     "notistack": "^3.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.14.1",
+    "react-router-dom": "^6.14.2",
     "workbox-build": "^7.0.0",
     "workbox-core": "^7.0.0",
     "workbox-precaching": "^7.0.0",
@@ -36,11 +36,11 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.6",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
     "@vite-pwa/assets-generator": "^0.0.3",
     "@vitejs/plugin-react": "^4.0.3",
-    "vite": "^4.4.2",
+    "vite": "^4.4.4",
     "vite-plugin-pwa": "^0.16.4",
     "vitest": "^0.33.0"
   }
