@@ -6,6 +6,7 @@ import {
   ZCreateGroupInput,
   ZFullParticipant,
   ZGroupByIdResponse,
+  ZGroupWithParticipants,
   ZGroupsResponse,
 } from '../service/group/types';
 import { protectedProcedure, router } from '../trpc';
@@ -45,12 +46,21 @@ export const groupRouter = router({
 
   createGroup: protectedProcedure
     .input(ZCreateGroupInput)
-    .mutation(async ({ input, ctx }) =>
-      ctx.groupService.createGroup(input, ctx.user),
-    ),
+    .output(ZGroupWithParticipants)
+    .mutation(async ({ input, ctx }) => {
+      const group = await ctx.groupService.createGroup(input, ctx.user);
+
+      return {
+        ...group,
+        participants: group.participants.map(({ participantId }) => ({
+          id: participantId,
+        })),
+      };
+    }),
 
   deleteGroup: protectedProcedure
     .input(z.string().nonempty())
+    .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { role } = await ctx.groupService.ensureGroupMembership(
         input,

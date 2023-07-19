@@ -25,20 +25,12 @@ describe('createGroup', () => {
       id: expect.any(String),
       name: 'WG Expenses',
       currencyCode: 'EUR',
-      createdAt: expect.any(Date),
-      updatedAt: expect.any(Date),
       participants: expect.arrayContaining([
         {
-          role: GroupParticipantRole.ADMIN,
-          participantId: user.id,
-          groupId: group.id,
-          joinedAt: expect.any(Date),
+          id: user.id,
         },
         {
-          role: GroupParticipantRole.MEMBER,
-          participantId: otherMember.id,
-          groupId: group.id,
-          joinedAt: expect.any(Date),
+          id: otherMember.id,
         },
       ]),
     });
@@ -50,18 +42,14 @@ describe('createGroup', () => {
 
     const otherEmail = 'hello@example.com';
 
-    const { participants } = await caller.group.createGroup({
+    await caller.group.createGroup({
       name: 'WG Expenses',
       currencyCode: 'EUR',
       additionalParticipantEmailAddresses: [otherEmail],
     });
 
-    const { participantId } = participants.find(
-      ({ role }) => role === GroupParticipantRole.MEMBER,
-    )!;
-
     expect(
-      await prisma.user.findUnique({ where: { id: participantId } }),
+      await prisma.user.findUnique({ where: { email: otherEmail } }),
     ).toMatchObject({
       name: 'hello',
       email: 'hello@example.com',
