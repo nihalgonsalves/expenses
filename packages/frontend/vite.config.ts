@@ -38,30 +38,14 @@ export default defineConfig(({ mode }) => ({
         name: 'Expenses',
         short_name: 'Expenses',
         description: 'Expenses App',
-        theme_color: '#0083ff',
+        theme_color: '#1B065E',
+        // prettier-ignore
         icons: [
-          {
-            src: '/assets/pwa-64x64.png',
-            sizes: '64x64',
-            type: 'image/png',
-          },
-          {
-            src: '/assets/pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: '/assets/pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: '/assets/maskable-icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
+          { src: '/assets/favicon.ico', type: 'image/x-icon', sizes: '16x16 32x32' },
+          { src: '/assets/icon-192.png', type: 'image/png', sizes: '192x192' },
+          { src: '/assets/icon-512.png', type: 'image/png', sizes: '512x512' },
+          { src: '/assets/icon-192-maskable.png', type: 'image/png', sizes: '192x192', purpose: 'maskable' },
+          { src: '/assets/icon-512-maskable.png', type: 'image/png', sizes: '512x512', purpose: 'maskable' },
         ],
       },
     }),

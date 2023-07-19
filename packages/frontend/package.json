@@ -6,7 +6,6 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "generate-pwa-assets": "pwa-assets-generator",
     "test": "vitest"
   },
   "dependencies": {
@@ -38,7 +37,6 @@
   "devDependencies": {
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@vite-pwa/assets-generator": "^0.0.3",
     "@vitejs/plugin-react": "^4.0.3",
     "vite": "^4.4.4",
     "vite-plugin-pwa": "^0.16.4",

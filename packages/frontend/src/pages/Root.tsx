@@ -14,6 +14,35 @@ import { useNavigate } from 'react-router-dom';
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { RouterLink } from '../router';
 
+const GRADIENT_BACKGROUND = `
+  linear-gradient(
+    270deg,
+    hsl(327deg 100% 43%) 0%,
+    hsl(325deg 100% 40%) 16%,
+    hsl(323deg 100% 38%) 24%,
+    hsl(320deg 100% 36%) 30%,
+    hsl(317deg 100% 33%) 35%,
+    hsl(314deg 100% 31%) 40%,
+    hsl(310deg 100% 28%) 45%,
+    hsl(306deg 100% 26%) 50%,
+    hsl(301deg 100% 23%) 55%,
+    hsl(295deg 100% 22%) 60%,
+    hsl(289deg 100% 22%) 65%,
+    hsl(283deg 100% 21%) 70%,
+    hsl(275deg 95% 21%) 76%,
+    hsl(266deg 91% 20%) 84%,
+    hsl(254deg 88% 20%) 100%
+  )
+`;
+
+const STANDALONE_AWARE_BG = {
+  backgroundImage: GRADIENT_BACKGROUND,
+  backgroundColor: '#1B065E',
+  '@media (display-mode: standalone)': {
+    backgroundImage: 'none',
+  },
+};
+
 export const Root = ({
   title,
   children,
@@ -27,10 +56,7 @@ export const Root = ({
 
   return (
     <Stack style={{ height: '100dvh' }}>
-      <AppBar
-        position="static"
-        sx={(theme) => ({ backgroundColor: theme.palette.primary.main })}
-      >
+      <AppBar position="static" sx={STANDALONE_AWARE_BG}>
         <Toolbar>
           {showBackButton && (
             <IconButton
@@ -70,8 +96,8 @@ export const Root = ({
 
       <BottomNavigation
         sx={(theme) => ({
+          backgroundImage: GRADIENT_BACKGROUND,
           flexShrink: 0,
-          backgroundColor: theme.palette.primary.main,
           color: theme.palette.getContrastText(theme.palette.primary.main),
         })}
         showLabels
