@@ -23,7 +23,7 @@ export const groupRouter = router({
     }),
 
   groupById: protectedProcedure
-    .input(z.string().uuid())
+    .input(z.string().nonempty())
     .output(ZGroupByIdResponse)
     .query(async ({ input, ctx }) => {
       const group = await ctx.groupService.getGroupById(input, ctx.user);
@@ -50,7 +50,7 @@ export const groupRouter = router({
     ),
 
   deleteGroup: protectedProcedure
-    .input(z.string().uuid())
+    .input(z.string().nonempty())
     .mutation(async ({ input, ctx }) => {
       const { role } = await ctx.groupService.ensureGroupMembership(
         input,
@@ -69,7 +69,10 @@ export const groupRouter = router({
 
   addParticipant: protectedProcedure
     .input(
-      z.object({ groupId: z.string().uuid(), participantEmail: z.string() }),
+      z.object({
+        groupId: z.string().nonempty(),
+        participantEmail: z.string(),
+      }),
     )
     .output(ZFullParticipant)
     .mutation(async ({ input: { groupId, participantEmail }, ctx }) => {
@@ -99,8 +102,8 @@ export const groupRouter = router({
   deleteParticipant: protectedProcedure
     .input(
       z.object({
-        groupId: z.string().uuid(),
-        participantId: z.string().uuid(),
+        groupId: z.string().nonempty(),
+        participantId: z.string().nonempty(),
       }),
     )
     .output(z.void())

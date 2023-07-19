@@ -2,7 +2,7 @@ import { GroupParticipantRole } from '@prisma/client';
 import { z } from 'zod';
 
 export const ZGroup = z.object({
-  id: z.string().uuid(),
+  id: z.string().nonempty(),
   name: z.string(),
   currencyCode: z.string(),
 });
@@ -10,7 +10,7 @@ export const ZGroup = z.object({
 export type Group = z.infer<typeof ZGroup>;
 
 export const ZParticipantWithName = z.object({
-  id: z.string().uuid(),
+  id: z.string().nonempty(),
   name: z.string(),
 });
 

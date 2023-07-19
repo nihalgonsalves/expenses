@@ -2,6 +2,8 @@ import { type PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
+import { generateId } from '../../nanoid';
+
 import {
   type AuthorizeUserInput,
   type User,
@@ -74,6 +76,7 @@ export class UserService {
     try {
       const user = await this.prismaClient.user.create({
         data: {
+          id: generateId(),
           name: input.name,
           email: input.email,
           passwordHash: await hashPassword(input.password),

@@ -6,6 +6,7 @@ import { dinero, equal } from 'dinero.js';
 
 import { getCurrency } from '../..';
 import { type Money, sumMoney, zeroMoney, moneyToDinero } from '../../money';
+import { generateId } from '../../nanoid';
 import { type GroupWithParticipants, type Group } from '../group/types';
 
 import {
@@ -90,6 +91,7 @@ export class ExpenseService {
 
     return this.prismaClient.expense.create({
       data: {
+        id: generateId(),
         group: { connect: { id: group.id } },
         amount: input.money.amount,
         scale: input.money.scale,
@@ -110,11 +112,13 @@ export class ExpenseService {
               Prisma.ExpenseTransactionsCreateWithoutExpenseInput,
             ] => [
               {
+                id: generateId(),
                 user: { connect: { id: input.paidById } },
                 amount: -split.share.amount,
                 scale: split.share.scale,
               },
               {
+                id: generateId(),
                 user: { connect: { id: split.participantId } },
                 amount: split.share.amount,
                 scale: split.share.scale,
@@ -139,6 +143,7 @@ export class ExpenseService {
 
     return this.prismaClient.expense.create({
       data: {
+        id: generateId(),
         group: { connect: { id: group.id } },
         amount: input.money.amount,
         scale: input.money.scale,
@@ -149,11 +154,13 @@ export class ExpenseService {
         transactions: {
           create: [
             {
+              id: generateId(),
               user: { connect: { id: input.fromId } },
               amount: -input.money.amount,
               scale: input.money.scale,
             },
             {
+              id: generateId(),
               user: { connect: { id: input.toId } },
               amount: input.money.amount,
               scale: input.money.scale,

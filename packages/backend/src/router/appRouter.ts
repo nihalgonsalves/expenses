@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { publicProcedure, router } from '../trpc';
-import { getErrorMessage } from '../utils';
+import { getErrorMessage } from '../trpcUtils';
 
 import { expenseRouter } from './expenseRouter';
 import { groupRouter } from './groupRouter';

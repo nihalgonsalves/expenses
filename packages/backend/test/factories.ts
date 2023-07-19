@@ -6,6 +6,7 @@ import {
 } from '@prisma/client';
 
 import { CURRENCY_CODES } from '../src';
+import { generateId } from '../src/nanoid';
 
 const randomItem = <T>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]!;
@@ -18,6 +19,7 @@ export const userFactory = async (
 ) =>
   prisma.user.create({
     data: {
+      id: generateId(),
       name: faker.person.fullName(),
       email: faker.internet.email(),
       ...overrides,
@@ -52,6 +54,7 @@ export const groupFactory = async (
 
   return prisma.group.create({
     data: {
+      id: generateId(),
       name: `${faker.location.city()} trip`,
       currencyCode: opts.currencyCode ?? currencyCodeFactory(),
       participants: {

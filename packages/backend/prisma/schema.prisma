@@ -10,7 +10,7 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id
   createdAt DateTime @default(now()) @db.Timestamptz()
   updatedAt DateTime @updatedAt @db.Timestamptz()
 
@@ -23,7 +23,7 @@ model User {
 }
 
 model Group {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id
   createdAt DateTime @default(now()) @db.Timestamptz()
   updatedAt DateTime @updatedAt @db.Timestamptz()
 
@@ -58,7 +58,7 @@ enum ExpenseType {
 }
 
 model Expense {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
+  id        String   @id
   createdAt DateTime @default(now()) @db.Timestamptz()
   updatedAt DateTime @updatedAt @db.Timestamptz()
 
@@ -77,7 +77,7 @@ model Expense {
 }
 
 model ExpenseTransactions {
-  id String @id @default(dbgenerated("gen_random_uuid()"))
+  id String @id
 
   expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
   expenseId String

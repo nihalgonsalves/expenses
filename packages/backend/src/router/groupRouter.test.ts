@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { groupFactory, userFactory } from '../../test/factories';
 import { getTRPCCaller } from '../../test/getTRPCCaller';
+import { generateId } from '../nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
@@ -94,7 +95,7 @@ describe('groupById', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    await expect(caller.group.groupById(faker.string.uuid())).rejects.toThrow(
+    await expect(caller.group.groupById(generateId())).rejects.toThrow(
       'Group not found',
     );
   });

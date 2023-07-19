@@ -5,7 +5,8 @@ import {
 } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
-import { getTRPCError } from '../../utils';
+import { generateId } from '../../nanoid';
+import { getTRPCError } from '../../trpcUtils';
 import { type User } from '../user/types';
 
 import {
@@ -17,7 +18,7 @@ import {
 class GroupServiceError extends TRPCError {}
 
 const participantConnectOrCreate = (email: string) => ({
-  create: { name: email.split('@')[0] ?? email, email },
+  create: { id: generateId(), name: email.split('@')[0] ?? email, email },
   where: { email },
 });
 export class GroupService {
@@ -27,6 +28,7 @@ export class GroupService {
     try {
       return await this.prismaClient.group.create({
         data: {
+          id: generateId(),
           name: input.name,
           currencyCode: input.currencyCode,
           participants: {

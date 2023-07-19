@@ -69,7 +69,10 @@ export const expenseRouter = router({
 
   deleteExpense: protectedProcedure
     .input(
-      z.object({ groupId: z.string().uuid(), expenseId: z.string().uuid() }),
+      z.object({
+        groupId: z.string().nonempty(),
+        expenseId: z.string().nonempty(),
+      }),
     )
     .output(z.void())
     .mutation(async ({ input: { groupId, expenseId }, ctx }) => {
@@ -84,7 +87,7 @@ export const expenseRouter = router({
   getExpenses: protectedProcedure
     .input(
       z.object({
-        groupId: z.string().uuid(),
+        groupId: z.string().nonempty(),
         limit: z.number().positive().optional(),
       }),
     )
@@ -125,7 +128,7 @@ export const expenseRouter = router({
     }),
 
   getParticipantSummaries: protectedProcedure
-    .input(z.string().uuid())
+    .input(z.string().nonempty())
     .output(ZExpenseSummaryResponse)
     .query(async ({ input, ctx }) => {
       const { group } = await ctx.groupService.ensureGroupMembership(

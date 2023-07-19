@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { Temporal } from '@js-temporal/polyfill';
 import { ExpenseType } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
@@ -9,6 +8,7 @@ import {
   userFactory,
 } from '../../test/factories';
 import { getTRPCCaller } from '../../test/getTRPCCaller';
+import { generateId } from '../nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
@@ -164,7 +164,7 @@ describe('createExpense', () => {
     await expect(
       caller.expense.createExpense(
         createExpenseInput(
-          faker.string.uuid(),
+          generateId(),
           currencyCodeFactory(),
           user.id,
           user.id,
@@ -278,7 +278,7 @@ describe('createSettlement', () => {
 
     await expect(
       caller.expense.createSettlement({
-        groupId: faker.string.uuid(),
+        groupId: generateId(),
         money: { amount: 100_00, scale: 2, currencyCode: 'EUR' },
         fromId: user.id,
         toId: member.id,
@@ -370,7 +370,7 @@ describe('deleteExpense', () => {
 
     await expect(
       caller.expense.deleteExpense({
-        groupId: faker.string.uuid(),
+        groupId: generateId(),
         expenseId: expense.id,
       }),
     ).rejects.toThrow('Group not found');
@@ -387,7 +387,7 @@ describe('deleteExpense', () => {
     await expect(
       caller.expense.deleteExpense({
         groupId: group.id,
-        expenseId: faker.string.uuid(),
+        expenseId: generateId(),
       }),
     ).rejects.toThrow('Expense not found');
   });
@@ -429,7 +429,7 @@ describe('getExpenses', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.getExpenses({ groupId: faker.string.uuid() }),
+      caller.expense.getExpenses({ groupId: generateId() }),
     ).rejects.toThrow('Group not found');
   });
 
@@ -503,7 +503,7 @@ describe('getParticipantSummaries', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.getParticipantSummaries(faker.string.uuid()),
+      caller.expense.getParticipantSummaries(generateId()),
     ).rejects.toThrow('Group not found');
   });
 

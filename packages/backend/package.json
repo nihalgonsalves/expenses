@@ -22,6 +22,7 @@
     "cookie": "^0.5.0",
     "dinero.js": "^2.0.0-alpha.14",
     "jose": "^4.14.4",
+    "nanoid": "^4.0.2",
     "zod": "^3.21.4"
   },
   "devDependencies": {

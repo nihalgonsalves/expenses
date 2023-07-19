@@ -10,8 +10,8 @@ export const ZMoney = z.object({
 });
 
 export const ZCreateExpenseInput = z.object({
-  groupId: z.string().uuid(),
-  paidById: z.string().uuid(),
+  groupId: z.string().nonempty(),
+  paidById: z.string().nonempty(),
   money: ZMoney,
   spentAt: z.string(),
   description: z.string(),
@@ -27,25 +27,25 @@ export const ZCreateExpenseInput = z.object({
 export type CreateExpenseInput = z.infer<typeof ZCreateExpenseInput>;
 
 export const ZCreateExpenseResponse = z.object({
-  id: z.string().uuid(),
+  id: z.string().nonempty(),
   description: z.string(),
 });
 
 export const ZCreateSettlementInput = z.object({
-  groupId: z.string().uuid(),
-  fromId: z.string().uuid(),
-  toId: z.string().uuid(),
+  groupId: z.string().nonempty(),
+  fromId: z.string().nonempty(),
+  toId: z.string().nonempty(),
   money: ZMoney,
 });
 
 export type CreateSettlementInput = z.infer<typeof ZCreateSettlementInput>;
 
 export const ZCreateSettlementResponse = z.object({
-  id: z.string().uuid(),
+  id: z.string().nonempty(),
 });
 
 const ZExpenseListItem = z.object({
-  id: z.string().uuid(),
+  id: z.string().nonempty(),
   money: ZMoney,
   spentAt: z.string(),
   description: z.string(),
@@ -66,7 +66,7 @@ export type GetExpensesResponse = z.infer<typeof ZGetExpensesResponse>;
 
 export const ZExpenseSummaryResponse = z.array(
   z.object({
-    participantId: z.string().uuid(),
+    participantId: z.string().nonempty(),
     name: z.string(),
     cost: ZMoney,
     spent: ZMoney,

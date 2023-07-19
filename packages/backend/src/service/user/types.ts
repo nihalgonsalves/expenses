@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const ZUser = z.object({
-  id: z.string().uuid(),
+  id: z.string().nonempty(),
   name: z.string().nonempty(),
   email: z.string().email(),
 });
