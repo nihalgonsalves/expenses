@@ -51,7 +51,7 @@ describe('createGroup', () => {
     expect(
       await prisma.user.findUnique({ where: { email: otherEmail } }),
     ).toMatchObject({
-      name: 'hello',
+      name: 'Hello',
       email: 'hello@example.com',
     });
   });
@@ -193,7 +193,7 @@ describe('addParticipant', () => {
       }),
     ).toMatchObject({
       id: expect.any(String),
-      name: 'jessica',
+      name: 'Jessica',
       email: participantEmail,
       role: GroupParticipantRole.MEMBER,
     });

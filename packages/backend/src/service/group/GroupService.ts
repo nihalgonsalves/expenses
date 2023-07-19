@@ -17,10 +17,29 @@ import {
 
 class GroupServiceError extends TRPCError {}
 
+export const nameFromEmail = (email: string) => {
+  const firstPart = email.split('@')[0];
+
+  if (!firstPart) {
+    return 'No Name';
+  }
+
+  return firstPart
+    .replace(/[^A-Za-z]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .split(' ')
+    .map((part) => {
+      const lowerCase = part.toLowerCase();
+      return lowerCase.charAt(0).toUpperCase() + lowerCase.slice(1);
+    })
+    .join(' ');
+};
+
 const participantConnectOrCreate = (email: string) => ({
-  create: { id: generateId(), name: email.split('@')[0] ?? email, email },
+  create: { id: generateId(), name: nameFromEmail(email), email },
   where: { email },
 });
+
 export class GroupService {
   constructor(private prismaClient: PrismaClient) {}
 
