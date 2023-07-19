@@ -1,9 +1,10 @@
 import { PlaylistAdd } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
-import { trpc } from '../api/trpc';
-import { ExpensesList } from '../components/ExpensesList';
-import { GroupParams, RouterLink, useParams } from '../router';
+import { trpc } from '../../api/trpc';
+import { ExpensesList } from '../../components/ExpensesList';
+import { GroupParams, RouterLink, useParams } from '../../router';
+import { Root } from '../Root';
 
 export const ExpensesIndex = () => {
   const { groupId } = useParams(GroupParams);
@@ -14,7 +15,7 @@ export const ExpensesIndex = () => {
   if (!expensesResponse) return null;
 
   return (
-    <>
+    <Root title="Expenses" showBackButton>
       <ExpensesList
         groupId={groupId}
         expenses={expensesResponse.expenses}
@@ -31,6 +32,6 @@ export const ExpensesIndex = () => {
       >
         Add Expense
       </Button>
-    </>
+    </Root>
   );
 };

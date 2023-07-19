@@ -11,14 +11,13 @@ import { z, type ZodRawShape } from 'zod';
 import { trpc } from './api/trpc';
 import { AuthenticationPage } from './pages/AuthenticationPage';
 import { ErrorPage } from './pages/ErrorPage';
-import { ExpenseNew } from './pages/ExpenseNew';
-import { ExpensesIndex } from './pages/ExpensesIndex';
-import { GroupDetail } from './pages/GroupDetail';
-import { GroupNew } from './pages/GroupNew';
-import { GroupsIndex } from './pages/GroupsIndex';
 import { NotFoundPage } from './pages/NotFoundPage';
-import { Root } from './pages/Root';
 import { SettingsPage } from './pages/SettingsPage';
+import { ExpensesIndex } from './pages/expenses/ExpensesIndexPage';
+import { NewExpensePage } from './pages/expenses/NewExpensePage';
+import { GroupDetailPage } from './pages/groups/GroupDetailPage';
+import { GroupsIndexPage } from './pages/groups/GroupsIndexPage';
+import { NewGroupPage } from './pages/groups/NewGroupPage';
 
 export const RouterLink = forwardRef<
   HTMLAnchorElement,
@@ -46,7 +45,6 @@ const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Root />,
     errorElement,
     children: [
       {
@@ -71,7 +69,7 @@ export const router = createBrowserRouter([
         path: 'groups',
         element: (
           <AuthenticatedRoute>
-            <GroupsIndex />
+            <GroupsIndexPage />
           </AuthenticatedRoute>
         ),
         errorElement,
@@ -80,7 +78,7 @@ export const router = createBrowserRouter([
         path: 'groups/new',
         element: (
           <AuthenticatedRoute>
-            <GroupNew />
+            <NewGroupPage />
           </AuthenticatedRoute>
         ),
         errorElement,
@@ -89,7 +87,7 @@ export const router = createBrowserRouter([
         path: 'groups/:groupId',
         element: (
           <AuthenticatedRoute>
-            <GroupDetail />
+            <GroupDetailPage />
           </AuthenticatedRoute>
         ),
         errorElement,
@@ -107,7 +105,7 @@ export const router = createBrowserRouter([
         path: 'groups/:groupId/expenses/new',
         element: (
           <AuthenticatedRoute>
-            <ExpenseNew />
+            <NewExpensePage />
           </AuthenticatedRoute>
         ),
         errorElement,

@@ -1,25 +1,50 @@
-import { Group, Settings } from '@mui/icons-material';
+import { ArrowBack, Group, Settings } from '@mui/icons-material';
 import {
   AppBar,
   BottomNavigation,
   BottomNavigationAction,
   Box,
+  IconButton,
   Stack,
   Toolbar,
   Typography,
 } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { RouterLink } from '../router';
 
-export const Root = () => {
+export const Root = ({
+  title,
+  children,
+  showBackButton,
+}: {
+  title: React.ReactNode;
+  children: React.ReactNode;
+  showBackButton?: boolean;
+}) => {
+  const navigate = useNavigate();
+
   return (
     <Stack style={{ height: '100dvh' }}>
       <AppBar position="static">
         <Toolbar>
+          {showBackButton && (
+            <IconButton
+              size="large"
+              edge="start"
+              aria-label="Back"
+              color="inherit"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              <ArrowBack />
+            </IconButton>
+          )}
+
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Expenses
+            {title}
           </Typography>
 
           <NavBarAvatar />
@@ -37,7 +62,7 @@ export const Root = () => {
           backgroundColor: theme.palette.background.default,
         })}
       >
-        <Outlet />
+        {children}
       </Box>
 
       <BottomNavigation

@@ -1,16 +1,17 @@
 import { GroupAdd } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
-import { trpc } from '../api/trpc';
-import { GroupsList } from '../components/GroupsList';
-import { RouterLink } from '../router';
+import { trpc } from '../../api/trpc';
+import { GroupsList } from '../../components/GroupsList';
+import { RouterLink } from '../../router';
+import { Root } from '../Root';
 
-export const GroupsIndex = () => {
+export const GroupsIndexPage = () => {
   const { data: groups = [] } = trpc.group.myGroups.useQuery();
 
   return (
-    <>
-      <GroupsList groups={groups} sx={{ flexGrow: 1 }} />
+    <Root title="Groups">
+      {groups.length > 0 && <GroupsList groups={groups} sx={{ flexGrow: 1 }} />}
       <Button
         fullWidth
         variant="outlined"
@@ -21,6 +22,6 @@ export const GroupsIndex = () => {
       >
         New Group
       </Button>
-    </>
+    </Root>
   );
 };

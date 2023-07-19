@@ -1,6 +1,12 @@
 import { Box } from '@mui/material';
 
+import { Root } from './Root';
+
 export const ErrorPage = () => {
   // TODO useRouterError
-  return <Box>Something went wrong </Box>;
+  return (
+    <Root title="Error">
+      <Box>Something went wrong </Box>
+    </Root>
+  );
 };
