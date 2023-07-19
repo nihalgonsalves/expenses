@@ -1,5 +1,6 @@
 import { customAlphabet } from 'nanoid';
 
+// https://zelark.github.io/nano-id-cc/
 const NANOID_LENGTH = 10;
 
 // https://github.com/CyberAP/nanoid-dictionary#nolookalikes
