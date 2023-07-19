@@ -17,6 +17,7 @@ export const App = () => {
     },
     palette: {
       mode: prefersDarkMode ? 'dark' : 'light',
+      primary: { main: '#0083ff' },
     },
   });
 

@@ -27,7 +27,10 @@ export const Root = ({
 
   return (
     <Stack style={{ height: '100dvh' }}>
-      <AppBar position="static">
+      <AppBar
+        position="static"
+        sx={(theme) => ({ backgroundColor: theme.palette.primary.main })}
+      >
         <Toolbar>
           {showBackButton && (
             <IconButton
@@ -68,7 +71,8 @@ export const Root = ({
       <BottomNavigation
         sx={(theme) => ({
           flexShrink: 0,
-          backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f1f1f1',
+          backgroundColor: theme.palette.primary.main,
+          color: theme.palette.getContrastText(theme.palette.primary.main),
         })}
         showLabels
         value="Expenses"
@@ -78,12 +82,14 @@ export const Root = ({
           icon={<Group />}
           LinkComponent={RouterLink}
           href="/groups"
+          sx={{ color: 'unset' }}
         />
         <BottomNavigationAction
           label="Setings"
           icon={<Settings />}
           LinkComponent={RouterLink}
           href="/settings"
+          sx={{ color: 'unset' }}
         />
       </BottomNavigation>
     </Stack>

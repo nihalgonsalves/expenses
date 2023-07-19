@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => ({
         name: 'Expenses',
         short_name: 'Expenses',
         description: 'Expenses App',
-        theme_color: '#1877d3',
+        theme_color: '#0083ff',
         icons: [
           {
             src: '/assets/pwa-64x64.png',
