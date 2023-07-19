@@ -494,7 +494,12 @@ export const RegularExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
           amount={amount}
           setAmount={setAmount}
         />
-        <Select value={currencyCode} onChange={handleChangeCurrency}>
+        <Select
+          // TODO: implement currency conversion
+          disabled
+          value={currencyCode}
+          onChange={handleChangeCurrency}
+        >
           {Object.values(CURRENCY_CODES).map((c) => (
             <MenuItem key={c} value={c}>
               {c}
