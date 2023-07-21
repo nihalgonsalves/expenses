@@ -141,7 +141,7 @@ const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
     expectedSum: (amount) => amount,
     formatErrorTooHigh: (diff: number, currencyCode: string) =>
       `The amounts must add up to the total. You need to account for ${formatCurrency(
-        { amount: diff, scale: 0, currencyCode },
+        dineroToMoney(toDinero(diff, currencyCode)),
       )}.`,
     formatErrorTooLow: (diff: number, currencyCode: string) =>
       `The amounts must add up to the total. You have ${formatCurrency({
