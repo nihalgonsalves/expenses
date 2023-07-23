@@ -38,9 +38,8 @@ describe('formatDateTimeRelative', () => {
     [{ days: 5, hours: 6 }, '5 days ago'],
     [{ minutes: 30, seconds: 59 }, '30 min. ago'],
     [{ minutes: 1 }, '1 min. ago'],
-    [{ seconds: 35 }, '35 sec. ago'],
-    // should be `ago` but not really worth handling
-    [Temporal.Duration.from({ milliseconds: 100 }), 'in 0 sec.'],
+    [{ seconds: 35 }, 'just now'],
+    [{ milliseconds: 100 }, 'just now'],
   ])('returns the correct relative time', (duration, expected) => {
     expect(
       formatDateTimeRelative(
