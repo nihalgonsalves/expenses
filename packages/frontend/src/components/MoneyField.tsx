@@ -47,13 +47,16 @@ export const MoneyField = ({
           const hasSelection = selectionStart !== selectionEnd;
 
           if (hasSelection) {
-            if (e.key === 'Backspace' || e.key === 'Delete') {
-              // Special case for clearing the field (select all, delete/backspace).
-              // This doesn't support deleting individual selections because that would
-              // go back to trying to reverse engineer the formatted value.
-              return selectionStart === 0 && selectionEnd === length
-                ? '0'
-                : amountAsString;
+            // Special case for when the entire value is selected, we can replace
+            // or clear the entire value. Partial selections are not supported
+            if (selectionStart === 0 && selectionEnd === length) {
+              if (e.key === 'Backspace' || e.key === 'Delete') {
+                return '0';
+              } else if (e.key.match(/^[0-9]$/)) {
+                return e.key;
+              }
+            } else {
+              return amountAsString;
             }
           } else if (selectionEnd !== length) {
             // Don't allow editing the value in the middle of the string
