@@ -268,7 +268,7 @@ export class ExpenseService {
             _sum: { amount: true },
           })
           .then(mapSummary),
-        this.prismaClient.groupParticipants.findMany({
+        this.prismaClient.groupMemberships.findMany({
           where: { groupId: group.id },
           include: { participant: true },
         }),

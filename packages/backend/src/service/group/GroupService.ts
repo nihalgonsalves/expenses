@@ -122,7 +122,7 @@ export class GroupService {
 
   async addParticipant(group: Group, participantEmail: string) {
     try {
-      const participant = await this.prismaClient.groupParticipants.create({
+      const participant = await this.prismaClient.groupMemberships.create({
         data: {
           group: { connect: { id: group.id } },
           participant: {
@@ -165,7 +165,7 @@ export class GroupService {
       });
     }
 
-    await this.prismaClient.groupParticipants.delete({
+    await this.prismaClient.groupMemberships.delete({
       where: {
         participantId_groupId: {
           participantId,

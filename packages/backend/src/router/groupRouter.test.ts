@@ -261,7 +261,7 @@ describe('deleteParticipant', () => {
     });
 
     expect(
-      await prisma.groupParticipants.findUnique({
+      await prisma.groupMemberships.findUnique({
         where: {
           participantId_groupId: {
             participantId: member.id,
