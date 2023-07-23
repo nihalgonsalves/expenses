@@ -86,9 +86,7 @@ export const MoneyField = ({
       fullWidth
       inputRef={inputRef}
       inputProps={{ inputMode: 'numeric' }}
-      value={formatCurrency(moneySnapshot, {
-        currencyDisplay: 'narrowSymbol',
-      })}
+      value={formatCurrency(moneySnapshot)}
       onKeyDown={handleAmountKeyDown}
       {...textFieldProps}
     />

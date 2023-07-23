@@ -30,10 +30,7 @@ export const getCurrencyCode = () => {
 
 export const formatCurrency = (
   { amount, scale, currencyCode }: Money,
-  options: Pick<
-    Intl.NumberFormatOptions,
-    'currencyDisplay' | 'signDisplay'
-  > = {},
+  options: Pick<Intl.NumberFormatOptions, 'signDisplay'> = {},
 ) => {
   const floatValue = amount / Math.pow(10, scale);
 
@@ -41,6 +38,7 @@ export const formatCurrency = (
     ...options,
     style: 'currency',
     currency: currencyCode,
+    currencyDisplay: 'narrowSymbol',
   }).format(floatValue);
 };
 
