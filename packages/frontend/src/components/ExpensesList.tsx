@@ -1,28 +1,42 @@
-import { MoreVert, QuestionMark } from '@mui/icons-material';
+import { DeleteOutline, ExpandMore, QuestionMark } from '@mui/icons-material';
 import {
   Avatar,
+  AvatarGroup,
   IconButton,
   List,
   ListItem,
-  ListItemAvatar,
-  Menu,
-  MenuItem,
+  ListItemText,
   Stack,
   Typography,
+  Card,
+  CardContent,
+  CardHeader,
+  Collapse,
+  useMediaQuery,
+  styled,
   type SxProps,
+  type Theme,
+  type IconButtonProps,
+  Button,
 } from '@mui/material';
 import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
-import { useId, useState } from 'react';
+import { useState } from 'react';
 
 import { type ExpenseListItem as ExpenseListItemAPI } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 import { categoryById } from '../data/categories';
 import { formatCurrency } from '../utils/money';
-import { formatDateTime, getShortName, joinList } from '../utils/utils';
+import {
+  formatDateTimeRelative,
+  getInitials,
+  getShortName,
+} from '../utils/utils';
 
-const ExpenseMenu = ({
+import { ParticipantListItem } from './ParticipantListItem';
+
+const ExpenseActions = ({
   groupId,
   expense,
   setIsInvalidating,
@@ -31,29 +45,14 @@ const ExpenseMenu = ({
   expense: ExpenseListItemAPI;
   setIsInvalidating: (isInvalidating: boolean) => void;
 }) => {
-  const buttonId = useId();
-  const menuId = useId();
-
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const utils = trpc.useContext();
   const deleteExpense = trpc.expense.deleteExpense.useMutation();
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const open = anchorEl != null;
-
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleDelete = async () => {
     try {
-      handleMenuClose();
       setIsInvalidating(true);
 
       await deleteExpense.mutateAsync({ groupId, expenseId: expense.id });
@@ -73,64 +72,90 @@ const ExpenseMenu = ({
     }
   };
 
-  return (
-    <div>
-      <IconButton
-        aria-label="more"
-        id={buttonId}
-        aria-controls={open ? menuId : undefined}
-        aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
-        onClick={handleMenuClick}
-      >
-        <MoreVert />
-      </IconButton>
-      <Menu
-        id={menuId}
-        MenuListProps={{
-          'aria-labelledby': buttonId,
+  return deleteConfirm ? (
+    <Stack direction="column" spacing={2}>
+      <Button
+        fullWidth
+        variant="outlined"
+        onClick={() => {
+          setDeleteConfirm(false);
         }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleMenuClose}
       >
-        <MenuItem
-          onClick={() => {
-            return handleDelete();
-          }}
-        >
-          Delete
-        </MenuItem>
-      </Menu>
-    </div>
+        Cancel
+      </Button>
+      <Button
+        fullWidth
+        variant="contained"
+        color="error"
+        onClick={handleDelete}
+      >
+        Confirm Delete (Irreversible)
+      </Button>
+    </Stack>
+  ) : (
+    <Button
+      fullWidth
+      variant="outlined"
+      color="error"
+      startIcon={<DeleteOutline />}
+      onClick={() => {
+        setDeleteConfirm(true);
+      }}
+    >
+      Delete
+    </Button>
   );
 };
 
-const ExpenseListItem = ({
-  expense,
-  groupId,
-  showActions,
-}: {
-  expense: ExpenseListItemAPI;
-  groupId: string;
-  showActions: boolean;
-}) => {
-  const [isInvalidating, setIsInvalidating] = useState(false);
+const getSummaryText = (expense: ExpenseListItemAPI): string => {
+  if (expense.type === 'TRANSFER') {
+    // TODO improve API for transfer type
+    // This works because of the sorting of + first
+    const [to, from] = expense.participants;
+
+    return `${getShortName(to?.name ?? '')} paid ${getShortName(
+      from?.name ?? '',
+    )}`;
+  }
+
+  if (expense.yourBalance.amount) {
+    return 'Not involved';
+  }
+
+  const balanceFormatted = formatCurrency(expense.yourBalance, {
+    signDisplay: 'never',
+  });
+
+  return `${
+    expense.yourBalance.amount < 0 ? 'You receive' : 'You owe'
+  } ${balanceFormatted}`;
+};
+
+const DenseExpenseListItem = ({ expense }: { expense: ExpenseListItemAPI }) => {
+  const narrowScreen = useMediaQuery<Theme>((theme) =>
+    theme.breakpoints.down('sm'),
+  );
+
+  const descriptionText =
+    (expense.description || undefined) ??
+    categoryById[expense.category]?.name ??
+    expense.category;
 
   return (
-    <ListItem
-      sx={{ opacity: isInvalidating ? 0.5 : 'unset', paddingInline: 0 }}
-    >
-      <ListItemAvatar>
-        <Avatar>
+    <ListItem sx={{ paddingInline: 0 }}>
+      <Stack direction="row" gap={1} style={{ width: '100%' }}>
+        <Avatar
+          variant="rounded"
+          sx={(theme) => ({ backgroundColor: theme.palette.primary.main })}
+          aria-label={categoryById[expense.category]?.name ?? expense.category}
+        >
           {categoryById[expense.category]?.icon ?? <QuestionMark />}
         </Avatar>
-      </ListItemAvatar>
-      <Stack direction="row" gap={1} style={{ width: '100%' }}>
         <div>
           <Typography variant="body2" color="text.primary">
-            {expense.description || categoryById[expense.category]?.name}
+            <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
           </Typography>
+
           <Typography
             variant="body2"
             color="text.secondary"
@@ -145,30 +170,133 @@ const ExpenseListItem = ({
               WebkitBoxOrient: 'vertical',
             }}
           >
-            {[
-              joinList(expense.paidBy.map(({ name }) => getShortName(name))),
-              expense.type === 'EXPENSE' ? ' paid for ' : ' paid ',
-              joinList(expense.paidFor.map(({ name }) => getShortName(name))),
-            ]}
+            {getSummaryText(expense)}
           </Typography>
         </div>
         <div style={{ flexGrow: 1 }} />
-        <div style={{ textAlign: 'right', flexShrink: 0 }}>
-          <Typography variant="body2" color="text.primary">
-            {formatCurrency(expense.money)}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {formatDateTime(expense.spentAt)}
-          </Typography>
-        </div>
-        {showActions && (
-          <ExpenseMenu
-            groupId={groupId}
-            expense={expense}
-            setIsInvalidating={setIsInvalidating}
-          />
-        )}
+        <AvatarGroup
+          spacing={narrowScreen ? 'small' : 'medium'}
+          max={narrowScreen ? 2 : 10}
+        >
+          {expense.participants
+            .filter(({ balance: { amount } }) => amount !== 0)
+            .map(({ id, name }) => (
+              <Avatar key={id} aria-label={name}>
+                {getInitials(name)}
+              </Avatar>
+            ))}
+        </AvatarGroup>
       </Stack>
+    </ListItem>
+  );
+};
+
+type ExpandMoreProps = {
+  expand: boolean;
+} & IconButtonProps;
+
+const ExpandMoreButton = styled((props: ExpandMoreProps) => {
+  const { expand, ...other } = props;
+  return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+  marginLeft: 'auto',
+  transition: theme.transitions.create('transform', {
+    duration: theme.transitions.duration.shortest,
+  }),
+}));
+
+const ExpandedExpenseListItem = ({
+  expense,
+  groupId,
+}: {
+  expense: ExpenseListItemAPI;
+  groupId: string;
+}) => {
+  const [isInvalidating, setIsInvalidating] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  const descriptionText =
+    (expense.description || undefined) ??
+    categoryById[expense.category]?.name ??
+    expense.category;
+
+  const title = (
+    <>
+      <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
+    </>
+  );
+
+  const subheader = (
+    <>
+      {getSummaryText(expense)}
+      <br />
+      <em>{formatDateTimeRelative(expense.spentAt)}</em>
+    </>
+  );
+
+  return (
+    <ListItem
+      sx={{ opacity: isInvalidating ? 0.5 : 'unset', paddingInline: 0 }}
+    >
+      <Card variant="outlined" sx={{ width: '100%' }}>
+        <CardHeader
+          avatar={
+            <Avatar
+              sx={(theme) => ({
+                backgroundColor: theme.palette.primary.main,
+              })}
+              variant="rounded"
+              aria-label={
+                categoryById[expense.category]?.name ?? expense.category
+              }
+            >
+              {categoryById[expense.category]?.icon ?? <QuestionMark />}
+            </Avatar>
+          }
+          action={
+            <ExpandMoreButton
+              expand={expanded}
+              onClick={() => {
+                setExpanded((prev) => !prev);
+              }}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMore />
+            </ExpandMoreButton>
+          }
+          title={title}
+          subheader={subheader}
+        />
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <CardContent sx={{ paddingBlock: 0 }}>
+            {expense.type === 'EXPENSE' && (
+              <List dense sx={{ paddingBlockStart: 0 }}>
+                {expense.participants
+                  .filter(({ balance: { amount } }) => amount !== 0)
+                  .map(({ id, name, balance }) => (
+                    <ParticipantListItem key={id} avatar={getInitials(name)}>
+                      <ListItemText
+                        primary={name}
+                        secondary={`${
+                          balance.amount < 0 ? 'Receives' : 'Owes'
+                        } ${formatCurrency(balance, {
+                          signDisplay: 'never',
+                        })}`}
+                      />
+                    </ParticipantListItem>
+                  ))}
+              </List>
+            )}
+            <ExpenseActions
+              groupId={groupId}
+              expense={expense}
+              setIsInvalidating={setIsInvalidating}
+            />
+          </CardContent>
+        </Collapse>
+      </Card>
     </ListItem>
   );
 };
@@ -177,22 +305,31 @@ export const ExpensesList = ({
   groupId,
   expenses,
   sx = {},
-  showActions = false,
+  expanded = false,
 }: {
   groupId: string;
   expenses: ExpenseListItemAPI[];
   sx?: SxProps;
-  showActions?: boolean;
+  expanded?: boolean;
 }) => {
+  if (expanded) {
+    return (
+      <List sx={sx}>
+        {expenses.map((expense) => (
+          <ExpandedExpenseListItem
+            key={expense.id}
+            expense={expense}
+            groupId={groupId}
+          />
+        ))}
+      </List>
+    );
+  }
+
   return (
     <List sx={sx} dense>
       {expenses.map((expense) => (
-        <ExpenseListItem
-          key={expense.id}
-          expense={expense}
-          groupId={groupId}
-          showActions={showActions}
-        />
+        <DenseExpenseListItem key={expense.id} expense={expense} />
       ))}
     </List>
   );

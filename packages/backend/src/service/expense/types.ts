@@ -47,12 +47,12 @@ export const ZCreateSettlementResponse = z.object({
 const ZExpenseListItem = z.object({
   id: z.string().nonempty(),
   money: ZMoney,
+  participants: z.array(ZParticipantWithName.extend({ balance: ZMoney })),
+  yourBalance: ZMoney,
   spentAt: z.string(),
   description: z.string(),
   category: z.string(),
   type: z.nativeEnum(ExpenseType),
-  paidBy: z.array(ZParticipantWithName),
-  paidFor: z.array(ZParticipantWithName),
 });
 
 export type ExpenseListItem = z.infer<typeof ZExpenseListItem>;

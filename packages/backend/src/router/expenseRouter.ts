@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
+import { sumMoney, zeroMoney } from '../money';
 import {
   ZCreateExpenseInput,
   ZCreateExpenseResponse,
@@ -10,12 +11,6 @@ import {
   ZGetExpensesResponse,
 } from '../service/expense/types';
 import { protectedProcedure, router } from '../trpc';
-
-const mapUniqueParticipants = (
-  list: { user: { id: string; name: string } }[],
-) => [
-  ...new Map(list.map(({ user: { id, name } }) => [id, { id, name }])).values(),
-];
 
 export const expenseRouter = router({
   createExpense: protectedProcedure
@@ -106,20 +101,38 @@ export const expenseRouter = router({
       return {
         expenses: expenses.map(
           ({ amount, scale, transactions, ...expense }) => {
-            const paidBy = transactions.filter(
-              ({ amount: txnAmount }) => txnAmount < 0,
-            );
+            const participants = new Map(
+              transactions.map(({ userId, user: { name } }) => [
+                userId,
+                { id: userId, name },
+              ]),
+            ).values();
 
-            const paidFor = transactions.filter(
-              ({ amount: txnAmount }) => txnAmount > 0,
-            );
+            const participantBalances = [...participants]
+              .map(({ id, name }) => ({
+                id,
+                name,
+                balance:
+                  sumMoney(
+                    transactions
+                      .filter(({ userId }) => userId === id)
+                      .map((txn) => ({
+                        currencyCode: group.currencyCode,
+                        amount: txn.amount,
+                        scale: txn.scale,
+                      })),
+                  ) ?? zeroMoney(group.currencyCode),
+              }))
+              .sort((a, b) => a.balance.amount - b.balance.amount);
 
             return {
               ...expense,
               spentAt: expense.spentAt.toISOString(),
               money: { amount, scale, currencyCode: group.currencyCode },
-              paidBy: mapUniqueParticipants(paidBy),
-              paidFor: mapUniqueParticipants(paidFor),
+              participants: participantBalances,
+              yourBalance:
+                participantBalances.find(({ id }) => id === ctx.user.id)
+                  ?.balance ?? zeroMoney(group.currencyCode),
             };
           },
         ),
@@ -136,6 +149,10 @@ export const expenseRouter = router({
         ctx.user.id,
       );
 
-      return ctx.expenseService.getParticipantSummaries(group);
+      const summaries = await ctx.expenseService.getParticipantSummaries(group);
+
+      return summaries.sort(({ participantId }) =>
+        participantId === ctx.user.id ? -1 : 1,
+      );
     }),
 });

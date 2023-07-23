@@ -22,11 +22,50 @@ export const dateTimeLocalToISOString = (val: string) =>
     .toZonedDateTime(Intl.DateTimeFormat().resolvedOptions().timeZone)
     .toString();
 
-export const formatDateTime = (iso8601: string) =>
-  new Intl.DateTimeFormat(getUserLanguage(), {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  }).format(Temporal.Instant.from(iso8601).epochMilliseconds);
+export const shortDateTime = new Intl.DateTimeFormat(getUserLanguage(), {
+  dateStyle: 'short',
+  timeStyle: 'short',
+});
+
+const shortRelativeFormat = new Intl.RelativeTimeFormat(getUserLanguage(), {
+  style: 'short',
+});
+
+const getRelativeFormatUnit = (
+  duration: Temporal.Duration,
+): [value: number, diff: Intl.RelativeTimeFormatUnit] => {
+  const durationRounded = duration.round({
+    smallestUnit: 'second',
+    largestUnit: 'day',
+  });
+  const { days, hours, minutes } = durationRounded.abs();
+
+  if (days >= 1) {
+    return [durationRounded.days, 'day'];
+  }
+
+  if (hours >= 1) {
+    return [durationRounded.hours, 'hours'];
+  }
+
+  if (minutes >= 1) {
+    return [durationRounded.minutes, 'minutes'];
+  }
+
+  return [durationRounded.seconds, 'seconds'];
+};
+
+export const formatDateTimeRelative = (iso8601: string) => {
+  const instant = Temporal.Instant.from(iso8601);
+
+  const relativeToNow = instant.since(Temporal.Now.instant());
+
+  if (relativeToNow.abs().total('days') >= 7) {
+    return shortDateTime.format(instant.epochMilliseconds);
+  }
+
+  return shortRelativeFormat.format(...getRelativeFormatUnit(relativeToNow));
+};
 
 export const getInitials = (name: string): string => {
   const [first, last] = name.split(' ');

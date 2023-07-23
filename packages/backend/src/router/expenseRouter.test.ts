@@ -416,8 +416,10 @@ describe('getExpenses', () => {
       {
         id: expense.id,
         description: expense.description,
-        paidBy: [{ id: user.id }],
-        paidFor: [{ id: member.id }, { id: user.id }],
+        participants: [
+          { id: user.id, balance: { amount: -75_00, scale: 2 } },
+          { id: member.id, balance: { amount: 75_00, scale: 2 } },
+        ],
       },
     ]);
 

@@ -20,7 +20,7 @@ export const ExpensesIndex = () => {
         groupId={groupId}
         expenses={expensesResponse.expenses}
         sx={{ flexGrow: 1 }}
-        showActions
+        expanded
       />
       <Button
         fullWidth
