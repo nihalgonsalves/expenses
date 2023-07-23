@@ -118,7 +118,7 @@ const getSummaryText = (expense: ExpenseListItemAPI): string => {
     )}`;
   }
 
-  if (expense.yourBalance.amount) {
+  if (expense.yourBalance.amount === 0) {
     return 'Not involved';
   }
 
@@ -126,9 +126,10 @@ const getSummaryText = (expense: ExpenseListItemAPI): string => {
     signDisplay: 'never',
   });
 
-  return `${
-    expense.yourBalance.amount < 0 ? 'You receive' : 'You owe'
-  } ${balanceFormatted}`;
+  const oweOrReceive =
+    expense.yourBalance.amount < 0 ? 'You receive' : 'You owe';
+
+  return `${oweOrReceive} ${balanceFormatted}`;
 };
 
 const DenseExpenseListItem = ({ expense }: { expense: ExpenseListItemAPI }) => {
