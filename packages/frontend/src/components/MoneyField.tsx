@@ -5,6 +5,15 @@ import { dineroToMoney, type Money } from '@nihalgonsalves/expenses-backend';
 
 import { formatCurrency, toDinero } from '../utils/money';
 
+/**
+ * this is not Number.MAX_SAFE_INTEGER since we'd have to use a BIGINT in postgres
+ * to store values. this doesn't make much sense given that millionaires will
+ * not use this to split bills.
+ *
+ * this is roughly 20 million in an exponent=2 currency like EUR.
+ */
+const MAX_ALLOWED = 20_000_000_00;
+
 export const MoneyField = ({
   amount,
   setAmount,
@@ -16,7 +25,7 @@ export const MoneyField = ({
   setAmount: (newAmount: number) => void;
 } & Pick<
   TextFieldProps,
-  'fullWidth' | 'autoFocus' | 'label' | 'size' | 'sx' | 'error'
+  'fullWidth' | 'autoFocus' | 'label' | 'size' | 'sx' | 'error' | 'helperText'
 >) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -75,7 +84,7 @@ export const MoneyField = ({
 
         const newValueInt = parseInt(newValue, 10);
 
-        if (newValueInt <= Number.MAX_SAFE_INTEGER) {
+        if (newValueInt <= MAX_ALLOWED) {
           setAmount(newValueInt);
         }
       },

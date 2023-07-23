@@ -6,9 +6,11 @@ import { PrismaClient } from '@prisma/client';
 import { PostgreSqlContainer } from 'testcontainers';
 import { afterAll, beforeEach } from 'vitest';
 
+import { config } from '../src/config';
 import { type ContextObj } from '../src/context';
 import { appRouter } from '../src/router/appRouter';
 import { ExpenseService } from '../src/service/expense/ExpenseService';
+import { FrankfurterService } from '../src/service/frankfurter/FrankfurterService';
 import { GroupService } from '../src/service/group/GroupService';
 import { UserService } from '../src/service/user/UserService';
 import { type User, type JWTToken } from '../src/service/user/types';
@@ -60,12 +62,16 @@ export const getTRPCCaller = async () => {
     const userService = new UserService(prisma);
     const groupService = new GroupService(prisma);
     const expenseService = new ExpenseService(prisma);
+    const frankfurterService = new FrankfurterService(
+      config.FRANKFURTER_BASE_URL,
+    );
 
     const context: ContextObj = {
       prisma,
       userService,
       groupService,
       expenseService,
+      frankfurterService,
       user,
       setJwtToken,
     };

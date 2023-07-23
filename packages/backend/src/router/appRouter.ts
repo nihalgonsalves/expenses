@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { publicProcedure, router } from '../trpc';
 import { getErrorMessage } from '../trpcUtils';
 
+import { currencyConversionRouter } from './currencyConversionRouter';
 import { expenseRouter } from './expenseRouter';
 import { groupRouter } from './groupRouter';
 import { userRouter } from './userRouter';
@@ -28,6 +29,8 @@ export const appRouter = router({
   group: groupRouter,
 
   expense: expenseRouter,
+
+  currencyConversion: currencyConversionRouter,
 });
 
 export type AppRouter = typeof appRouter;

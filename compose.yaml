@@ -20,6 +20,7 @@ services:
       - .env.backend
     environment:
       PORT: 5174
+      FRANKFURTER_BASE_URL: https://api.frankfurter.app/
     expose:
       - 5174
     labels:

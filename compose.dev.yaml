@@ -1,11 +1,25 @@
 version: '3.8'
 services:
-  postgresql:
+  expenses-postgres:
     image: 'postgres:15.3-alpine'
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
       - '5432:5432'
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+
+  frankfurter-postgres:
+    image: 'postgres:15.3-alpine'
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  frankfurter:
+    image: hakanensari/frankfurter
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@frankfurter-postgres:5432/postgres
+    ports:
+      - 5200:8080
 
 volumes:
   postgresql:

@@ -19,6 +19,7 @@ import {
   type Theme,
   Checkbox,
   ListItemIcon,
+  Collapse,
 } from '@mui/material';
 import { type Dinero, allocate } from 'dinero.js';
 import {
@@ -39,10 +40,16 @@ import {
   zeroMoney,
   type User,
 } from '@nihalgonsalves/expenses-backend';
+import { moneyToDinero } from '@nihalgonsalves/expenses-backend/src/money';
 
 import { trpc } from '../api/trpc';
 import { CategoryId, categories } from '../data/categories';
-import { CURRENCY_CODES, formatCurrency, toDinero } from '../utils/money';
+import {
+  convertCurrency,
+  formatCurrency,
+  formatDecimalCurrency,
+  toDinero,
+} from '../utils/money';
 import { dateTimeLocalToISOString, getInitials } from '../utils/utils';
 
 import { MoneyField } from './MoneyField';
@@ -64,6 +71,7 @@ enum SplitGroupExpenseSplitType {
 
 const calcSplits = (
   group: GroupByIdResponse,
+  currencyCode: string,
   money: Dinero<number>,
   ratios: Record<string, number>,
 ): SplitGroupExpenseSplit[] => {
@@ -79,7 +87,7 @@ const calcSplits = (
     return {
       participantId: id,
       participantName: name,
-      share: alloc ? dineroToMoney(alloc) : zeroMoney(group.currencyCode),
+      share: alloc ? dineroToMoney(alloc) : zeroMoney(currencyCode),
     };
   });
 };
@@ -141,15 +149,15 @@ const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
   [SplitGroupExpenseSplitType.Amounts]: {
     expectedSum: (amount) => amount,
     formatErrorTooHigh: (diff: number, currencyCode: string) =>
-      `The amounts must add up to the total. You need to account for ${formatCurrency(
-        dineroToMoney(toDinero(diff, currencyCode)),
+      `The amounts must add up to the total. You need to account for ${formatDecimalCurrency(
+        diff,
+        currencyCode,
       )}.`,
     formatErrorTooLow: (diff: number, currencyCode: string) =>
-      `The amounts must add up to the total. You have ${formatCurrency({
-        amount: diff,
-        scale: 0,
+      `The amounts must add up to the total. You have ${formatDecimalCurrency(
+        diff,
         currencyCode,
-      })} too much.`,
+      )} too much.`,
     label: 'Enter amounts',
     hasInput: false,
   },
@@ -211,6 +219,7 @@ const SplitsFormSection = ({
   setSplitType,
   ratios,
   setRatios,
+  rate,
 }: {
   group: GroupByIdResponse;
   amount: number;
@@ -220,6 +229,7 @@ const SplitsFormSection = ({
   setSplitType: (val: SplitGroupExpenseSplitType) => void;
   ratios: Record<string, number>;
   setRatios: Dispatch<SetStateAction<Record<string, number>>>;
+  rate: { amount: number; scale: number } | undefined;
 }) => {
   const narrowScreen = useMediaQuery<Theme>((theme) =>
     theme.breakpoints.down('sm'),
@@ -246,6 +256,10 @@ const SplitsFormSection = ({
 
   const handleChangeSplitType = useCallback(
     (_e: React.MouseEvent<HTMLElement>, value: unknown) => {
+      if (!value) {
+        return;
+      }
+
       const newType = z.nativeEnum(SplitGroupExpenseSplitType).parse(value);
 
       switch (newType) {
@@ -273,7 +287,12 @@ const SplitsFormSection = ({
             Object.fromEntries(
               (splitValid
                 ? splits
-                : calcSplits(group, money, getDefaultRatios(group))
+                : calcSplits(
+                    group,
+                    currencyCode,
+                    money,
+                    getDefaultRatios(group),
+                  )
               ).map(({ participantId, share }) => [
                 participantId,
                 share.amount,
@@ -285,7 +304,7 @@ const SplitsFormSection = ({
 
       setSplitType(newType);
     },
-    [splitValid, splits, group, money, setRatios, setSplitType],
+    [splitValid, splits, group, currencyCode, money, setRatios, setSplitType],
   );
 
   const splitConfig = SPLIT_CONFIG[splitType];
@@ -324,7 +343,18 @@ const SplitsFormSection = ({
               <Stack>
                 <Typography color="text.primary">{participantName}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {splitValid ? formatCurrency(share) : '...'}
+                  {splitValid ? (
+                    <>
+                      {formatCurrency(share)}
+                      {group.currencyCode !== currencyCode &&
+                        rate &&
+                        ` (${formatCurrency(
+                          convertCurrency(share, group.currencyCode, rate),
+                        )})`}
+                    </>
+                  ) : (
+                    '...'
+                  )}
                 </Typography>
               </Stack>
               {splitConfig.hasInput && (
@@ -392,7 +422,7 @@ const ParticipantSelect = ({
   group: GroupByIdResponse;
   label: string;
   selectedId: string | undefined;
-  setSelectedId: (val: string | undefined) => void;
+  setSelectedId: (val: string) => void;
   filterId?: (val: string) => boolean;
 }) => {
   const selectId = useId();
@@ -430,12 +460,13 @@ export const RegularExpenseForm = ({
   me: User;
 }) => {
   const categorySelectId = useId();
+  const currencySelectId = useId();
 
   const createExpense = trpc.expense.createExpense.useMutation();
 
   const navigate = useNavigate();
 
-  const [paidById, setPaidById] = useState<string | undefined>(me.id);
+  const [paidById, setPaidById] = useState(me.id);
   const [currencyCode, setCurrencyCode] = useState(group.currencyCode);
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState<CategoryId>();
@@ -444,13 +475,30 @@ export const RegularExpenseForm = ({
     Temporal.Now.plainDateTimeISO().round('minutes').toString(),
   );
 
+  const { data: supportedCurrencies = [] } =
+    trpc.currencyConversion.getSupportedCurrencies.useQuery();
+
+  const { data: rate } = trpc.currencyConversion.getConversionRate.useQuery(
+    {
+      from: currencyCode,
+      to: group.currencyCode,
+    },
+    { enabled: group.currencyCode !== currencyCode },
+  );
+
+  const dineroValue = toDinero(amount, currencyCode);
+
   const [splitType, setSplitType] = useState<SplitGroupExpenseSplitType>(
     SplitGroupExpenseSplitType.Evenly,
   );
   const [ratios, setRatios] = useState(getDefaultRatios(group));
-  const splits = calcSplits(group, toDinero(amount, currencyCode), ratios);
+  const splits = calcSplits(group, currencyCode, dineroValue, ratios);
 
-  const moneySnapshot: Money = dineroToMoney(toDinero(amount, currencyCode));
+  const moneySnapshot: Money = dineroToMoney(dineroValue);
+  const convertedMoneySnapshot =
+    group.currencyCode !== currencyCode && rate
+      ? convertCurrency(moneySnapshot, group.currencyCode, rate)
+      : undefined;
 
   const handleChangeCurrency = useCallback(
     (e: SelectChangeEvent) => {
@@ -459,26 +507,43 @@ export const RegularExpenseForm = ({
     [setCurrencyCode],
   );
 
+  const valid =
+    moneySnapshot.amount > 0 && validateSplit(splitType, ratios, amount);
+
   const handleCreateExpense = async () => {
-    if (!paidById) {
+    if (!valid) {
       return;
     }
 
-    await createExpense.mutateAsync({
-      groupId: group.id,
-      paidById,
-      description,
-      category: category ?? CategoryId.Other,
-      money: moneySnapshot,
-      spentAt: dateTimeLocalToISOString(when),
-      splits,
-    });
+    if (group.currencyCode === currencyCode) {
+      await createExpense.mutateAsync({
+        groupId: group.id,
+        paidById,
+        description,
+        category: category ?? CategoryId.Other,
+        money: moneySnapshot,
+        spentAt: dateTimeLocalToISOString(when),
+        splits,
+      });
+    } else if (convertedMoneySnapshot && rate) {
+      await createExpense.mutateAsync({
+        groupId: group.id,
+        paidById,
+        description,
+        category: category ?? CategoryId.Other,
+        money: convertedMoneySnapshot,
+        spentAt: dateTimeLocalToISOString(when),
+        splits: calcSplits(
+          group,
+          currencyCode,
+          moneyToDinero(convertedMoneySnapshot),
+          ratios,
+        ),
+      });
+    }
 
     navigate(`/groups/${group.id}`);
   };
-
-  const valid =
-    moneySnapshot.amount > 0 && validateSplit(splitType, ratios, amount);
 
   return (
     <Stack
@@ -506,26 +571,45 @@ export const RegularExpenseForm = ({
           currencyCode={currencyCode}
           amount={amount}
           setAmount={setAmount}
+          helperText={
+            <Collapse in={group.currencyCode !== currencyCode}>
+              {convertedMoneySnapshot ? (
+                formatCurrency(convertedMoneySnapshot)
+              ) : (
+                <>&nbsp;</>
+              )}
+            </Collapse>
+          }
         />
-        <Select
-          // TODO: implement currency conversion
-          disabled
-          value={currencyCode}
-          onChange={handleChangeCurrency}
-        >
-          {Object.values(CURRENCY_CODES).map((c) => (
-            <MenuItem key={c} value={c}>
-              {c}
-            </MenuItem>
-          ))}
-        </Select>
+        {supportedCurrencies.includes(group.currencyCode) && (
+          <FormControl variant="outlined" sx={{ flexShrink: 0 }}>
+            <InputLabel id={currencySelectId}>Currency</InputLabel>
+
+            <Select
+              id={currencySelectId}
+              value={currencyCode}
+              onChange={handleChangeCurrency}
+              label="Currency"
+            >
+              {supportedCurrencies.map((code) => (
+                <MenuItem key={code} value={code}>
+                  {code}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
       </Stack>
 
       <ParticipantSelect
         group={group}
         label="Who paid?"
         selectedId={paidById}
-        setSelectedId={setPaidById}
+        setSelectedId={(newId) => {
+          if (!newId) return;
+
+          setPaidById(newId);
+        }}
       />
 
       <FormControl fullWidth>
@@ -581,6 +665,7 @@ export const RegularExpenseForm = ({
         setSplitType={setSplitType}
         ratios={ratios}
         setRatios={setRatios}
+        rate={rate}
       />
 
       <LoadingButton

@@ -1,12 +1,14 @@
 import countryToCurrency from 'country-to-currency';
-import { dinero } from 'dinero.js';
+import { dinero, convert, transformScale } from 'dinero.js';
 import { z } from 'zod';
 
 import {
   type Money,
   CURRENCY_CODES as BACKEND_CURRENCY_CODES,
   getCurrency,
+  dineroToMoney,
 } from '@nihalgonsalves/expenses-backend';
+import { moneyToDinero } from '@nihalgonsalves/expenses-backend/src/money';
 
 import { getUserLanguage } from './utils';
 
@@ -44,3 +46,22 @@ export const formatCurrency = (
 
 export const toDinero = (amount: number, currencyCode: string) =>
   dinero({ amount, currency: getCurrency(currencyCode) });
+
+export const convertCurrency = (
+  source: Money,
+  targetCurrencyCode: string,
+  targetRate: { amount: number; scale: number },
+): Money => {
+  const targetCurrency = getCurrency(targetCurrencyCode);
+
+  const convertedDinero = convert(moneyToDinero(source), targetCurrency, {
+    [targetCurrencyCode]: targetRate,
+  });
+
+  return dineroToMoney(
+    transformScale(convertedDinero, targetCurrency.exponent),
+  );
+};
+
+export const formatDecimalCurrency = (amount: number, currencyCode: string) =>
+  formatCurrency(dineroToMoney(toDinero(amount, currencyCode)));
