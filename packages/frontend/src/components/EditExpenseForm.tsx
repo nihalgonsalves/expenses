@@ -37,6 +37,7 @@ import {
   type GroupByIdResponse,
   dineroToMoney,
   zeroMoney,
+  type User,
 } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
@@ -386,13 +387,19 @@ const ParticipantSelect = ({
   label,
   selectedId,
   setSelectedId,
+  filterId,
 }: {
   group: GroupByIdResponse;
   label: string;
   selectedId: string | undefined;
   setSelectedId: (val: string | undefined) => void;
+  filterId?: (val: string) => boolean;
 }) => {
   const selectId = useId();
+
+  const options = filterId
+    ? Object.values(group.participants).filter(({ id }) => filterId(id))
+    : Object.values(group.participants);
 
   return (
     <FormControl fullWidth>
@@ -405,7 +412,7 @@ const ParticipantSelect = ({
           setSelectedId(e.target.value);
         }}
       >
-        {Object.values(group.participants).map(({ id, name }) => (
+        {options.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
             {name}
           </MenuItem>
@@ -415,14 +422,20 @@ const ParticipantSelect = ({
   );
 };
 
-export const RegularExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
+export const RegularExpenseForm = ({
+  group,
+  me,
+}: {
+  group: GroupByIdResponse;
+  me: User;
+}) => {
   const categorySelectId = useId();
 
   const createExpense = trpc.expense.createExpense.useMutation();
 
   const navigate = useNavigate();
 
-  const [paidById, setPaidById] = useState(group.participants[0]?.id);
+  const [paidById, setPaidById] = useState<string | undefined>(me.id);
   const [currencyCode, setCurrencyCode] = useState(group.currencyCode);
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState<CategoryId>();
@@ -586,12 +599,18 @@ export const RegularExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
   );
 };
 
-export const SettlementForm = ({ group }: { group: GroupByIdResponse }) => {
+export const SettlementForm = ({
+  group,
+  me,
+}: {
+  group: GroupByIdResponse;
+  me: User;
+}) => {
   const navigate = useNavigate();
 
   const [amount, setAmount] = useState(0);
-  const [fromId, setFromId] = useState<string>();
-  const [toId, setToId] = useState<string>();
+  const [fromId, setFromId] = useState<string | undefined>(me.id);
+  const [toId, setToId] = useState<string | undefined>();
 
   const utils = trpc.useContext();
   const createSettlement = trpc.expense.createSettlement.useMutation();
@@ -636,6 +655,7 @@ export const SettlementForm = ({ group }: { group: GroupByIdResponse }) => {
         label="To"
         selectedId={toId}
         setSelectedId={setToId}
+        filterId={(id) => id !== fromId}
       />
 
       <MoneyField
@@ -660,7 +680,13 @@ export const SettlementForm = ({ group }: { group: GroupByIdResponse }) => {
 
 const ZExpenseType = z.enum(['expense', 'settlement']);
 
-export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
+export const EditExpenseForm = ({
+  group,
+  me,
+}: {
+  group: GroupByIdResponse;
+  me: User;
+}) => {
   const [type, setType] = useState<z.infer<typeof ZExpenseType>>('expense');
 
   return (
@@ -678,8 +704,8 @@ export const EditExpenseForm = ({ group }: { group: GroupByIdResponse }) => {
         <ToggleButton value="settlement">Settlement</ToggleButton>
       </ToggleButtonGroup>
 
-      {type === 'expense' && <RegularExpenseForm group={group} />}
-      {type === 'settlement' && <SettlementForm group={group} />}
+      {type === 'expense' && <RegularExpenseForm group={group} me={me} />}
+      {type === 'settlement' && <SettlementForm group={group} me={me} />}
     </Stack>
   );
 };

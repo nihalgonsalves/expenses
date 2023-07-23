@@ -7,13 +7,15 @@ export const NewExpensePage = () => {
   const { groupId } = useParams(GroupParams);
   const { data: group } = trpc.group.groupById.useQuery(groupId);
 
-  if (!group) {
+  const { data: me } = trpc.user.me.useQuery();
+
+  if (!group || !me) {
     return null;
   }
 
   return (
     <Root title="Add Expense" showBackButton>
-      <EditExpenseForm group={group} />
+      <EditExpenseForm group={group} me={me} />
     </Root>
   );
 };
