@@ -15,8 +15,6 @@ import {
   Typography,
   ListItem,
   Alert,
-  useMediaQuery,
-  type Theme,
   Checkbox,
   ListItemIcon,
   Collapse,
@@ -44,6 +42,7 @@ import { moneyToDinero } from '@nihalgonsalves/expenses-backend/src/money';
 
 import { trpc } from '../api/trpc';
 import { CategoryId, categories } from '../data/categories';
+import { useToggleButtonOrientation } from '../utils/hooks';
 import {
   convertCurrency,
   formatCurrency,
@@ -231,9 +230,7 @@ const SplitsFormSection = ({
   setRatios: Dispatch<SetStateAction<Record<string, number>>>;
   rate: { amount: number; scale: number } | undefined;
 }) => {
-  const narrowScreen = useMediaQuery<Theme>((theme) =>
-    theme.breakpoints.down('sm'),
-  );
+  const toggleButtonOrientation = useToggleButtonOrientation('sm');
 
   const money = useMemo(
     () => toDinero(amount, currencyCode),
@@ -317,7 +314,7 @@ const SplitsFormSection = ({
         exclusive
         onChange={handleChangeSplitType}
         fullWidth
-        orientation={narrowScreen ? 'vertical' : 'horizontal'}
+        orientation={toggleButtonOrientation}
       >
         {Object.entries(SPLIT_CONFIG).map(([type, { label }]) => (
           <ToggleButton key={type} value={type}>
@@ -572,7 +569,7 @@ export const RegularExpenseForm = ({
           amount={amount}
           setAmount={setAmount}
           helperText={
-            <Collapse in={group.currencyCode !== currencyCode}>
+            <Collapse component="span" in={group.currencyCode !== currencyCode}>
               {convertedMoneySnapshot ? (
                 formatCurrency(convertedMoneySnapshot)
               ) : (

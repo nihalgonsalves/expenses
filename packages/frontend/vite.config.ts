@@ -28,9 +28,10 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       injectRegister: null,
       strategies: 'injectManifest',
-      selfDestroying: mode === 'development',
+      selfDestroying:
+        mode === 'development' && process.env.ENABLE_DEV_PWA == null,
       devOptions: {
-        enabled: process.env.ENABLE_DEV_PWA != null,
+        enabled: true,
         type: 'module',
         resolveTempFolder: () => relativePath('./dist/vite-pwa-dev/'),
       },

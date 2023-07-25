@@ -18,10 +18,28 @@ model User {
   email        String  @unique
   passwordHash String? @map("password_hash")
 
-  groups              GroupMemberships[]
-  expenseTransactions ExpenseTransactions[]
+  groups                    GroupMemberships[]
+  expenseTransactions       ExpenseTransactions[]
+  notificationSubscriptions NotificationSubscription[]
 
   @@map("users")
+}
+
+model NotificationSubscription {
+  id        String   @id
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  description String
+
+  endpoint  String @unique
+  keyAuth   String @map("key_auth")
+  keyP256dh String @map("key_p256dh")
+
+  @@map("notification_subscriptions")
 }
 
 model Group {

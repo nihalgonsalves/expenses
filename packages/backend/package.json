@@ -6,7 +6,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "dev": "run-p 'build --watch' 'start' 'db:generate --watch'",
-    "start": "mkdir -p ./dist/ && touch ./dist/app.js && node --enable-source-maps --watch ./dist/app.js",
+    "start": "mkdir -p ./dist/ && touch ./dist/app.js && node --enable-source-maps --require dotenv/config --watch ./dist/app.js",
     "build": "node bin/bundle.mjs",
     "test": "vitest",
     "db:migrate": "prisma migrate dev --name",
@@ -24,13 +24,18 @@
     "dinero.js": "^2.0.0-alpha.14",
     "jose": "^4.14.4",
     "nanoid": "^4.0.2",
+    "ua-parser-js": "^1.0.35",
+    "web-push": "^3.6.3",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie": "^0.5.1",
+    "@types/ua-parser-js": "^0.7.36",
+    "@types/web-push": "^3.3.2",
     "@vitest/coverage-v8": "^0.33.0",
+    "dotenv": "^16.3.1",
     "esbuild": "^0.18.16",
     "prisma": "*",
     "squawk-cli": "^0.24.0",

@@ -12,10 +12,8 @@ import {
   CardContent,
   CardHeader,
   Collapse,
-  useMediaQuery,
   styled,
   type SxProps,
-  type Theme,
   type IconButtonProps,
   Button,
 } from '@mui/material';
@@ -27,6 +25,7 @@ import { type ExpenseListItem as ExpenseListItemAPI } from '@nihalgonsalves/expe
 
 import { trpc } from '../api/trpc';
 import { categoryById } from '../data/categories';
+import { useBreakpointDown } from '../utils/hooks';
 import { formatCurrency } from '../utils/money';
 import {
   formatDateTimeRelative,
@@ -133,9 +132,7 @@ const getSummaryText = (expense: ExpenseListItemAPI): string => {
 };
 
 const DenseExpenseListItem = ({ expense }: { expense: ExpenseListItemAPI }) => {
-  const narrowScreen = useMediaQuery<Theme>((theme) =>
-    theme.breakpoints.down('sm'),
-  );
+  const narrowScreen = useBreakpointDown('sm');
 
   const descriptionText =
     (expense.description || undefined) ??

@@ -12,7 +12,7 @@ export const registerSW = () =>
       }
 
       const updateSW = async () => {
-        if (registration.installing || !navigator.onLine) return;
+        if (registration.installing || !globalThis.navigator.onLine) return;
 
         const resp = await fetch(swUrl, {
           cache: 'no-store',

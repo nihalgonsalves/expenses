@@ -56,6 +56,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
       <TextField
         label="Name"
+        autoComplete="name"
         value={name}
         onChange={(e) => {
           setName(e.target.value);
@@ -65,6 +66,8 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
       <TextField
         label="Email"
+        type="email"
+        autoComplete="email"
         value={email}
         onChange={(e) => {
           setEmail(e.target.value);
@@ -75,6 +78,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
       <TextField
         label="Old password (only required if changing password)"
         type="password"
+        autoComplete="current-password"
         value={password}
         onChange={(e) => {
           setPassword(e.target.value);
@@ -85,6 +89,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
       <TextField
         label="New password"
         type="password"
+        autoComplete="new-password"
         value={newPassword}
         onChange={(e) => {
           setNewPassword(e.target.value);
