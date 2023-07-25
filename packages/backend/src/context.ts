@@ -1,18 +1,22 @@
 import { PrismaClient } from '@prisma/client';
 import { type CreateHTTPContextOptions } from '@trpc/server/adapters/standalone';
 import cookie from 'cookie';
+import { UAParser } from 'ua-parser-js';
 
 import { config } from './config';
 import { ExpenseService } from './service/expense/ExpenseService';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
 import { GroupService } from './service/group/GroupService';
+import { NotificationService } from './service/notification/NotificationService';
 import { UserService } from './service/user/UserService';
 import { type JWTToken, ZJWTToken, type User } from './service/user/types';
 
 const prisma = new PrismaClient();
 const userService = new UserService(prisma);
 const groupService = new GroupService(prisma);
-const expenseService = new ExpenseService(prisma);
+const notificationService = new NotificationService(prisma);
+const expenseService = new ExpenseService(prisma, notificationService);
+
 const frankfurterService = new FrankfurterService(config.FRANKFURTER_BASE_URL);
 
 const AUTH_COOKIE_NAME = 'auth';
@@ -54,10 +58,14 @@ export const createContext = async ({ req, res }: CreateHTTPContextOptions) => {
   return {
     prisma,
     user: await getMaybeUser(req.headers.cookie, setJwtToken),
+    get userAgent() {
+      return new UAParser(req.headers['user-agent']).getResult();
+    },
     userService,
     groupService,
     expenseService,
     frankfurterService,
+    notificationService,
     setJwtToken,
   };
 };

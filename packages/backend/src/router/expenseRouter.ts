@@ -1,7 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { sumMoney, zeroMoney } from '../money';
+import { zeroMoney } from '../money';
 import {
   ZCreateExpenseInput,
   ZCreateExpenseResponse,
@@ -35,7 +35,7 @@ export const expenseRouter = router({
         });
       }
 
-      return ctx.expenseService.createExpense(input, group);
+      return ctx.expenseService.createExpense(ctx.user, input, group);
     }),
 
   createSettlement: protectedProcedure
@@ -59,7 +59,7 @@ export const expenseRouter = router({
         });
       }
 
-      return ctx.expenseService.createSettlement(input, group);
+      return ctx.expenseService.createSettlement(ctx.user, input, group);
     }),
 
   deleteExpense: protectedProcedure
@@ -94,42 +94,18 @@ export const expenseRouter = router({
       );
 
       const { expenses, total } = await ctx.expenseService.getExpenses({
-        groupId,
+        group,
         limit,
       });
 
       return {
         expenses: expenses.map(
-          ({ amount, scale, transactions, ...expense }) => {
-            const participants = new Map(
-              transactions.map(({ userId, user: { name } }) => [
-                userId,
-                { id: userId, name },
-              ]),
-            ).values();
-
-            const participantBalances = [...participants]
-              .map(({ id, name }) => ({
-                id,
-                name,
-                balance:
-                  sumMoney(
-                    transactions
-                      .filter(({ userId }) => userId === id)
-                      .map((txn) => ({
-                        currencyCode: group.currencyCode,
-                        amount: txn.amount,
-                        scale: txn.scale,
-                      })),
-                  ) ?? zeroMoney(group.currencyCode),
-              }))
-              .sort((a, b) => a.balance.amount - b.balance.amount);
-
+          ({ participantBalances, amount, scale, spentAt, ...expense }) => {
             return {
               ...expense,
-              spentAt: expense.spentAt.toISOString(),
-              money: { amount, scale, currencyCode: group.currencyCode },
               participants: participantBalances,
+              spentAt: spentAt.toISOString(),
+              money: { amount, scale, currencyCode: group.currencyCode },
               yourBalance:
                 participantBalances.find(({ id }) => id === ctx.user.id)
                   ?.balance ?? zeroMoney(group.currencyCode),

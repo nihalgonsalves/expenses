@@ -20,6 +20,10 @@ const ZEnv = z.object({
     .number()
     .default(Temporal.Duration.from({ days: 7 }).total('seconds')),
 
+  VAPID_EMAIL: devOnlyDefault(z.string().email(), 'nobody@example.com'),
+  VAPID_PRIVATE_KEY: z.string().nonempty(),
+  VAPID_PUBLIC_KEY: z.string().nonempty(),
+
   FRANKFURTER_BASE_URL: devOnlyDefault(z.string(), 'http://localhost:5200/'),
 });
 

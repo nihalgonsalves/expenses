@@ -25,7 +25,8 @@ export const getCurrencyCode = () => {
       countryToCurrency[
         // @ts-expect-error string cannot access const countryToCurrency object
         // not a problem since we provide a fallback
-        navigator.language.match(/\w\w-(?<country>[A-Z]*)/)?.groups?.['country']
+        globalThis.navigator.language.match(/\w\w-(?<country>[A-Z]*)/)
+          ?.groups?.['country']
       ],
     );
 };

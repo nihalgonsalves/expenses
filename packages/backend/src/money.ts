@@ -54,3 +54,9 @@ export const sumMoney = ([firstValue, ...otherValues]: Money[]):
     ),
   );
 };
+
+export const negateMoney = ({ amount, scale, currencyCode }: Money): Money => ({
+  amount: -amount,
+  scale,
+  currencyCode,
+});

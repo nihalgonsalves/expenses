@@ -13,6 +13,8 @@ export {
   type ExpenseListItem,
 } from './service/expense/types';
 
+export { type NotificationPayload } from './service/notification/types';
+
 export {
   type Currency,
   type Money,

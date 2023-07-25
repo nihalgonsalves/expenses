@@ -1,13 +1,29 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { type PrismaClient, type Prisma, ExpenseType } from '@prisma/client';
+import {
+  type PrismaClient,
+  type Prisma,
+  ExpenseType,
+  type Expense,
+  type ExpenseTransactions,
+  type User as PrismaUser,
+} from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 import { dinero, equal } from 'dinero.js';
 
-import { getCurrency } from '../..';
-import { type Money, sumMoney, zeroMoney, moneyToDinero } from '../../money';
+import {
+  type Money,
+  sumMoney,
+  zeroMoney,
+  moneyToDinero,
+  negateMoney,
+  getCurrency,
+} from '../../money';
 import { generateId } from '../../nanoid';
 import { type GroupWithParticipants, type Group } from '../group/types';
+import { type NotificationService } from '../notification/NotificationService';
+import { type NotificationPayload } from '../notification/types';
+import { type User } from '../user/types';
 
 import {
   type ExpenseSummaryResponse,
@@ -17,21 +33,75 @@ import {
 
 class ExpenseServiceError extends TRPCError {}
 
+const expenseToPayload = (
+  expense: Expense,
+  group: Group,
+  yourBalance: Omit<Money, 'currencyCode'>,
+): NotificationPayload => ({
+  type: 'expense',
+  group,
+  expense: {
+    ...expense,
+    money: {
+      currencyCode: group.currencyCode,
+      amount: expense.amount,
+      scale: expense.scale,
+    },
+    yourBalance: {
+      currencyCode: group.currencyCode,
+      ...yourBalance,
+    },
+  },
+});
+
+const calculateBalances = (
+  group: Group,
+  transactions: (ExpenseTransactions & { user: PrismaUser })[],
+) => {
+  const participants = new Map(
+    transactions.map(({ userId, user: { name } }) => [
+      userId,
+      { id: userId, name },
+    ]),
+  ).values();
+
+  const participantBalances = [...participants]
+    .map(({ id, name }) => ({
+      id,
+      name,
+      balance:
+        sumMoney(
+          transactions
+            .filter(({ userId }) => userId === id)
+            .map((txn) => ({
+              currencyCode: group.currencyCode,
+              amount: txn.amount,
+              scale: txn.scale,
+            })),
+        ) ?? zeroMoney(group.currencyCode),
+    }))
+    .sort((a, b) => a.balance.amount - b.balance.amount);
+
+  return participantBalances;
+};
+
 export class ExpenseService {
-  constructor(private prismaClient: PrismaClient) {}
+  constructor(
+    private prismaClient: PrismaClient,
+    private notificationService: NotificationService,
+  ) {}
 
   async getExpenses({
-    groupId,
+    group,
     limit,
   }: {
-    groupId: string;
+    group: Group;
     limit?: number | undefined;
   }) {
     const [expenses, total] = await this.prismaClient.$transaction([
       this.prismaClient.expense.findMany({
-        where: { groupId },
+        where: { groupId: group.id },
         include: {
-          group: true,
           transactions: {
             include: {
               user: true,
@@ -41,13 +111,20 @@ export class ExpenseService {
         orderBy: { spentAt: 'desc' },
         ...(limit ? { take: limit } : {}),
       }),
-      this.prismaClient.expense.count({ where: { groupId } }),
+      this.prismaClient.expense.count({ where: { groupId: group.id } }),
     ]);
 
-    return { expenses, total };
+    return {
+      expenses: expenses.map((expense) => ({
+        ...expense,
+        participantBalances: calculateBalances(group, expense.transactions),
+      })),
+      total,
+    };
   }
 
   async createExpense(
+    user: User,
     input: Omit<CreateExpenseInput, 'groupId'>,
     group: Group,
   ) {
@@ -89,7 +166,14 @@ export class ExpenseService {
       });
     }
 
-    return this.prismaClient.expense.create({
+    const expense = await this.prismaClient.expense.create({
+      include: {
+        transactions: {
+          include: {
+            user: true,
+          },
+        },
+      },
       data: {
         id: generateId(),
         group: { connect: { id: group.id } },
@@ -128,9 +212,26 @@ export class ExpenseService {
         },
       },
     });
+
+    const balances = calculateBalances(group, expense.transactions);
+
+    // TODO: Background task
+    await this.notificationService.sendNotifications(
+      Object.fromEntries(
+        balances
+          .filter(({ id, balance }) => id !== user.id && balance.amount !== 0)
+          .map(({ id, balance }): [string, NotificationPayload] => [
+            id,
+            expenseToPayload(expense, group, balance),
+          ]),
+      ),
+    );
+
+    return expense;
   }
 
   async createSettlement(
+    user: User,
     input: Omit<CreateSettlementInput, 'groupId'>,
     group: Group,
   ) {
@@ -141,7 +242,7 @@ export class ExpenseService {
       });
     }
 
-    return this.prismaClient.expense.create({
+    const expense = await this.prismaClient.expense.create({
       data: {
         id: generateId(),
         group: { connect: { id: group.id } },
@@ -169,6 +270,21 @@ export class ExpenseService {
         },
       },
     });
+
+    // TODO: Background task
+    const messages: Record<string, NotificationPayload> = {};
+    if (input.fromId !== user.id)
+      messages[input.fromId] = expenseToPayload(
+        expense,
+        group,
+        negateMoney(input.money),
+      );
+    if (input.toId !== user.id)
+      messages[input.toId] = expenseToPayload(expense, group, input.money);
+
+    await this.notificationService.sendNotifications(messages);
+
+    return expense;
   }
 
   async deleteExpense(id: string, group: Group) {

@@ -4,6 +4,7 @@ import { promisify } from 'util';
 
 import { PrismaClient } from '@prisma/client';
 import { PostgreSqlContainer } from 'testcontainers';
+import { UAParser } from 'ua-parser-js';
 import { afterAll, beforeEach } from 'vitest';
 
 import { config } from '../src/config';
@@ -12,6 +13,7 @@ import { appRouter } from '../src/router/appRouter';
 import { ExpenseService } from '../src/service/expense/ExpenseService';
 import { FrankfurterService } from '../src/service/frankfurter/FrankfurterService';
 import { GroupService } from '../src/service/group/GroupService';
+import { NotificationService } from '../src/service/notification/NotificationService';
 import { UserService } from '../src/service/user/UserService';
 import { type User, type JWTToken } from '../src/service/user/types';
 
@@ -61,7 +63,8 @@ export const getTRPCCaller = async () => {
   ) => {
     const userService = new UserService(prisma);
     const groupService = new GroupService(prisma);
-    const expenseService = new ExpenseService(prisma);
+    const notificationService = new NotificationService(prisma);
+    const expenseService = new ExpenseService(prisma, notificationService);
     const frankfurterService = new FrankfurterService(
       config.FRANKFURTER_BASE_URL,
     );
@@ -71,8 +74,14 @@ export const getTRPCCaller = async () => {
       userService,
       groupService,
       expenseService,
+      notificationService,
       frankfurterService,
       user,
+      get userAgent() {
+        return new UAParser(
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5.2 Safari/605.1.15',
+        ).getResult();
+      },
       setJwtToken,
     };
 

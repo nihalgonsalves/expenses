@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 
 export const getUserLanguage = () => {
-  return window.navigator.languages[0];
+  return globalThis.navigator.languages[0];
 };
 
 export const generateId = () => {
