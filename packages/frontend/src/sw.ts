@@ -43,11 +43,24 @@ const handlePush = async (event: PushEvent) => {
 
   const negative = payload.expense.yourBalance.amount < 0;
 
-  const title = `💶 ${payload.group.name} – ${description} ${formattedMoney}`;
+  // Expense:
+  //   💶 WG Expenses – Rent (€1,000.00)
+  //   You owe €500.00 for Rent (€1,000.00)
+
+  // Transfer:
+  //   💶 WG Expenses – Transfer
+  //   You sent €500.00
+
+  const title =
+    payload.expense.type === 'EXPENSE'
+      ? `💶 ${payload.group.name} – ${description} (${formattedMoney})`
+      : `💶 ${payload.group.name} – Transfer`;
 
   const body =
     payload.expense.type === 'EXPENSE'
-      ? `${negative ? 'You receive' : 'You owe'} ${formattedBalance}`
+      ? `${
+          negative ? 'You receive' : 'You owe'
+        } ${formattedBalance} for ${description} (${formattedMoney})`
       : `${negative ? 'You sent' : 'You received'} ${formattedBalance}`;
 
   await self.registration.showNotification(title, {
