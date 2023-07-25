@@ -34,24 +34,33 @@ export const usePushSubscription = () => {
   return pushSubscription ?? undefined;
 };
 
+// undefined on iOS when not installed, for example
+const notificationGlobal =
+  'Notification' in globalThis ? globalThis.Notification : undefined;
+
+const navigatorPermissions =
+  'permissions' in globalThis.navigator
+    ? globalThis.navigator.permissions
+    : undefined;
+
 export const useNotificationPermission = (): {
   permission: NotificationPermission | 'not_supported';
   request: () => Promise<NotificationPermission | 'not_supported'>;
 } => {
   const serviceWorkerRegistration = useServiceWorkerRegistration();
 
-  const [permission, setPermission] = useState(
-    globalThis.Notification.permission,
-  );
+  const [permission, setPermission] = useState<
+    NotificationPermission | 'not_supported'
+  >(notificationGlobal?.permission ?? 'not_supported');
 
   useEffect(() => {
     const handler = () => {
-      setPermission(globalThis.Notification.permission);
+      setPermission(notificationGlobal?.permission ?? 'not_supported');
     };
 
-    if ('permissions' in globalThis.navigator) {
+    if (navigatorPermissions) {
       void (async () => {
-        const status = await globalThis.navigator.permissions.query({
+        const status = await navigatorPermissions.query({
           name: 'notifications',
         });
 
@@ -67,7 +76,9 @@ export const useNotificationPermission = (): {
   const request = useCallback(async () => {
     if (permission === 'granted') return permission;
 
-    const newPermission = await globalThis.Notification.requestPermission();
+    if (!notificationGlobal) return 'not_supported';
+
+    const newPermission = await notificationGlobal.requestPermission();
 
     // should not be required but not all browsers correctly implement the
     // permission event listener, notably Safari
