@@ -1,5 +1,5 @@
 import { type PrismaClient } from '@prisma/client';
-import webPush from 'web-push';
+import webPush, { WebPushError } from 'web-push';
 
 import { config } from '../../config';
 import { generateId } from '../../nanoid';
@@ -11,14 +11,18 @@ import {
   ZNotificationPayload,
 } from './types';
 
-const vapidDetails = {
-  subject: `mailto:${config.VAPID_EMAIL}`,
-  publicKey: config.VAPID_PUBLIC_KEY,
-  privateKey: config.VAPID_PRIVATE_KEY,
-};
-
+type NotificationDispatchResult = { id: string; userId: string } & (
+  | { success: true }
+  | { success: false; errorType: 'SERVER'; statusCode: number }
+  | { success: false; errorType: 'UNKNOWN'; error: unknown }
+);
 export class NotificationService {
-  constructor(private prismaClient: PrismaClient) {}
+  constructor(
+    private prismaClient: PrismaClient,
+    private vapidPublicKey = config.VAPID_PUBLIC_KEY,
+    private vapidPrivateKey = config.VAPID_PRIVATE_KEY,
+    private vapidSubject = `mailto:${config.VAPID_EMAIL}`,
+  ) {}
 
   async getSubscriptions(user: User) {
     return this.prismaClient.notificationSubscription.findMany({
@@ -62,7 +66,7 @@ export class NotificationService {
 
   async sendNotifications(
     messagesByUserId: Record<string, NotificationPayload>,
-  ) {
+  ): Promise<NotificationDispatchResult[]> {
     const subscriptions =
       await this.prismaClient.notificationSubscription.findMany({
         where: {
@@ -72,32 +76,75 @@ export class NotificationService {
         },
       });
 
-    await Promise.all(
-      subscriptions.map(async ({ userId, endpoint, keyAuth, keyP256dh }) => {
-        try {
-          await webPush.sendNotification(
-            {
-              endpoint,
-              keys: {
-                auth: keyAuth,
-                p256dh: keyP256dh,
+    const results = await Promise.all(
+      subscriptions.map(
+        async ({
+          id,
+          userId,
+          endpoint,
+          keyAuth,
+          keyP256dh,
+        }): Promise<NotificationDispatchResult> => {
+          try {
+            await webPush.sendNotification(
+              {
+                endpoint,
+                keys: {
+                  auth: keyAuth,
+                  p256dh: keyP256dh,
+                },
               },
-            },
-            // parse with zod to ensure no extra field passthrough
-            JSON.stringify(
-              ZNotificationPayload.parse(messagesByUserId[userId]),
-            ),
-            {
-              vapidDetails,
-            },
-          );
-        } catch (e) {
-          console.error(
-            `Error sending notification to user=${userId}, endpoint=${endpoint}`,
-            e,
-          );
-        }
-      }),
+              // parse with zod to ensure no extra field passthrough
+              JSON.stringify(
+                ZNotificationPayload.parse(messagesByUserId[userId]),
+              ),
+              {
+                vapidDetails: {
+                  subject: this.vapidSubject,
+                  publicKey: this.vapidPublicKey,
+                  privateKey: this.vapidPrivateKey,
+                },
+              },
+            );
+
+            return { id, userId, success: true };
+          } catch (error) {
+            if (error instanceof WebPushError) {
+              console.error(
+                `Error sending notification to user=${userId}, endpoint=${endpoint}, statusCode=${error.statusCode}`,
+              );
+              return {
+                id,
+                userId,
+                success: false,
+                errorType: 'SERVER',
+                statusCode: error.statusCode,
+              };
+            }
+
+            console.error(
+              `Error sending notification to user=${userId}, endpoint=${endpoint}`,
+              error,
+            );
+            return { id, userId, success: false, errorType: 'UNKNOWN', error };
+          }
+        },
+      ),
     );
+
+    const idsToUnsubscribe = results
+      .filter(
+        (r) =>
+          !r.success &&
+          r.errorType === 'SERVER' &&
+          [400, 404, 410].includes(r.statusCode),
+      )
+      .map(({ id }) => id);
+
+    await this.prismaClient.notificationSubscription.deleteMany({
+      where: { id: { in: idsToUnsubscribe } },
+    });
+
+    return results;
   }
 }

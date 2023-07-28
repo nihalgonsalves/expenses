@@ -30,6 +30,13 @@ const handlePush = async (event: PushEvent) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const payload: NotificationPayload = event.data?.json();
 
+  if (payload.type === 'test') {
+    await self.registration.showNotification('Test Notification', {
+      body: payload.message,
+    });
+    return;
+  }
+
   const description =
     (payload.expense.description ||
       categoryById[payload.expense.category]?.name) ??

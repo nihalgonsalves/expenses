@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { ZMoney } from '../expense/types';
 
-export const ZNotificationPayload = z.object({
+const ZExpenseNotificationPayload = z.object({
   type: z.literal('expense'),
   group: z.object({
     id: z.string().nonempty(),
@@ -18,6 +18,16 @@ export const ZNotificationPayload = z.object({
     yourBalance: ZMoney,
   }),
 });
+
+const ZTestNotificationPayload = z.object({
+  type: z.literal('test'),
+  message: z.string().nonempty(),
+});
+
+export const ZNotificationPayload = z.union([
+  ZTestNotificationPayload,
+  ZExpenseNotificationPayload,
+]);
 
 export type NotificationPayload = z.infer<typeof ZNotificationPayload>;
 
