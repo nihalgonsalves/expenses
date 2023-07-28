@@ -1,22 +1,21 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { userFactory } from '../../../test/factories';
+import {
+  notificationSubscriptionFactory,
+  userFactory,
+} from '../../../test/factories';
 import { getPrisma } from '../../../test/getPrisma';
 import {
   createPushService,
-  getUserKeys,
-  getVapidKeys,
+  getWebPushService,
 } from '../../../test/webPushUtils';
-import { type User } from '../user/types';
 
 import { NotificationService } from './NotificationService';
 
-const { publicKey, privateKey } = getVapidKeys();
 const prisma = await getPrisma();
 const notificationService = new NotificationService(
   prisma,
-  publicKey,
-  privateKey,
+  getWebPushService(),
 );
 
 beforeAll(() => {
@@ -28,18 +27,6 @@ afterAll(() => {
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
 });
-
-const upsertSubscription = (user: User, endpoint: string) =>
-  notificationService.upsertSubscription(
-    user,
-    {
-      pushSubscription: {
-        endpoint,
-        keys: getUserKeys(),
-      },
-    },
-    'Test',
-  );
 
 const sendTestNotification = (userId: string) =>
   notificationService.sendNotifications({
@@ -74,7 +61,11 @@ describe('NotificationService', () => {
         res.end('okay');
       });
 
-      const { id } = await upsertSubscription(user, address);
+      const { id } = await notificationSubscriptionFactory(
+        prisma,
+        user,
+        address,
+      );
       const notificationSendResult = await sendTestNotification(user.id);
 
       expect(notificationSendResult).toEqual([
@@ -90,7 +81,11 @@ describe('NotificationService', () => {
         res.end();
       });
 
-      const { id } = await upsertSubscription(user, address);
+      const { id } = await notificationSubscriptionFactory(
+        prisma,
+        user,
+        address,
+      );
       const notificationSendResult = await sendTestNotification(user.id);
 
       expect(notificationSendResult).toEqual([

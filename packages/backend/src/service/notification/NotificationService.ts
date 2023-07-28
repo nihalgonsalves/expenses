@@ -1,10 +1,10 @@
 import { type PrismaClient } from '@prisma/client';
-import webPush, { WebPushError } from 'web-push';
+import { WebPushError } from 'web-push';
 
-import { config } from '../../config';
 import { generateId } from '../../nanoid';
 import { type User } from '../user/types';
 
+import { type IWebPushService, WebPushService } from './WebPushService';
 import {
   type NotificationSubscriptionUpsertInput,
   type NotificationPayload,
@@ -16,12 +16,11 @@ type NotificationDispatchResult = { id: string; userId: string } & (
   | { success: false; errorType: 'SERVER'; statusCode: number }
   | { success: false; errorType: 'UNKNOWN'; error: unknown }
 );
+
 export class NotificationService {
   constructor(
     private prismaClient: PrismaClient,
-    private vapidPublicKey = config.VAPID_PUBLIC_KEY,
-    private vapidPrivateKey = config.VAPID_PRIVATE_KEY,
-    private vapidSubject = `mailto:${config.VAPID_EMAIL}`,
+    private webPushService: IWebPushService<NotificationPayload> = new WebPushService(),
   ) {}
 
   async getSubscriptions(user: User) {
@@ -86,7 +85,7 @@ export class NotificationService {
           keyP256dh,
         }): Promise<NotificationDispatchResult> => {
           try {
-            await webPush.sendNotification(
+            await this.webPushService.sendNotification(
               {
                 endpoint,
                 keys: {
@@ -95,16 +94,7 @@ export class NotificationService {
                 },
               },
               // parse with zod to ensure no extra field passthrough
-              JSON.stringify(
-                ZNotificationPayload.parse(messagesByUserId[userId]),
-              ),
-              {
-                vapidDetails: {
-                  subject: this.vapidSubject,
-                  publicKey: this.vapidPublicKey,
-                  privateKey: this.vapidPrivateKey,
-                },
-              },
+              ZNotificationPayload.parse(messagesByUserId[userId]),
             );
 
             return { id, userId, success: true };

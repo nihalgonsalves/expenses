@@ -5,8 +5,11 @@ import {
   GroupParticipantRole,
 } from '@prisma/client';
 
-import { CURRENCY_CODES } from '../src';
+import { CURRENCY_CODES } from '../src/money';
 import { generateId } from '../src/nanoid';
+import { type User } from '../src/service/user/types';
+
+import { getUserKeys } from './webPushUtils';
 
 const randomItem = <T>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]!;
@@ -60,6 +63,25 @@ export const groupFactory = async (
       participants: {
         create: createOptions,
       },
+    },
+  });
+};
+
+export const notificationSubscriptionFactory = async (
+  prisma: PrismaClient,
+  user: User,
+  endpoint?: string,
+) => {
+  const { auth, p256dh } = getUserKeys();
+
+  return prisma.notificationSubscription.create({
+    data: {
+      id: generateId(),
+      userId: user.id,
+      description: 'Test',
+      endpoint: endpoint ?? `https://push.example.com/user/${user.id}`,
+      keyAuth: auth,
+      keyP256dh: p256dh,
     },
   });
 };

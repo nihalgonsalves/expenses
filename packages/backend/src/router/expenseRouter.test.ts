@@ -1,4 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill';
 import { ExpenseType } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
@@ -8,33 +7,10 @@ import {
   userFactory,
 } from '../../test/factories';
 import { getTRPCCaller } from '../../test/getTRPCCaller';
+import { createExpenseInput } from '../../test/input';
 import { generateId } from '../nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
-
-const createExpenseInput = (
-  groupId: string,
-  currencyCode: string,
-  paidById: string,
-  otherId: string,
-) => ({
-  groupId,
-  description: 'Test expense',
-  category: 'other',
-  money: { amount: 100_00, scale: 2, currencyCode },
-  paidById,
-  spentAt: Temporal.Now.zonedDateTimeISO().toString(),
-  splits: [
-    {
-      participantId: paidById,
-      share: { amount: 25_00, scale: 2, currencyCode },
-    },
-    {
-      participantId: otherId,
-      share: { amount: 75_00, scale: 2, currencyCode },
-    },
-  ],
-});
 
 describe('createExpense', () => {
   it('creates an expense', async () => {

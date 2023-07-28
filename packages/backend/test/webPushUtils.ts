@@ -3,9 +3,29 @@ import { type ServerResponse, type IncomingMessage } from 'http';
 import { createServer } from 'https';
 
 import { type CertificateCreationResult, createCertificate } from 'pem';
-import { generateVAPIDKeys } from 'web-push';
+import { type PushSubscription, generateVAPIDKeys } from 'web-push';
 
-export const getVapidKeys = () => generateVAPIDKeys();
+import {
+  type IWebPushService,
+  WebPushService,
+} from '../src/service/notification/WebPushService';
+
+export const getWebPushService = () => {
+  const { publicKey, privateKey } = generateVAPIDKeys();
+
+  return new WebPushService(publicKey, privateKey);
+};
+
+export class FakeWebPushService<T extends Record<string, unknown>>
+  implements IWebPushService<T>
+{
+  public messages: { endpoint: string; payload: T }[] = [];
+
+  sendNotification(pushSubscription: PushSubscription, payload: T) {
+    this.messages.push({ endpoint: pushSubscription.endpoint, payload });
+    return Promise.resolve();
+  }
+}
 
 export const getUserKeys = () => {
   const userCurve = crypto.createECDH('prime256v1');
