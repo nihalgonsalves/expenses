@@ -105,6 +105,8 @@ export const Root = ({
           flexShrink: 0,
           backgroundImage: GRADIENT_BACKGROUND,
           color: theme.palette.getContrastText(theme.palette.primary.main),
+          // e.g. bottom nav handle when running on iOS as a PWA
+          paddingBottom: 'calc(env(safe-area-inset-bottom) - 1em)',
         })}
         showLabels
         value="Expenses"
