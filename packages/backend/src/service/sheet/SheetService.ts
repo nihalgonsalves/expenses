@@ -239,11 +239,12 @@ export class SheetService {
     role: SheetParticipantRole;
   }> {
     const sheet = await this.prismaClient.sheet.findUnique({
-      where: { id: groupId, type },
+      where: { id: groupId },
       include: { participants: true },
     });
 
-    if (!sheet) {
+    // TODO: Investigate why Prisma won't make the correct query (i.e. when using where: { type } above instead)
+    if (!sheet || sheet.type !== type) {
       throw new SheetServiceError({
         code: 'NOT_FOUND',
         message: 'Sheet not found',
