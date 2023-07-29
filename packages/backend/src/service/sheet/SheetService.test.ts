@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { nameFromEmail } from './GroupService';
+import { nameFromEmail } from './SheetService';
 
 describe('nameFromEmail', () => {
   it('returns a name', () => {
     (
       [
+        ['', 'No Name'],
         ['hello@example.com', 'Hello'],
         ['hello.world@example.com', 'Hello World'],
         ['hello🤠world@example.com', 'Hello World'],

@@ -5,8 +5,8 @@ import { type ContextObj } from '../src/context';
 import { appRouter } from '../src/router/appRouter';
 import { ExpenseService } from '../src/service/expense/ExpenseService';
 import { FrankfurterService } from '../src/service/frankfurter/FrankfurterService';
-import { GroupService } from '../src/service/group/GroupService';
 import { NotificationService } from '../src/service/notification/NotificationService';
+import { SheetService } from '../src/service/sheet/SheetService';
 import { UserService } from '../src/service/user/UserService';
 import { type User, type JWTToken } from '../src/service/user/types';
 
@@ -20,7 +20,7 @@ export const getTRPCCaller = async () => {
     setJwtToken: (_token: JWTToken | null) => void,
   ) => {
     const userService = new UserService(prisma);
-    const groupService = new GroupService(prisma);
+    const sheetService = new SheetService(prisma);
     const notificationService = new NotificationService(prisma);
     const expenseService = new ExpenseService(prisma, notificationService);
     const frankfurterService = new FrankfurterService(
@@ -30,7 +30,7 @@ export const getTRPCCaller = async () => {
     const context: ContextObj = {
       prisma,
       userService,
-      groupService,
+      sheetService,
       expenseService,
       notificationService,
       frankfurterService,

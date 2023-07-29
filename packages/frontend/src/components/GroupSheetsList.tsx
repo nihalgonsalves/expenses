@@ -9,15 +9,15 @@ import {
   type SxProps,
 } from '@mui/material';
 
-import { type GroupsResponse } from '@nihalgonsalves/expenses-backend';
+import { type GroupSheetsResponse } from '@nihalgonsalves/expenses-backend';
 
 import { RouterLink } from '../router';
 
-export const GroupsList = ({
+export const GroupSheetsList = ({
   groups,
   sx = {},
 }: {
-  groups: GroupsResponse;
+  groups: GroupSheetsResponse;
   sx?: SxProps;
 }) => {
   return (

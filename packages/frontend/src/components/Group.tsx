@@ -5,7 +5,7 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { type GroupByIdResponse } from '@nihalgonsalves/expenses-backend';
+import { type GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 import { RouterLink } from '../router';
@@ -13,7 +13,7 @@ import { RouterLink } from '../router';
 import { ExpensesList } from './ExpensesList';
 import { PeopleCard } from './PeopleCard';
 
-export const Group = ({ group }: { group: GroupByIdResponse }) => {
+export const Group = ({ group }: { group: GroupSheetByIdResponse }) => {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -24,15 +24,15 @@ export const Group = ({ group }: { group: GroupByIdResponse }) => {
     limit: 2,
   });
 
-  const deleteGroup = trpc.group.deleteGroup.useMutation();
+  const deleteGroup = trpc.sheet.deleteGroup.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const handleDelete = async () => {
     try {
       await deleteGroup.mutateAsync(group.id);
 
-      void utils.group.groupById.invalidate(group.id);
-      void utils.group.myGroups.invalidate();
+      void utils.sheet.groupSheetById.invalidate(group.id);
+      void utils.sheet.myGroupSheets.invalidate();
 
       navigate('/groups');
     } catch (e) {

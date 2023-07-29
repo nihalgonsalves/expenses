@@ -4,5 +4,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "vitest.commandLine": "yarn test --"
+  "vitest.commandLine": "yarn test"
 }

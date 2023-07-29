@@ -12,7 +12,7 @@ import { ParticipantListItem } from './ParticipantListItem';
 export const AddParticipantButton = ({ groupId }: { groupId: string }) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const addParticipant = trpc.group.addParticipant.useMutation();
+  const addParticipant = trpc.sheet.addParticipant.useMutation();
   const utils = trpc.useContext();
 
   const [addParticipantOpen, setAddParticipantOpen] = useState(false);
@@ -30,7 +30,7 @@ export const AddParticipantButton = ({ groupId }: { groupId: string }) => {
       await addParticipant.mutateAsync({ groupId, participantEmail });
 
       await Promise.all([
-        utils.group.groupById.invalidate(groupId),
+        utils.sheet.groupSheetById.invalidate(groupId),
         utils.expense.getParticipantSummaries.invalidate(groupId),
       ]);
 

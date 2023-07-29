@@ -1,4 +1,10 @@
-import { ArrowBack, Group, Settings } from '@mui/icons-material';
+import {
+  ArrowBack,
+  Group,
+  ListAlt,
+  Settings,
+  TableView,
+} from '@mui/icons-material';
 import {
   AppBar,
   BottomNavigation,
@@ -96,13 +102,27 @@ export const Root = ({
 
       <BottomNavigation
         sx={(theme) => ({
-          backgroundImage: GRADIENT_BACKGROUND,
           flexShrink: 0,
+          backgroundImage: GRADIENT_BACKGROUND,
           color: theme.palette.getContrastText(theme.palette.primary.main),
         })}
         showLabels
         value="Expenses"
       >
+        <BottomNavigationAction
+          label="Expenses"
+          icon={<ListAlt />}
+          LinkComponent={RouterLink}
+          href="/expenses"
+          sx={{ color: 'unset' }}
+        />
+        <BottomNavigationAction
+          label="Sheets"
+          icon={<TableView />}
+          LinkComponent={RouterLink}
+          href="/sheets"
+          sx={{ color: 'unset' }}
+        />
         <BottomNavigationAction
           label="Groups"
           icon={<Group />}

@@ -3,9 +3,10 @@ export { type AppRouter } from './router/appRouter';
 export { type User } from './service/user/types';
 
 export {
-  type GroupByIdResponse,
-  type GroupsResponse,
-} from './service/group/types';
+  type GroupSheetByIdResponse,
+  type GroupSheetsResponse,
+  type Sheet,
+} from './service/sheet/types';
 
 export {
   type GetExpensesResponse,

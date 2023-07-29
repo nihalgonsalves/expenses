@@ -1,21 +1,20 @@
 import { Alert, Typography } from '@mui/material';
 
 import { trpc } from '../../api/trpc';
-import { Group } from '../../components/Group';
-import { GroupParams, useParams } from '../../router';
+import { useParams, PersonalSheetParams } from '../../router';
 import { Root } from '../Root';
 
-export const GroupDetailPage = () => {
-  const { groupId } = useParams(GroupParams);
+export const SheetDetailPage = () => {
+  const { sheetId } = useParams(PersonalSheetParams);
   const {
-    data: group,
+    data: sheet,
     error,
     status,
-  } = trpc.sheet.groupSheetById.useQuery(groupId);
+  } = trpc.sheet.personalSheetById.useQuery(sheetId);
 
   if (status === 'error') {
     return (
-      <Root title="Group">
+      <Root title="Personal Sheet">
         <Alert severity="error">{error.message}</Alert>
       </Root>
     );
@@ -30,8 +29,8 @@ export const GroupDetailPage = () => {
   }
 
   return (
-    <Root title={group.name} showBackButton>
-      <Group group={group} />
+    <Root title={sheet.name} showBackButton>
+      <Typography color="text.primary">Nothing here yet</Typography>
     </Root>
   );
 };

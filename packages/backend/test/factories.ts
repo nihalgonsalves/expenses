@@ -2,7 +2,8 @@ import { faker } from '@faker-js/faker';
 import {
   type PrismaClient,
   type Prisma,
-  GroupParticipantRole,
+  SheetParticipantRole,
+  SheetType,
 } from '@prisma/client';
 
 import { CURRENCY_CODES } from '../src/money';
@@ -29,7 +30,7 @@ export const userFactory = async (
     },
   });
 
-export const groupFactory = async (
+export const groupSheetFactory = async (
   prisma: PrismaClient,
   opts: {
     withOwnerId?: string;
@@ -42,7 +43,7 @@ export const groupFactory = async (
   if (opts.withOwnerId) {
     createOptions.push({
       participantId: opts.withOwnerId,
-      role: GroupParticipantRole.ADMIN,
+      role: SheetParticipantRole.ADMIN,
     });
   }
 
@@ -50,15 +51,45 @@ export const groupFactory = async (
     createOptions.push(
       ...opts.withParticipantIds.map((participantId) => ({
         participantId: participantId,
-        role: GroupParticipantRole.MEMBER,
+        role: SheetParticipantRole.MEMBER,
       })),
     );
   }
 
-  return prisma.group.create({
+  return prisma.sheet.create({
     data: {
       id: generateId(),
+      type: SheetType.GROUP,
       name: `${faker.location.city()} trip`,
+      currencyCode: opts.currencyCode ?? currencyCodeFactory(),
+      participants: {
+        create: createOptions,
+      },
+    },
+  });
+};
+
+export const personalSheetFactory = async (
+  prisma: PrismaClient,
+  opts: {
+    withOwnerId?: string;
+    currencyCode?: string;
+  } = {},
+) => {
+  const createOptions = [];
+
+  if (opts.withOwnerId) {
+    createOptions.push({
+      participantId: opts.withOwnerId,
+      role: SheetParticipantRole.ADMIN,
+    });
+  }
+
+  return prisma.sheet.create({
+    data: {
+      id: generateId(),
+      type: SheetType.PERSONAL,
+      name: 'Personal expenses',
       currencyCode: opts.currencyCode ?? currencyCodeFactory(),
       participants: {
         create: createOptions,

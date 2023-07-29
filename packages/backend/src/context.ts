@@ -6,14 +6,14 @@ import { UAParser } from 'ua-parser-js';
 import { config } from './config';
 import { ExpenseService } from './service/expense/ExpenseService';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
-import { GroupService } from './service/group/GroupService';
 import { NotificationService } from './service/notification/NotificationService';
+import { SheetService } from './service/sheet/SheetService';
 import { UserService } from './service/user/UserService';
 import { type JWTToken, ZJWTToken, type User } from './service/user/types';
 
 const prisma = new PrismaClient();
 const userService = new UserService(prisma);
-const groupService = new GroupService(prisma);
+const sheetService = new SheetService(prisma);
 const notificationService = new NotificationService(prisma);
 const expenseService = new ExpenseService(prisma, notificationService);
 
@@ -62,7 +62,7 @@ export const createContext = async ({ req, res }: CreateHTTPContextOptions) => {
       return new UAParser(req.headers['user-agent']).getResult();
     },
     userService,
-    groupService,
+    sheetService,
     expenseService,
     frankfurterService,
     notificationService,

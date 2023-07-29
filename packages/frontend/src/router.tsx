@@ -13,11 +13,15 @@ import { AuthenticationPage } from './pages/AuthenticationPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { SettingsPage } from './pages/SettingsPage';
-import { ExpensesIndex } from './pages/expenses/ExpensesIndexPage';
-import { NewExpensePage } from './pages/expenses/NewExpensePage';
+import { ExpensesIndexPage } from './pages/expenses/ExpensesIndexPage';
 import { GroupDetailPage } from './pages/groups/GroupDetailPage';
 import { GroupsIndexPage } from './pages/groups/GroupsIndexPage';
 import { NewGroupPage } from './pages/groups/NewGroupPage';
+import { GroupExpensesIndexPage } from './pages/groups/expenses/GroupExpensesIndexPage';
+import { NewGroupExpensePage } from './pages/groups/expenses/NewExpensePage';
+import { NewSheetPage } from './pages/sheets/NewSheetPage';
+import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
+import { SheetsIndexPage } from './pages/sheets/SheetsIndexPage';
 
 export const RouterLink = forwardRef<
   HTMLAnchorElement,
@@ -75,6 +79,15 @@ export const router = createBrowserRouter([
         errorElement,
       },
       {
+        path: 'expenses',
+        element: (
+          <AuthenticatedRoute>
+            <ExpensesIndexPage />
+          </AuthenticatedRoute>
+        ),
+        errorElement,
+      },
+      {
         path: 'groups/new',
         element: (
           <AuthenticatedRoute>
@@ -96,7 +109,7 @@ export const router = createBrowserRouter([
         path: 'groups/:groupId/expenses',
         element: (
           <AuthenticatedRoute>
-            <ExpensesIndex />
+            <GroupExpensesIndexPage />
           </AuthenticatedRoute>
         ),
         errorElement,
@@ -105,7 +118,34 @@ export const router = createBrowserRouter([
         path: 'groups/:groupId/expenses/new',
         element: (
           <AuthenticatedRoute>
-            <NewExpensePage />
+            <NewGroupExpensePage />
+          </AuthenticatedRoute>
+        ),
+        errorElement,
+      },
+      {
+        path: 'sheets',
+        element: (
+          <AuthenticatedRoute>
+            <SheetsIndexPage />
+          </AuthenticatedRoute>
+        ),
+        errorElement,
+      },
+      {
+        path: 'sheets/:sheetId',
+        element: (
+          <AuthenticatedRoute>
+            <SheetDetailPage />
+          </AuthenticatedRoute>
+        ),
+        errorElement,
+      },
+      {
+        path: 'sheets/new',
+        element: (
+          <AuthenticatedRoute>
+            <NewSheetPage />
           </AuthenticatedRoute>
         ),
         errorElement,
@@ -129,5 +169,7 @@ export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
 };
 
 export const GroupParams = z.object({ groupId: z.string() });
+
+export const PersonalSheetParams = z.object({ sheetId: z.string() });
 
 export { RouterProvider } from 'react-router-dom';

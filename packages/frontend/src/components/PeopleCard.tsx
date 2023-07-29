@@ -64,7 +64,7 @@ const PersonMenu = ({
   const open = anchorEl != null;
 
   const utils = trpc.useContext();
-  const deleteParticipant = trpc.group.deleteParticipant.useMutation();
+  const deleteParticipant = trpc.sheet.deleteParticipant.useMutation();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -84,7 +84,7 @@ const PersonMenu = ({
       });
 
       await Promise.all([
-        utils.group.groupById.invalidate(groupId),
+        utils.sheet.groupSheetById.invalidate(groupId),
         utils.expense.getParticipantSummaries.invalidate(groupId),
       ]);
     } catch (e) {

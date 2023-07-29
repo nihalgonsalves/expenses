@@ -1,21 +1,23 @@
-import { GroupParticipantRole } from '@prisma/client';
+import { SheetParticipantRole } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import {
-  ZCreateGroupInput,
+  ZCreateGroupSheetInput,
+  ZCreatePersonalSheetInput,
   ZFullParticipant,
-  ZGroupByIdResponse,
-  ZGroupWithParticipants,
-  ZGroupsResponse,
-} from '../service/group/types';
+  ZGroupSheetByIdResponse,
+  ZGroupSheetWithParticipants,
+  ZGroupSheetsResponse,
+  ZSheet,
+} from '../service/sheet/types';
 import { protectedProcedure, router } from '../trpc';
 
-export const groupRouter = router({
-  myGroups: protectedProcedure
-    .output(ZGroupsResponse)
+export const sheetRouter = router({
+  myGroupSheets: protectedProcedure
+    .output(ZGroupSheetsResponse)
     .query(async ({ ctx }) => {
-      const groups = await ctx.groupService.getGroups(ctx.user);
+      const groups = await ctx.sheetService.getGroupSheets(ctx.user);
 
       return groups.map((group) => ({
         ...group,
@@ -23,14 +25,20 @@ export const groupRouter = router({
       }));
     }),
 
-  groupById: protectedProcedure
+  myPersonalSheets: protectedProcedure
+    .output(z.array(ZSheet))
+    .query(async ({ ctx }) => {
+      return ctx.sheetService.getPersonalSheets(ctx.user);
+    }),
+
+  groupSheetById: protectedProcedure
     .input(z.string().nonempty())
-    .output(ZGroupByIdResponse)
+    .output(ZGroupSheetByIdResponse)
     .query(async ({ input, ctx }) => {
-      const group = await ctx.groupService.getGroupById(input, ctx.user);
+      const group = await ctx.sheetService.getGroupSheetById(input, ctx.user);
 
       if (!group) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Group not found' });
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Sheet not found' });
       }
 
       return {
@@ -44,11 +52,34 @@ export const groupRouter = router({
       };
     }),
 
+  personalSheetById: protectedProcedure
+    .input(z.string().nonempty())
+    .output(ZSheet)
+    .query(async ({ input, ctx }) => {
+      const sheet = await ctx.sheetService.getPersonalSheetById(
+        input,
+        ctx.user,
+      );
+
+      if (!sheet) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'Sheet not found' });
+      }
+
+      return sheet;
+    }),
+
+  createPersonalSheet: protectedProcedure
+    .input(ZCreatePersonalSheetInput)
+    .output(ZSheet)
+    .mutation(({ ctx, input }) => {
+      return ctx.sheetService.createPersonalSheet(input, ctx.user);
+    }),
+
   createGroup: protectedProcedure
-    .input(ZCreateGroupInput)
-    .output(ZGroupWithParticipants)
+    .input(ZCreateGroupSheetInput)
+    .output(ZGroupSheetWithParticipants)
     .mutation(async ({ input, ctx }) => {
-      const group = await ctx.groupService.createGroup(input, ctx.user);
+      const group = await ctx.sheetService.createGroupSheet(input, ctx.user);
 
       return {
         ...group,
@@ -62,19 +93,19 @@ export const groupRouter = router({
     .input(z.string().nonempty())
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { role } = await ctx.groupService.ensureGroupMembership(
+      const { role } = await ctx.sheetService.ensureGroupMembership(
         input,
         ctx.user.id,
       );
 
-      if (role !== GroupParticipantRole.ADMIN) {
+      if (role !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Only admins can delete groups',
         });
       }
 
-      await ctx.groupService.deleteGroup(input);
+      await ctx.sheetService.deleteGroup(input);
     }),
 
   addParticipant: protectedProcedure
@@ -86,18 +117,18 @@ export const groupRouter = router({
     )
     .output(ZFullParticipant)
     .mutation(async ({ input: { groupId, participantEmail }, ctx }) => {
-      const { group, role: actorRole } =
-        await ctx.groupService.ensureGroupMembership(groupId, ctx.user.id);
+      const { sheet, role: actorRole } =
+        await ctx.sheetService.ensureGroupMembership(groupId, ctx.user.id);
 
-      if (actorRole !== GroupParticipantRole.ADMIN) {
+      if (actorRole !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Only admins can add participants',
         });
       }
 
-      const { participant, role } = await ctx.groupService.addParticipant(
-        group,
+      const { participant, role } = await ctx.sheetService.addParticipant(
+        sheet,
         participantEmail,
       );
 
@@ -118,10 +149,10 @@ export const groupRouter = router({
     )
     .output(z.void())
     .mutation(async ({ input: { groupId, participantId }, ctx }) => {
-      const { group, role: actorRole } =
-        await ctx.groupService.ensureGroupMembership(groupId, ctx.user.id);
+      const { sheet: group, role: actorRole } =
+        await ctx.sheetService.ensureGroupMembership(groupId, ctx.user.id);
 
-      if (actorRole !== GroupParticipantRole.ADMIN) {
+      if (actorRole !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'Only admins can remove participants',
@@ -136,6 +167,6 @@ export const groupRouter = router({
         });
       }
 
-      await ctx.groupService.deleteParticipant(group, participantId);
+      await ctx.sheetService.deleteParticipant(group, participantId);
     }),
 });

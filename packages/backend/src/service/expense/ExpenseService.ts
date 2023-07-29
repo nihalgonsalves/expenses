@@ -20,9 +20,9 @@ import {
   getCurrency,
 } from '../../money';
 import { generateId } from '../../nanoid';
-import { type GroupWithParticipants, type Group } from '../group/types';
 import { type NotificationService } from '../notification/NotificationService';
 import { type NotificationPayload } from '../notification/types';
+import { type GroupSheetWithParticipants, type Sheet } from '../sheet/types';
 import { type User } from '../user/types';
 
 import {
@@ -35,7 +35,7 @@ class ExpenseServiceError extends TRPCError {}
 
 const expenseToPayload = (
   expense: Expense,
-  group: Group,
+  group: Sheet,
   yourBalance: Omit<Money, 'currencyCode'>,
 ): NotificationPayload => ({
   type: 'expense',
@@ -55,7 +55,7 @@ const expenseToPayload = (
 });
 
 const calculateBalances = (
-  group: Group,
+  group: Sheet,
   transactions: (ExpenseTransactions & { user: PrismaUser })[],
 ) => {
   const participants = new Map(
@@ -95,12 +95,12 @@ export class ExpenseService {
     group,
     limit,
   }: {
-    group: Group;
+    group: Sheet;
     limit?: number | undefined;
   }) {
     const [expenses, total] = await this.prismaClient.$transaction([
       this.prismaClient.expense.findMany({
-        where: { groupId: group.id },
+        where: { sheetId: group.id },
         include: {
           transactions: {
             include: {
@@ -111,7 +111,7 @@ export class ExpenseService {
         orderBy: { spentAt: 'desc' },
         ...(limit ? { take: limit } : {}),
       }),
-      this.prismaClient.expense.count({ where: { groupId: group.id } }),
+      this.prismaClient.expense.count({ where: { sheetId: group.id } }),
     ]);
 
     return {
@@ -126,7 +126,7 @@ export class ExpenseService {
   async createExpense(
     user: User,
     input: Omit<CreateExpenseInput, 'groupId'>,
-    group: Group,
+    group: Sheet,
   ) {
     if (group.currencyCode !== input.money.currencyCode) {
       throw new ExpenseServiceError({
@@ -176,7 +176,7 @@ export class ExpenseService {
       },
       data: {
         id: generateId(),
-        group: { connect: { id: group.id } },
+        sheet: { connect: { id: group.id } },
         amount: input.money.amount,
         scale: input.money.scale,
         type: ExpenseType.EXPENSE,
@@ -233,7 +233,7 @@ export class ExpenseService {
   async createSettlement(
     user: User,
     input: Omit<CreateSettlementInput, 'groupId'>,
-    group: Group,
+    group: Sheet,
   ) {
     if (group.currencyCode !== input.money.currencyCode) {
       throw new ExpenseServiceError({
@@ -245,7 +245,7 @@ export class ExpenseService {
     const expense = await this.prismaClient.expense.create({
       data: {
         id: generateId(),
-        group: { connect: { id: group.id } },
+        sheet: { connect: { id: group.id } },
         amount: input.money.amount,
         scale: input.money.scale,
         type: ExpenseType.TRANSFER,
@@ -287,10 +287,10 @@ export class ExpenseService {
     return expense;
   }
 
-  async deleteExpense(id: string, group: Group) {
+  async deleteExpense(id: string, group: Sheet) {
     try {
       await this.prismaClient.expense.delete({
-        where: { id, groupId: group.id },
+        where: { id, sheetId: group.id },
       });
     } catch (error) {
       if (
@@ -308,7 +308,7 @@ export class ExpenseService {
   }
 
   async getParticipantSummaries(
-    group: GroupWithParticipants,
+    group: GroupSheetWithParticipants,
   ): Promise<ExpenseSummaryResponse> {
     const mapSummary = (
       summary: {
@@ -324,6 +324,7 @@ export class ExpenseService {
           // one could try to do amount * 10^scale and add those up, but you'd have to use
           // queryRaw, so we instead just group by scale and then add them up. in most cases
           // there should be only a single scale anyway.
+          // (note: could use a view instead of queryRaw)
           sumMoney(
             summary
               .filter(({ userId }) => userId === id)
@@ -345,7 +346,7 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount > 0 means this is money spent _for_ the user by someone else (or themselves)
             where: {
-              expense: { groupId: group.id, type: ExpenseType.EXPENSE },
+              expense: { sheetId: group.id, type: ExpenseType.EXPENSE },
               amount: { gt: 0 },
             },
             _sum: { amount: true },
@@ -356,7 +357,7 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount < 0 means this is money spent _by_ the user for someone else (or themselves)
             where: {
-              expense: { groupId: group.id, type: ExpenseType.EXPENSE },
+              expense: { sheetId: group.id, type: ExpenseType.EXPENSE },
               amount: { lt: 0 },
             },
             _sum: { amount: true },
@@ -367,7 +368,7 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount < 0 means this is money sent to the user from someone else
             where: {
-              expense: { groupId: group.id, type: ExpenseType.TRANSFER },
+              expense: { sheetId: group.id, type: ExpenseType.TRANSFER },
               amount: { lt: 0 },
             },
             _sum: { amount: true },
@@ -378,14 +379,14 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount > 0 means this is money received from someone else
             where: {
-              expense: { groupId: group.id, type: ExpenseType.TRANSFER },
+              expense: { sheetId: group.id, type: ExpenseType.TRANSFER },
               amount: { gt: 0 },
             },
             _sum: { amount: true },
           })
           .then(mapSummary),
-        this.prismaClient.groupMemberships.findMany({
-          where: { groupId: group.id },
+        this.prismaClient.sheetMemberships.findMany({
+          where: { sheetId: group.id },
           include: { participant: true },
         }),
       ]);

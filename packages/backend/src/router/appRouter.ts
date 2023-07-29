@@ -5,8 +5,8 @@ import { getErrorMessage } from '../trpcUtils';
 
 import { currencyConversionRouter } from './currencyConversionRouter';
 import { expenseRouter } from './expenseRouter';
-import { groupRouter } from './groupRouter';
 import { notificationRouter } from './notificationRouter';
+import { sheetRouter } from './sheetRouter';
 import { userRouter } from './userRouter';
 
 const health = publicProcedure.query(async ({ ctx }) => {
@@ -27,7 +27,7 @@ const health = publicProcedure.query(async ({ ctx }) => {
 export const appRouter = router({
   health,
   user: userRouter,
-  group: groupRouter,
+  sheet: sheetRouter,
   expense: expenseRouter,
   currencyConversion: currencyConversionRouter,
   notification: notificationRouter,

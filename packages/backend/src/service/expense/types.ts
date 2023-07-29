@@ -1,7 +1,7 @@
 import { ExpenseType } from '@prisma/client';
 import { z } from 'zod';
 
-import { ZParticipantWithName } from '../group/types';
+import { ZParticipantWithName } from '../sheet/types';
 
 export const ZMoney = z.object({
   amount: z.number().int(),

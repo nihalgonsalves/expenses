@@ -20,7 +20,10 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
                 const { httpStatus } = ZData.parse(error.data);
 
                 return (
-                  httpStatus !== 400 && httpStatus !== 401 && httpStatus !== 403
+                  httpStatus !== 400 &&
+                  httpStatus !== 401 &&
+                  httpStatus !== 403 &&
+                  httpStatus !== 404
                 );
               }
 

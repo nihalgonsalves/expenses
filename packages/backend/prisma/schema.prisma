@@ -18,7 +18,7 @@ model User {
   email        String  @unique
   passwordHash String? @map("password_hash")
 
-  groups                    GroupMemberships[]
+  sheets                    SheetMemberships[]
   expenseTransactions       ExpenseTransactions[]
   notificationSubscriptions NotificationSubscription[]
 
@@ -42,42 +42,54 @@ model NotificationSubscription {
   @@map("notification_subscriptions")
 }
 
-model Group {
+model Sheet {
   id        String   @id
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
+  type         SheetType
   name         String
-  currencyCode String @map("currency_code")
+  currencyCode String    @map("currency_code")
 
-  participants GroupMemberships[]
+  participants SheetMemberships[]
   expenses     Expense[]
 
-  @@map("groups")
+  @@map("sheets")
 }
 
-enum GroupParticipantRole {
+enum SheetType {
+  PERSONAL
+  GROUP
+
+  @@map("sheet_type")
+}
+
+enum SheetParticipantRole {
   ADMIN
   MEMBER
+
+  @@map("sheet_participant_role")
 }
 
-model GroupMemberships {
+model SheetMemberships {
   participant   User   @relation(fields: [participantId], references: [id])
   participantId String @map("participant_id")
 
-  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId String @map("group_id")
+  sheet   Sheet  @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  sheetId String @map("sheet_id")
 
   joinedAt DateTime             @default(now()) @map("joined_at") @db.Timestamptz()
-  role     GroupParticipantRole @default(MEMBER)
+  role     SheetParticipantRole @default(MEMBER)
 
-  @@id([participantId, groupId])
-  @@map("group_memberships")
+  @@id([participantId, sheetId], name: "sheetMembership")
+  @@map("sheet_memberships")
 }
 
 enum ExpenseType {
   EXPENSE
   TRANSFER
+
+  @@map("expense_type")
 }
 
 model Expense {
@@ -87,8 +99,8 @@ model Expense {
 
   type ExpenseType @default(EXPENSE)
 
-  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId String @map("group_id")
+  sheet   Sheet  @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  sheetId String @map("sheet_id")
 
   category    String
   description String

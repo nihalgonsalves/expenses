@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { type NotificationPayload } from '../..';
 import {
-  groupFactory,
+  groupSheetFactory,
   notificationSubscriptionFactory,
   userFactory,
 } from '../../../test/factories';
@@ -36,7 +36,7 @@ const useSetup = async () => {
     subscribedUser(),
   ]);
 
-  const group = await groupFactory(prisma, {
+  const group = await groupSheetFactory(prisma, {
     withParticipantIds: [user1.id, user2.id, user3.id],
     currencyCode,
   });

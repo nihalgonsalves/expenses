@@ -17,7 +17,7 @@ export const expenseRouter = router({
     .input(ZCreateExpenseInput)
     .output(ZCreateExpenseResponse)
     .mutation(async ({ input, ctx }) => {
-      const { group } = await ctx.groupService.ensureGroupMembership(
+      const { sheet: group } = await ctx.sheetService.ensureGroupMembership(
         input.groupId,
         ctx.user.id,
       );
@@ -42,7 +42,7 @@ export const expenseRouter = router({
     .input(ZCreateSettlementInput)
     .output(ZCreateSettlementResponse)
     .mutation(async ({ input, ctx }) => {
-      const { group } = await ctx.groupService.ensureGroupMembership(
+      const { sheet: group } = await ctx.sheetService.ensureGroupMembership(
         input.groupId,
         ctx.user.id,
       );
@@ -71,7 +71,7 @@ export const expenseRouter = router({
     )
     .output(z.void())
     .mutation(async ({ input: { groupId, expenseId }, ctx }) => {
-      const { group } = await ctx.groupService.ensureGroupMembership(
+      const { sheet: group } = await ctx.sheetService.ensureGroupMembership(
         groupId,
         ctx.user.id,
       );
@@ -88,7 +88,7 @@ export const expenseRouter = router({
     )
     .output(ZGetExpensesResponse)
     .query(async ({ input: { groupId, limit }, ctx }) => {
-      const { group } = await ctx.groupService.ensureGroupMembership(
+      const { sheet: group } = await ctx.sheetService.ensureGroupMembership(
         groupId,
         ctx.user.id,
       );
@@ -120,7 +120,7 @@ export const expenseRouter = router({
     .input(z.string().nonempty())
     .output(ZExpenseSummaryResponse)
     .query(async ({ input, ctx }) => {
-      const { group } = await ctx.groupService.ensureGroupMembership(
+      const { sheet: group } = await ctx.sheetService.ensureGroupMembership(
         input,
         ctx.user.id,
       );

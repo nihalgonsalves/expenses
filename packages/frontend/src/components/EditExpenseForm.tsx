@@ -32,7 +32,7 @@ import { z } from 'zod';
 
 import {
   type Money,
-  type GroupByIdResponse,
+  type GroupSheetByIdResponse,
   dineroToMoney,
   zeroMoney,
   type User,
@@ -69,7 +69,7 @@ enum SplitGroupExpenseSplitType {
 }
 
 const calcSplits = (
-  group: GroupByIdResponse,
+  group: GroupSheetByIdResponse,
   currencyCode: string,
   money: Dinero<number>,
   ratios: Record<string, number>,
@@ -91,7 +91,7 @@ const calcSplits = (
   });
 };
 
-const getDefaultRatios = (group: GroupByIdResponse) =>
+const getDefaultRatios = (group: GroupSheetByIdResponse) =>
   Object.fromEntries(group.participants.map(({ id }) => [id, 1]));
 
 type SplitConfig = {
@@ -220,7 +220,7 @@ const SplitsFormSection = ({
   setRatios,
   rate,
 }: {
-  group: GroupByIdResponse;
+  group: GroupSheetByIdResponse;
   amount: number;
   currencyCode: string;
   splits: SplitGroupExpenseSplit[];
@@ -416,7 +416,7 @@ const ParticipantSelect = ({
   setSelectedId,
   filterId,
 }: {
-  group: GroupByIdResponse;
+  group: GroupSheetByIdResponse;
   label: string;
   selectedId: string | undefined;
   setSelectedId: (val: string) => void;
@@ -453,7 +453,7 @@ export const RegularExpenseForm = ({
   group,
   me,
 }: {
-  group: GroupByIdResponse;
+  group: GroupSheetByIdResponse;
   me: User;
 }) => {
   const categorySelectId = useId();
@@ -669,7 +669,7 @@ export const SettlementForm = ({
   group,
   me,
 }: {
-  group: GroupByIdResponse;
+  group: GroupSheetByIdResponse;
   me: User;
 }) => {
   const navigate = useNavigate();
@@ -750,7 +750,7 @@ export const EditExpenseForm = ({
   group,
   me,
 }: {
-  group: GroupByIdResponse;
+  group: GroupSheetByIdResponse;
   me: User;
 }) => {
   const [type, setType] = useState<z.infer<typeof ZExpenseType>>('expense');

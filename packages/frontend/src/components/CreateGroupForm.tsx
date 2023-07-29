@@ -20,7 +20,7 @@ import { CurrencySelect } from './CurrencySelect';
 export const CreateGroupForm = () => {
   const navigate = useNavigate();
 
-  const createGroup = trpc.group.createGroup.useMutation();
+  const createGroup = trpc.sheet.createGroup.useMutation();
 
   const [groupName, setGroupName] = useState('');
   const [currencyCode, setCurrencyCode] = useState(getCurrencyCode());
