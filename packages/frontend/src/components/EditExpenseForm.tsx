@@ -6,7 +6,6 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  type SelectChangeEvent,
   Stack,
   TextField,
   ToggleButtonGroup,
@@ -51,6 +50,7 @@ import {
 } from '../utils/money';
 import { dateTimeLocalToISOString, getInitials } from '../utils/utils';
 
+import { CurrencySelect } from './CurrencySelect';
 import { MoneyField } from './MoneyField';
 import { ParticipantListItem } from './ParticipantListItem';
 
@@ -457,7 +457,6 @@ export const RegularExpenseForm = ({
   me: User;
 }) => {
   const categorySelectId = useId();
-  const currencySelectId = useId();
 
   const createExpense = trpc.expense.createExpense.useMutation();
 
@@ -496,13 +495,6 @@ export const RegularExpenseForm = ({
     group.currencyCode !== currencyCode && rate
       ? convertCurrency(moneySnapshot, group.currencyCode, rate)
       : undefined;
-
-  const handleChangeCurrency = useCallback(
-    (e: SelectChangeEvent) => {
-      setCurrencyCode(e.target.value);
-    },
-    [setCurrencyCode],
-  );
 
   const valid =
     moneySnapshot.amount > 0 && validateSplit(splitType, ratios, amount);
@@ -578,23 +570,15 @@ export const RegularExpenseForm = ({
             </Collapse>
           }
         />
-        {supportedCurrencies.includes(group.currencyCode) && (
-          <FormControl variant="outlined" sx={{ flexShrink: 0 }}>
-            <InputLabel id={currencySelectId}>Currency</InputLabel>
 
-            <Select
-              id={currencySelectId}
-              value={currencyCode}
-              onChange={handleChangeCurrency}
-              label="Currency"
-            >
-              {supportedCurrencies.map((code) => (
-                <MenuItem key={code} value={code}>
-                  {code}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        {supportedCurrencies.includes(group.currencyCode) && (
+          <CurrencySelect
+            options={supportedCurrencies}
+            currencyCode={currencyCode}
+            setCurrencyCode={setCurrencyCode}
+            variant="outlined"
+            sx={{ flexShrink: 0 }}
+          />
         )}
       </Stack>
 

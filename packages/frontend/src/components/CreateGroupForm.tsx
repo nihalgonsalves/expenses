@@ -4,29 +4,26 @@ import {
   Alert,
   Button,
   Divider,
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   TextField,
 } from '@mui/material';
-import { useId, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
-import { CURRENCY_CODES, getCurrencyCode } from '../utils/money';
+import { getCurrencyCode } from '../utils/money';
 import { prevalidateEmail } from '../utils/utils';
 
+import { CurrencySelect } from './CurrencySelect';
+
 export const CreateGroupForm = () => {
-  const currencySelectId = useId();
   const navigate = useNavigate();
 
   const createGroup = trpc.group.createGroup.useMutation();
 
   const [groupName, setGroupName] = useState('');
-  const [currency, setCurrency] = useState(getCurrencyCode());
+  const [currencyCode, setCurrencyCode] = useState(getCurrencyCode());
 
   const [participantEmails, setParticipantEmails] = useState<string[]>([]);
 
@@ -47,7 +44,7 @@ export const CreateGroupForm = () => {
   const handleCreateGroup = async () => {
     const { id } = await createGroup.mutateAsync({
       name: groupName,
-      currencyCode: currency,
+      currencyCode,
       additionalParticipantEmailAddresses: participantEmails,
     });
 
@@ -75,26 +72,11 @@ export const CreateGroupForm = () => {
           }}
         />
 
-        <FormControl fullWidth>
-          <InputLabel id={currencySelectId}>Currency</InputLabel>
-          <Select
-            labelId={currencySelectId}
-            value={currency}
-            label="Currency"
-            required
-            onChange={(e) => {
-              setCurrency(e.target.value);
-            }}
-          >
-            {CURRENCY_CODES.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <Divider />
+        <CurrencySelect
+          fullWidth
+          currencyCode={currencyCode}
+          setCurrencyCode={setCurrencyCode}
+        />
 
         {participantEmails.map((participant, i) => (
           // this is a list of inputs without an ID that won't be re-ordered
