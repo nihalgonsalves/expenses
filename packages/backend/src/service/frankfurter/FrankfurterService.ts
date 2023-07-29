@@ -3,33 +3,60 @@ import { z } from 'zod';
 
 class FrankfurterServiceError extends TRPCError {}
 
+const safeFetchJson = async (
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): Promise<
+  | { ok: true; response: unknown }
+  | { ok: false; message: string; status: number | undefined }
+> => {
+  try {
+    const response = await fetch(input, init);
+
+    if (response.ok) {
+      return { ok: true, response: await response.json() };
+    }
+
+    return {
+      ok: false,
+      message: response.statusText,
+      status: response.status,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : 'Unknown',
+      status: undefined,
+    };
+  }
+};
+
 export class FrankfurterService {
   constructor(private baseUrl: string) {}
 
   async getCurrencies() {
     const url = new URL('/currencies', this.baseUrl);
 
-    const response = await fetch(url);
+    const fetchResult = await safeFetchJson(url);
 
-    const data: unknown = await response.json();
-
-    if (!response.ok) {
+    if (!fetchResult.ok) {
       throw new FrankfurterServiceError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'Error fetching currencies',
+        message: `Error fetching currencies. (${fetchResult.message})`,
+        cause: fetchResult.message,
       });
     }
 
-    const result = z.record(z.string()).safeParse(data);
+    const parseResult = z.record(z.string()).safeParse(fetchResult.response);
 
-    if (!result.success) {
+    if (!parseResult.success) {
       throw new FrankfurterServiceError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Error parsing currencies',
       });
     }
 
-    return result.data;
+    return parseResult.data;
   }
 
   async getConversionRate(baseCurrency: string, targetCurrency: string) {
@@ -44,12 +71,10 @@ export class FrankfurterService {
       rates: z.object({ [targetCurrency]: z.number() }),
     });
 
-    const response = await fetch(url);
+    const fetchResult = await safeFetchJson(url);
 
-    const data: unknown = await response.json();
-
-    if (!response.ok) {
-      if (response.status === 404) {
+    if (!fetchResult.ok) {
+      if (fetchResult.status === 404) {
         throw new FrankfurterServiceError({
           code: 'NOT_FOUND',
           message: `Rates for ${baseCurrency} not found`,
@@ -62,9 +87,9 @@ export class FrankfurterService {
       });
     }
 
-    const result = ZSchema.safeParse(data);
+    const parseResult = ZSchema.safeParse(fetchResult.response);
 
-    if (!result.success) {
+    if (!parseResult.success) {
       throw new FrankfurterServiceError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Error parsing rates',
@@ -74,6 +99,6 @@ export class FrankfurterService {
     // shouldn't be required because the schema checks for the existence
     // of the specific value, but since it's typed as `string` this possibly
     // returns undefined
-    return z.number().parse(result.data.rates[targetCurrency]);
+    return z.number().parse(parseResult.data.rates[targetCurrency]);
   }
 }

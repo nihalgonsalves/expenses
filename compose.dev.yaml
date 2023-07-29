@@ -4,6 +4,11 @@ services:
     image: 'postgres:15.3-alpine'
     environment:
       POSTGRES_PASSWORD: postgres
+    healthcheck: &pg_healthcheck
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
       - '5432:5432'
     volumes:
@@ -13,8 +18,10 @@ services:
     image: 'postgres:15.3-alpine'
     environment:
       POSTGRES_PASSWORD: postgres
+    healthcheck: *pg_healthcheck
 
   frankfurter:
+    depends_on: [frankfurter-postgres]
     image: hakanensari/frankfurter
     environment:
       DATABASE_URL: postgresql://postgres:postgres@frankfurter-postgres:5432/postgres
