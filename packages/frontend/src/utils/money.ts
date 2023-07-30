@@ -7,8 +7,8 @@ import {
   CURRENCY_CODES as BACKEND_CURRENCY_CODES,
   getCurrency,
   dineroToMoney,
+  moneyToDinero,
 } from '@nihalgonsalves/expenses-backend';
-import { moneyToDinero } from '@nihalgonsalves/expenses-backend/src/money';
 
 import { getUserLanguage } from './utils';
 

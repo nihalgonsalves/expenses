@@ -1,4 +1,4 @@
-export { type AppRouter } from './router/appRouter';
+export { type AppRouter } from './router';
 
 export { type User } from './service/user/types';
 
@@ -22,5 +22,6 @@ export {
   dineroToMoney,
   getCurrency,
   zeroMoney,
+  moneyToDinero,
   CURRENCY_CODES,
-} from './money';
+} from './utils/money';

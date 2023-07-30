@@ -1,13 +1,12 @@
 import { z } from 'zod';
 
-import { publicProcedure, router } from '../trpc';
-import { getErrorMessage } from '../trpcUtils';
-
-import { currencyConversionRouter } from './currencyConversionRouter';
-import { expenseRouter } from './expenseRouter';
-import { notificationRouter } from './notificationRouter';
-import { sheetRouter } from './sheetRouter';
-import { userRouter } from './userRouter';
+import { expenseRouter } from './service/expense/router';
+import { currencyConversionRouter } from './service/frankfurter/currencyConversionRouter';
+import { notificationRouter } from './service/notification/router';
+import { sheetRouter } from './service/sheet/router';
+import { userRouter } from './service/user/router';
+import { publicProcedure, router } from './trpc';
+import { getErrorMessage } from './utils/trpcUtils';
 
 const health = publicProcedure.query(async ({ ctx }) => {
   try {

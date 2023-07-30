@@ -4,7 +4,7 @@ import * as Currencies from '@dinero.js/currencies';
 import { type Dinero, add as dineroAdd, dinero, toSnapshot } from 'dinero.js';
 import { type z } from 'zod';
 
-import { type ZMoney } from './service/expense/types';
+import { type ZMoney } from '../service/expense/types';
 
 export const CURRENCY_CODES = Object.keys(Currencies);
 

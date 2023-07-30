@@ -6,9 +6,9 @@ import {
   groupSheetFactory,
   personalSheetFactory,
   userFactory,
-} from '../../test/factories';
-import { getTRPCCaller } from '../../test/getTRPCCaller';
-import { generateId } from '../nanoid';
+} from '../../../test/factories';
+import { getTRPCCaller } from '../../../test/getTRPCCaller';
+import { generateId } from '../../utils/nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
@@ -126,6 +126,7 @@ describe('personalSheetById', () => {
     ).rejects.toThrow('Sheet not found');
   });
 });
+
 describe('groupSheetById', () => {
   it('returns a group', async () => {
     const user = await userFactory(prisma);

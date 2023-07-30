@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getTRPCCaller } from '../../test/getTRPCCaller';
+import { getTRPCCaller } from '../test/getTRPCCaller';
 
 const { usePublicCaller } = await getTRPCCaller();
 

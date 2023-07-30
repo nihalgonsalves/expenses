@@ -10,7 +10,7 @@ import {
   getWebPushService,
 } from '../../../test/webPushUtils';
 
-import { NotificationService } from './NotificationService';
+import { NotificationService } from './service';
 
 const prisma = await getPrisma();
 const notificationService = new NotificationService(

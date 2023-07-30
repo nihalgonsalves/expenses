@@ -1,7 +1,9 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { zeroMoney } from '../money';
+import { protectedProcedure, router } from '../../trpc';
+import { zeroMoney } from '../../utils/money';
+
 import {
   ZCreateExpenseInput,
   ZCreateExpenseResponse,
@@ -9,8 +11,7 @@ import {
   ZCreateSettlementResponse,
   ZExpenseSummaryResponse,
   ZGetExpensesResponse,
-} from '../service/expense/types';
-import { protectedProcedure, router } from '../trpc';
+} from './types';
 
 export const expenseRouter = router({
   createExpense: protectedProcedure

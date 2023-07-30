@@ -1,7 +1,7 @@
 import { type PrismaClient } from '@prisma/client';
 import { WebPushError } from 'web-push';
 
-import { generateId } from '../../nanoid';
+import { generateId } from '../../utils/nanoid';
 import { type User } from '../user/types';
 
 import { type IWebPushService, WebPushService } from './WebPushService';

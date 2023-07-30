@@ -4,11 +4,11 @@ import cookie from 'cookie';
 import { UAParser } from 'ua-parser-js';
 
 import { config } from './config';
-import { ExpenseService } from './service/expense/ExpenseService';
+import { ExpenseService } from './service/expense/service';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
-import { NotificationService } from './service/notification/NotificationService';
-import { SheetService } from './service/sheet/SheetService';
-import { UserService } from './service/user/UserService';
+import { NotificationService } from './service/notification/service';
+import { SheetService } from './service/sheet/service';
+import { UserService } from './service/user/service';
 import { type JWTToken, ZJWTToken, type User } from './service/user/types';
 
 const prisma = new PrismaClient();

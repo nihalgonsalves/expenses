@@ -9,8 +9,8 @@ import {
 } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
-import { generateId } from '../../nanoid';
-import { getTRPCError } from '../../trpcUtils';
+import { generateId } from '../../utils/nanoid';
+import { getTRPCError } from '../../utils/trpcUtils';
 import { type User } from '../user/types';
 
 import {

@@ -31,13 +31,13 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import {
+  type User,
   type Money,
   type GroupSheetByIdResponse,
   dineroToMoney,
+  moneyToDinero,
   zeroMoney,
-  type User,
 } from '@nihalgonsalves/expenses-backend';
-import { moneyToDinero } from '@nihalgonsalves/expenses-backend/src/money';
 
 import { trpc } from '../api/trpc';
 import { CategoryId, categories } from '../data/categories';

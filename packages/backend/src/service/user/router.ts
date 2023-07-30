@@ -1,10 +1,11 @@
+import { publicProcedure, protectedProcedure, router } from '../../trpc';
+
 import {
   ZAuthorizeUserInput,
   ZUser,
   ZCreateUserInput,
   ZUpdateUserInput,
-} from '../service/user/types';
-import { publicProcedure, protectedProcedure, router } from '../trpc';
+} from './types';
 
 export const userRouter = router({
   createUser: publicProcedure

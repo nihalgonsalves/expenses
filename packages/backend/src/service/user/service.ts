@@ -2,7 +2,7 @@ import { type PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
-import { generateId } from '../../nanoid';
+import { generateId } from '../../utils/nanoid';
 
 import {
   type AuthorizeUserInput,

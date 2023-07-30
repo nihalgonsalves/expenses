@@ -9,9 +9,9 @@ import {
 import { getPrisma } from '../../../test/getPrisma';
 import { createExpenseInput } from '../../../test/input';
 import { FakeWebPushService } from '../../../test/webPushUtils';
-import { NotificationService } from '../notification/NotificationService';
+import { NotificationService } from '../notification/service';
 
-import { ExpenseService } from './ExpenseService';
+import { ExpenseService } from './service';
 
 const prisma = await getPrisma();
 
