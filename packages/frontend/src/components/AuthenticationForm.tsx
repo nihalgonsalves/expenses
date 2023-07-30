@@ -2,14 +2,11 @@ import { LoadingButton } from '@mui/lab';
 import { Alert, Stack, TextField } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
 import { prevalidateEmail } from '../utils/utils';
 
 export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
-  const navigate = useNavigate();
-
   const [name, setName] = useState('');
 
   const [email, setEmail] = useState('');
@@ -37,8 +34,6 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
     }
 
     await queryClient.invalidateQueries();
-
-    navigate('/');
   };
 
   return (

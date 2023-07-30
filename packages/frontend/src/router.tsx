@@ -5,6 +5,7 @@ import {
   type LinkProps,
   useParams as useParamsOriginal,
   Navigate,
+  useLocation,
 } from 'react-router-dom';
 import { z, type ZodRawShape } from 'zod';
 
@@ -35,12 +36,18 @@ RouterLink.displayName = 'RouterLink';
 const errorElement = <ErrorPage />;
 
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+
   const { error } = trpc.user.me.useQuery(undefined, {
     retry: false,
   });
 
   if (error?.data?.httpStatus === 401) {
-    return <Navigate to="/auth/sign-in" />;
+    const searchParams = new URLSearchParams({
+      redirect: location.pathname,
+    });
+
+    return <Navigate to={`/auth/sign-in?${searchParams.toString()}`} />;
   }
 
   return children;
