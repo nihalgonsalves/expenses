@@ -273,8 +273,8 @@ describe('deleteGroupSheet', () => {
   });
 });
 
-describe('addParticipant', () => {
-  it('adds a participant', async () => {
+describe('addGroupSheetMember', () => {
+  it('adds a member', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -284,9 +284,9 @@ describe('addParticipant', () => {
     const otherUser = await userFactory(prisma);
 
     expect(
-      await caller.sheet.addParticipant({
+      await caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
-        participantEmail: otherUser.email,
+        email: otherUser.email,
       }),
     ).toMatchObject({
       id: otherUser.id,
@@ -296,7 +296,7 @@ describe('addParticipant', () => {
     });
   });
 
-  it('creates a new user if the participant is not signed up', async () => {
+  it('creates a new user if the member is not signed up', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -307,9 +307,9 @@ describe('addParticipant', () => {
     const participantEmail = 'jessica@example.com';
 
     expect(
-      await caller.sheet.addParticipant({
+      await caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
-        participantEmail,
+        email: participantEmail,
       }),
     ).toMatchObject({
       id: expect.any(String),
@@ -330,9 +330,9 @@ describe('addParticipant', () => {
     });
 
     await expect(
-      caller.sheet.addParticipant({
+      caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
-        participantEmail: otherUser.email,
+        email: otherUser.email,
       }),
     ).rejects.toThrow('Participant already exists');
   });
@@ -343,9 +343,9 @@ describe('addParticipant', () => {
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.sheet.addParticipant({
+      caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
-        participantEmail: faker.internet.email(),
+        email: faker.internet.email(),
       }),
     ).rejects.toThrow('Sheet not found');
   });
@@ -358,9 +358,9 @@ describe('addParticipant', () => {
     });
 
     await expect(
-      caller.sheet.addParticipant({
+      caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
-        participantEmail: faker.internet.email(),
+        email: faker.internet.email(),
       }),
     ).rejects.toThrow('Only admins can add participants');
   });

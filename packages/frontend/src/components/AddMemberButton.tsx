@@ -9,31 +9,28 @@ import { prevalidateEmail } from '../utils/utils';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
-export const AddParticipantButton = ({
-  groupSheetId,
-}: {
-  groupSheetId: string;
-}) => {
+export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const addParticipant = trpc.sheet.addParticipant.useMutation();
+  const { mutateAsync: addGroupSheetMember, isLoading } =
+    trpc.sheet.addGroupSheetMember.useMutation();
   const utils = trpc.useContext();
 
-  const [addParticipantOpen, setAddParticipantOpen] = useState(false);
-  const [participantEmail, setParticipantEmail] = useState('');
+  const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [email, setEmail] = useState('');
 
-  const valid = prevalidateEmail(participantEmail);
+  const valid = prevalidateEmail(email);
 
   const handleClose = () => {
-    setAddParticipantOpen(false);
-    setParticipantEmail('');
+    setAddMemberOpen(false);
+    setEmail('');
   };
 
-  const handleAddParticipant = async () => {
+  const handleAddMember = async () => {
     try {
-      await addParticipant.mutateAsync({
+      await addGroupSheetMember({
         groupSheetId,
-        participantEmail,
+        email,
       });
 
       await Promise.all([
@@ -52,7 +49,7 @@ export const AddParticipantButton = ({
     }
   };
 
-  return addParticipantOpen ? (
+  return addMemberOpen ? (
     <ParticipantListItem>
       <Stack
         component="form"
@@ -65,7 +62,7 @@ export const AddParticipantButton = ({
           }
 
           e.preventDefault();
-          void handleAddParticipant();
+          void handleAddMember();
         }}
       >
         <TextField
@@ -73,10 +70,10 @@ export const AddParticipantButton = ({
           fullWidth
           size="small"
           label="Participant's email address"
-          disabled={addParticipant.isLoading}
-          value={participantEmail}
+          disabled={isLoading}
+          value={email}
           onChange={(e) => {
-            setParticipantEmail(e.target.value);
+            setEmail(e.target.value);
           }}
         />
 
@@ -96,7 +93,7 @@ export const AddParticipantButton = ({
       color="primary"
       startIcon={<PersonAdd />}
       onClick={() => {
-        setAddParticipantOpen(true);
+        setAddMemberOpen(true);
       }}
     >
       Add Participant

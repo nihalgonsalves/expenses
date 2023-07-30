@@ -174,7 +174,7 @@ export class SheetService {
 
   async addGroupSheetMember(groupSheet: Sheet, participantEmail: string) {
     try {
-      const participant = await this.prismaClient.sheetMemberships.create({
+      const member = await this.prismaClient.sheetMemberships.create({
         data: {
           sheet: { connect: { id: groupSheet.id } },
           participant: {
@@ -184,7 +184,7 @@ export class SheetService {
         include: { participant: true },
       });
 
-      return participant;
+      return member;
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&

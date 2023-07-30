@@ -117,15 +117,15 @@ export const sheetRouter = router({
       await ctx.sheetService.deleteGroupSheet(input);
     }),
 
-  addParticipant: protectedProcedure
+  addGroupSheetMember: protectedProcedure
     .input(
       z.object({
         groupSheetId: z.string().nonempty(),
-        participantEmail: z.string(),
+        email: z.string(),
       }),
     )
     .output(ZFullParticipant)
-    .mutation(async ({ input: { groupSheetId, participantEmail }, ctx }) => {
+    .mutation(async ({ input: { groupSheetId, email }, ctx }) => {
       const { sheet, role: actorRole } =
         await ctx.sheetService.ensureGroupMembership(groupSheetId, ctx.user.id);
 
@@ -138,7 +138,7 @@ export const sheetRouter = router({
 
       const { participant, role } = await ctx.sheetService.addGroupSheetMember(
         sheet,
-        participantEmail,
+        email,
       );
 
       return {

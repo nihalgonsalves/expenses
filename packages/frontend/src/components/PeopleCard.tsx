@@ -24,7 +24,7 @@ import { trpc } from '../api/trpc';
 import { formatCurrency } from '../utils/money';
 import { getInitials } from '../utils/utils';
 
-import { AddParticipantButton } from './AddParticipantButton';
+import { AddMemberButton } from './AddMemberButton';
 import { ParticipantListItem } from './ParticipantListItem';
 
 const InfoMenuItem = ({
@@ -213,7 +213,7 @@ export const PeopleCard = ({ groupSheetId }: { groupSheetId: string }) => {
           ))}
         </List>
 
-        <AddParticipantButton groupSheetId={groupSheetId} />
+        <AddMemberButton groupSheetId={groupSheetId} />
       </CardContent>
     </Card>
   );
