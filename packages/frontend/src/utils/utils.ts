@@ -1,8 +1,13 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-import { type ExpenseListItem } from '@nihalgonsalves/expenses-backend';
+import {
+  type GroupSheetExpenseListItem,
+  type ExpenseListItem,
+} from '@nihalgonsalves/expenses-backend';
 
 import { categoryById } from '../data/categories';
+
+import { formatCurrency } from './money';
 
 export const getUserLanguage = () => {
   return globalThis.navigator.languages[0];
@@ -99,3 +104,30 @@ export const getExpenseDescription = (
   (expense.description || undefined) ??
   categoryById[expense.category]?.name ??
   expense.category;
+
+export const getGroupSheetExpenseSummaryText = (
+  expense: GroupSheetExpenseListItem,
+): string => {
+  if (expense.type === 'TRANSFER') {
+    // TODO improve API for transfer type
+    // This works because of the sorting of + first
+    const [to, from] = expense.participants;
+
+    return `${getShortName(to?.name ?? '')} paid ${getShortName(
+      from?.name ?? '',
+    )}`;
+  }
+
+  if (expense.yourBalance.amount === 0) {
+    return 'Not involved';
+  }
+
+  const balanceFormatted = formatCurrency(expense.yourBalance, {
+    signDisplay: 'never',
+  });
+
+  const oweOrReceive =
+    expense.yourBalance.amount < 0 ? 'You receive' : 'You owe';
+
+  return `${oweOrReceive} ${balanceFormatted}`;
+};

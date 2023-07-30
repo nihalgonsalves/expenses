@@ -81,18 +81,17 @@ export const expenseRouter = router({
       return ctx.expenseService.createSettlement(ctx.user, input, sheet);
     }),
 
-  // TODO: rename or reuse for both?
   deleteExpense: protectedProcedure
     .input(
       z.object({
-        groupSheetId: z.string().nonempty(),
+        sheetId: z.string().nonempty(),
         expenseId: z.string().nonempty(),
       }),
     )
     .output(z.void())
-    .mutation(async ({ input: { groupSheetId, expenseId }, ctx }) => {
-      const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(
-        groupSheetId,
+    .mutation(async ({ input: { sheetId, expenseId }, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensureSheetMembership(
+        sheetId,
         ctx.user.id,
       );
 

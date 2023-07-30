@@ -2,7 +2,7 @@ import { PlaylistAdd } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
 import { trpc } from '../../../api/trpc';
-import { GroupSheetExpensesList } from '../../../components/GroupSheetExpensesList';
+import { GroupSheetExpensesExpandedList } from '../../../components/GroupSheetExpensesExpandedList';
 import { GroupParams, RouterLink, useParams } from '../../../router';
 import { Root } from '../../Root';
 
@@ -17,11 +17,10 @@ export const GroupExpensesIndexPage = () => {
 
   return (
     <Root title="Expenses" showBackButton>
-      <GroupSheetExpensesList
+      <GroupSheetExpensesExpandedList
         groupSheetId={groupSheetId}
         expenses={groupSheetExpenses.expenses}
         sx={{ flexGrow: 1 }}
-        expanded
       />
       <Button
         fullWidth

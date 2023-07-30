@@ -24,6 +24,7 @@ import { NewSheetPage } from './pages/sheets/NewSheetPage';
 import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
 import { SheetsIndexPage } from './pages/sheets/SheetsIndexPage';
 import { NewPersonalSheetExpensePage } from './pages/sheets/expenses/NewExpensePage';
+import { PersonalExpensesIndexPage } from './pages/sheets/expenses/PersonalExpensesIndexPage';
 
 export const RouterLink = forwardRef<
   HTMLAnchorElement,
@@ -53,7 +54,6 @@ const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
 
-// AuthenticatedRoute
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -170,7 +170,11 @@ export const router = createBrowserRouter([
               },
               {
                 path: '/sheets/:sheetId/expenses',
-                element: <AuthenticatedRoute>...</AuthenticatedRoute>,
+                element: (
+                  <AuthenticatedRoute>
+                    <PersonalExpensesIndexPage />
+                  </AuthenticatedRoute>
+                ),
               },
               {
                 path: '/sheets/:sheetId/expenses/new',
