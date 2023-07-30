@@ -226,7 +226,15 @@ export class SheetService {
     });
   }
 
-  async ensureGroupMembership(groupSheetId: string, userId: string) {
+  async ensurePersonalSheetMembership(personalSheetId: string, userId: string) {
+    return this.ensureSheetMembership(
+      personalSheetId,
+      userId,
+      SheetType.PERSONAL,
+    );
+  }
+
+  async ensureGroupSheetMembership(groupSheetId: string, userId: string) {
     return this.ensureSheetMembership(groupSheetId, userId, SheetType.GROUP);
   }
 

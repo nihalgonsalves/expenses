@@ -1,15 +1,44 @@
 import { DeleteOutline } from '@mui/icons-material';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, ListItem, Stack, Typography } from '@mui/material';
 import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { type Sheet } from '@nihalgonsalves/expenses-backend';
+import {
+  type ExpenseListItem,
+  type Sheet,
+} from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
+import { formatCurrency } from '../utils/money';
+import { formatDateTimeRelative, getExpenseDescription } from '../utils/utils';
 
+import { CategoryAvatar } from './CategoryAvatar';
 import { LatestExpensesCard } from './LatestExpensesCard';
+
+const ExpenseListItemComponent = ({
+  expense,
+}: {
+  expense: ExpenseListItem;
+}) => {
+  const descriptionText = getExpenseDescription(expense);
+  return (
+    <ListItem sx={{ paddingInline: 0 }}>
+      <Stack direction="row" gap={1} style={{ width: '100%' }}>
+        <CategoryAvatar category={expense.category} />
+        <div>
+          <Typography variant="body2" color="text.primary">
+            <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {formatDateTimeRelative(expense.spentAt)}
+          </Typography>
+        </div>
+      </Stack>
+    </ListItem>
+  );
+};
 
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const navigate = useNavigate();
@@ -18,6 +47,11 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
 
   const utils = trpc.useContext();
 
+  const { data: personalSheetExpensesResponse } =
+    trpc.expense.getPersonalSheetExpenses.useQuery({
+      personalSheetId: personalSheet.id,
+      limit: 2,
+    });
   const { mutateAsync: deleteSheet } = trpc.sheet.deleteSheet.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
@@ -40,11 +74,13 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   return (
     <Stack spacing={2}>
       <LatestExpensesCard
-        total={0}
+        total={personalSheetExpensesResponse?.total}
         allExpensesPath={`/sheets/${personalSheet.id}/expenses`}
         addExpensePath={`/sheets/${personalSheet.id}/expenses/new`}
       >
-        <Typography color="text.primary">Nothing here yet</Typography>
+        {personalSheetExpensesResponse?.expenses.map((expense) => (
+          <ExpenseListItemComponent key={expense.id} expense={expense} />
+        ))}
       </LatestExpensesCard>
 
       {deleteConfirm ? (

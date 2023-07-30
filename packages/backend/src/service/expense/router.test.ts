@@ -4,13 +4,95 @@ import { describe, expect, it } from 'vitest';
 import {
   currencyCodeFactory,
   groupSheetFactory,
+  personalSheetFactory,
   userFactory,
 } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
-import { createExpenseInput } from '../../../test/input';
+import {
+  createGroupSheetExpenseInput,
+  createPersonalSheetExpenseInput,
+} from '../../../test/input';
 import { generateId } from '../../utils/nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
+
+describe('createPersonalSheetExpense', () => {
+  it('creates an expense', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    const response = await caller.expense.createPersonalSheetExpense(
+      createPersonalSheetExpenseInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+      ),
+    );
+
+    expect(response).toMatchObject({
+      id: expect.any(String),
+    });
+
+    const expense = await prisma.expense.findUnique({
+      where: { id: response.id },
+      include: { transactions: true },
+    });
+
+    expect(expense).toMatchObject({
+      type: ExpenseType.EXPENSE,
+    });
+
+    expect(expense?.transactions).toMatchObject([
+      { scale: 2, amount: -100_00, userId: user.id },
+    ]);
+  });
+
+  it("returns 400 if the expense currency doesn't match", async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: 'EUR',
+    });
+
+    const invalidInput = createPersonalSheetExpenseInput(
+      personalSheet.id,
+      'GBP',
+    );
+
+    await expect(
+      caller.expense.createPersonalSheetExpense(invalidInput),
+    ).rejects.toThrow('Currencies do not match');
+  });
+
+  it('returns 404 if the personalSheet does not exist', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    await expect(
+      caller.expense.createPersonalSheetExpense(
+        createPersonalSheetExpenseInput(generateId(), currencyCodeFactory()),
+      ),
+    ).rejects.toThrow('Sheet not found');
+  });
+
+  it('returns 404 if the user is not the personalSheet owner', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const groupSheet = await groupSheetFactory(prisma);
+
+    await expect(
+      caller.expense.createPersonalSheetExpense(
+        createPersonalSheetExpenseInput(groupSheet.id, groupSheet.currencyCode),
+      ),
+    ).rejects.toThrow('Sheet not found');
+  });
+});
 
 describe('createGroupSheetExpense', () => {
   it('creates an expense', async () => {
@@ -27,7 +109,7 @@ describe('createGroupSheetExpense', () => {
     });
 
     const response = await caller.expense.createGroupSheetExpense(
-      createExpenseInput(
+      createGroupSheetExpenseInput(
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
@@ -65,7 +147,7 @@ describe('createGroupSheetExpense', () => {
       currencyCode: 'EUR',
     });
 
-    const invalidInput = createExpenseInput(
+    const invalidInput = createGroupSheetExpenseInput(
       groupSheet.id,
       'GBP',
       user.id,
@@ -86,7 +168,7 @@ describe('createGroupSheetExpense', () => {
       currencyCode: 'EUR',
     });
 
-    const input = createExpenseInput(
+    const input = createGroupSheetExpenseInput(
       groupSheet.id,
       groupSheet.currencyCode,
       user.id,
@@ -108,7 +190,7 @@ describe('createGroupSheetExpense', () => {
       withOwnerId: user.id,
     });
 
-    const input = createExpenseInput(
+    const input = createGroupSheetExpenseInput(
       groupSheet.id,
       groupSheet.currencyCode,
       user.id,
@@ -131,7 +213,7 @@ describe('createGroupSheetExpense', () => {
       withOwnerId: user.id,
     });
 
-    const input = createExpenseInput(
+    const input = createGroupSheetExpenseInput(
       groupSheet.id,
       groupSheet.currencyCode,
       user.id,
@@ -149,7 +231,7 @@ describe('createGroupSheetExpense', () => {
 
     await expect(
       caller.expense.createGroupSheetExpense(
-        createExpenseInput(
+        createGroupSheetExpenseInput(
           generateId(),
           currencyCodeFactory(),
           user.id,
@@ -167,7 +249,7 @@ describe('createGroupSheetExpense', () => {
 
     await expect(
       caller.expense.createGroupSheetExpense(
-        createExpenseInput(
+        createGroupSheetExpenseInput(
           groupSheet.id,
           groupSheet.currencyCode,
           user.id,
@@ -319,7 +401,7 @@ describe('deleteExpense', () => {
     });
 
     const expense = await caller.expense.createGroupSheetExpense(
-      createExpenseInput(
+      createGroupSheetExpenseInput(
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
@@ -349,7 +431,7 @@ describe('deleteExpense', () => {
     });
 
     const expense = await otherGroupCaller.expense.createGroupSheetExpense(
-      createExpenseInput(
+      createGroupSheetExpenseInput(
         groupSheet.id,
         groupSheet.currencyCode,
         otherGroupUser.id,
@@ -374,7 +456,7 @@ describe('deleteExpense', () => {
     });
 
     const expense = await caller.expense.createGroupSheetExpense(
-      createExpenseInput(
+      createGroupSheetExpenseInput(
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
@@ -419,7 +501,7 @@ describe('getGroupSheetExpenses', () => {
     });
 
     const expense = await caller.expense.createGroupSheetExpense(
-      createExpenseInput(
+      createGroupSheetExpenseInput(
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
@@ -484,7 +566,7 @@ describe('getParticipantSummaries', () => {
     const otherId = member.id;
 
     await caller.expense.createGroupSheetExpense(
-      createExpenseInput(
+      createGroupSheetExpenseInput(
         groupSheet.id,
         groupSheet.currencyCode,
         paidById,

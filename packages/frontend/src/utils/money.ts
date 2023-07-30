@@ -1,5 +1,6 @@
 import countryToCurrency from 'country-to-currency';
 import { dinero, convert, transformScale } from 'dinero.js';
+import { useMemo } from 'react';
 import { z } from 'zod';
 
 import {
@@ -66,3 +67,17 @@ export const convertCurrency = (
 
 export const formatDecimalCurrency = (amount: number, currencyCode: string) =>
   formatCurrency(dineroToMoney(toDinero(amount, currencyCode)));
+
+export const useMoneyValues = (rawAmount: number, currencyCode: string) => {
+  const dineroValue = useMemo(
+    () => toDinero(rawAmount, currencyCode),
+    [rawAmount, currencyCode],
+  );
+
+  const moneySnapshot = useMemo(
+    () => dineroToMoney(dineroValue),
+    [dineroValue],
+  );
+
+  return [dineroValue, moneySnapshot] as const;
+};

@@ -1,4 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill';
 import { PlaylistAdd } from '@mui/icons-material';
 import { LoadingButton } from '@mui/lab';
 import {
@@ -15,7 +14,6 @@ import {
   ListItem,
   Alert,
   Checkbox,
-  ListItemIcon,
 } from '@mui/material';
 import { type Dinero, allocate } from 'dinero.js';
 import { produce } from 'immer';
@@ -39,17 +37,24 @@ import {
   zeroMoney,
 } from '@nihalgonsalves/expenses-backend';
 
+import { useCurrencyConversion } from '../api/currencyConversion';
 import { trpc } from '../api/trpc';
-import { CategoryId, categories } from '../data/categories';
+import { CategoryId } from '../data/categories';
 import { useToggleButtonOrientation } from '../utils/hooks';
 import {
   convertCurrency,
   formatCurrency,
   formatDecimalCurrency,
   toDinero,
+  useMoneyValues,
 } from '../utils/money';
-import { dateTimeLocalToISOString, getInitials } from '../utils/utils';
+import {
+  dateTimeLocalToISOString,
+  getInitials,
+  nowForDateTimeInput,
+} from '../utils/utils';
 
+import { CategorySelect } from './CategorySelect';
 import { CurrencySelect } from './CurrencySelect';
 import { MoneyField } from './MoneyField';
 import { ParticipantListItem } from './ParticipantListItem';
@@ -474,8 +479,6 @@ export const RegularExpenseForm = ({
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
-  const categorySelectId = useId();
-
   const {
     mutateAsync: createGroupSheetExpense,
     isLoading,
@@ -489,22 +492,9 @@ export const RegularExpenseForm = ({
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState<CategoryId>();
   const [description, setDescription] = useState('');
-  const [when, setWhen] = useState(
-    Temporal.Now.plainDateTimeISO().round('minutes').toString(),
-  );
+  const [spentAt, setSpentAt] = useState(nowForDateTimeInput());
 
-  const { data: supportedCurrencies = [] } =
-    trpc.currencyConversion.getSupportedCurrencies.useQuery();
-
-  const { data: rate } = trpc.currencyConversion.getConversionRate.useQuery(
-    {
-      from: currencyCode,
-      to: groupSheet.currencyCode,
-    },
-    { enabled: groupSheet.currencyCode !== currencyCode },
-  );
-
-  const dineroValue = toDinero(amount, currencyCode);
+  const [dineroValue, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
   const [splitType, setSplitType] = useState<SplitGroupExpenseSplitType>(
     SplitGroupExpenseSplitType.Evenly,
@@ -512,11 +502,15 @@ export const RegularExpenseForm = ({
   const [ratios, setRatios] = useState(getDefaultRatios(groupSheet));
   const splits = calcSplits(groupSheet, currencyCode, dineroValue, ratios);
 
-  const moneySnapshot: Money = dineroToMoney(dineroValue);
-  const convertedMoneySnapshot =
-    groupSheet.currencyCode !== currencyCode && rate
-      ? convertCurrency(moneySnapshot, groupSheet.currencyCode, rate)
-      : undefined;
+  const {
+    supportedCurrencies,
+    rate,
+    targetSnapshot: convertedMoneySnapshot,
+  } = useCurrencyConversion(
+    currencyCode,
+    groupSheet.currencyCode,
+    moneySnapshot,
+  );
 
   const valid =
     moneySnapshot.amount > 0 && validateSplit(splitType, ratios, amount);
@@ -533,17 +527,17 @@ export const RegularExpenseForm = ({
         description,
         category: category ?? CategoryId.Other,
         money: moneySnapshot,
-        spentAt: dateTimeLocalToISOString(when),
+        spentAt: dateTimeLocalToISOString(spentAt),
         splits,
       });
-    } else if (convertedMoneySnapshot && rate) {
+    } else if (convertedMoneySnapshot) {
       await createGroupSheetExpense({
         groupSheetId: groupSheet.id,
         paidById,
         description,
         category: category ?? CategoryId.Other,
         money: convertedMoneySnapshot,
-        spentAt: dateTimeLocalToISOString(when),
+        spentAt: dateTimeLocalToISOString(spentAt),
         splits: calcSplits(
           groupSheet,
           currencyCode,
@@ -609,30 +603,7 @@ export const RegularExpenseForm = ({
         }}
       />
 
-      <FormControl fullWidth>
-        <InputLabel id={categorySelectId}>Category</InputLabel>
-        <Select
-          labelId={categorySelectId}
-          label="Category"
-          value={category ?? ''}
-          onChange={(e) => {
-            setCategory(
-              e.target.value
-                ? z.nativeEnum(CategoryId).parse(e.target.value)
-                : undefined,
-            );
-          }}
-          SelectDisplayProps={{ style: { display: 'flex', gap: '0.5rem' } }}
-        >
-          <MenuItem value="">No Category</MenuItem>
-          {categories.map(({ id, name, icon }) => (
-            <MenuItem key={id} value={id}>
-              <ListItemIcon sx={{ minWidth: 'unset' }}>{icon}</ListItemIcon>
-              {name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <CategorySelect category={category} setCategory={setCategory} />
 
       <TextField
         fullWidth
@@ -647,9 +618,9 @@ export const RegularExpenseForm = ({
         fullWidth
         label="When?"
         type="datetime-local"
-        value={when}
+        value={spentAt}
         onChange={(e) => {
-          setWhen(e.target.value);
+          setSpentAt(e.target.value);
         }}
       />
 
@@ -694,6 +665,8 @@ export const SettlementForm = ({
   const [fromId, setFromId] = useState<string | undefined>(me.id);
   const [toId, setToId] = useState<string | undefined>();
 
+  const [, moneySnapshot] = useMoneyValues(amount, groupSheet.currencyCode);
+
   const utils = trpc.useContext();
   const {
     mutateAsync: createGroupSheetSettlement,
@@ -712,7 +685,7 @@ export const SettlementForm = ({
       groupSheetId: groupSheet.id,
       fromId,
       toId,
-      money: dineroToMoney(toDinero(amount, groupSheet.currencyCode)),
+      money: moneySnapshot,
     });
 
     await Promise.all([
@@ -766,7 +739,7 @@ export const SettlementForm = ({
 
 const ZExpenseType = z.enum(['expense', 'settlement']);
 
-export const EditExpenseForm = ({
+export const CreateGroupSheetExpenseForm = ({
   groupSheet,
   me,
 }: {

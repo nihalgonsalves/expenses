@@ -18,10 +18,11 @@ import { GroupDetailPage } from './pages/groups/GroupDetailPage';
 import { GroupsIndexPage } from './pages/groups/GroupsIndexPage';
 import { NewGroupPage } from './pages/groups/NewGroupPage';
 import { GroupExpensesIndexPage } from './pages/groups/expenses/GroupExpensesIndexPage';
-import { NewGroupExpensePage } from './pages/groups/expenses/NewExpensePage';
+import { NewGroupSheetExpensePage } from './pages/groups/expenses/NewGroupSheetExpensePage';
 import { NewSheetPage } from './pages/sheets/NewSheetPage';
 import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
 import { SheetsIndexPage } from './pages/sheets/SheetsIndexPage';
+import { NewPersonalSheetExpensePage } from './pages/sheets/expenses/NewExpensePage';
 
 export const RouterLink = forwardRef<
   HTMLAnchorElement,
@@ -60,26 +61,17 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'auth/sign-in',
+        path: '/auth/sign-in',
         element: <AuthenticationPage />,
         errorElement,
       },
       {
-        path: 'auth/sign-up',
+        path: '/auth/sign-up',
         element: <AuthenticationPage />,
         errorElement,
       },
       {
-        path: 'groups',
-        element: (
-          <AuthenticatedRoute>
-            <GroupsIndexPage />
-          </AuthenticatedRoute>
-        ),
-        errorElement,
-      },
-      {
-        path: 'expenses',
+        path: '/expenses',
         element: (
           <AuthenticatedRoute>
             <ExpensesIndexPage />
@@ -88,70 +80,105 @@ export const router = createBrowserRouter([
         errorElement,
       },
       {
-        path: 'groups/new',
-        element: (
-          <AuthenticatedRoute>
-            <NewGroupPage />
-          </AuthenticatedRoute>
-        ),
+        path: '/groups',
         errorElement,
+        children: [
+          {
+            path: '/groups',
+            element: (
+              <AuthenticatedRoute>
+                <GroupsIndexPage />
+              </AuthenticatedRoute>
+            ),
+          },
+          {
+            path: '/groups/new',
+            element: (
+              <AuthenticatedRoute>
+                <NewGroupPage />
+              </AuthenticatedRoute>
+            ),
+          },
+          {
+            path: '/groups/:groupSheetId',
+            children: [
+              {
+                path: '/groups/:groupSheetId',
+                element: (
+                  <AuthenticatedRoute>
+                    <GroupDetailPage />
+                  </AuthenticatedRoute>
+                ),
+              },
+              {
+                path: '/groups/:groupSheetId/expenses',
+                element: (
+                  <AuthenticatedRoute>
+                    <GroupExpensesIndexPage />
+                  </AuthenticatedRoute>
+                ),
+              },
+              {
+                path: '/groups/:groupSheetId/expenses/new',
+                element: (
+                  <AuthenticatedRoute>
+                    <NewGroupSheetExpensePage />
+                  </AuthenticatedRoute>
+                ),
+              },
+            ],
+          },
+        ],
       },
       {
-        path: 'groups/:groupSheetId',
-        element: (
-          <AuthenticatedRoute>
-            <GroupDetailPage />
-          </AuthenticatedRoute>
-        ),
+        path: '/sheets',
         errorElement,
+        children: [
+          {
+            path: '/sheets',
+            element: (
+              <AuthenticatedRoute>
+                <SheetsIndexPage />
+              </AuthenticatedRoute>
+            ),
+          },
+          {
+            path: '/sheets/new',
+            element: (
+              <AuthenticatedRoute>
+                <NewSheetPage />
+              </AuthenticatedRoute>
+            ),
+          },
+          {
+            path: '/sheets/:sheetId',
+            children: [
+              {
+                path: '/sheets/:sheetId',
+                element: (
+                  <AuthenticatedRoute>
+                    <SheetDetailPage />
+                  </AuthenticatedRoute>
+                ),
+              },
+              {
+                path: '/sheets/:sheetId/expenses',
+                element: <AuthenticatedRoute>...</AuthenticatedRoute>,
+              },
+              {
+                path: '/sheets/:sheetId/expenses/new',
+                element: (
+                  <AuthenticatedRoute>
+                    <NewPersonalSheetExpensePage />
+                  </AuthenticatedRoute>
+                ),
+              },
+            ],
+          },
+        ],
       },
       {
-        path: 'groups/:groupSheetId/expenses',
-        element: (
-          <AuthenticatedRoute>
-            <GroupExpensesIndexPage />
-          </AuthenticatedRoute>
-        ),
-        errorElement,
-      },
-      {
-        path: 'groups/:groupSheetId/expenses/new',
-        element: (
-          <AuthenticatedRoute>
-            <NewGroupExpensePage />
-          </AuthenticatedRoute>
-        ),
-        errorElement,
-      },
-      {
-        path: 'sheets',
-        element: (
-          <AuthenticatedRoute>
-            <SheetsIndexPage />
-          </AuthenticatedRoute>
-        ),
-        errorElement,
-      },
-      {
-        path: 'sheets/:sheetId',
-        element: (
-          <AuthenticatedRoute>
-            <SheetDetailPage />
-          </AuthenticatedRoute>
-        ),
-        errorElement,
-      },
-      {
-        path: 'sheets/new',
-        element: (
-          <AuthenticatedRoute>
-            <NewSheetPage />
-          </AuthenticatedRoute>
-        ),
-        errorElement,
-      },
-      {
-        path: 'settings',
+        path: '/settings',
         element: <SettingsPage />,
         errorElement,
       },

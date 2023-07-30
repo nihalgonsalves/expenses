@@ -9,7 +9,7 @@ import { type GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 
-import { ExpensesList } from './ExpensesList';
+import { GroupSheetExpensesList } from './GroupSheetExpensesList';
 import { LatestExpensesCard } from './LatestExpensesCard';
 import { PeopleCard } from './PeopleCard';
 
@@ -60,7 +60,7 @@ export const GroupSheet = ({
         allExpensesPath={`/groups/${groupSheet.id}/expenses`}
         addExpensePath={`/groups/${groupSheet.id}/expenses/new`}
       >
-        <ExpensesList
+        <GroupSheetExpensesList
           groupSheetId={groupSheet.id}
           expenses={groupSheetExpensesResponse?.expenses ?? []}
         />

@@ -29,6 +29,7 @@ import {
   type ExpenseSummaryResponse,
   type CreateGroupSheetExpenseInput,
   type CreateGroupSheetSettlementInput,
+  type CreatePersonalSheetExpenseInput,
 } from './types';
 
 class ExpenseServiceError extends TRPCError {}
@@ -91,6 +92,16 @@ export class ExpenseService {
     private notificationService: NotificationService,
   ) {}
 
+  async getPersonalSheetExpenses({
+    personalSheet,
+    limit,
+  }: {
+    personalSheet: Sheet;
+    limit?: number | undefined;
+  }) {
+    return this.getExpenses({ sheetId: personalSheet.id, limit });
+  }
+
   async getGroupSheetExpenses({
     groupSheet,
     limit,
@@ -98,21 +109,10 @@ export class ExpenseService {
     groupSheet: Sheet;
     limit?: number | undefined;
   }) {
-    const [expenses, total] = await this.prismaClient.$transaction([
-      this.prismaClient.expense.findMany({
-        where: { sheetId: groupSheet.id },
-        include: {
-          transactions: {
-            include: {
-              user: true,
-            },
-          },
-        },
-        orderBy: { spentAt: 'desc' },
-        ...(limit ? { take: limit } : {}),
-      }),
-      this.prismaClient.expense.count({ where: { sheetId: groupSheet.id } }),
-    ]);
+    const { expenses, total } = await this.getExpenses({
+      sheetId: groupSheet.id,
+      limit,
+    });
 
     return {
       expenses: expenses.map((expense) => ({
@@ -124,6 +124,82 @@ export class ExpenseService {
       })),
       total,
     };
+  }
+
+  private async getExpenses({
+    sheetId,
+    limit,
+  }: {
+    sheetId: string;
+    limit?: number | undefined;
+  }) {
+    const [expenses, total] = await this.prismaClient.$transaction([
+      this.prismaClient.expense.findMany({
+        where: { sheetId },
+        include: {
+          transactions: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        orderBy: { spentAt: 'desc' },
+        ...(limit ? { take: limit } : {}),
+      }),
+      this.prismaClient.expense.count({ where: { sheetId } }),
+    ]);
+
+    return {
+      expenses,
+      total,
+    };
+  }
+
+  async createPersonalSheetExpense(
+    user: User,
+    input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>,
+    personalSheet: Sheet,
+  ) {
+    if (personalSheet.currencyCode !== input.money.currencyCode) {
+      throw new ExpenseServiceError({
+        code: 'BAD_REQUEST',
+        message: 'Currencies do not match',
+      });
+    }
+
+    return this.prismaClient.expense.create({
+      include: {
+        transactions: {
+          include: {
+            user: true,
+          },
+        },
+      },
+      data: {
+        id: generateId(),
+        sheet: { connect: { id: personalSheet.id } },
+        amount: input.money.amount,
+        scale: input.money.scale,
+        type: ExpenseType.EXPENSE,
+        category: input.category,
+        description: input.description,
+        spentAt: new Date(
+          Temporal.ZonedDateTime.from(
+            input.spentAt,
+          ).toInstant().epochMilliseconds,
+        ),
+        transactions: {
+          create: [
+            {
+              id: generateId(),
+              user: { connect: { id: user.id } },
+              amount: -input.money.amount,
+              scale: input.money.scale,
+            },
+          ],
+        },
+      },
+    });
   }
 
   async createGroupSheetExpense(

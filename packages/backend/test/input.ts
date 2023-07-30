@@ -1,8 +1,22 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-import { type CreateGroupSheetExpenseInput } from '../src/service/expense/types';
+import {
+  type CreatePersonalSheetExpenseInput,
+  type CreateGroupSheetExpenseInput,
+} from '../src/service/expense/types';
 
-export const createExpenseInput = (
+export const createPersonalSheetExpenseInput = (
+  personalSheetId: string,
+  currencyCode: string,
+): CreatePersonalSheetExpenseInput => ({
+  personalSheetId,
+  description: 'Test expense',
+  category: 'other',
+  money: { amount: 100_00, scale: 2, currencyCode },
+  spentAt: Temporal.Now.zonedDateTimeISO().toString(),
+});
+
+export const createGroupSheetExpenseInput = (
   groupSheetId: string,
   currencyCode: string,
   paidById: string,

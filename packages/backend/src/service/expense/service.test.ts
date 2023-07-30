@@ -7,7 +7,7 @@ import {
   userFactory,
 } from '../../../test/factories';
 import { getPrisma } from '../../../test/getPrisma';
-import { createExpenseInput } from '../../../test/input';
+import { createGroupSheetExpenseInput } from '../../../test/input';
 import { FakeWebPushService } from '../../../test/webPushUtils';
 import { NotificationService } from '../notification/service';
 
@@ -56,7 +56,7 @@ describe('ExpenseService', () => {
         // user3 ignored, but important because it tests that the notification is not sent to them
       } = await useSetup();
 
-      const input = createExpenseInput(
+      const input = createGroupSheetExpenseInput(
         groupSheet.id,
         currencyCode,
         creator.id,

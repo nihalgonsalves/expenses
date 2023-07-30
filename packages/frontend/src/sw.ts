@@ -10,8 +10,8 @@ import { NavigationRoute, registerRoute } from 'workbox-routing';
 
 import { type NotificationPayload } from '@nihalgonsalves/expenses-backend';
 
-import { categoryById } from './data/categories';
 import { formatCurrency } from './utils/money';
+import { getExpenseDescription } from './utils/utils';
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -41,10 +41,7 @@ const handlePush = async (event: PushEvent) => {
     return;
   }
 
-  const description =
-    (payload.expense.description ||
-      categoryById[payload.expense.category]?.name) ??
-    payload.expense.category;
+  const description = getExpenseDescription(payload.expense);
 
   const formattedMoney = formatCurrency(payload.expense.money);
 

@@ -11,6 +11,7 @@ export {
 export {
   type ExpenseSummaryResponse,
   type GroupSheetExpenseListItem,
+  type ExpenseListItem,
 } from './service/expense/types';
 
 export { type NotificationPayload } from './service/notification/types';

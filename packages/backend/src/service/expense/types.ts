@@ -9,13 +9,26 @@ export const ZMoney = z.object({
   currencyCode: z.string().length(3),
 });
 
-export const ZCreateGroupSheetExpenseInput = z.object({
-  groupSheetId: z.string().nonempty(),
-  paidById: z.string().nonempty(),
+const ZCreateSheetExpenseInput = z.object({
   money: ZMoney,
   spentAt: z.string().nonempty(),
   description: z.string(),
   category: z.string().nonempty(),
+});
+
+export const ZCreatePersonalSheetExpenseInput = ZCreateSheetExpenseInput.extend(
+  {
+    personalSheetId: z.string().nonempty(),
+  },
+);
+
+export type CreatePersonalSheetExpenseInput = z.infer<
+  typeof ZCreatePersonalSheetExpenseInput
+>;
+
+export const ZCreateGroupSheetExpenseInput = ZCreateSheetExpenseInput.extend({
+  groupSheetId: z.string().nonempty(),
+  paidById: z.string().nonempty(),
   splits: z.array(
     z.object({
       participantId: z.string(),
@@ -28,7 +41,7 @@ export type CreateGroupSheetExpenseInput = z.infer<
   typeof ZCreateGroupSheetExpenseInput
 >;
 
-export const ZCreateGroupSheetExpenseResponse = z.object({
+export const ZCreateSheetExpenseResponse = z.object({
   id: z.string().nonempty(),
   description: z.string(),
 });
@@ -48,15 +61,29 @@ export const ZCreateGroupSheetSettlementResponse = z.object({
   id: z.string().nonempty(),
 });
 
-const ZGroupSheetExpenseListItem = z.object({
+const ZExpenseListItem = z.object({
   id: z.string().nonempty(),
   money: ZMoney,
-  participants: z.array(ZParticipantWithName.extend({ balance: ZMoney })),
-  yourBalance: ZMoney,
   spentAt: z.string().nonempty(),
   description: z.string(),
   category: z.string().nonempty(),
   type: z.nativeEnum(ExpenseType),
+});
+
+export type ExpenseListItem = z.infer<typeof ZExpenseListItem>;
+
+export const ZGetPersonalSheetExpensesResponse = z.object({
+  expenses: z.array(ZExpenseListItem),
+  total: z.number().nonnegative(),
+});
+
+export type GetPersonalSheetExpensesResponse = z.infer<
+  typeof ZGetPersonalSheetExpensesResponse
+>;
+
+const ZGroupSheetExpenseListItem = ZExpenseListItem.extend({
+  participants: z.array(ZParticipantWithName.extend({ balance: ZMoney })),
+  yourBalance: ZMoney,
 });
 
 export type GroupSheetExpenseListItem = z.infer<
@@ -69,7 +96,7 @@ export const ZGetGroupSheetExpensesResponse = z.object({
 });
 
 export type GetGroupSheetExpensesResponse = z.infer<
-  typeof ZGetGroupSheetExpensesResponse
+  typeof ZGetPersonalSheetExpensesResponse
 >;
 
 export const ZExpenseSummaryResponse = z.array(

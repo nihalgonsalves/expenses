@@ -29,10 +29,12 @@ import { useBreakpointDown } from '../utils/hooks';
 import { formatCurrency } from '../utils/money';
 import {
   formatDateTimeRelative,
+  getExpenseDescription,
   getInitials,
   getShortName,
 } from '../utils/utils';
 
+import { CategoryAvatar } from './CategoryAvatar';
 import { ParticipantListItem } from './ParticipantListItem';
 
 const ExpenseActions = ({
@@ -143,21 +145,12 @@ const DenseExpenseListItem = ({
 }) => {
   const narrowScreen = useBreakpointDown('sm');
 
-  const descriptionText =
-    (expense.description || undefined) ??
-    categoryById[expense.category]?.name ??
-    expense.category;
+  const descriptionText = getExpenseDescription(expense);
 
   return (
     <ListItem sx={{ paddingInline: 0 }}>
       <Stack direction="row" gap={1} style={{ width: '100%' }}>
-        <Avatar
-          variant="rounded"
-          sx={(theme) => ({ backgroundColor: theme.palette.primary.main })}
-          aria-label={categoryById[expense.category]?.name ?? expense.category}
-        >
-          {categoryById[expense.category]?.icon ?? <QuestionMark />}
-        </Avatar>
+        <CategoryAvatar category={expense.category} />
         <div>
           <Typography variant="body2" color="text.primary">
             <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
@@ -223,10 +216,7 @@ const ExpandedExpenseListItem = ({
   const [isInvalidating, setIsInvalidating] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const descriptionText =
-    (expense.description || undefined) ??
-    categoryById[expense.category]?.name ??
-    expense.category;
+  const descriptionText = getExpenseDescription(expense);
 
   const title = (
     <>
@@ -308,7 +298,7 @@ const ExpandedExpenseListItem = ({
   );
 };
 
-export const ExpensesList = ({
+export const GroupSheetExpensesList = ({
   groupSheetId,
   expenses,
   sx = {},

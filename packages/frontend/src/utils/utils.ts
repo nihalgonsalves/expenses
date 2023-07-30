@@ -1,5 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill';
 
+import { type ExpenseListItem } from '@nihalgonsalves/expenses-backend';
+
+import { categoryById } from '../data/categories';
+
 export const getUserLanguage = () => {
   return globalThis.navigator.languages[0];
 };
@@ -21,6 +25,9 @@ export const dateTimeLocalToISOString = (val: string) =>
   Temporal.PlainDateTime.from(val)
     .toZonedDateTime(Intl.DateTimeFormat().resolvedOptions().timeZone)
     .toString();
+
+export const nowForDateTimeInput = () =>
+  Temporal.Now.plainDateTimeISO().round('minutes').toString();
 
 export const shortDateTime = new Intl.DateTimeFormat(getUserLanguage(), {
   dateStyle: 'short',
@@ -85,3 +92,10 @@ export const joinList = (list: string[]): string => {
 
   return `${list.slice(0, -1).join(', ')} & ${list.at(-1)}`;
 };
+
+export const getExpenseDescription = (
+  expense: Pick<ExpenseListItem, 'category' | 'description'>,
+): string =>
+  (expense.description || undefined) ??
+  categoryById[expense.category]?.name ??
+  expense.category;

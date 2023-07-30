@@ -127,7 +127,10 @@ export const sheetRouter = router({
     .output(ZFullParticipant)
     .mutation(async ({ input: { groupSheetId, email }, ctx }) => {
       const { sheet, role: actorRole } =
-        await ctx.sheetService.ensureGroupMembership(groupSheetId, ctx.user.id);
+        await ctx.sheetService.ensureGroupSheetMembership(
+          groupSheetId,
+          ctx.user.id,
+        );
 
       if (actorRole !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
@@ -159,7 +162,10 @@ export const sheetRouter = router({
     .output(z.void())
     .mutation(async ({ input: { groupSheetId, participantId }, ctx }) => {
       const { sheet, role: actorRole } =
-        await ctx.sheetService.ensureGroupMembership(groupSheetId, ctx.user.id);
+        await ctx.sheetService.ensureGroupSheetMembership(
+          groupSheetId,
+          ctx.user.id,
+        );
 
       if (actorRole !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({

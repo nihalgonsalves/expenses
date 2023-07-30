@@ -1,9 +1,9 @@
 import { trpc } from '../../../api/trpc';
-import { EditExpenseForm } from '../../../components/EditExpenseForm';
+import { CreateGroupSheetExpenseForm } from '../../../components/CreateGroupSheetExpenseForm';
 import { GroupParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
-export const NewGroupExpensePage = () => {
+export const NewGroupSheetExpensePage = () => {
   const { groupSheetId } = useParams(GroupParams);
   const { data: groupSheet } = trpc.sheet.groupSheetById.useQuery(groupSheetId);
 
@@ -15,7 +15,7 @@ export const NewGroupExpensePage = () => {
 
   return (
     <Root title="Add Expense" showBackButton>
-      <EditExpenseForm groupSheet={groupSheet} me={me} />
+      <CreateGroupSheetExpenseForm groupSheet={groupSheet} me={me} />
     </Root>
   );
 };
