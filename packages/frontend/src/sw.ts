@@ -22,7 +22,11 @@ cleanupOutdatedCaches();
 
 if (!import.meta.env.DEV) {
   precacheAndRoute(self.__WB_MANIFEST);
-  registerRoute(new NavigationRoute(createHandlerBoundToURL('/index.html')));
+  registerRoute(
+    new NavigationRoute(createHandlerBoundToURL('/index.html'), {
+      denylist: [/\/api\/.*/, /\/assets\/.*/],
+    }),
+  );
 }
 
 const handlePush = async (event: PushEvent) => {
