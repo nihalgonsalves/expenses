@@ -16,9 +16,9 @@ import {
   Alert,
   Checkbox,
   ListItemIcon,
-  Collapse,
 } from '@mui/material';
 import { type Dinero, allocate } from 'dinero.js';
+import { produce } from 'immer';
 import {
   type Dispatch,
   type SetStateAction,
@@ -241,12 +241,20 @@ const SplitsFormSection = ({
 
   const handleChangeRatio = useCallback(
     (participantId: string, ratio: number | string) => {
-      const newRatio = typeof ratio === 'string' ? parseInt(ratio, 10) : ratio;
+      setRatios(
+        produce((prev) => {
+          if (ratio === '') {
+            prev[participantId] = 0;
+          }
 
-      setRatios(({ [participantId]: _oldRatio, ...prev }) => ({
-        ...(Number.isNaN(newRatio) ? {} : { [participantId]: newRatio }),
-        ...prev,
-      }));
+          const ratioInt =
+            typeof ratio === 'string' ? parseInt(ratio, 10) : ratio;
+
+          if (!Number.isNaN(ratioInt)) {
+            prev[participantId] = ratioInt;
+          }
+        }),
+      );
     },
     [setRatios],
   );
@@ -561,13 +569,9 @@ export const RegularExpenseForm = ({
           amount={amount}
           setAmount={setAmount}
           helperText={
-            <Collapse component="span" in={group.currencyCode !== currencyCode}>
-              {convertedMoneySnapshot ? (
-                formatCurrency(convertedMoneySnapshot)
-              ) : (
-                <>&nbsp;</>
-              )}
-            </Collapse>
+            convertedMoneySnapshot
+              ? formatCurrency(convertedMoneySnapshot)
+              : null
           }
         />
 

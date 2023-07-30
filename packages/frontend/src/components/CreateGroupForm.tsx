@@ -8,6 +8,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
+import { produce } from 'immer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,13 +33,19 @@ export const CreateGroupForm = () => {
   };
 
   const handleChangeParticipant = (index: number, value: string) => {
-    setParticipantEmails((prev) =>
-      prev.map((p, i) => (i === index ? value : p)),
+    setParticipantEmails(
+      produce((draft) => {
+        draft[index] = value;
+      }),
     );
   };
 
   const handleDeleteParticipant = (index: number) => {
-    setParticipantEmails((prev) => prev.filter((_, i) => i !== index));
+    setParticipantEmails(
+      produce((draft) => {
+        draft.splice(index, 1);
+      }),
+    );
   };
 
   const handleCreateGroup = async () => {

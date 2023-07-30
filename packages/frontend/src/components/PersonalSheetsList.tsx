@@ -35,6 +35,7 @@ export const PersonalSheetsList = ({
             </ListItemAvatar>
             <ListItemText
               primary={sheet.name}
+              secondary={sheet.currencyCode}
               primaryTypographyProps={{ color: 'text.primary' }}
             />
           </ListItemButton>
