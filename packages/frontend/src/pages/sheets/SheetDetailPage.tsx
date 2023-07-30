@@ -1,6 +1,7 @@
 import { Alert, Typography } from '@mui/material';
 
 import { trpc } from '../../api/trpc';
+import { PersonalSheet } from '../../components/PersonalSheet';
 import { useParams, PersonalSheetParams } from '../../router';
 import { Root } from '../Root';
 
@@ -30,7 +31,7 @@ export const SheetDetailPage = () => {
 
   return (
     <Root title={sheet.name} showBackButton>
-      <Typography color="text.primary">Nothing here yet</Typography>
+      <PersonalSheet personalSheet={sheet} />
     </Root>
   );
 };

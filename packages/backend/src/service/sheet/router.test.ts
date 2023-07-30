@@ -233,43 +233,50 @@ describe('myGroupSheets', () => {
   });
 });
 
-describe('deleteGroupSheet', () => {
-  it('deletes a groupSheet', async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-    const groupSheet = await groupSheetFactory(prisma, {
-      withOwnerId: user.id,
+describe('deleteSheet', () => {
+  describe.each([
+    ['personalSheet', personalSheetFactory],
+    ['groupSheet', groupSheetFactory],
+  ])('%s', (sheetType, factory) => {
+    it(`deletes a ${sheetType}`, async () => {
+      const user = await userFactory(prisma);
+      const caller = useProtectedCaller(user);
+      const sheet = await factory(prisma, {
+        withOwnerId: user.id,
+      });
+
+      await caller.sheet.deleteSheet(sheet.id);
+
+      expect(await prisma.sheet.findUnique({ where: { id: sheet.id } })).toBe(
+        null,
+      );
     });
 
-    await caller.sheet.deleteGroupSheet(groupSheet.id);
+    it.todo(`deletes a ${sheetType} with expenses`);
 
-    expect(
-      await prisma.sheet.findUnique({ where: { id: groupSheet.id } }),
-    ).toBe(null);
-  });
+    it('returns a 404 if the participant has no access', async () => {
+      const user = await userFactory(prisma);
+      const caller = useProtectedCaller(user);
+      const sheet = await factory(prisma);
 
-  it.todo('deletes a deleteGroupSheet with expenses');
-
-  it('returns a 404 if the participant has no access', async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-    const groupSheet = await groupSheetFactory(prisma);
-
-    await expect(caller.sheet.deleteGroupSheet(groupSheet.id)).rejects.toThrow(
-      'Sheet not found',
-    );
-  });
-
-  it('returns a 403 if the participant is not an admin', async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-    const groupSheet = await groupSheetFactory(prisma, {
-      withParticipantIds: [user.id],
+      await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
+        'Sheet not found',
+      );
     });
 
-    await expect(caller.sheet.deleteGroupSheet(groupSheet.id)).rejects.toThrow(
-      'Only admins can delete groups',
-    );
+    if (sheetType === 'groupSheet') {
+      it('returns a 403 if the participant is not an admin', async () => {
+        const user = await userFactory(prisma);
+        const caller = useProtectedCaller(user);
+        const sheet = await factory(prisma, {
+          withParticipantIds: [user.id],
+        });
+
+        await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
+          'Only admins can delete sheets',
+        );
+      });
+    }
   });
 });
 

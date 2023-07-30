@@ -98,11 +98,11 @@ export const sheetRouter = router({
       };
     }),
 
-  deleteGroupSheet: protectedProcedure
+  deleteSheet: protectedProcedure
     .input(z.string().nonempty())
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
-      const { role } = await ctx.sheetService.ensureGroupMembership(
+      const { role } = await ctx.sheetService.ensureSheetMembership(
         input,
         ctx.user.id,
       );
@@ -110,11 +110,11 @@ export const sheetRouter = router({
       if (role !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'Only admins can delete groups',
+          message: 'Only admins can delete sheets',
         });
       }
 
-      await ctx.sheetService.deleteGroupSheet(input);
+      await ctx.sheetService.deleteSheet(input);
     }),
 
   addGroupSheetMember: protectedProcedure

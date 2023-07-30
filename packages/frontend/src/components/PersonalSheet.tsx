@@ -1,49 +1,35 @@
 import { DeleteOutline } from '@mui/icons-material';
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { type GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
+import { type Sheet } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 
-import { ExpensesList } from './ExpensesList';
 import { LatestExpensesCard } from './LatestExpensesCard';
-import { PeopleCard } from './PeopleCard';
 
-export const GroupSheet = ({
-  groupSheet,
-}: {
-  groupSheet: GroupSheetByIdResponse;
-}) => {
+export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const utils = trpc.useContext();
-  const { data: groupSheetExpensesResponse } =
-    trpc.expense.getGroupSheetExpenses.useQuery({
-      groupSheetId: groupSheet.id,
-      limit: 2,
-    });
 
-  const { mutateAsync: deleteGroupSheet } =
-    trpc.sheet.deleteSheet.useMutation();
+  const { mutateAsync: deleteSheet } = trpc.sheet.deleteSheet.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const handleDelete = async () => {
     try {
-      await deleteGroupSheet(groupSheet.id);
-
-      void utils.sheet.groupSheetById.invalidate(groupSheet.id);
-      void utils.sheet.myGroupSheets.invalidate();
-
-      navigate('/groups');
+      await deleteSheet(personalSheet.id);
+      void utils.sheet.personalSheetById.invalidate(personalSheet.id);
+      void utils.sheet.myPersonalSheets.invalidate();
+      navigate('/sheets');
     } catch (e) {
       enqueueSnackbar(
-        `Error deleting group: ${
+        `Error deleting sheet: ${
           e instanceof TRPCClientError ? e.message : 'Unknown Error'
         }`,
         { variant: 'error' },
@@ -53,17 +39,12 @@ export const GroupSheet = ({
 
   return (
     <Stack spacing={2}>
-      <PeopleCard groupSheetId={groupSheet.id} />
-
       <LatestExpensesCard
-        total={groupSheetExpensesResponse?.total}
-        allExpensesPath={`/groups/${groupSheet.id}/expenses`}
-        addExpensePath={`/groups/${groupSheet.id}/expenses/new`}
+        total={0}
+        allExpensesPath={`/sheets/${personalSheet.id}/expenses`}
+        addExpensePath={`/sheets/${personalSheet.id}/expenses/new`}
       >
-        <ExpensesList
-          groupSheetId={groupSheet.id}
-          expenses={groupSheetExpensesResponse?.expenses ?? []}
-        />
+        <Typography color="text.primary">Nothing here yet</Typography>
       </LatestExpensesCard>
 
       {deleteConfirm ? (
@@ -96,7 +77,7 @@ export const GroupSheet = ({
             setDeleteConfirm(true);
           }}
         >
-          Delete Group
+          Delete Sheet
         </Button>
       )}
     </Stack>

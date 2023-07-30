@@ -163,11 +163,10 @@ export class SheetService {
     });
   }
 
-  async deleteGroupSheet(id: string) {
+  async deleteSheet(id: string) {
     return this.prismaClient.sheet.delete({
       where: {
         id,
-        type: SheetType.GROUP,
       },
     });
   }
@@ -234,7 +233,7 @@ export class SheetService {
   async ensureSheetMembership(
     groupSheetId: string,
     userId: string,
-    type: SheetType,
+    type?: SheetType,
   ): Promise<{
     sheet: GroupSheetWithParticipants;
     role: SheetParticipantRole;
@@ -244,8 +243,7 @@ export class SheetService {
       include: { participants: true },
     });
 
-    // TODO: Investigate why Prisma won't make the correct query (i.e. when using where: { type } above instead)
-    if (!sheet || sheet.type !== type) {
+    if (!sheet || (type && sheet.type !== type)) {
       throw new SheetServiceError({
         code: 'NOT_FOUND',
         message: 'Sheet not found',
