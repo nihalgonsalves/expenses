@@ -27,35 +27,35 @@ import { type User } from '../user/types';
 
 import {
   type ExpenseSummaryResponse,
-  type CreateExpenseInput,
-  type CreateSettlementInput,
+  type CreateGroupSheetExpenseInput,
+  type CreateGroupSheetSettlementInput,
 } from './types';
 
 class ExpenseServiceError extends TRPCError {}
 
 const expenseToPayload = (
   expense: Expense,
-  group: Sheet,
+  groupSheet: Sheet,
   yourBalance: Omit<Money, 'currencyCode'>,
 ): NotificationPayload => ({
   type: 'expense',
-  group,
+  groupSheet,
   expense: {
     ...expense,
     money: {
-      currencyCode: group.currencyCode,
+      currencyCode: groupSheet.currencyCode,
       amount: expense.amount,
       scale: expense.scale,
     },
     yourBalance: {
-      currencyCode: group.currencyCode,
+      currencyCode: groupSheet.currencyCode,
       ...yourBalance,
     },
   },
 });
 
 const calculateBalances = (
-  group: Sheet,
+  groupSheet: Sheet,
   transactions: (ExpenseTransactions & { user: PrismaUser })[],
 ) => {
   const participants = new Map(
@@ -74,11 +74,11 @@ const calculateBalances = (
           transactions
             .filter(({ userId }) => userId === id)
             .map((txn) => ({
-              currencyCode: group.currencyCode,
+              currencyCode: groupSheet.currencyCode,
               amount: txn.amount,
               scale: txn.scale,
             })),
-        ) ?? zeroMoney(group.currencyCode),
+        ) ?? zeroMoney(groupSheet.currencyCode),
     }))
     .sort((a, b) => a.balance.amount - b.balance.amount);
 
@@ -91,16 +91,16 @@ export class ExpenseService {
     private notificationService: NotificationService,
   ) {}
 
-  async getExpenses({
-    group,
+  async getGroupSheetExpenses({
+    groupSheet,
     limit,
   }: {
-    group: Sheet;
+    groupSheet: Sheet;
     limit?: number | undefined;
   }) {
     const [expenses, total] = await this.prismaClient.$transaction([
       this.prismaClient.expense.findMany({
-        where: { sheetId: group.id },
+        where: { sheetId: groupSheet.id },
         include: {
           transactions: {
             include: {
@@ -111,24 +111,27 @@ export class ExpenseService {
         orderBy: { spentAt: 'desc' },
         ...(limit ? { take: limit } : {}),
       }),
-      this.prismaClient.expense.count({ where: { sheetId: group.id } }),
+      this.prismaClient.expense.count({ where: { sheetId: groupSheet.id } }),
     ]);
 
     return {
       expenses: expenses.map((expense) => ({
         ...expense,
-        participantBalances: calculateBalances(group, expense.transactions),
+        participantBalances: calculateBalances(
+          groupSheet,
+          expense.transactions,
+        ),
       })),
       total,
     };
   }
 
-  async createExpense(
+  async createGroupSheetExpense(
     user: User,
-    input: Omit<CreateExpenseInput, 'groupId'>,
-    group: Sheet,
+    input: Omit<CreateGroupSheetExpenseInput, 'groupSheetId'>,
+    groupSheet: Sheet,
   ) {
-    if (group.currencyCode !== input.money.currencyCode) {
+    if (groupSheet.currencyCode !== input.money.currencyCode) {
       throw new ExpenseServiceError({
         code: 'BAD_REQUEST',
         message: 'Currencies do not match',
@@ -176,7 +179,7 @@ export class ExpenseService {
       },
       data: {
         id: generateId(),
-        sheet: { connect: { id: group.id } },
+        sheet: { connect: { id: groupSheet.id } },
         amount: input.money.amount,
         scale: input.money.scale,
         type: ExpenseType.EXPENSE,
@@ -213,7 +216,7 @@ export class ExpenseService {
       },
     });
 
-    const balances = calculateBalances(group, expense.transactions);
+    const balances = calculateBalances(groupSheet, expense.transactions);
 
     // TODO: Background task
     await this.notificationService.sendNotifications(
@@ -222,7 +225,7 @@ export class ExpenseService {
           .filter(({ id, balance }) => id !== user.id && balance.amount !== 0)
           .map(({ id, balance }): [string, NotificationPayload] => [
             id,
-            expenseToPayload(expense, group, balance),
+            expenseToPayload(expense, groupSheet, balance),
           ]),
       ),
     );
@@ -232,10 +235,10 @@ export class ExpenseService {
 
   async createSettlement(
     user: User,
-    input: Omit<CreateSettlementInput, 'groupId'>,
-    group: Sheet,
+    input: Omit<CreateGroupSheetSettlementInput, 'groupSheetId'>,
+    groupSheet: Sheet,
   ) {
-    if (group.currencyCode !== input.money.currencyCode) {
+    if (groupSheet.currencyCode !== input.money.currencyCode) {
       throw new ExpenseServiceError({
         code: 'BAD_REQUEST',
         message: 'Currencies do not match',
@@ -245,7 +248,7 @@ export class ExpenseService {
     const expense = await this.prismaClient.expense.create({
       data: {
         id: generateId(),
-        sheet: { connect: { id: group.id } },
+        sheet: { connect: { id: groupSheet.id } },
         amount: input.money.amount,
         scale: input.money.scale,
         type: ExpenseType.TRANSFER,
@@ -276,21 +279,21 @@ export class ExpenseService {
     if (input.fromId !== user.id)
       messages[input.fromId] = expenseToPayload(
         expense,
-        group,
+        groupSheet,
         negateMoney(input.money),
       );
     if (input.toId !== user.id)
-      messages[input.toId] = expenseToPayload(expense, group, input.money);
+      messages[input.toId] = expenseToPayload(expense, groupSheet, input.money);
 
     await this.notificationService.sendNotifications(messages);
 
     return expense;
   }
 
-  async deleteExpense(id: string, group: Sheet) {
+  async deleteExpense(id: string, groupSheet: Sheet) {
     try {
       await this.prismaClient.expense.delete({
-        where: { id, sheetId: group.id },
+        where: { id, sheetId: groupSheet.id },
       });
     } catch (error) {
       if (
@@ -308,7 +311,7 @@ export class ExpenseService {
   }
 
   async getParticipantSummaries(
-    group: GroupSheetWithParticipants,
+    groupSheet: GroupSheetWithParticipants,
   ): Promise<ExpenseSummaryResponse> {
     const mapSummary = (
       summary: {
@@ -318,7 +321,7 @@ export class ExpenseService {
       }[],
     ) =>
       Object.fromEntries(
-        group.participants.map(({ id }) => [
+        groupSheet.participants.map(({ id }) => [
           id,
           // we don't have an easy way to sum up values with different scales on the db side.
           // one could try to do amount * 10^scale and add those up, but you'd have to use
@@ -332,7 +335,7 @@ export class ExpenseService {
                 ({ scale, _sum }): Money => ({
                   scale,
                   amount: _sum.amount ?? 0,
-                  currencyCode: group.currencyCode,
+                  currencyCode: groupSheet.currencyCode,
                 }),
               ),
           ),
@@ -346,7 +349,7 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount > 0 means this is money spent _for_ the user by someone else (or themselves)
             where: {
-              expense: { sheetId: group.id, type: ExpenseType.EXPENSE },
+              expense: { sheetId: groupSheet.id, type: ExpenseType.EXPENSE },
               amount: { gt: 0 },
             },
             _sum: { amount: true },
@@ -357,7 +360,7 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount < 0 means this is money spent _by_ the user for someone else (or themselves)
             where: {
-              expense: { sheetId: group.id, type: ExpenseType.EXPENSE },
+              expense: { sheetId: groupSheet.id, type: ExpenseType.EXPENSE },
               amount: { lt: 0 },
             },
             _sum: { amount: true },
@@ -368,7 +371,7 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount < 0 means this is money sent to the user from someone else
             where: {
-              expense: { sheetId: group.id, type: ExpenseType.TRANSFER },
+              expense: { sheetId: groupSheet.id, type: ExpenseType.TRANSFER },
               amount: { lt: 0 },
             },
             _sum: { amount: true },
@@ -379,19 +382,19 @@ export class ExpenseService {
             by: ['userId', 'scale'],
             // amount > 0 means this is money received from someone else
             where: {
-              expense: { sheetId: group.id, type: ExpenseType.TRANSFER },
+              expense: { sheetId: groupSheet.id, type: ExpenseType.TRANSFER },
               amount: { gt: 0 },
             },
             _sum: { amount: true },
           })
           .then(mapSummary),
         this.prismaClient.sheetMemberships.findMany({
-          where: { sheetId: group.id },
+          where: { sheetId: groupSheet.id },
           include: { participant: true },
         }),
       ]);
 
-    const zero = zeroMoney(group.currencyCode);
+    const zero = zeroMoney(groupSheet.currencyCode);
 
     return participants.map(({ participant: { name, id } }) => {
       const cost = costMap[id] ?? zero;

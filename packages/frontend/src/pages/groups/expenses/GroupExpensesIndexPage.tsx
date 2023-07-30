@@ -7,18 +7,19 @@ import { GroupParams, RouterLink, useParams } from '../../../router';
 import { Root } from '../../Root';
 
 export const GroupExpensesIndexPage = () => {
-  const { groupId } = useParams(GroupParams);
-  const { data: expensesResponse } = trpc.expense.getExpenses.useQuery({
-    groupId,
-  });
+  const { groupSheetId } = useParams(GroupParams);
+  const { data: groupSheetExpenses } =
+    trpc.expense.getGroupSheetExpenses.useQuery({
+      groupSheetId,
+    });
 
-  if (!expensesResponse) return null;
+  if (!groupSheetExpenses) return null;
 
   return (
     <Root title="Expenses" showBackButton>
       <ExpensesList
-        groupId={groupId}
-        expenses={expensesResponse.expenses}
+        groupSheetId={groupSheetId}
+        expenses={groupSheetExpenses.expenses}
         sx={{ flexGrow: 1 }}
         expanded
       />
@@ -28,7 +29,7 @@ export const GroupExpensesIndexPage = () => {
         color="primary"
         startIcon={<PlaylistAdd />}
         LinkComponent={RouterLink}
-        href={`/groups/${groupId}/expenses/new`}
+        href={`/groups/${groupSheetId}/expenses/new`}
       >
         Add Expense
       </Button>

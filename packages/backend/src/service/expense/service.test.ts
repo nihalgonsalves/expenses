@@ -36,34 +36,34 @@ const useSetup = async () => {
     subscribedUser(),
   ]);
 
-  const group = await groupSheetFactory(prisma, {
+  const groupSheet = await groupSheetFactory(prisma, {
     withParticipantIds: [user1.id, user2.id, user3.id],
     currencyCode,
   });
 
-  return { webPushService, expenseService, user1, user2, user3, group };
+  return { webPushService, expenseService, user1, user2, user3, groupSheet };
 };
 
 describe('ExpenseService', () => {
-  describe('createExpense', () => {
+  describe('createGroupSheetExpense', () => {
     it('sends a notification to all expense participants except the creator', async () => {
       const {
         webPushService,
         expenseService,
-        group,
+        groupSheet,
         user1: creator,
         user2: otherParticipant,
         // user3 ignored, but important because it tests that the notification is not sent to them
       } = await useSetup();
 
       const input = createExpenseInput(
-        group.id,
+        groupSheet.id,
         currencyCode,
         creator.id,
         otherParticipant.id,
       );
 
-      await expenseService.createExpense(creator, input, group);
+      await expenseService.createGroupSheetExpense(creator, input, groupSheet);
 
       expect(webPushService.messages).toMatchObject([
         {
@@ -78,7 +78,7 @@ describe('ExpenseService', () => {
       const {
         webPushService,
         expenseService,
-        group,
+        groupSheet,
         user1: fromUser,
         user2: toUser,
       } = await useSetup();
@@ -86,11 +86,15 @@ describe('ExpenseService', () => {
       await expenseService.createSettlement(
         fromUser,
         {
-          money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+          money: {
+            amount: 100_00,
+            scale: 2,
+            currencyCode: groupSheet.currencyCode,
+          },
           fromId: fromUser.id,
           toId: toUser.id,
         },
-        group,
+        groupSheet,
       );
 
       expect(webPushService.messages).toMatchObject([
@@ -104,7 +108,7 @@ describe('ExpenseService', () => {
       const {
         webPushService,
         expenseService,
-        group,
+        groupSheet,
         user1: fromUser,
         user2: toUser,
       } = await useSetup();
@@ -112,11 +116,15 @@ describe('ExpenseService', () => {
       await expenseService.createSettlement(
         toUser,
         {
-          money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+          money: {
+            amount: 100_00,
+            scale: 2,
+            currencyCode: groupSheet.currencyCode,
+          },
           fromId: fromUser.id,
           toId: toUser.id,
         },
-        group,
+        groupSheet,
       );
 
       expect(webPushService.messages).toMatchObject([

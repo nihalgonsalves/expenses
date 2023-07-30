@@ -1,17 +1,17 @@
 import { Alert, Typography } from '@mui/material';
 
 import { trpc } from '../../api/trpc';
-import { Group } from '../../components/Group';
+import { GroupSheet } from '../../components/GroupSheet';
 import { GroupParams, useParams } from '../../router';
 import { Root } from '../Root';
 
 export const GroupDetailPage = () => {
-  const { groupId } = useParams(GroupParams);
+  const { groupSheetId } = useParams(GroupParams);
   const {
-    data: group,
+    data: groupSheet,
     error,
     status,
-  } = trpc.sheet.groupSheetById.useQuery(groupId);
+  } = trpc.sheet.groupSheetById.useQuery(groupSheetId);
 
   if (status === 'error') {
     return (
@@ -30,8 +30,8 @@ export const GroupDetailPage = () => {
   }
 
   return (
-    <Root title={group.name} showBackButton>
-      <Group group={group} />
+    <Root title={groupSheet.name} showBackButton>
+      <GroupSheet groupSheet={groupSheet} />
     </Root>
   );
 };

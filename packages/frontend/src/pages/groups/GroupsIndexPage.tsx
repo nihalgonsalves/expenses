@@ -7,12 +7,12 @@ import { RouterLink } from '../../router';
 import { Root } from '../Root';
 
 export const GroupsIndexPage = () => {
-  const { data: groups = [] } = trpc.sheet.myGroupSheets.useQuery();
+  const { data: groupSheets = [] } = trpc.sheet.myGroupSheets.useQuery();
 
   return (
     <Root title="Groups">
-      {groups.length > 0 && (
-        <GroupSheetsList groups={groups} sx={{ flexGrow: 1 }} />
+      {groupSheets.length > 0 && (
+        <GroupSheetsList groupSheets={groupSheets} sx={{ flexGrow: 1 }} />
       )}
       <Button
         fullWidth

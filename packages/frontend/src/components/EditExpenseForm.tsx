@@ -69,18 +69,20 @@ enum SplitGroupExpenseSplitType {
 }
 
 const calcSplits = (
-  group: GroupSheetByIdResponse,
+  groupSheet: GroupSheetByIdResponse,
   currencyCode: string,
   money: Dinero<number>,
   ratios: Record<string, number>,
 ): SplitGroupExpenseSplit[] => {
-  const indexedRatios = group.participants.map(({ id }) => ratios[id] ?? 0);
+  const indexedRatios = groupSheet.participants.map(
+    ({ id }) => ratios[id] ?? 0,
+  );
 
   const allocations = indexedRatios.some((ratio) => ratio !== 0)
     ? allocate(money, indexedRatios)
     : [];
 
-  return group.participants.map(({ id, name }, i) => {
+  return groupSheet.participants.map(({ id, name }, i) => {
     const alloc = allocations[i];
 
     return {
@@ -91,8 +93,8 @@ const calcSplits = (
   });
 };
 
-const getDefaultRatios = (group: GroupSheetByIdResponse) =>
-  Object.fromEntries(group.participants.map(({ id }) => [id, 1]));
+const getDefaultRatios = (groupSheet: GroupSheetByIdResponse) =>
+  Object.fromEntries(groupSheet.participants.map(({ id }) => [id, 1]));
 
 type SplitConfig = {
   label: string;
@@ -210,7 +212,7 @@ const CalculationHelpText = ({
 };
 
 const SplitsFormSection = ({
-  group,
+  groupSheet,
   amount,
   currencyCode,
   splits,
@@ -220,7 +222,7 @@ const SplitsFormSection = ({
   setRatios,
   rate,
 }: {
-  group: GroupSheetByIdResponse;
+  groupSheet: GroupSheetByIdResponse;
   amount: number;
   currencyCode: string;
   splits: SplitGroupExpenseSplit[];
@@ -271,16 +273,16 @@ const SplitsFormSection = ({
         case SplitGroupExpenseSplitType.Evenly:
         case SplitGroupExpenseSplitType.Shares:
         case SplitGroupExpenseSplitType.Selected:
-          setRatios(getDefaultRatios(group));
+          setRatios(getDefaultRatios(groupSheet));
           break;
 
         case SplitGroupExpenseSplitType.Percentage:
           setRatios(
-            100 % group.participants.length === 0
+            100 % groupSheet.participants.length === 0
               ? Object.fromEntries(
-                  group.participants.map(({ id }) => [
+                  groupSheet.participants.map(({ id }) => [
                     id,
-                    100 / group.participants.length,
+                    100 / groupSheet.participants.length,
                   ]),
                 )
               : {},
@@ -293,10 +295,10 @@ const SplitsFormSection = ({
               (splitValid
                 ? splits
                 : calcSplits(
-                    group,
+                    groupSheet,
                     currencyCode,
                     money,
-                    getDefaultRatios(group),
+                    getDefaultRatios(groupSheet),
                   )
               ).map(({ participantId, share }) => [
                 participantId,
@@ -309,7 +311,15 @@ const SplitsFormSection = ({
 
       setSplitType(newType);
     },
-    [splitValid, splits, group, currencyCode, money, setRatios, setSplitType],
+    [
+      splitValid,
+      splits,
+      groupSheet,
+      currencyCode,
+      money,
+      setRatios,
+      setSplitType,
+    ],
   );
 
   const splitConfig = SPLIT_CONFIG[splitType];
@@ -351,10 +361,10 @@ const SplitsFormSection = ({
                   {splitValid ? (
                     <>
                       {formatCurrency(share)}
-                      {group.currencyCode !== currencyCode &&
+                      {groupSheet.currencyCode !== currencyCode &&
                         rate &&
                         ` (${formatCurrency(
-                          convertCurrency(share, group.currencyCode, rate),
+                          convertCurrency(share, groupSheet.currencyCode, rate),
                         )})`}
                     </>
                   ) : (
@@ -418,13 +428,13 @@ const SplitsFormSection = ({
 };
 
 const ParticipantSelect = ({
-  group,
+  groupSheet,
   label,
   selectedId,
   setSelectedId,
   filterId,
 }: {
-  group: GroupSheetByIdResponse;
+  groupSheet: GroupSheetByIdResponse;
   label: string;
   selectedId: string | undefined;
   setSelectedId: (val: string) => void;
@@ -433,8 +443,8 @@ const ParticipantSelect = ({
   const selectId = useId();
 
   const options = filterId
-    ? Object.values(group.participants).filter(({ id }) => filterId(id))
-    : Object.values(group.participants);
+    ? Object.values(groupSheet.participants).filter(({ id }) => filterId(id))
+    : Object.values(groupSheet.participants);
 
   return (
     <FormControl fullWidth>
@@ -458,20 +468,24 @@ const ParticipantSelect = ({
 };
 
 export const RegularExpenseForm = ({
-  group,
+  groupSheet,
   me,
 }: {
-  group: GroupSheetByIdResponse;
+  groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
   const categorySelectId = useId();
 
-  const createExpense = trpc.expense.createExpense.useMutation();
+  const {
+    mutateAsync: createGroupSheetExpense,
+    isLoading,
+    error,
+  } = trpc.expense.createGroupSheetExpense.useMutation();
 
   const navigate = useNavigate();
 
   const [paidById, setPaidById] = useState(me.id);
-  const [currencyCode, setCurrencyCode] = useState(group.currencyCode);
+  const [currencyCode, setCurrencyCode] = useState(groupSheet.currencyCode);
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState<CategoryId>();
   const [description, setDescription] = useState('');
@@ -485,9 +499,9 @@ export const RegularExpenseForm = ({
   const { data: rate } = trpc.currencyConversion.getConversionRate.useQuery(
     {
       from: currencyCode,
-      to: group.currencyCode,
+      to: groupSheet.currencyCode,
     },
-    { enabled: group.currencyCode !== currencyCode },
+    { enabled: groupSheet.currencyCode !== currencyCode },
   );
 
   const dineroValue = toDinero(amount, currencyCode);
@@ -495,13 +509,13 @@ export const RegularExpenseForm = ({
   const [splitType, setSplitType] = useState<SplitGroupExpenseSplitType>(
     SplitGroupExpenseSplitType.Evenly,
   );
-  const [ratios, setRatios] = useState(getDefaultRatios(group));
-  const splits = calcSplits(group, currencyCode, dineroValue, ratios);
+  const [ratios, setRatios] = useState(getDefaultRatios(groupSheet));
+  const splits = calcSplits(groupSheet, currencyCode, dineroValue, ratios);
 
   const moneySnapshot: Money = dineroToMoney(dineroValue);
   const convertedMoneySnapshot =
-    group.currencyCode !== currencyCode && rate
-      ? convertCurrency(moneySnapshot, group.currencyCode, rate)
+    groupSheet.currencyCode !== currencyCode && rate
+      ? convertCurrency(moneySnapshot, groupSheet.currencyCode, rate)
       : undefined;
 
   const valid =
@@ -512,9 +526,9 @@ export const RegularExpenseForm = ({
       return;
     }
 
-    if (group.currencyCode === currencyCode) {
-      await createExpense.mutateAsync({
-        groupId: group.id,
+    if (groupSheet.currencyCode === currencyCode) {
+      await createGroupSheetExpense({
+        groupSheetId: groupSheet.id,
         paidById,
         description,
         category: category ?? CategoryId.Other,
@@ -523,15 +537,15 @@ export const RegularExpenseForm = ({
         splits,
       });
     } else if (convertedMoneySnapshot && rate) {
-      await createExpense.mutateAsync({
-        groupId: group.id,
+      await createGroupSheetExpense({
+        groupSheetId: groupSheet.id,
         paidById,
         description,
         category: category ?? CategoryId.Other,
         money: convertedMoneySnapshot,
         spentAt: dateTimeLocalToISOString(when),
         splits: calcSplits(
-          group,
+          groupSheet,
           currencyCode,
           moneyToDinero(convertedMoneySnapshot),
           ratios,
@@ -539,7 +553,7 @@ export const RegularExpenseForm = ({
       });
     }
 
-    navigate(`/groups/${group.id}`);
+    navigate(`/groups/${groupSheet.id}`);
   };
 
   return (
@@ -556,9 +570,7 @@ export const RegularExpenseForm = ({
         void handleCreateExpense();
       }}
     >
-      {createExpense.error && (
-        <Alert severity="error">{createExpense.error.message}</Alert>
-      )}
+      {error && <Alert severity="error">{error.message}</Alert>}
 
       <Stack direction="row" spacing={1}>
         <MoneyField
@@ -575,7 +587,7 @@ export const RegularExpenseForm = ({
           }
         />
 
-        {supportedCurrencies.includes(group.currencyCode) && (
+        {supportedCurrencies.includes(groupSheet.currencyCode) && (
           <CurrencySelect
             options={supportedCurrencies}
             currencyCode={currencyCode}
@@ -587,7 +599,7 @@ export const RegularExpenseForm = ({
       </Stack>
 
       <ParticipantSelect
-        group={group}
+        groupSheet={groupSheet}
         label="Who paid?"
         selectedId={paidById}
         setSelectedId={(newId) => {
@@ -642,7 +654,7 @@ export const RegularExpenseForm = ({
       />
 
       <SplitsFormSection
-        group={group}
+        groupSheet={groupSheet}
         amount={amount}
         currencyCode={currencyCode}
         splits={splits}
@@ -654,7 +666,7 @@ export const RegularExpenseForm = ({
       />
 
       <LoadingButton
-        loading={createExpense.isLoading}
+        loading={isLoading}
         color="primary"
         variant="contained"
         startIcon={<PlaylistAdd />}
@@ -670,10 +682,10 @@ export const RegularExpenseForm = ({
 };
 
 export const SettlementForm = ({
-  group,
+  groupSheet,
   me,
 }: {
-  group: GroupSheetByIdResponse;
+  groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
   const navigate = useNavigate();
@@ -683,7 +695,11 @@ export const SettlementForm = ({
   const [toId, setToId] = useState<string | undefined>();
 
   const utils = trpc.useContext();
-  const createSettlement = trpc.expense.createSettlement.useMutation();
+  const {
+    mutateAsync: createGroupSheetSettlement,
+    isLoading,
+    error,
+  } = trpc.expense.createGroupSheetSettlement.useMutation();
 
   const valid = fromId && toId && fromId !== toId && amount > 0;
 
@@ -692,36 +708,36 @@ export const SettlementForm = ({
       return;
     }
 
-    await createSettlement.mutateAsync({
-      groupId: group.id,
+    await createGroupSheetSettlement({
+      groupSheetId: groupSheet.id,
       fromId,
       toId,
-      money: dineroToMoney(toDinero(amount, group.currencyCode)),
+      money: dineroToMoney(toDinero(amount, groupSheet.currencyCode)),
     });
 
     await Promise.all([
-      utils.expense.getExpenses.invalidate({ groupId: group.id }),
-      utils.expense.getParticipantSummaries.invalidate(group.id),
+      utils.expense.getGroupSheetExpenses.invalidate({
+        groupSheetId: groupSheet.id,
+      }),
+      utils.expense.getParticipantSummaries.invalidate(groupSheet.id),
     ]);
 
-    navigate(`/groups/${group.id}`);
+    navigate(`/groups/${groupSheet.id}`);
   };
 
   return (
     <Stack spacing={3}>
-      {createSettlement.error && (
-        <Alert severity="error">{createSettlement.error.message}</Alert>
-      )}
+      {error && <Alert severity="error">{error.message}</Alert>}
 
       <ParticipantSelect
-        group={group}
+        groupSheet={groupSheet}
         label="From"
         selectedId={fromId}
         setSelectedId={setFromId}
       />
 
       <ParticipantSelect
-        group={group}
+        groupSheet={groupSheet}
         label="To"
         selectedId={toId}
         setSelectedId={setToId}
@@ -731,7 +747,7 @@ export const SettlementForm = ({
       <MoneyField
         label="How much was given"
         fullWidth
-        currencyCode={group.currencyCode}
+        currencyCode={groupSheet.currencyCode}
         amount={amount}
         setAmount={setAmount}
       />
@@ -739,7 +755,7 @@ export const SettlementForm = ({
       <LoadingButton
         disabled={!valid}
         variant="contained"
-        loading={createSettlement.isLoading}
+        loading={isLoading}
         onClick={handleCreateSettlement}
       >
         Log Settlement
@@ -751,10 +767,10 @@ export const SettlementForm = ({
 const ZExpenseType = z.enum(['expense', 'settlement']);
 
 export const EditExpenseForm = ({
-  group,
+  groupSheet,
   me,
 }: {
-  group: GroupSheetByIdResponse;
+  groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
   const [type, setType] = useState<z.infer<typeof ZExpenseType>>('expense');
@@ -774,8 +790,12 @@ export const EditExpenseForm = ({
         <ToggleButton value="settlement">Settlement</ToggleButton>
       </ToggleButtonGroup>
 
-      {type === 'expense' && <RegularExpenseForm group={group} me={me} />}
-      {type === 'settlement' && <SettlementForm group={group} me={me} />}
+      {type === 'expense' && (
+        <RegularExpenseForm groupSheet={groupSheet} me={me} />
+      )}
+      {type === 'settlement' && (
+        <SettlementForm groupSheet={groupSheet} me={me} />
+      )}
     </Stack>
   );
 };

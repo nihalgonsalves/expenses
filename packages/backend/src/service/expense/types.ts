@@ -9,13 +9,13 @@ export const ZMoney = z.object({
   currencyCode: z.string().length(3),
 });
 
-export const ZCreateExpenseInput = z.object({
-  groupId: z.string().nonempty(),
+export const ZCreateGroupSheetExpenseInput = z.object({
+  groupSheetId: z.string().nonempty(),
   paidById: z.string().nonempty(),
   money: ZMoney,
-  spentAt: z.string(),
+  spentAt: z.string().nonempty(),
   description: z.string(),
-  category: z.string(),
+  category: z.string().nonempty(),
   splits: z.array(
     z.object({
       participantId: z.string(),
@@ -24,45 +24,53 @@ export const ZCreateExpenseInput = z.object({
   ),
 });
 
-export type CreateExpenseInput = z.infer<typeof ZCreateExpenseInput>;
+export type CreateGroupSheetExpenseInput = z.infer<
+  typeof ZCreateGroupSheetExpenseInput
+>;
 
-export const ZCreateExpenseResponse = z.object({
+export const ZCreateGroupSheetExpenseResponse = z.object({
   id: z.string().nonempty(),
   description: z.string(),
 });
 
-export const ZCreateSettlementInput = z.object({
-  groupId: z.string().nonempty(),
+export const ZCreateGroupSheetSettlementInput = z.object({
+  groupSheetId: z.string().nonempty(),
   fromId: z.string().nonempty(),
   toId: z.string().nonempty(),
   money: ZMoney,
 });
 
-export type CreateSettlementInput = z.infer<typeof ZCreateSettlementInput>;
+export type CreateGroupSheetSettlementInput = z.infer<
+  typeof ZCreateGroupSheetSettlementInput
+>;
 
-export const ZCreateSettlementResponse = z.object({
+export const ZCreateGroupSheetSettlementResponse = z.object({
   id: z.string().nonempty(),
 });
 
-const ZExpenseListItem = z.object({
+const ZGroupSheetExpenseListItem = z.object({
   id: z.string().nonempty(),
   money: ZMoney,
   participants: z.array(ZParticipantWithName.extend({ balance: ZMoney })),
   yourBalance: ZMoney,
-  spentAt: z.string(),
+  spentAt: z.string().nonempty(),
   description: z.string(),
-  category: z.string(),
+  category: z.string().nonempty(),
   type: z.nativeEnum(ExpenseType),
 });
 
-export type ExpenseListItem = z.infer<typeof ZExpenseListItem>;
+export type GroupSheetExpenseListItem = z.infer<
+  typeof ZGroupSheetExpenseListItem
+>;
 
-export const ZGetExpensesResponse = z.object({
-  expenses: z.array(ZExpenseListItem),
+export const ZGetGroupSheetExpensesResponse = z.object({
+  expenses: z.array(ZGroupSheetExpenseListItem),
   total: z.number().nonnegative(),
 });
 
-export type GetExpensesResponse = z.infer<typeof ZGetExpensesResponse>;
+export type GetGroupSheetExpensesResponse = z.infer<
+  typeof ZGetGroupSheetExpensesResponse
+>;
 
 export const ZExpenseSummaryResponse = z.array(
   z.object({

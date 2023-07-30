@@ -163,19 +163,20 @@ export class SheetService {
     });
   }
 
-  async deleteGroup(id: string) {
+  async deleteGroupSheet(id: string) {
     return this.prismaClient.sheet.delete({
       where: {
         id,
+        type: SheetType.GROUP,
       },
     });
   }
 
-  async addParticipant(group: Sheet, participantEmail: string) {
+  async addGroupSheetMember(groupSheet: Sheet, participantEmail: string) {
     try {
       const participant = await this.prismaClient.sheetMemberships.create({
         data: {
-          sheet: { connect: { id: group.id } },
+          sheet: { connect: { id: groupSheet.id } },
           participant: {
             connectOrCreate: participantConnectOrCreate(participantEmail),
           },
@@ -200,11 +201,11 @@ export class SheetService {
     }
   }
 
-  async deleteParticipant(group: Sheet, participantId: string) {
+  async deleteGroupSheetMember(groupSheet: Sheet, participantId: string) {
     const expenseTransactionCount =
       await this.prismaClient.expenseTransactions.count({
         where: {
-          expense: { sheetId: group.id },
+          expense: { sheetId: groupSheet.id },
           userId: participantId,
         },
       });
@@ -220,18 +221,18 @@ export class SheetService {
       where: {
         sheetMembership: {
           participantId,
-          sheetId: group.id,
+          sheetId: groupSheet.id,
         },
       },
     });
   }
 
-  async ensureGroupMembership(groupId: string, userId: string) {
-    return this.ensureSheetMembership(groupId, userId, SheetType.GROUP);
+  async ensureGroupMembership(groupSheetId: string, userId: string) {
+    return this.ensureSheetMembership(groupSheetId, userId, SheetType.GROUP);
   }
 
   async ensureSheetMembership(
-    groupId: string,
+    groupSheetId: string,
     userId: string,
     type: SheetType,
   ): Promise<{
@@ -239,7 +240,7 @@ export class SheetService {
     role: SheetParticipantRole;
   }> {
     const sheet = await this.prismaClient.sheet.findUnique({
-      where: { id: groupId },
+      where: { id: groupSheetId },
       include: { participants: true },
     });
 

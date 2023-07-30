@@ -97,7 +97,7 @@ export const router = createBrowserRouter([
         errorElement,
       },
       {
-        path: 'groups/:groupId',
+        path: 'groups/:groupSheetId',
         element: (
           <AuthenticatedRoute>
             <GroupDetailPage />
@@ -106,7 +106,7 @@ export const router = createBrowserRouter([
         errorElement,
       },
       {
-        path: 'groups/:groupId/expenses',
+        path: 'groups/:groupSheetId/expenses',
         element: (
           <AuthenticatedRoute>
             <GroupExpensesIndexPage />
@@ -115,7 +115,7 @@ export const router = createBrowserRouter([
         errorElement,
       },
       {
-        path: 'groups/:groupId/expenses/new',
+        path: 'groups/:groupSheetId/expenses/new',
         element: (
           <AuthenticatedRoute>
             <NewGroupExpensePage />
@@ -168,7 +168,7 @@ export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
   return schema.parse(params);
 };
 
-export const GroupParams = z.object({ groupId: z.string() });
+export const GroupParams = z.object({ groupSheetId: z.string() });
 
 export const PersonalSheetParams = z.object({ sheetId: z.string() });
 

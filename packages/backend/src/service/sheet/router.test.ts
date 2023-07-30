@@ -30,20 +30,20 @@ describe('createPersonalSheet', () => {
   });
 });
 
-describe('createGroup', () => {
-  it('creates a group', async () => {
+describe('createGroupSheet', () => {
+  it('creates a groupSheet', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const otherMember = await userFactory(prisma);
 
-    const group = await caller.sheet.createGroup({
+    const groupSheet = await caller.sheet.createGroupSheet({
       name: 'WG Expenses',
       currencyCode: 'EUR',
       additionalParticipantEmailAddresses: [otherMember.email],
     });
 
-    expect(group).toEqual({
+    expect(groupSheet).toEqual({
       id: expect.any(String),
       name: 'WG Expenses',
       currencyCode: 'EUR',
@@ -64,7 +64,7 @@ describe('createGroup', () => {
 
     const otherEmail = 'hello@example.com';
 
-    await caller.sheet.createGroup({
+    await caller.sheet.createGroupSheet({
       name: 'WG Expenses',
       currencyCode: 'EUR',
       additionalParticipantEmailAddresses: [otherEmail],
@@ -84,14 +84,16 @@ describe('personalSheetById', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await personalSheetFactory(prisma, { withOwnerId: user.id });
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
 
-    const sheetById = await caller.sheet.personalSheetById(group.id);
+    const sheetById = await caller.sheet.personalSheetById(personalSheet.id);
 
     expect(sheetById).toEqual({
-      id: group.id,
-      name: group.name,
-      currencyCode: group.currencyCode,
+      id: personalSheet.id,
+      name: personalSheet.name,
+      currencyCode: personalSheet.currencyCode,
     });
   });
 
@@ -108,38 +110,40 @@ describe('personalSheetById', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await personalSheetFactory(prisma);
-
-    await expect(caller.sheet.personalSheetById(group.id)).rejects.toThrow(
-      'Sheet not found',
-    );
-  });
-
-  it('returns a 404 for a group sheet ID', async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
-    const personalSheet = await groupSheetFactory(prisma);
+    const personalSheet = await personalSheetFactory(prisma);
 
     await expect(
       caller.sheet.personalSheetById(personalSheet.id),
     ).rejects.toThrow('Sheet not found');
   });
-});
 
-describe('groupSheetById', () => {
-  it('returns a group', async () => {
+  it('returns a 404 for a groupSheet ID', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, { withOwnerId: user.id });
+    const groupSheet = await groupSheetFactory(prisma);
 
-    const groupSheetById = await caller.sheet.groupSheetById(group.id);
+    await expect(caller.sheet.personalSheetById(groupSheet.id)).rejects.toThrow(
+      'Sheet not found',
+    );
+  });
+});
+
+describe('groupSheetById', () => {
+  it('returns a groupSheet', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    const groupSheetById = await caller.sheet.groupSheetById(groupSheet.id);
 
     expect(groupSheetById).toEqual({
-      id: group.id,
-      name: group.name,
-      currencyCode: group.currencyCode,
+      id: groupSheet.id,
+      name: groupSheet.name,
+      currencyCode: groupSheet.currencyCode,
       participants: [
         {
           id: user.id,
@@ -162,9 +166,9 @@ describe('groupSheetById', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma);
+    const groupSheet = await groupSheetFactory(prisma);
 
-    await expect(caller.sheet.groupSheetById(group.id)).rejects.toThrow(
+    await expect(caller.sheet.groupSheetById(groupSheet.id)).rejects.toThrow(
       'Sheet not found',
     );
   });
@@ -205,51 +209,53 @@ describe('myGroupSheets', () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
-    const groupWithOwner = await groupSheetFactory(prisma, {
+    const ownedGroupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
-    const groupWithMember = await groupSheetFactory(prisma, {
+    const participatingGroupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [user.id],
     });
-    const otherGroup = await groupSheetFactory(prisma);
+    const otherGroupSheet = await groupSheetFactory(prisma);
 
     const myGroupSheets = await caller.sheet.myGroupSheets();
 
     expect(myGroupSheets.length).toBe(2);
 
     expect(
-      myGroupSheets.find(({ id }) => id === groupWithOwner.id),
+      myGroupSheets.find(({ id }) => id === ownedGroupSheet.id),
     ).toBeDefined();
     expect(
-      myGroupSheets.find(({ id }) => id === groupWithMember.id),
+      myGroupSheets.find(({ id }) => id === participatingGroupSheet.id),
     ).toBeDefined();
     expect(
-      myGroupSheets.find(({ id }) => id === otherGroup.id),
+      myGroupSheets.find(({ id }) => id === otherGroupSheet.id),
     ).toBeUndefined();
   });
 });
 
-describe('deleteGroup', () => {
-  it('deletes a group', async () => {
+describe('deleteGroupSheet', () => {
+  it('deletes a groupSheet', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma, { withOwnerId: user.id });
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
 
-    await caller.sheet.deleteGroup(group.id);
+    await caller.sheet.deleteGroupSheet(groupSheet.id);
 
-    expect(await prisma.sheet.findUnique({ where: { id: group.id } })).toBe(
-      null,
-    );
+    expect(
+      await prisma.sheet.findUnique({ where: { id: groupSheet.id } }),
+    ).toBe(null);
   });
 
-  it.todo('deletes a group with expenses');
+  it.todo('deletes a deleteGroupSheet with expenses');
 
   it('returns a 404 if the participant has no access', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma);
+    const groupSheet = await groupSheetFactory(prisma);
 
-    await expect(caller.sheet.deleteGroup(group.id)).rejects.toThrow(
+    await expect(caller.sheet.deleteGroupSheet(groupSheet.id)).rejects.toThrow(
       'Sheet not found',
     );
   });
@@ -257,11 +263,11 @@ describe('deleteGroup', () => {
   it('returns a 403 if the participant is not an admin', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [user.id],
     });
 
-    await expect(caller.sheet.deleteGroup(group.id)).rejects.toThrow(
+    await expect(caller.sheet.deleteGroupSheet(groupSheet.id)).rejects.toThrow(
       'Only admins can delete groups',
     );
   });
@@ -272,12 +278,14 @@ describe('addParticipant', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, { withOwnerId: user.id });
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
     const otherUser = await userFactory(prisma);
 
     expect(
       await caller.sheet.addParticipant({
-        groupId: group.id,
+        groupSheetId: groupSheet.id,
         participantEmail: otherUser.email,
       }),
     ).toMatchObject({
@@ -292,13 +300,15 @@ describe('addParticipant', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, { withOwnerId: user.id });
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
 
     const participantEmail = 'jessica@example.com';
 
     expect(
       await caller.sheet.addParticipant({
-        groupId: group.id,
+        groupSheetId: groupSheet.id,
         participantEmail,
       }),
     ).toMatchObject({
@@ -314,14 +324,14 @@ describe('addParticipant', () => {
     const caller = useProtectedCaller(user);
 
     const otherUser = await userFactory(prisma);
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [otherUser.id],
     });
 
     await expect(
       caller.sheet.addParticipant({
-        groupId: group.id,
+        groupSheetId: groupSheet.id,
         participantEmail: otherUser.email,
       }),
     ).rejects.toThrow('Participant already exists');
@@ -330,11 +340,11 @@ describe('addParticipant', () => {
   it('returns a 404 if the participant has no access', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma);
+    const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
       caller.sheet.addParticipant({
-        groupId: group.id,
+        groupSheetId: groupSheet.id,
         participantEmail: faker.internet.email(),
       }),
     ).rejects.toThrow('Sheet not found');
@@ -343,13 +353,13 @@ describe('addParticipant', () => {
   it('returns a 403 if the participant is not an admin', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [user.id],
     });
 
     await expect(
       caller.sheet.addParticipant({
-        groupId: group.id,
+        groupSheetId: groupSheet.id,
         participantEmail: faker.internet.email(),
       }),
     ).rejects.toThrow('Only admins can add participants');
@@ -362,13 +372,13 @@ describe('deleteParticipant', () => {
     const member = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [member.id],
     });
 
-    await caller.sheet.deleteParticipant({
-      groupId: group.id,
+    await caller.sheet.deleteGroupSheetMember({
+      groupSheetId: groupSheet.id,
       participantId: member.id,
     });
 
@@ -377,7 +387,7 @@ describe('deleteParticipant', () => {
         where: {
           sheetMembership: {
             participantId: member.id,
-            sheetId: group.id,
+            sheetId: groupSheet.id,
           },
         },
       }),
@@ -388,13 +398,13 @@ describe('deleteParticipant', () => {
     const admin = await userFactory(prisma);
 
     const caller = useProtectedCaller(admin);
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: admin.id,
     });
 
     await expect(
-      caller.sheet.deleteParticipant({
-        groupId: group.id,
+      caller.sheet.deleteGroupSheetMember({
+        groupSheetId: groupSheet.id,
         participantId: admin.id,
       }),
     ).rejects.toThrow('You cannot delete yourself as the last admin');
@@ -405,13 +415,13 @@ describe('deleteParticipant', () => {
     const member = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [member.id],
     });
 
     await expect(
-      caller.sheet.deleteParticipant({
-        groupId: group.id,
+      caller.sheet.deleteGroupSheetMember({
+        groupSheetId: groupSheet.id,
         participantId: member.id,
       }),
     ).rejects.toThrow('Sheet not found');
@@ -421,13 +431,13 @@ describe('deleteParticipant', () => {
     const member = await userFactory(prisma);
 
     const caller = useProtectedCaller(member);
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [member.id],
     });
 
     await expect(
-      caller.sheet.deleteParticipant({
-        groupId: group.id,
+      caller.sheet.deleteGroupSheetMember({
+        groupSheetId: groupSheet.id,
         participantId: member.id,
       }),
     ).rejects.toThrow('Only admins can remove participants');

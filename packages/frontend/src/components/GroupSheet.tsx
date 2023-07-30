@@ -13,25 +13,31 @@ import { RouterLink } from '../router';
 import { ExpensesList } from './ExpensesList';
 import { PeopleCard } from './PeopleCard';
 
-export const Group = ({ group }: { group: GroupSheetByIdResponse }) => {
+export const GroupSheet = ({
+  groupSheet,
+}: {
+  groupSheet: GroupSheetByIdResponse;
+}) => {
   const navigate = useNavigate();
 
   const { enqueueSnackbar } = useSnackbar();
 
   const utils = trpc.useContext();
-  const { data: expensesResponse } = trpc.expense.getExpenses.useQuery({
-    groupId: group.id,
-    limit: 2,
-  });
+  const { data: expensesResponse } =
+    trpc.expense.getGroupSheetExpenses.useQuery({
+      groupSheetId: groupSheet.id,
+      limit: 2,
+    });
 
-  const deleteGroup = trpc.sheet.deleteGroup.useMutation();
+  const { mutateAsync: deleteGroupSheet } =
+    trpc.sheet.deleteGroupSheet.useMutation();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
 
   const handleDelete = async () => {
     try {
-      await deleteGroup.mutateAsync(group.id);
+      await deleteGroupSheet(groupSheet.id);
 
-      void utils.sheet.groupSheetById.invalidate(group.id);
+      void utils.sheet.groupSheetById.invalidate(groupSheet.id);
       void utils.sheet.myGroupSheets.invalidate();
 
       navigate('/groups');
@@ -47,13 +53,13 @@ export const Group = ({ group }: { group: GroupSheetByIdResponse }) => {
 
   return (
     <Stack spacing={2}>
-      <PeopleCard groupId={group.id} />
+      <PeopleCard groupSheetId={groupSheet.id} />
 
       <Card variant="outlined">
         <CardContent>
           <Typography variant="h6">Latest Expenses</Typography>
           <ExpensesList
-            groupId={group.id}
+            groupSheetId={groupSheet.id}
             expenses={expensesResponse?.expenses ?? []}
           />
           <Stack spacing={1}>
@@ -63,7 +69,7 @@ export const Group = ({ group }: { group: GroupSheetByIdResponse }) => {
               color="primary"
               startIcon={<ListAlt />}
               LinkComponent={RouterLink}
-              href={`/groups/${group.id}/expenses`}
+              href={`/groups/${groupSheet.id}/expenses`}
             >
               All Expenses ({expensesResponse?.total})
             </Button>
@@ -73,7 +79,7 @@ export const Group = ({ group }: { group: GroupSheetByIdResponse }) => {
               color="primary"
               startIcon={<PlaylistAdd />}
               LinkComponent={RouterLink}
-              href={`/groups/${group.id}/expenses/new`}
+              href={`/groups/${groupSheet.id}/expenses/new`}
             >
               Add Expense
             </Button>

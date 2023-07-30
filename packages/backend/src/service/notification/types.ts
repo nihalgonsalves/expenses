@@ -5,7 +5,7 @@ import { ZMoney } from '../expense/types';
 
 const ZExpenseNotificationPayload = z.object({
   type: z.literal('expense'),
-  group: z.object({
+  groupSheet: z.object({
     id: z.string().nonempty(),
     name: z.string().nonempty(),
   }),

@@ -14,19 +14,19 @@ import { type GroupSheetsResponse } from '@nihalgonsalves/expenses-backend';
 import { RouterLink } from '../router';
 
 export const GroupSheetsList = ({
-  groups,
+  groupSheets,
   sx = {},
 }: {
-  groups: GroupSheetsResponse;
+  groupSheets: GroupSheetsResponse;
   sx?: SxProps;
 }) => {
   return (
     <List sx={sx}>
-      {groups.map((group) => (
-        <ListItem key={group.id} disablePadding>
+      {groupSheets.map((groupSheet) => (
+        <ListItem key={groupSheet.id} disablePadding>
           <ListItemButton
             LinkComponent={RouterLink}
-            href={`/groups/${group.id}`}
+            href={`/groups/${groupSheet.id}`}
           >
             <ListItemAvatar>
               <Avatar>
@@ -34,9 +34,11 @@ export const GroupSheetsList = ({
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={group.name}
+              primary={groupSheet.name}
               primaryTypographyProps={{ color: 'text.primary' }}
-              secondary={group.participants.map(({ name }) => name).join(', ')}
+              secondary={groupSheet.participants
+                .map(({ name }) => name)
+                .join(', ')}
             />
           </ListItemButton>
         </ListItem>

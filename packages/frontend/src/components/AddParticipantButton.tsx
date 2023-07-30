@@ -9,7 +9,11 @@ import { prevalidateEmail } from '../utils/utils';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
-export const AddParticipantButton = ({ groupId }: { groupId: string }) => {
+export const AddParticipantButton = ({
+  groupSheetId,
+}: {
+  groupSheetId: string;
+}) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const addParticipant = trpc.sheet.addParticipant.useMutation();
@@ -27,11 +31,14 @@ export const AddParticipantButton = ({ groupId }: { groupId: string }) => {
 
   const handleAddParticipant = async () => {
     try {
-      await addParticipant.mutateAsync({ groupId, participantEmail });
+      await addParticipant.mutateAsync({
+        groupSheetId,
+        participantEmail,
+      });
 
       await Promise.all([
-        utils.sheet.groupSheetById.invalidate(groupId),
-        utils.expense.getParticipantSummaries.invalidate(groupId),
+        utils.sheet.groupSheetById.invalidate(groupSheetId),
+        utils.expense.getParticipantSummaries.invalidate(groupSheetId),
       ]);
 
       handleClose();

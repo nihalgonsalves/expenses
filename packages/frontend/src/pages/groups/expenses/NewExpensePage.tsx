@@ -4,18 +4,18 @@ import { GroupParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
 export const NewGroupExpensePage = () => {
-  const { groupId } = useParams(GroupParams);
-  const { data: group } = trpc.sheet.groupSheetById.useQuery(groupId);
+  const { groupSheetId } = useParams(GroupParams);
+  const { data: groupSheet } = trpc.sheet.groupSheetById.useQuery(groupSheetId);
 
   const { data: me } = trpc.user.me.useQuery();
 
-  if (!group || !me) {
+  if (!groupSheet || !me) {
     return null;
   }
 
   return (
     <Root title="Add Expense" showBackButton>
-      <EditExpenseForm group={group} me={me} />
+      <EditExpenseForm groupSheet={groupSheet} me={me} />
     </Root>
   );
 };

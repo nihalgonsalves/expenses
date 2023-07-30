@@ -12,7 +12,7 @@ import { generateId } from '../../utils/nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
-describe('createExpense', () => {
+describe('createGroupSheetExpense', () => {
   it('creates an expense', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
@@ -21,13 +21,18 @@ describe('createExpense', () => {
 
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [member.id],
     });
 
-    const response = await caller.expense.createExpense(
-      createExpenseInput(group.id, group.currencyCode, user.id, member.id),
+    const response = await caller.expense.createGroupSheetExpense(
+      createExpenseInput(
+        groupSheet.id,
+        groupSheet.currencyCode,
+        user.id,
+        member.id,
+      ),
     );
 
     expect(response).toMatchObject({
@@ -55,37 +60,42 @@ describe('createExpense', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: 'EUR',
     });
 
-    const invalidInput = createExpenseInput(group.id, 'GBP', user.id, user.id);
-
-    await expect(caller.expense.createExpense(invalidInput)).rejects.toThrow(
-      'Currencies do not match',
+    const invalidInput = createExpenseInput(
+      groupSheet.id,
+      'GBP',
+      user.id,
+      user.id,
     );
+
+    await expect(
+      caller.expense.createGroupSheetExpense(invalidInput),
+    ).rejects.toThrow('Currencies do not match');
   });
 
   it("returns 400 if the split currencies do doesn't match", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: 'EUR',
     });
 
     const input = createExpenseInput(
-      group.id,
-      group.currencyCode,
+      groupSheet.id,
+      groupSheet.currencyCode,
       user.id,
       user.id,
     );
 
     input.splits[0]!.share.currencyCode = 'GBP';
 
-    await expect(caller.expense.createExpense(input)).rejects.toThrow(
+    await expect(caller.expense.createGroupSheetExpense(input)).rejects.toThrow(
       'Currencies do not match',
     );
   });
@@ -94,51 +104,51 @@ describe('createExpense', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
 
     const input = createExpenseInput(
-      group.id,
-      group.currencyCode,
+      groupSheet.id,
+      groupSheet.currencyCode,
       user.id,
       user.id,
     );
 
     input.splits[0]!.share.amount = 10_00;
 
-    await expect(caller.expense.createExpense(input)).rejects.toThrow(
+    await expect(caller.expense.createGroupSheetExpense(input)).rejects.toThrow(
       'Invalid splits',
     );
   });
 
-  it('returns 400 if split participants are not part of the group', async () => {
+  it('returns 400 if split participants are not part of the groupSheet', async () => {
     const user = await userFactory(prisma);
     const otherUser = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
 
     const input = createExpenseInput(
-      group.id,
-      group.currencyCode,
+      groupSheet.id,
+      groupSheet.currencyCode,
       user.id,
       otherUser.id,
     );
 
-    await expect(caller.expense.createExpense(input)).rejects.toThrow(
+    await expect(caller.expense.createGroupSheetExpense(input)).rejects.toThrow(
       'Invalid participants',
     );
   });
 
-  it('returns 404 if the group does not exist', async () => {
+  it('returns 404 if the groupSheet does not exist', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.createExpense(
+      caller.expense.createGroupSheetExpense(
         createExpenseInput(
           generateId(),
           currencyCodeFactory(),
@@ -149,21 +159,26 @@ describe('createExpense', () => {
     ).rejects.toThrow('Sheet not found');
   });
 
-  it('returns 404 if the user is not a member of the group', async () => {
+  it('returns 404 if the user is not a member of the groupSheet', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma);
+    const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.createExpense(
-        createExpenseInput(group.id, group.currencyCode, user.id, user.id),
+      caller.expense.createGroupSheetExpense(
+        createExpenseInput(
+          groupSheet.id,
+          groupSheet.currencyCode,
+          user.id,
+          user.id,
+        ),
       ),
     ).rejects.toThrow('Sheet not found');
   });
 });
 
-describe('createSettlement', () => {
+describe('createGroupSheetSettlement', () => {
   it('creates an settlement', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
@@ -172,14 +187,18 @@ describe('createSettlement', () => {
 
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [member.id],
     });
 
-    const response = await caller.expense.createSettlement({
-      groupId: group.id,
-      money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+    const response = await caller.expense.createGroupSheetSettlement({
+      groupSheetId: groupSheet.id,
+      money: {
+        amount: 100_00,
+        scale: 2,
+        currencyCode: groupSheet.currencyCode,
+      },
       fromId: user.id,
       toId: member.id,
     });
@@ -207,14 +226,14 @@ describe('createSettlement', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: 'EUR',
     });
 
     await expect(
-      caller.expense.createSettlement({
-        groupId: group.id,
+      caller.expense.createGroupSheetSettlement({
+        groupSheetId: groupSheet.id,
         money: { amount: 100_00, scale: 2, currencyCode: 'GBP' },
         fromId: user.id,
         toId: user.id,
@@ -222,7 +241,7 @@ describe('createSettlement', () => {
     ).rejects.toThrow('Currencies do not match');
   });
 
-  it('returns 400 if participants are not part of the group', async () => {
+  it('returns 400 if participants are not part of the groupSheet', async () => {
     const [user, otherUser] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -230,21 +249,25 @@ describe('createSettlement', () => {
 
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
 
     await expect(
-      caller.expense.createSettlement({
-        groupId: group.id,
-        money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+      caller.expense.createGroupSheetSettlement({
+        groupSheetId: groupSheet.id,
+        money: {
+          amount: 100_00,
+          scale: 2,
+          currencyCode: groupSheet.currencyCode,
+        },
         fromId: user.id,
         toId: otherUser.id,
       }),
     ).rejects.toThrow('Invalid participants');
   });
 
-  it('returns 404 if the group does not exist', async () => {
+  it('returns 404 if the groupSheet does not exist', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -253,8 +276,8 @@ describe('createSettlement', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.createSettlement({
-        groupId: generateId(),
+      caller.expense.createGroupSheetSettlement({
+        groupSheetId: generateId(),
         money: { amount: 100_00, scale: 2, currencyCode: 'EUR' },
         fromId: user.id,
         toId: member.id,
@@ -262,22 +285,27 @@ describe('createSettlement', () => {
     ).rejects.toThrow('Sheet not found');
   });
 
-  it('returns 404 if the user is not a member of the group', async () => {
+  it('returns 404 if the user is not a member of the groupSheet', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma);
+    const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.createSettlement({
-        groupId: group.id,
-        money: { amount: 100_00, scale: 2, currencyCode: group.currencyCode },
+      caller.expense.createGroupSheetSettlement({
+        groupSheetId: groupSheet.id,
+        money: {
+          amount: 100_00,
+          scale: 2,
+          currencyCode: groupSheet.currencyCode,
+        },
         fromId: user.id,
         toId: user.id,
       }),
     ).rejects.toThrow('Sheet not found');
   });
 });
+
 describe('deleteExpense', () => {
   it('deletes an expense', async () => {
     const user = await userFactory(prisma);
@@ -285,17 +313,22 @@ describe('deleteExpense', () => {
     const member = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [member.id],
     });
 
-    const expense = await caller.expense.createExpense(
-      createExpenseInput(group.id, group.currencyCode, user.id, member.id),
+    const expense = await caller.expense.createGroupSheetExpense(
+      createExpenseInput(
+        groupSheet.id,
+        groupSheet.currencyCode,
+        user.id,
+        member.id,
+      ),
     );
 
     await caller.expense.deleteExpense({
-      groupId: group.id,
+      groupSheetId: groupSheet.id,
       expenseId: expense.id,
     });
 
@@ -304,21 +337,21 @@ describe('deleteExpense', () => {
     ).toBeNull();
   });
 
-  it('returns 404 if the user is not a member of the group', async () => {
+  it('returns 404 if the user is not a member of the groupSheet', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const otherGroupUser = await userFactory(prisma);
     const otherGroupCaller = useProtectedCaller(otherGroupUser);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: otherGroupUser.id,
     });
 
-    const expense = await otherGroupCaller.expense.createExpense(
+    const expense = await otherGroupCaller.expense.createGroupSheetExpense(
       createExpenseInput(
-        group.id,
-        group.currencyCode,
+        groupSheet.id,
+        groupSheet.currencyCode,
         otherGroupUser.id,
         otherGroupUser.id,
       ),
@@ -326,27 +359,32 @@ describe('deleteExpense', () => {
 
     await expect(
       caller.expense.deleteExpense({
-        groupId: group.id,
+        groupSheetId: groupSheet.id,
         expenseId: expense.id,
       }),
     ).rejects.toThrow('Sheet not found');
   });
 
-  it('returns 404 if the expense is from another group', async () => {
+  it('returns 404 if the expense is from another groupSheet', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
 
-    const expense = await caller.expense.createExpense(
-      createExpenseInput(group.id, group.currencyCode, user.id, user.id),
+    const expense = await caller.expense.createGroupSheetExpense(
+      createExpenseInput(
+        groupSheet.id,
+        groupSheet.currencyCode,
+        user.id,
+        user.id,
+      ),
     );
 
     await expect(
       caller.expense.deleteExpense({
-        groupId: generateId(),
+        groupSheetId: generateId(),
         expenseId: expense.id,
       }),
     ).rejects.toThrow('Sheet not found');
@@ -356,36 +394,41 @@ describe('deleteExpense', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
 
     await expect(
       caller.expense.deleteExpense({
-        groupId: group.id,
+        groupSheetId: groupSheet.id,
         expenseId: generateId(),
       }),
     ).rejects.toThrow('Expense not found');
   });
 });
 
-describe('getExpenses', () => {
-  it('returns all expenses for the group', async () => {
+describe('getGroupSheetExpenses', () => {
+  it('returns all expenses for the groupSheet', async () => {
     const user = await userFactory(prisma);
     const member = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [member.id],
     });
 
-    const expense = await caller.expense.createExpense(
-      createExpenseInput(group.id, group.currencyCode, user.id, member.id),
+    const expense = await caller.expense.createGroupSheetExpense(
+      createExpenseInput(
+        groupSheet.id,
+        groupSheet.currencyCode,
+        user.id,
+        member.id,
+      ),
     );
 
-    const { expenses, total } = await caller.expense.getExpenses({
-      groupId: group.id,
+    const { expenses, total } = await caller.expense.getGroupSheetExpenses({
+      groupSheetId: groupSheet.id,
     });
 
     expect(expenses).toMatchObject([
@@ -402,23 +445,23 @@ describe('getExpenses', () => {
     expect(total).toBe(1);
   });
 
-  it('returns 404 if the group does not exist', async () => {
+  it('returns 404 if the groupSheet does not exist', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.getExpenses({ groupId: generateId() }),
+      caller.expense.getGroupSheetExpenses({ groupSheetId: generateId() }),
     ).rejects.toThrow('Sheet not found');
   });
 
-  it('returns 404 if the user is not a member of the group', async () => {
+  it('returns 404 if the user is not a member of the groupSheet', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma);
+    const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.getExpenses({ groupId: group.id }),
+      caller.expense.getGroupSheetExpenses({ groupSheetId: groupSheet.id }),
     ).rejects.toThrow('Sheet not found');
   });
 });
@@ -432,7 +475,7 @@ describe('getParticipantSummaries', () => {
 
     const caller = useProtectedCaller(user);
 
-    const group = await groupSheetFactory(prisma, {
+    const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [member.id],
     });
@@ -440,18 +483,23 @@ describe('getParticipantSummaries', () => {
     const paidById = user.id;
     const otherId = member.id;
 
-    await caller.expense.createExpense(
-      createExpenseInput(group.id, group.currencyCode, paidById, otherId),
+    await caller.expense.createGroupSheetExpense(
+      createExpenseInput(
+        groupSheet.id,
+        groupSheet.currencyCode,
+        paidById,
+        otherId,
+      ),
     );
 
-    await caller.expense.createSettlement({
-      groupId: group.id,
+    await caller.expense.createGroupSheetSettlement({
+      groupSheetId: groupSheet.id,
       fromId: member.id,
       toId: user.id,
-      money: { currencyCode: group.currencyCode, amount: 13_00, scale: 2 },
+      money: { currencyCode: groupSheet.currencyCode, amount: 13_00, scale: 2 },
     });
 
-    const summary = await caller.expense.getParticipantSummaries(group.id);
+    const summary = await caller.expense.getParticipantSummaries(groupSheet.id);
 
     expect(summary).toMatchObject([
       {
@@ -475,7 +523,7 @@ describe('getParticipantSummaries', () => {
     ]);
   });
 
-  it('returns 404 if the group does not exist', async () => {
+  it('returns 404 if the groupSheet does not exist', async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
@@ -485,14 +533,14 @@ describe('getParticipantSummaries', () => {
     ).rejects.toThrow('Sheet not found');
   });
 
-  it('returns 404 if the user is not part of the group', async () => {
+  it('returns 404 if the user is not part of the groupSheet', async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
-    const group = await groupSheetFactory(prisma);
+    const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.getParticipantSummaries(group.id),
+      caller.expense.getParticipantSummaries(groupSheet.id),
     ).rejects.toThrow('Sheet not found');
   });
 });

@@ -21,9 +21,13 @@ import { CurrencySelect } from './CurrencySelect';
 export const CreateGroupForm = () => {
   const navigate = useNavigate();
 
-  const createGroup = trpc.sheet.createGroup.useMutation();
+  const {
+    mutateAsync: createGroupSheet,
+    isLoading,
+    error,
+  } = trpc.sheet.createGroupSheet.useMutation();
 
-  const [groupName, setGroupName] = useState('');
+  const [groupSheetName, setGroupSheetName] = useState('');
   const [currencyCode, setCurrencyCode] = useState(getCurrencyCode());
 
   const [participantEmails, setParticipantEmails] = useState<string[]>([]);
@@ -48,9 +52,9 @@ export const CreateGroupForm = () => {
     );
   };
 
-  const handleCreateGroup = async () => {
-    const { id } = await createGroup.mutateAsync({
-      name: groupName,
+  const handleCreateGroupSheet = async () => {
+    const { id } = await createGroupSheet({
+      name: groupSheetName,
       currencyCode,
       additionalParticipantEmailAddresses: participantEmails,
     });
@@ -59,23 +63,21 @@ export const CreateGroupForm = () => {
   };
 
   const valid =
-    groupName && participantEmails.every((e) => prevalidateEmail(e));
+    groupSheetName && participantEmails.every((e) => prevalidateEmail(e));
 
   return (
     <form>
       <Stack spacing={3}>
-        {createGroup.error && (
-          <Alert severity="error">{createGroup.error.message}</Alert>
-        )}
+        {error && <Alert severity="error">{error.message}</Alert>}
 
         <TextField
           fullWidth
           label="Group name"
           placeholder="WG Expenses"
           required
-          value={groupName}
+          value={groupSheetName}
           onChange={(e) => {
-            setGroupName(e.target.value);
+            setGroupSheetName(e.target.value);
           }}
         />
 
@@ -129,9 +131,9 @@ export const CreateGroupForm = () => {
           fullWidth
           variant="contained"
           startIcon={<AddCircle />}
-          onClick={handleCreateGroup}
+          onClick={handleCreateGroupSheet}
           disabled={!valid}
-          loading={createGroup.isLoading}
+          loading={isLoading}
         >
           Create Group
         </LoadingButton>

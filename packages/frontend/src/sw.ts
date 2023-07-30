@@ -64,8 +64,8 @@ const handlePush = async (event: PushEvent) => {
 
   const title =
     payload.expense.type === 'EXPENSE'
-      ? `💶 ${payload.group.name} – ${description} (${formattedMoney})`
-      : `💶 ${payload.group.name} – Transfer`;
+      ? `💶 ${payload.groupSheet.name} – ${description} (${formattedMoney})`
+      : `💶 ${payload.groupSheet.name} – Transfer`;
 
   const body =
     payload.expense.type === 'EXPENSE'

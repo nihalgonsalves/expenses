@@ -1,14 +1,14 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-import { type CreateExpenseInput } from '../src/service/expense/types';
+import { type CreateGroupSheetExpenseInput } from '../src/service/expense/types';
 
 export const createExpenseInput = (
-  groupId: string,
+  groupSheetId: string,
   currencyCode: string,
   paidById: string,
   otherId: string,
-): CreateExpenseInput => ({
-  groupId,
+): CreateGroupSheetExpenseInput => ({
+  groupSheetId,
   description: 'Test expense',
   category: 'other',
   money: { amount: 100_00, scale: 2, currencyCode },

@@ -9,9 +9,8 @@ export {
 } from './service/sheet/types';
 
 export {
-  type GetExpensesResponse,
   type ExpenseSummaryResponse,
-  type ExpenseListItem,
+  type GroupSheetExpenseListItem,
 } from './service/expense/types';
 
 export { type NotificationPayload } from './service/notification/types';

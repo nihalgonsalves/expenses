@@ -18,11 +18,13 @@ export const sheetRouter = router({
   myGroupSheets: protectedProcedure
     .output(ZGroupSheetsResponse)
     .query(async ({ ctx }) => {
-      const groups = await ctx.sheetService.getGroupSheets(ctx.user);
+      const groupSheets = await ctx.sheetService.getGroupSheets(ctx.user);
 
-      return groups.map((group) => ({
-        ...group,
-        participants: group.participants.map(({ participant }) => participant),
+      return groupSheets.map((groupSheet) => ({
+        ...groupSheet,
+        participants: groupSheet.participants.map(
+          ({ participant }) => participant,
+        ),
       }));
     }),
 
@@ -36,15 +38,18 @@ export const sheetRouter = router({
     .input(z.string().nonempty())
     .output(ZGroupSheetByIdResponse)
     .query(async ({ input, ctx }) => {
-      const group = await ctx.sheetService.getGroupSheetById(input, ctx.user);
+      const groupSheet = await ctx.sheetService.getGroupSheetById(
+        input,
+        ctx.user,
+      );
 
-      if (!group) {
+      if (!groupSheet) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'Sheet not found' });
       }
 
       return {
-        ...group,
-        participants: group.participants.map(
+        ...groupSheet,
+        participants: groupSheet.participants.map(
           ({ participant: { id, name } }) => ({
             id,
             name,
@@ -76,21 +81,24 @@ export const sheetRouter = router({
       return ctx.sheetService.createPersonalSheet(input, ctx.user);
     }),
 
-  createGroup: protectedProcedure
+  createGroupSheet: protectedProcedure
     .input(ZCreateGroupSheetInput)
     .output(ZGroupSheetWithParticipants)
     .mutation(async ({ input, ctx }) => {
-      const group = await ctx.sheetService.createGroupSheet(input, ctx.user);
+      const groupSheet = await ctx.sheetService.createGroupSheet(
+        input,
+        ctx.user,
+      );
 
       return {
-        ...group,
-        participants: group.participants.map(({ participantId }) => ({
+        ...groupSheet,
+        participants: groupSheet.participants.map(({ participantId }) => ({
           id: participantId,
         })),
       };
     }),
 
-  deleteGroup: protectedProcedure
+  deleteGroupSheet: protectedProcedure
     .input(z.string().nonempty())
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
@@ -106,20 +114,20 @@ export const sheetRouter = router({
         });
       }
 
-      await ctx.sheetService.deleteGroup(input);
+      await ctx.sheetService.deleteGroupSheet(input);
     }),
 
   addParticipant: protectedProcedure
     .input(
       z.object({
-        groupId: z.string().nonempty(),
+        groupSheetId: z.string().nonempty(),
         participantEmail: z.string(),
       }),
     )
     .output(ZFullParticipant)
-    .mutation(async ({ input: { groupId, participantEmail }, ctx }) => {
+    .mutation(async ({ input: { groupSheetId, participantEmail }, ctx }) => {
       const { sheet, role: actorRole } =
-        await ctx.sheetService.ensureGroupMembership(groupId, ctx.user.id);
+        await ctx.sheetService.ensureGroupMembership(groupSheetId, ctx.user.id);
 
       if (actorRole !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
@@ -128,7 +136,7 @@ export const sheetRouter = router({
         });
       }
 
-      const { participant, role } = await ctx.sheetService.addParticipant(
+      const { participant, role } = await ctx.sheetService.addGroupSheetMember(
         sheet,
         participantEmail,
       );
@@ -141,17 +149,17 @@ export const sheetRouter = router({
       };
     }),
 
-  deleteParticipant: protectedProcedure
+  deleteGroupSheetMember: protectedProcedure
     .input(
       z.object({
-        groupId: z.string().nonempty(),
+        groupSheetId: z.string().nonempty(),
         participantId: z.string().nonempty(),
       }),
     )
     .output(z.void())
-    .mutation(async ({ input: { groupId, participantId }, ctx }) => {
-      const { sheet: group, role: actorRole } =
-        await ctx.sheetService.ensureGroupMembership(groupId, ctx.user.id);
+    .mutation(async ({ input: { groupSheetId, participantId }, ctx }) => {
+      const { sheet, role: actorRole } =
+        await ctx.sheetService.ensureGroupMembership(groupSheetId, ctx.user.id);
 
       if (actorRole !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
@@ -168,6 +176,6 @@ export const sheetRouter = router({
         });
       }
 
-      await ctx.sheetService.deleteParticipant(group, participantId);
+      await ctx.sheetService.deleteGroupSheetMember(sheet, participantId);
     }),
 });

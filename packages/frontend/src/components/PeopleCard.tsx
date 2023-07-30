@@ -43,7 +43,7 @@ const InfoMenuItem = ({
 );
 
 const PersonMenu = ({
-  groupId,
+  groupSheetId,
   participantId,
   balance,
   spent,
@@ -52,7 +52,7 @@ const PersonMenu = ({
   received,
   setIsInvalidating,
 }: {
-  groupId: string;
+  groupSheetId: string;
   setIsInvalidating: (val: boolean) => void;
 } & ExpenseSummaryResponse[number]) => {
   const buttonId = useId();
@@ -64,7 +64,8 @@ const PersonMenu = ({
   const open = anchorEl != null;
 
   const utils = trpc.useContext();
-  const deleteParticipant = trpc.sheet.deleteParticipant.useMutation();
+  const { mutateAsync: deleteGroupSheetMember } =
+    trpc.sheet.deleteGroupSheetMember.useMutation();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -78,14 +79,14 @@ const PersonMenu = ({
     setIsInvalidating(true);
 
     try {
-      await deleteParticipant.mutateAsync({
-        groupId,
+      await deleteGroupSheetMember({
+        groupSheetId: groupSheetId,
         participantId,
       });
 
       await Promise.all([
-        utils.sheet.groupSheetById.invalidate(groupId),
-        utils.expense.getParticipantSummaries.invalidate(groupId),
+        utils.sheet.groupSheetById.invalidate(groupSheetId),
+        utils.expense.getParticipantSummaries.invalidate(groupSheetId),
       ]);
     } catch (e) {
       enqueueSnackbar(
@@ -165,10 +166,10 @@ const getBalanceText = (balance: Money) => {
 
 const SummaryCard = ({
   summary,
-  groupId,
+  groupSheetId,
 }: {
   summary: ExpenseSummaryResponse[number];
-  groupId: string;
+  groupSheetId: string;
 }) => {
   const [isInvalidating, setIsInvalidating] = useState(false);
 
@@ -185,7 +186,7 @@ const SummaryCard = ({
         }}
       />
       <PersonMenu
-        groupId={groupId}
+        groupSheetId={groupSheetId}
         setIsInvalidating={setIsInvalidating}
         {...summary}
       />
@@ -193,9 +194,9 @@ const SummaryCard = ({
   );
 };
 
-export const PeopleCard = ({ groupId }: { groupId: string }) => {
+export const PeopleCard = ({ groupSheetId }: { groupSheetId: string }) => {
   const { data: summaries } =
-    trpc.expense.getParticipantSummaries.useQuery(groupId);
+    trpc.expense.getParticipantSummaries.useQuery(groupSheetId);
 
   return (
     <Card variant="outlined">
@@ -206,13 +207,13 @@ export const PeopleCard = ({ groupId }: { groupId: string }) => {
           {summaries?.map((summary) => (
             <SummaryCard
               key={summary.participantId}
-              groupId={groupId}
+              groupSheetId={groupSheetId}
               summary={summary}
             />
           ))}
         </List>
 
-        <AddParticipantButton groupId={groupId} />
+        <AddParticipantButton groupSheetId={groupSheetId} />
       </CardContent>
     </Card>
   );

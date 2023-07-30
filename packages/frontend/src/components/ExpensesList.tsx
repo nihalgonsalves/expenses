@@ -21,7 +21,7 @@ import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 
-import { type ExpenseListItem as ExpenseListItemAPI } from '@nihalgonsalves/expenses-backend';
+import { type GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
 import { categoryById } from '../data/categories';
@@ -36,12 +36,12 @@ import {
 import { ParticipantListItem } from './ParticipantListItem';
 
 const ExpenseActions = ({
-  groupId,
+  groupSheetId,
   expense,
   setIsInvalidating,
 }: {
-  groupId: string;
-  expense: ExpenseListItemAPI;
+  groupSheetId: string;
+  expense: GroupSheetExpenseListItem;
   setIsInvalidating: (isInvalidating: boolean) => void;
 }) => {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -54,11 +54,16 @@ const ExpenseActions = ({
     try {
       setIsInvalidating(true);
 
-      await deleteExpense.mutateAsync({ groupId, expenseId: expense.id });
+      await deleteExpense.mutateAsync({
+        groupSheetId: groupSheetId,
+        expenseId: expense.id,
+      });
 
       await Promise.all([
-        utils.expense.getExpenses.invalidate({ groupId }),
-        utils.expense.getParticipantSummaries.invalidate(groupId),
+        utils.expense.getGroupSheetExpenses.invalidate({
+          groupSheetId,
+        }),
+        utils.expense.getParticipantSummaries.invalidate(groupSheetId),
       ]);
     } catch (e) {
       setIsInvalidating(false);
@@ -106,7 +111,7 @@ const ExpenseActions = ({
   );
 };
 
-const getSummaryText = (expense: ExpenseListItemAPI): string => {
+const getSummaryText = (expense: GroupSheetExpenseListItem): string => {
   if (expense.type === 'TRANSFER') {
     // TODO improve API for transfer type
     // This works because of the sorting of + first
@@ -131,7 +136,11 @@ const getSummaryText = (expense: ExpenseListItemAPI): string => {
   return `${oweOrReceive} ${balanceFormatted}`;
 };
 
-const DenseExpenseListItem = ({ expense }: { expense: ExpenseListItemAPI }) => {
+const DenseExpenseListItem = ({
+  expense,
+}: {
+  expense: GroupSheetExpenseListItem;
+}) => {
   const narrowScreen = useBreakpointDown('sm');
 
   const descriptionText =
@@ -206,10 +215,10 @@ const ExpandMoreButton = styled((props: ExpandMoreProps) => {
 
 const ExpandedExpenseListItem = ({
   expense,
-  groupId,
+  groupSheetId,
 }: {
-  expense: ExpenseListItemAPI;
-  groupId: string;
+  expense: GroupSheetExpenseListItem;
+  groupSheetId: string;
 }) => {
   const [isInvalidating, setIsInvalidating] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -288,7 +297,7 @@ const ExpandedExpenseListItem = ({
               </List>
             )}
             <ExpenseActions
-              groupId={groupId}
+              groupSheetId={groupSheetId}
               expense={expense}
               setIsInvalidating={setIsInvalidating}
             />
@@ -300,13 +309,13 @@ const ExpandedExpenseListItem = ({
 };
 
 export const ExpensesList = ({
-  groupId,
+  groupSheetId,
   expenses,
   sx = {},
   expanded = false,
 }: {
-  groupId: string;
-  expenses: ExpenseListItemAPI[];
+  groupSheetId: string;
+  expenses: GroupSheetExpenseListItem[];
   sx?: SxProps;
   expanded?: boolean;
 }) => {
@@ -317,7 +326,7 @@ export const ExpensesList = ({
           <ExpandedExpenseListItem
             key={expense.id}
             expense={expense}
-            groupId={groupId}
+            groupSheetId={groupSheetId}
           />
         ))}
       </List>
