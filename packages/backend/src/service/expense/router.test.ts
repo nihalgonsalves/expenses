@@ -559,6 +559,10 @@ describe('deleteExpense', () => {
   });
 });
 
+describe('getAllUserExpenses', () => {
+  it.todo('returns expenses from all sheets');
+});
+
 describe('getGroupSheetExpenses', () => {
   it('returns all expenses for the groupSheet', async () => {
     const user = await userFactory(prisma);

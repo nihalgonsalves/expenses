@@ -1,7 +1,7 @@
 import { ExpenseType } from '@prisma/client';
 import { z } from 'zod';
 
-import { ZParticipantWithName } from '../sheet/types';
+import { ZParticipantWithName, ZSheet } from '../sheet/types';
 
 export const ZMoney = z.object({
   amount: z.number().int(),
@@ -68,7 +68,7 @@ export const ZCreateGroupSheetSettlementResponse = z.object({
   id: z.string().nonempty(),
 });
 
-const ZExpenseListItem = z.object({
+export const ZExpenseListItem = z.object({
   id: z.string().nonempty(),
   money: ZMoney,
   spentAt: z.string().nonempty(),
@@ -78,6 +78,11 @@ const ZExpenseListItem = z.object({
 });
 
 export type ExpenseListItem = z.infer<typeof ZExpenseListItem>;
+
+export const ZGetAllUserExpensesResponse = z.object({
+  expenses: z.array(z.object({ expense: ZExpenseListItem, sheet: ZSheet })),
+  total: z.number().nonnegative(),
+});
 
 export const ZGetPersonalSheetExpensesResponse = z.object({
   expenses: z.array(ZExpenseListItem),

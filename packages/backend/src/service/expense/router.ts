@@ -14,6 +14,7 @@ import {
   ZGetPersonalSheetExpensesResponse,
   ZGetGroupSheetExpensesResponse,
   ZBatchCreatePersonalSheetExpenseInput,
+  ZGetAllUserExpensesResponse,
 } from './types';
 
 export const expenseRouter = router({
@@ -113,6 +114,24 @@ export const expenseRouter = router({
       );
 
       await ctx.expenseService.deleteExpense(expenseId, sheet);
+    }),
+
+  getAllUserExpenses: protectedProcedure
+    .input(z.object({ limit: z.number().positive().optional() }))
+    .output(ZGetAllUserExpensesResponse)
+    .query(async ({ ctx, input }) => {
+      const { expenses, count } = await ctx.expenseService.getAllUserExpenses(
+        ctx.user,
+        input.limit,
+      );
+
+      return {
+        expenses: expenses.map(({ spentAt, sheet, ...expense }) => ({
+          expense: { ...expense, spentAt: spentAt.toISOString() },
+          sheet,
+        })),
+        total: count,
+      };
     }),
 
   getPersonalSheetExpenses: protectedProcedure

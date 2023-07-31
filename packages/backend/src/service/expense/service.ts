@@ -55,6 +55,21 @@ const expenseToPayload = (
   },
 });
 
+const calculateUserBalance = (
+  id: string,
+  currencyCode: string,
+  transactions: (ExpenseTransactions & { user: PrismaUser })[],
+): Money =>
+  sumMoney(
+    transactions
+      .filter(({ userId }) => userId === id)
+      .map((txn) => ({
+        currencyCode,
+        amount: txn.amount,
+        scale: txn.scale,
+      })),
+  ) ?? zeroMoney(currencyCode);
+
 const calculateBalances = (
   groupSheet: Sheet,
   transactions: (ExpenseTransactions & { user: PrismaUser })[],
@@ -70,16 +85,7 @@ const calculateBalances = (
     .map(({ id, name }) => ({
       id,
       name,
-      balance:
-        sumMoney(
-          transactions
-            .filter(({ userId }) => userId === id)
-            .map((txn) => ({
-              currencyCode: groupSheet.currencyCode,
-              amount: txn.amount,
-              scale: txn.scale,
-            })),
-        ) ?? zeroMoney(groupSheet.currencyCode),
+      balance: calculateUserBalance(id, groupSheet.currencyCode, transactions),
     }))
     .sort((a, b) => a.balance.amount - b.balance.amount);
 
@@ -118,6 +124,39 @@ export class ExpenseService {
     private prismaClient: PrismaClient,
     private notificationService: NotificationService,
   ) {}
+
+  async getAllUserExpenses(user: User, limit: number | undefined) {
+    const [expenses, count] = await this.prismaClient.$transaction([
+      this.prismaClient.expense.findMany({
+        where: { transactions: { some: { userId: user.id } } },
+        include: {
+          sheet: true,
+          transactions: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        orderBy: { spentAt: 'desc' },
+        ...(limit ? { take: limit } : {}),
+      }),
+      this.prismaClient.expense.count({
+        where: { transactions: { some: { userId: user.id } } },
+      }),
+    ]);
+
+    return {
+      expenses: expenses.map(({ transactions, ...expense }) => ({
+        ...expense,
+        money: calculateUserBalance(
+          user.id,
+          expense.sheet.currencyCode,
+          transactions,
+        ),
+      })),
+      count,
+    };
+  }
 
   async getPersonalSheetExpenses({
     personalSheet,
