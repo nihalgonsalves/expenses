@@ -22,6 +22,7 @@ import { GroupExpensesIndexPage } from './pages/groups/expenses/GroupExpensesInd
 import { NewGroupSheetExpensePage } from './pages/groups/expenses/NewGroupSheetExpensePage';
 import { NewSheetPage } from './pages/sheets/NewSheetPage';
 import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
+import { SheetImportPage } from './pages/sheets/SheetImportPage';
 import { SheetsIndexPage } from './pages/sheets/SheetsIndexPage';
 import { NewPersonalSheetExpensePage } from './pages/sheets/expenses/NewExpensePage';
 import { PersonalExpensesIndexPage } from './pages/sheets/expenses/PersonalExpensesIndexPage';
@@ -181,6 +182,14 @@ export const router = createBrowserRouter([
                 element: (
                   <AuthenticatedRoute>
                     <NewPersonalSheetExpensePage />
+                  </AuthenticatedRoute>
+                ),
+              },
+              {
+                path: '/sheets/:sheetId/import',
+                element: (
+                  <AuthenticatedRoute>
+                    <SheetImportPage />
                   </AuthenticatedRoute>
                 ),
               },

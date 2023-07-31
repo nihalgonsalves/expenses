@@ -16,11 +16,18 @@ const ZCreateSheetExpenseInput = z.object({
   category: z.string().nonempty(),
 });
 
+export type CreateSheetExpenseInput = z.infer<typeof ZCreateSheetExpenseInput>;
+
 export const ZCreatePersonalSheetExpenseInput = ZCreateSheetExpenseInput.extend(
   {
     personalSheetId: z.string().nonempty(),
   },
 );
+
+export const ZBatchCreatePersonalSheetExpenseInput = z.object({
+  personalSheetId: z.string().nonempty(),
+  expenses: z.array(ZCreateSheetExpenseInput),
+});
 
 export type CreatePersonalSheetExpenseInput = z.infer<
   typeof ZCreatePersonalSheetExpenseInput

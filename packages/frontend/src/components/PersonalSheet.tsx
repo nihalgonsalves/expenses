@@ -1,4 +1,4 @@
-import { DeleteOutline } from '@mui/icons-material';
+import { CloudUpload, DeleteOutline } from '@mui/icons-material';
 import { Button, ListItem, Stack, Typography } from '@mui/material';
 import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
@@ -11,6 +11,7 @@ import {
 } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
+import { RouterLink } from '../router';
 import { formatCurrency } from '../utils/money';
 import { formatDateTimeRelative, getExpenseDescription } from '../utils/utils';
 
@@ -82,6 +83,16 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
           <ExpenseListItemComponent key={expense.id} expense={expense} />
         ))}
       </LatestExpensesCard>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        startIcon={<CloudUpload />}
+        component={RouterLink}
+        href={`/sheets/${personalSheet.id}/import`}
+      >
+        Import
+      </Button>
 
       {deleteConfirm ? (
         <Stack direction="column" spacing={2}>

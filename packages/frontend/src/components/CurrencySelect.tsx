@@ -1,14 +1,10 @@
-import {
-  FormControl,
-  type FormControlProps,
-  InputLabel,
-  MenuItem,
-  Select,
-  type SelectChangeEvent,
-} from '@mui/material';
-import { useCallback, useId } from 'react';
+import { type FormControlProps } from '@mui/material';
+import { useMemo } from 'react';
+import { z } from 'zod';
 
 import { CURRENCY_CODES } from '../utils/money';
+
+import { Select } from './Select';
 
 export const CurrencySelect = ({
   currencyCode,
@@ -20,31 +16,23 @@ export const CurrencySelect = ({
   setCurrencyCode: (newCode: string) => void;
   options?: string[];
 } & FormControlProps) => {
-  const currencySelectId = useId();
-
-  const handleChange = useCallback(
-    (e: SelectChangeEvent) => {
-      setCurrencyCode(e.target.value);
-    },
-    [setCurrencyCode],
+  const optionDownProp = useMemo(
+    () =>
+      options.map((o) => ({
+        value: o,
+        display: o,
+      })),
+    [options],
   );
 
   return (
-    <FormControl {...formControlProps}>
-      <InputLabel id={currencySelectId}>Currency</InputLabel>
-      <Select
-        labelId={currencySelectId}
-        value={currencyCode}
-        label="Currency"
-        required
-        onChange={handleChange}
-      >
-        {options.map((c) => (
-          <MenuItem key={c} value={c}>
-            {c}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Select
+      label="Currency"
+      value={currencyCode}
+      setValue={setCurrencyCode}
+      options={optionDownProp}
+      schema={z.string()}
+      muiFormControlProps={formControlProps}
+    />
   );
 };

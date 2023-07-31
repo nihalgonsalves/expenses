@@ -1,6 +1,7 @@
 import {
   Apartment,
   Attractions,
+  AutoAwesome,
   Commute,
   ElectricBolt,
   Home,
@@ -29,6 +30,7 @@ export enum CategoryId {
   Shopping = 'shopping',
   Travel = 'travel',
   Transportation = 'transportation',
+  Hobbies = 'hobbies',
   // false positive?
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Home = 'home',
@@ -48,6 +50,7 @@ export const categories: Category[] = [
   { id: CategoryId.Shopping,       name: 'Shopping',       icon: <Store /> },
   { id: CategoryId.Travel,         name: 'Travel',         icon: <TravelExplore /> },
   { id: CategoryId.Transportation, name: 'Transportation', icon: <Commute /> },
+  { id: CategoryId.Hobbies,        name: 'Hobbies',        icon: <AutoAwesome /> },
   { id: CategoryId.Home,           name: 'Home',           icon: <Home /> },
   { id: CategoryId.Rent,           name: 'Rent',           icon: <Apartment /> },
   { id: CategoryId.Utilities,      name: 'Utilities',      icon: <ElectricBolt /> },

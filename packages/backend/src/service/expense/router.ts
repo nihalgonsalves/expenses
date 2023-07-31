@@ -13,6 +13,7 @@ import {
   ZExpenseSummaryResponse,
   ZGetPersonalSheetExpensesResponse,
   ZGetGroupSheetExpensesResponse,
+  ZBatchCreatePersonalSheetExpenseInput,
 } from './types';
 
 export const expenseRouter = router({
@@ -28,6 +29,22 @@ export const expenseRouter = router({
       return ctx.expenseService.createPersonalSheetExpense(
         ctx.user,
         input,
+        sheet,
+      );
+    }),
+
+  batchCreatePersonalSheetExpenses: protectedProcedure
+    .input(ZBatchCreatePersonalSheetExpenseInput)
+    .output(z.void())
+    .mutation(async ({ input, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensurePersonalSheetMembership(
+        input.personalSheetId,
+        ctx.user.id,
+      );
+
+      await ctx.expenseService.batchCreatePersonalSheetExpenses(
+        ctx.user,
+        input.expenses,
         sheet,
       );
     }),

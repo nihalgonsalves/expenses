@@ -95,6 +95,65 @@ describe('createPersonalSheetExpense', () => {
   });
 });
 
+describe('batchCreatePersonalSheetExpenses', () => {
+  it('creates expenses', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    await caller.expense.batchCreatePersonalSheetExpenses({
+      personalSheetId: personalSheet.id,
+      expenses: [
+        createPersonalSheetExpenseInput(
+          personalSheet.id,
+          personalSheet.currencyCode,
+        ),
+      ],
+    });
+
+    const expense = await prisma.expense.findFirst({
+      include: { transactions: true },
+    });
+
+    expect(expense).toMatchObject({
+      type: ExpenseType.EXPENSE,
+    });
+
+    expect(expense?.transactions).toMatchObject([
+      { scale: 2, amount: -100_00, userId: user.id },
+    ]);
+  });
+
+  it("returns 400 if the expense currency doesn't match", async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: 'EUR',
+    });
+
+    const invalidInput = createPersonalSheetExpenseInput(
+      personalSheet.id,
+      'GBP',
+    );
+
+    await expect(
+      caller.expense.batchCreatePersonalSheetExpenses({
+        personalSheetId: personalSheet.id,
+        expenses: [invalidInput],
+      }),
+    ).rejects.toThrow('Currencies do not match');
+  });
+
+  it.todo('returns 404 if the personalSheet does not exist');
+
+  it.todo('returns 404 if the user is not the personalSheet owner');
+});
+
 describe('createGroupSheetExpense', () => {
   it('creates an expense', async () => {
     const [user, member] = await Promise.all([

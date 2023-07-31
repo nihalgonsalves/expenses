@@ -26,9 +26,14 @@ export const generateId = () => {
 export const prevalidateEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+const CURRENT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 export const dateTimeLocalToISOString = (val: string) =>
-  Temporal.PlainDateTime.from(val)
-    .toZonedDateTime(Intl.DateTimeFormat().resolvedOptions().timeZone)
+  Temporal.PlainDateTime.from(val).toZonedDateTime(CURRENT_TIMEZONE).toString();
+
+export const dateToISOString = (date: Date) =>
+  Temporal.Instant.fromEpochMilliseconds(date.valueOf())
+    .toZonedDateTimeISO(CURRENT_TIMEZONE)
     .toString();
 
 export const nowForDateTimeInput = () =>
