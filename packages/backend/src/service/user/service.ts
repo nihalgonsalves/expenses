@@ -13,7 +13,7 @@ import {
 } from './types';
 import { comparePassword, hashPassword, signJWT, verifyJWT } from './utils';
 
-class UserServiceError extends TRPCError {}
+export class UserServiceError extends TRPCError {}
 
 export class UserService {
   constructor(private prismaClient: PrismaClient) {}

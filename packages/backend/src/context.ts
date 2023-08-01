@@ -8,7 +8,7 @@ import { ExpenseService } from './service/expense/service';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
 import { NotificationService } from './service/notification/service';
 import { SheetService } from './service/sheet/service';
-import { UserService } from './service/user/service';
+import { UserService, UserServiceError } from './service/user/service';
 import { type JWTToken, ZJWTToken, type User } from './service/user/types';
 
 const prisma = new PrismaClient();
@@ -19,11 +19,12 @@ const expenseService = new ExpenseService(prisma, notificationService);
 
 const frankfurterService = new FrankfurterService(config.FRANKFURTER_BASE_URL);
 
-const AUTH_COOKIE_NAME = 'auth';
+export const AUTH_COOKIE_NAME = 'auth';
 
-const getMaybeUser = async (
+export const getMaybeUser = async (
   cookieHeader: string | undefined,
   setJwtToken: (value: JWTToken | null) => void,
+  userServiceImpl: Pick<UserService, 'exchangeToken'> = userService,
 ): Promise<User | undefined> => {
   if (!cookieHeader) {
     return undefined;
@@ -36,10 +37,12 @@ const getMaybeUser = async (
   }
 
   try {
-    return await userService.exchangeToken(ZJWTToken.parse(token));
+    return await userServiceImpl.exchangeToken(ZJWTToken.parse(token));
   } catch (e) {
-    setJwtToken(null);
-    return undefined;
+    if (e instanceof UserServiceError && e.code === 'FORBIDDEN') {
+      setJwtToken(null);
+    }
+    throw e;
   }
 };
 
