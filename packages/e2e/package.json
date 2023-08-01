@@ -8,6 +8,6 @@
     "prepare-ci": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@playwright/test": "^1.36.1"
+    "@playwright/test": "^1.36.2"
   }
 }
