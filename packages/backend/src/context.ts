@@ -37,7 +37,15 @@ export const getMaybeUser = async (
   }
 
   try {
-    return await userServiceImpl.exchangeToken(ZJWTToken.parse(token));
+    const { user, newToken } = await userServiceImpl.exchangeToken(
+      ZJWTToken.parse(token),
+    );
+
+    if (newToken) {
+      setJwtToken(newToken);
+    }
+
+    return user;
   } catch (e) {
     if (e instanceof UserServiceError && e.code === 'FORBIDDEN') {
       setJwtToken(null);

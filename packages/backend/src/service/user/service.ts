@@ -18,17 +18,21 @@ export class UserServiceError extends TRPCError {}
 export class UserService {
   constructor(private prismaClient: PrismaClient) {}
 
-  async exchangeToken(token: JWTToken): Promise<User> {
-    const decoded = await verifyJWT(token);
+  async exchangeToken(
+    token: JWTToken,
+  ): Promise<{ user: User; newToken: JWTToken | undefined }> {
+    const { payload, reissue } = await verifyJWT(token);
 
-    if (!decoded.payload.sub) {
+    if (!payload.sub) {
       throw new UserServiceError({
         message: 'Invalid token',
         code: 'FORBIDDEN',
       });
     }
 
-    const user = await this.findByEmail(decoded.payload.sub);
+    const user = await this.prismaClient.user.findUnique({
+      where: { id: payload.sub },
+    });
 
     if (!user) {
       throw new UserServiceError({
@@ -37,7 +41,10 @@ export class UserService {
       });
     }
 
-    return user;
+    return {
+      user,
+      newToken: reissue ? await signJWT(user) : undefined,
+    };
   }
 
   async authorize(

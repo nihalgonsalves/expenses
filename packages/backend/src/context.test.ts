@@ -14,9 +14,12 @@ describe('getMaybeUser', () => {
       {
         // eslint-disable-next-line @typescript-eslint/require-await
         exchangeToken: async (token) => ({
-          id: 'id',
-          name: `name (${token})`,
-          email: 'email',
+          user: {
+            id: 'id',
+            name: `name (${token})`,
+            email: 'email',
+          },
+          newToken: undefined,
         }),
       },
     );
@@ -63,5 +66,28 @@ describe('getMaybeUser', () => {
     ).rejects.toThrowError('Error');
 
     expect(setJwtToken).not.toHaveBeenCalled();
+  });
+
+  it('sets a reissued token', async () => {
+    const setJwtToken = vi.fn<[string | null], undefined>();
+
+    await getMaybeUser(
+      cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
+      setJwtToken,
+      {
+        exchangeToken: (token) =>
+          // @ts-expect-error mock
+          Promise.resolve({
+            user: {
+              id: 'id',
+              name: `name (${token})`,
+              email: 'email',
+            },
+            newToken: '<new-jwt-token>',
+          }),
+      },
+    );
+
+    expect(setJwtToken).toHaveBeenCalledWith('<new-jwt-token>');
   });
 });

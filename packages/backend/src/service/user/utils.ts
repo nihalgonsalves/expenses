@@ -1,12 +1,18 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { TRPCError } from '@trpc/server';
 import bcrypt from 'bcrypt';
-import { SignJWT, jwtVerify } from 'jose';
+import { SignJWT, jwtVerify, errors } from 'jose';
+import { z } from 'zod';
 
 import { config } from '../../config';
 
 import { ZJWTToken, type User, type JWTToken } from './types';
 
 const SALT_ROUNDS = 10;
+// https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
+const REISSUE_MIN_AGE_SECS = Temporal.Duration.from({ hours: 1 }).total(
+  'seconds',
+);
 
 export const hashPassword = (password: string): Promise<string> =>
   bcrypt.hash(password, SALT_ROUNDS);
@@ -19,24 +25,52 @@ export const comparePassword = (
 const alg = 'HS256';
 const secret = new TextEncoder().encode(config.JWT_SECRET);
 
-export const signJWT = async (user: User): Promise<JWTToken> => {
+export const signJWT = async (
+  user: Pick<User, 'id'>,
+  identity = config.JWT_IDENTITY,
+): Promise<JWTToken> => {
   const token = await new SignJWT({})
-    .setSubject(user.email)
+    .setSubject(user.id)
     .setProtectedHeader({ alg })
     .setIssuedAt()
     .setExpirationTime(
       Temporal.Now.instant().add({ seconds: config.JWT_EXPIRY_SECONDS })
         .epochSeconds,
     )
-    .setIssuer(config.JWT_IDENTITY)
-    .setAudience(config.JWT_IDENTITY)
+    .setIssuer(identity)
+    .setAudience(identity)
     .sign(secret);
 
   return ZJWTToken.parse(token);
 };
 
-export const verifyJWT = (token: JWTToken) =>
-  jwtVerify(token, secret, {
-    issuer: config.JWT_IDENTITY,
-    audience: config.JWT_IDENTITY,
-  });
+export const verifyJWT = async (
+  token: JWTToken,
+  identity = config.JWT_IDENTITY,
+) => {
+  try {
+    const { payload } = await jwtVerify(token, secret, {
+      issuer: identity,
+      audience: identity,
+    });
+
+    // we always set an iat
+    const issuedAtEpochSeconds = z.number().positive().parse(payload.iat);
+
+    return {
+      payload,
+      reissue:
+        Temporal.Now.instant().epochSeconds - issuedAtEpochSeconds >=
+        REISSUE_MIN_AGE_SECS,
+    };
+  } catch (e) {
+    if (e instanceof errors.JOSEError) {
+      throw new TRPCError({
+        message: 'Invalid token',
+        code: 'FORBIDDEN',
+        cause: e,
+      });
+    }
+    throw e;
+  }
+};
