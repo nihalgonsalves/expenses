@@ -60,6 +60,7 @@ export const Root = ({
       <nav
         className="btm-nav flex-shrink-0 border-t-2 border-primary text-xl text-primary"
         style={{
+          paddingBottom: 'calc(env(safe-area-inset-bottom) - 1em)',
           position: 'unset',
           top: 'unset',
           left: 'unset',

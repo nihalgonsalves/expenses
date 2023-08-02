@@ -9,9 +9,6 @@ import { syncThemeToHtml } from './utils/theme';
 
 void registerSW();
 
-// sync synchronously so that there's no FOUC
-syncThemeToHtml();
-
 export const App = () => {
   const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 

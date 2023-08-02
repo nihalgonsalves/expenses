@@ -36,7 +36,9 @@ const ExpandedExpenseListItem = ({
   );
 
   return (
-    <div className={clsxtw('card border-2', { 'opacity-50': isInvalidating })}>
+    <div
+      className={clsxtw('card card-bordered', { 'opacity-50': isInvalidating })}
+    >
       <div
         tabIndex={0}
         className={clsxtw(

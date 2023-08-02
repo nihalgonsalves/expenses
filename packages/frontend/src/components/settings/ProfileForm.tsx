@@ -61,7 +61,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
   return (
     <form
-      className="card-compact card card-bordered border-solid"
+      className="card card-bordered card-compact"
       onSubmit={(e) => {
         e.preventDefault();
 

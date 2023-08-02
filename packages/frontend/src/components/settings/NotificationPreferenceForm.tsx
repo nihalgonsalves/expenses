@@ -85,7 +85,7 @@ export const NotificationPreferenceForm = () => {
     !applicationServerKey;
 
   return (
-    <section className="card card-bordered card-compact border-solid">
+    <section className="card card-bordered card-compact">
       <div className="card-body flex flex-col gap-8">
         <h2 className="card-title">Notifications</h2>
         {permission === 'denied' && (

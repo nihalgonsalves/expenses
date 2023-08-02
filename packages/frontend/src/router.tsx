@@ -191,11 +191,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/settings',
-        element: (
-          <AuthenticatedRoute>
-            <SettingsPage />
-          </AuthenticatedRoute>
-        ),
+        element: <SettingsPage />,
         errorElement,
       },
       {
