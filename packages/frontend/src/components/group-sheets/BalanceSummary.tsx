@@ -42,6 +42,7 @@ const PersonMenu = ({
   groupSheetId: string;
   setIsInvalidating: (val: boolean) => void;
 } & ExpenseSummaryResponse[number]) => {
+  const [open, setOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const utils = trpc.useContext();
@@ -74,8 +75,17 @@ const PersonMenu = ({
   };
 
   return (
-    <div className="dropdown dropdown-left">
-      <button type="button" aria-label="more" aria-haspopup="true">
+    <div
+      className={clsxtw('dropdown dropdown-left', { 'dropdown-open': open })}
+    >
+      <button
+        type="button"
+        aria-label="more"
+        aria-haspopup="true"
+        onClick={() => {
+          setOpen((prev) => !prev);
+        }}
+      >
         <MdMoreVert />
       </button>
       <div className="text-content card dropdown-content card-bordered card-compact z-[1] w-64 bg-base-100 p-2 shadow">
