@@ -123,22 +123,19 @@ export const NotificationPreferenceForm = () => {
         />
 
         {subscriptions && subscriptions.length > 0 && (
-          <>
-            <div className="divider m-0" />
-            <ul>
-              {subscriptions.map((subscription) => (
-                <li key={subscription.id}>
-                  <span className="font-semibold">
-                    {subscription.description}
-                    {subscription.endpoint === pushSubscription?.endpoint &&
-                      ' – this device'}
-                  </span>
-                  <br />
-                  Notifications enabled
-                </li>
-              ))}
-            </ul>
-          </>
+          <ul className="grid gap-4">
+            {subscriptions.map((subscription) => (
+              <li key={subscription.id}>
+                <span className="font-semibold">
+                  {subscription.description}
+                  {subscription.endpoint === pushSubscription?.endpoint &&
+                    ' – this device'}
+                </span>
+                <br />
+                Notifications enabled
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </section>
