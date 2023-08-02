@@ -65,7 +65,7 @@ export const Root = ({
       {additionalChildren}
 
       <nav
-        className="btm-nav flex-shrink-0 border-t-2 border-primary text-xl text-primary"
+        className="btm-nav flex-shrink-0 border-t-2 border-primary text-3xl text-primary"
         style={{
           paddingBottom: 'calc(env(safe-area-inset-bottom) - 1em)',
           position: 'unset',
@@ -74,16 +74,19 @@ export const Root = ({
           right: 'unset',
         }}
       >
-        <NavLink to="/">
+        <NavLink to="/" aria-label="Home" title="Home">
           <MdHome />
         </NavLink>
-        <NavLink to="/sheets">
+
+        <NavLink to="/sheets" aria-label="Sheets" title="Sheets">
           <MdTableView />
         </NavLink>
-        <NavLink to="/groups">
+
+        <NavLink to="/groups" aria-label="Groups" title="Groups">
           <MdGroup />
         </NavLink>
-        <NavLink to="/settings">
+
+        <NavLink to="/settings" aria-label="Settings" title="Settings">
           <MdSettings />
         </NavLink>
       </nav>
