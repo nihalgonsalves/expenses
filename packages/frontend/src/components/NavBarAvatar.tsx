@@ -28,7 +28,7 @@ export const NavBarAvatar = () => {
 
         <ul
           tabIndex={0}
-          className="menu dropdown-content rounded-box z-[1] mt-3 w-52 bg-base-100 p-2 text-primary shadow"
+          className="menu dropdown-content rounded-box z-[2] mt-3 w-52 bg-base-200 p-2 text-primary shadow"
         >
           <li>
             <Link to="/settings" className="justify-between">

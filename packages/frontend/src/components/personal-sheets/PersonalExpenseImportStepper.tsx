@@ -467,7 +467,7 @@ export const PersonalExpenseImportStepper = ({
               currencyCode={personalSheet.currencyCode}
             />
           )}
-          <div className="join-vertical join md:join-horizontal">
+          <div className="join join-vertical md:join-horizontal">
             {createError && (
               <div className="alert alert-error">{createError.message}</div>
             )}

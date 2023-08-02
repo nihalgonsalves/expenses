@@ -68,7 +68,7 @@ export const ThemeForm = () => {
   };
 
   return (
-    <div className="card card-bordered card-compact">
+    <div className="card-compact card card-bordered">
       <div className="card-body">
         <h2 className="card-title">Appearance</h2>
         <Select
