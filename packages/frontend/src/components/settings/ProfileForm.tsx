@@ -1,6 +1,5 @@
-import { TRPCClientError } from '@trpc/client';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 import { type User } from '@nihalgonsalves/expenses-backend';
 
@@ -10,8 +9,6 @@ import { LoadingButton } from '../form/LoadingButton';
 import { TextField } from '../form/TextField';
 
 export const ProfileForm = ({ me }: { me: User }) => {
-  const { enqueueSnackbar } = useSnackbar();
-
   const utils = trpc.useContext();
   const { mutateAsync: updateUser, isLoading } =
     trpc.user.updateUser.useMutation();
@@ -32,31 +29,21 @@ export const ProfileForm = ({ me }: { me: User }) => {
     name === me.name && email === me.email && !password && !newPassword;
 
   const handleSubmit = async () => {
-    try {
-      const { name: newName, email: newEmail } = await updateUser({
-        name,
-        email,
-        password: password ? password : undefined,
-        newPassword: newPassword ? newPassword : undefined,
-      });
+    const { name: newName, email: newEmail } = await updateUser({
+      name,
+      email,
+      password: password ? password : undefined,
+      newPassword: newPassword ? newPassword : undefined,
+    });
 
-      enqueueSnackbar('Saved!', { variant: 'success' });
+    toast.success('Saved!');
 
-      await utils.user.me.invalidate();
+    await utils.user.me.invalidate();
 
-      setName(newName);
-      setEmail(newEmail);
-      setPassword('');
-      setNewPassword('');
-    } catch (e) {
-      enqueueSnackbar(
-        `Error saving profile: ${
-          e instanceof TRPCClientError ? e.message : 'Unknown Error'
-        }`,
-        { variant: 'error' },
-      );
-      return;
-    }
+    setName(newName);
+    setEmail(newEmail);
+    setPassword('');
+    setNewPassword('');
   };
 
   return (

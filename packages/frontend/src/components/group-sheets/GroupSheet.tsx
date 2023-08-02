@@ -1,5 +1,3 @@
-import { TRPCClientError } from '@trpc/client';
-import { useSnackbar } from 'notistack';
 import { MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -18,8 +16,6 @@ export const GroupSheet = ({
 }) => {
   const navigate = useNavigate();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const utils = trpc.useContext();
   const { data: groupSheetExpensesResponse } =
     trpc.expense.getGroupSheetExpenses.useQuery({
@@ -31,21 +27,12 @@ export const GroupSheet = ({
     trpc.sheet.deleteSheet.useMutation();
 
   const handleDelete = async () => {
-    try {
-      await deleteGroupSheet(groupSheet.id);
+    await deleteGroupSheet(groupSheet.id);
 
-      void utils.sheet.groupSheetById.invalidate(groupSheet.id);
-      void utils.sheet.myGroupSheets.invalidate();
+    void utils.sheet.groupSheetById.invalidate(groupSheet.id);
+    void utils.sheet.myGroupSheets.invalidate();
 
-      navigate('/groups');
-    } catch (e) {
-      enqueueSnackbar(
-        `Error deleting group: ${
-          e instanceof TRPCClientError ? e.message : 'Unknown Error'
-        }`,
-        { variant: 'error' },
-      );
-    }
+    navigate('/groups');
   };
 
   return (

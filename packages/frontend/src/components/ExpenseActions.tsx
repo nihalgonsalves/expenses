@@ -1,5 +1,3 @@
-import { TRPCClientError } from '@trpc/client';
-import { useSnackbar } from 'notistack';
 import { MdDeleteOutline } from 'react-icons/md';
 
 import { type ExpenseListItem } from '@nihalgonsalves/expenses-backend';
@@ -19,8 +17,6 @@ export const ExpenseActions = ({
   setIsInvalidating: (isInvalidating: boolean) => void;
   onDelete: () => void | Promise<void>;
 }) => {
-  const { enqueueSnackbar } = useSnackbar();
-
   const { mutateAsync: deleteExpense, isLoading } =
     trpc.expense.deleteExpense.useMutation();
 
@@ -29,19 +25,13 @@ export const ExpenseActions = ({
       setIsInvalidating(true);
 
       await deleteExpense({
-        sheetId: sheetId,
+        sheetId,
         expenseId: expense.id,
       });
 
       await onDelete();
-    } catch (e) {
+    } catch {
       setIsInvalidating(false);
-      enqueueSnackbar(
-        `Error deleting expense: ${
-          e instanceof TRPCClientError ? e.message : 'Unknown Error'
-        }`,
-        { variant: 'error' },
-      );
     }
   };
 

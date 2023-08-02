@@ -1,5 +1,3 @@
-import { TRPCClientError } from '@trpc/client';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 
@@ -43,7 +41,6 @@ const PersonMenu = ({
   setIsInvalidating: (val: boolean) => void;
 } & ExpenseSummaryResponse[number]) => {
   const [open, setOpen] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
 
   const utils = trpc.useContext();
   const { mutateAsync: deleteGroupSheetMember } =
@@ -62,14 +59,7 @@ const PersonMenu = ({
         utils.sheet.groupSheetById.invalidate(groupSheetId),
         utils.expense.getParticipantSummaries.invalidate(groupSheetId),
       ]);
-    } catch (e) {
-      enqueueSnackbar(
-        `Error deleting expense: ${
-          e instanceof TRPCClientError ? e.message : 'Unknown Error'
-        }`,
-        { variant: 'error' },
-      );
-    } finally {
+    } catch {
       setIsInvalidating(false);
     }
   };

@@ -1,5 +1,3 @@
-import { TRPCClientError } from '@trpc/client';
-import { useSnackbar } from 'notistack';
 import { MdCloudUpload, MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -39,8 +37,6 @@ const ExpenseListItemComponent = ({
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const navigate = useNavigate();
 
-  const { enqueueSnackbar } = useSnackbar();
-
   const utils = trpc.useContext();
 
   const { data: personalSheetExpensesResponse } =
@@ -52,19 +48,10 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     trpc.sheet.deleteSheet.useMutation();
 
   const handleDelete = async () => {
-    try {
-      await deleteSheet(personalSheet.id);
-      void utils.sheet.personalSheetById.invalidate(personalSheet.id);
-      void utils.sheet.myPersonalSheets.invalidate();
-      navigate('/sheets');
-    } catch (e) {
-      enqueueSnackbar(
-        `Error deleting sheet: ${
-          e instanceof TRPCClientError ? e.message : 'Unknown Error'
-        }`,
-        { variant: 'error' },
-      );
-    }
+    await deleteSheet(personalSheet.id);
+    void utils.sheet.personalSheetById.invalidate(personalSheet.id);
+    void utils.sheet.myPersonalSheets.invalidate();
+    navigate('/sheets');
   };
 
   return (

@@ -1,5 +1,3 @@
-import { TRPCClientError } from '@trpc/client';
-import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { MdCheck, MdClear, MdPersonAdd } from 'react-icons/md';
 
@@ -10,8 +8,6 @@ import { ParticipantListItem } from '../ParticipantListItem';
 import { TextField } from '../form/TextField';
 
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
-  const { enqueueSnackbar } = useSnackbar();
-
   const { mutateAsync: addGroupSheetMember, isLoading } =
     trpc.sheet.addGroupSheetMember.useMutation();
   const utils = trpc.useContext();
@@ -27,26 +23,17 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   };
 
   const handleAddMember = async () => {
-    try {
-      await addGroupSheetMember({
-        groupSheetId,
-        email,
-      });
+    await addGroupSheetMember({
+      groupSheetId,
+      email,
+    });
 
-      await Promise.all([
-        utils.sheet.groupSheetById.invalidate(groupSheetId),
-        utils.expense.getParticipantSummaries.invalidate(groupSheetId),
-      ]);
+    await Promise.all([
+      utils.sheet.groupSheetById.invalidate(groupSheetId),
+      utils.expense.getParticipantSummaries.invalidate(groupSheetId),
+    ]);
 
-      handleClose();
-    } catch (e) {
-      enqueueSnackbar(
-        `Error adding participant: ${
-          e instanceof TRPCClientError ? e.message : 'Unknown Error'
-        }`,
-        { variant: 'error' },
-      );
-    }
+    handleClose();
   };
 
   return addMemberOpen ? (

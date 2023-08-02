@@ -1,5 +1,5 @@
-import { SnackbarProvider } from 'notistack';
 import { useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 import { TrpcProvider } from './api/TrpcProvider';
 import { registerSW } from './registerSW';
@@ -18,12 +18,23 @@ export const App = () => {
 
   return (
     <TrpcProvider>
-      <SnackbarProvider
-        autoHideDuration={5000}
-        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-      >
-        <RouterProvider router={router} />
-      </SnackbarProvider>
+      <RouterProvider router={router} />
+      <Toaster
+        toastOptions={{
+          success: {
+            style: {
+              background: 'hsl(var(--su))',
+              color: 'hsl(var(--suc) / var(--tw-text-opacity))',
+            },
+          },
+          error: {
+            style: {
+              background: 'hsl(var(--er))',
+              color: 'hsl(var(--erc) / var(--tw-text-opacity))',
+            },
+          },
+        }}
+      />
     </TrpcProvider>
   );
 };
