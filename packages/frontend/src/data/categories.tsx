@@ -1,19 +1,19 @@
 import {
-  Apartment,
-  Attractions,
-  AutoAwesome,
-  Commute,
-  ElectricBolt,
-  Home,
-  LocalBar,
-  LocalDining,
-  LocalGroceryStore,
-  Movie,
-  Payments,
-  QuestionMark,
-  Store,
-  TravelExplore,
-} from '@mui/icons-material';
+  MdApartment,
+  MdAttractions,
+  MdAutoAwesome,
+  MdCommute,
+  MdElectricBolt,
+  MdHome,
+  MdLocalBar,
+  MdLocalDining,
+  MdLocalGroceryStore,
+  MdMovie,
+  MdPayments,
+  MdQuestionMark,
+  MdStore,
+  MdTravelExplore,
+} from 'react-icons/md';
 
 type Category = {
   id: CategoryId;
@@ -32,7 +32,7 @@ export enum CategoryId {
   Transportation = 'transportation',
   Hobbies = 'hobbies',
   // false positive?
-  // eslint-disable-next-line @typescript-eslint/no-shadow
+
   Home = 'home',
   Rent = 'rent',
   Utilities = 'utilities',
@@ -42,20 +42,20 @@ export enum CategoryId {
 
 // prettier-ignore
 export const categories: Category[] = [
-  { id: CategoryId.Groceries,      name: 'Groceries',      icon: <LocalGroceryStore /> },
-  { id: CategoryId.Restauraunts,   name: 'Restauraunts',   icon: <LocalDining /> },
-  { id: CategoryId.Bars,           name: 'Bars',           icon: <LocalBar /> },
-  { id: CategoryId.Entertainment,  name: 'Entertainment',  icon: <Attractions />, },
-  { id: CategoryId.Cinema,         name: 'Cinema',         icon: <Movie /> },
-  { id: CategoryId.Shopping,       name: 'Shopping',       icon: <Store /> },
-  { id: CategoryId.Travel,         name: 'Travel',         icon: <TravelExplore /> },
-  { id: CategoryId.Transportation, name: 'Transportation', icon: <Commute /> },
-  { id: CategoryId.Hobbies,        name: 'Hobbies',        icon: <AutoAwesome /> },
-  { id: CategoryId.Home,           name: 'Home',           icon: <Home /> },
-  { id: CategoryId.Rent,           name: 'Rent',           icon: <Apartment /> },
-  { id: CategoryId.Utilities,      name: 'Utilities',      icon: <ElectricBolt /> },
-  { id: CategoryId.Other,          name: 'Other',          icon: <QuestionMark /> },
-  { id: CategoryId.Transfer,       name: 'Transfer',       icon: <Payments /> },
+  { id: CategoryId.Groceries,      name: 'Groceries',      icon: <MdLocalGroceryStore /> },
+  { id: CategoryId.Restauraunts,   name: 'Restauraunts',   icon: <MdLocalDining /> },
+  { id: CategoryId.Bars,           name: 'Bars',           icon: <MdLocalBar /> },
+  { id: CategoryId.Entertainment,  name: 'Entertainment',  icon: <MdAttractions />, },
+  { id: CategoryId.Cinema,         name: 'Cinema',         icon: <MdMovie /> },
+  { id: CategoryId.Shopping,       name: 'Shopping',       icon: <MdStore /> },
+  { id: CategoryId.Travel,         name: 'Travel',         icon: <MdTravelExplore /> },
+  { id: CategoryId.Transportation, name: 'Transportation', icon: <MdCommute /> },
+  { id: CategoryId.Hobbies,        name: 'Hobbies',        icon: <MdAutoAwesome /> },
+  { id: CategoryId.Home,           name: 'Home',           icon: <MdHome /> },
+  { id: CategoryId.Rent,           name: 'Rent',           icon: <MdApartment /> },
+  { id: CategoryId.Utilities,      name: 'Utilities',      icon: <MdElectricBolt /> },
+  { id: CategoryId.Other,          name: 'Other',          icon: <MdQuestionMark /> },
+  { id: CategoryId.Transfer,       name: 'Transfer',       icon: <MdPayments /> },
 ];
 
 export const categoryById = Object.fromEntries(

@@ -1,26 +1,22 @@
-import { ExpandMore } from '@mui/icons-material';
-import { IconButton, type IconButtonProps, styled } from '@mui/material';
+import { MdExpandMore } from 'react-icons/md';
 
 type ExpandMoreProps = {
   expand: boolean;
-} & Pick<IconButtonProps, 'onClick'>;
+  onClick: () => void;
+};
 
-export const ExpandMoreButton = styled(
-  ({ expand, onClick }: ExpandMoreProps) => {
-    return (
-      <IconButton
-        onClick={onClick}
-        aria-expanded={expand}
-        aria-label="show more"
-      >
-        <ExpandMore />
-      </IconButton>
-    );
-  },
-)(({ theme, expand }) => ({
-  transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-  marginLeft: 'auto',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest,
-  }),
-}));
+// TODO: Flip when open
+
+export const ExpandMoreButton = ({ expand, onClick }: ExpandMoreProps) => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-expanded={expand}
+      aria-label="show more"
+      className="btn btn-ghost"
+    >
+      <MdExpandMore />
+    </button>
+  );
+};

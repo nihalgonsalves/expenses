@@ -1,7 +1,8 @@
-import { Alert, Typography } from '@mui/material';
+import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../api/trpc';
-import { PersonalSheet } from '../../components/PersonalSheet';
+import { FloatingActionButton } from '../../components/FloatingActionnButton';
+import { PersonalSheet } from '../../components/personal-sheets/PersonalSheet';
 import { useParams, PersonalSheetParams } from '../../router';
 import { Root } from '../Root';
 
@@ -16,21 +17,27 @@ export const SheetDetailPage = () => {
   if (status === 'error') {
     return (
       <Root title="Personal Sheet">
-        <Alert severity="error">{error.message}</Alert>
+        <div className="alert alert-error">{error.message}</div>
       </Root>
     );
   }
 
   if (status === 'loading') {
-    return (
-      <Root title={null}>
-        <Typography color="text.primary">...</Typography>
-      </Root>
-    );
+    return <Root title={null}>...</Root>;
   }
 
   return (
-    <Root title={sheet.name} showBackButton>
+    <Root
+      title={sheet.name}
+      showBackButton
+      additionalChildren={
+        <FloatingActionButton
+          to={`/sheets/${sheetId}/expenses/new`}
+          label="Add Expense"
+          icon={<MdPlaylistAdd />}
+        />
+      }
+    >
       <PersonalSheet personalSheet={sheet} />
     </Root>
   );

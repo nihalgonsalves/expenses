@@ -1,12 +1,5 @@
-import { type Theme, useMediaQuery, type Breakpoint } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect, useCallback } from 'react';
-
-export const useBreakpointDown = (breakpoint: Breakpoint): boolean =>
-  useMediaQuery<Theme>((theme) => theme.breakpoints.down(breakpoint));
-
-export const useToggleButtonOrientation = (breakpoint: Breakpoint) =>
-  useBreakpointDown(breakpoint) ? 'vertical' : 'horizontal';
 
 const PUSH_SUPPORTED =
   'serviceWorker' in globalThis.navigator && 'PushManager' in globalThis.window;
@@ -95,4 +88,47 @@ export const useNotificationPermission = (): {
   }
 
   return { permission, request };
+};
+
+// adapted from https://usehooks-ts.com/react-hook/use-media-query
+export const useMediaQuery = (query: string): boolean => {
+  const getMatches = (q: string): boolean => {
+    // Prevents SSR issues
+    if (typeof window !== 'undefined') {
+      return window.matchMedia(q).matches;
+    }
+    return false;
+  };
+
+  const [matches, setMatches] = useState<boolean>(getMatches(query));
+
+  const handleChange = useCallback(() => {
+    setMatches(getMatches(query));
+  }, [query]);
+
+  useEffect(() => {
+    const matchMedia = window.matchMedia(query);
+
+    // Triggered at the first client-side load and if query changes
+    handleChange();
+
+    // Listen matchMedia
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (matchMedia.addListener) {
+      matchMedia.addListener(handleChange);
+    } else {
+      matchMedia.addEventListener('change', handleChange);
+    }
+
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (matchMedia.removeListener) {
+        matchMedia.removeListener(handleChange);
+      } else {
+        matchMedia.removeEventListener('change', handleChange);
+      }
+    };
+  }, [query, handleChange]);
+
+  return matches;
 };

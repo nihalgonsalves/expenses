@@ -1,9 +1,9 @@
-import { PlaylistAdd } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../../api/trpc';
-import { GroupSheetExpensesExpandedList } from '../../../components/GroupSheetExpensesExpandedList';
-import { GroupParams, RouterLink, useParams } from '../../../router';
+import { FloatingActionButton } from '../../../components/FloatingActionnButton';
+import { GroupSheetExpensesExpandedList } from '../../../components/group-sheets/GroupSheetExpensesExpandedList';
+import { GroupParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
 export const GroupExpensesIndexPage = () => {
@@ -16,22 +16,21 @@ export const GroupExpensesIndexPage = () => {
   if (!groupSheetExpenses) return null;
 
   return (
-    <Root title="Expenses" showBackButton>
+    <Root
+      title="Expenses"
+      showBackButton
+      additionalChildren={
+        <FloatingActionButton
+          to={`/groups/${groupSheetId}/expenses/new`}
+          label="Add Expense"
+          icon={<MdPlaylistAdd />}
+        />
+      }
+    >
       <GroupSheetExpensesExpandedList
         groupSheetId={groupSheetId}
         expenses={groupSheetExpenses.expenses}
-        sx={{ flexGrow: 1 }}
       />
-      <Button
-        fullWidth
-        variant="outlined"
-        color="primary"
-        startIcon={<PlaylistAdd />}
-        LinkComponent={RouterLink}
-        href={`/groups/${groupSheetId}/expenses/new`}
-      >
-        Add Expense
-      </Button>
     </Root>
   );
 };

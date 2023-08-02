@@ -1,39 +1,16 @@
-import { Person } from '@mui/icons-material';
-import {
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  type SxProps,
-} from '@mui/material';
+import { clsxtw } from '../utils/utils';
 
 export const ParticipantListItem = ({
   children,
   avatar,
-  sx = {},
-  disablePadding = true,
+  className,
 }: {
   children: React.ReactNode;
   avatar?: React.ReactNode;
-  sx?: SxProps;
-  disablePadding?: boolean;
+  className?: string;
 }) => (
-  <ListItem sx={sx} disablePadding={disablePadding}>
-    <ListItemAvatar>
-      <Avatar>{avatar ?? <Person />}</Avatar>
-    </ListItemAvatar>
+  <div className={clsxtw('flex items-center gap-4', className)}>
+    <div>{avatar}</div>
     {children}
-  </ListItem>
-);
-
-export const ParticipantTextListItem = ({
-  primary,
-  secondary,
-}: {
-  primary: string;
-  secondary: string;
-}) => (
-  <ParticipantListItem>
-    <ListItemText primary={primary} secondary={secondary} />
-  </ParticipantListItem>
+  </div>
 );

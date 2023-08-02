@@ -1,110 +1,60 @@
-import { AccountCircle, Logout } from '@mui/icons-material';
-import {
-  Avatar,
-  Button,
-  Divider,
-  IconButton,
-  ListItemIcon,
-  Menu,
-  MenuItem,
-} from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { MdAccountCircle } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
-import { RouterLink } from '../router';
 
 export const NavBarAvatar = () => {
-  const navigate = useNavigate();
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
   const queryClient = useQueryClient();
 
-  const { data } = trpc.user.me.useQuery();
+  const { data, status, error } = trpc.user.me.useQuery();
   const signOut = trpc.user.signOut.useMutation();
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleSignOut = async () => {
     await signOut.mutateAsync();
     await queryClient.resetQueries();
   };
 
-  const handleClickProfile = () => {
-    handleClose();
-    navigate('/settings');
-  };
+  if (status == 'success') {
+    return (
+      <div className="dropdown dropdown-end">
+        <div
+          tabIndex={0}
+          className="btn btn-circle btn-ghost text-3xl"
+          aria-label="Account"
+        >
+          <MdAccountCircle />
+        </div>
 
-  return (
-    <div>
-      {data ? (
-        <>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-          >
-            <AccountCircle />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={anchorEl != null}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClickProfile}>
-              <ListItemIcon>
-                <Avatar sx={{ width: '1.5rem', height: '1.5rem' }} />
-              </ListItemIcon>
+        <ul
+          tabIndex={0}
+          className="menu dropdown-content rounded-box z-[1] mt-3 w-52 bg-base-100 p-2 text-primary shadow"
+        >
+          <li>
+            <Link to="/settings" className="justify-between">
               {data.name}
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={handleSignOut}>
-              <ListItemIcon>
-                <Logout fontSize="small" />
-              </ListItemIcon>
-              Sign out
-            </MenuItem>
-          </Menu>
-        </>
-      ) : (
-        <>
-          <Button
-            color="inherit"
-            LinkComponent={RouterLink}
-            href={`/auth/sign-in`}
-          >
-            Sign in
-          </Button>
-          <Button
-            color="inherit"
-            LinkComponent={RouterLink}
-            href={`/auth/sign-up`}
-          >
-            Sign up
-          </Button>
-        </>
-      )}
-    </div>
-  );
+            </Link>
+          </li>
+          <li>
+            <a onClick={handleSignOut}>Sign out</a>
+          </li>
+        </ul>
+      </div>
+    );
+  }
+
+  if (status === 'error' && error.data?.httpStatus === 401) {
+    return (
+      <>
+        <Link className="btn btn-ghost" to="/auth/sign-in">
+          Sign in
+        </Link>
+        <Link className="btn btn-ghost" to="/auth/sign-up">
+          Sign up
+        </Link>
+      </>
+    );
+  }
+
+  return null;
 };

@@ -20,7 +20,7 @@ export const AuthenticationPage = () => {
   }
 
   return (
-    <Root title="Expenses">
+    <Root title={isSignUp ? 'Sign up' : 'Sign in'}>
       <AuthenticationForm isSignUp={isSignUp != null} />
     </Root>
   );

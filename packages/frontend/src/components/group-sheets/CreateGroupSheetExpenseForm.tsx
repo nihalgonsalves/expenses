@@ -1,30 +1,13 @@
-import { PlaylistAdd } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  ToggleButtonGroup,
-  ToggleButton,
-  List,
-  Typography,
-  ListItem,
-  Alert,
-  Checkbox,
-} from '@mui/material';
 import { type Dinero, allocate } from 'dinero.js';
 import { produce } from 'immer';
 import {
   type Dispatch,
   type SetStateAction,
   useCallback,
-  useId,
   useState,
   useMemo,
 } from 'react';
+import { MdPlaylistAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -37,27 +20,30 @@ import {
   zeroMoney,
 } from '@nihalgonsalves/expenses-backend';
 
-import { useCurrencyConversion } from '../api/currencyConversion';
-import { trpc } from '../api/trpc';
-import { CategoryId } from '../data/categories';
-import { useToggleButtonOrientation } from '../utils/hooks';
+import { useCurrencyConversion } from '../../api/currencyConversion';
+import { trpc } from '../../api/trpc';
+import { CategoryId } from '../../data/categories';
 import {
   convertCurrency,
   formatCurrency,
   formatDecimalCurrency,
   toDinero,
   useMoneyValues,
-} from '../utils/money';
+} from '../../utils/money';
 import {
+  clsxtw,
   dateTimeLocalToISOString,
-  getInitials,
   nowForDateTimeInput,
-} from '../utils/utils';
-
-import { CategorySelect } from './CategorySelect';
-import { CurrencySelect } from './CurrencySelect';
-import { MoneyField } from './MoneyField';
-import { ParticipantListItem } from './ParticipantListItem';
+} from '../../utils/utils';
+import { Avatar } from '../Avatar';
+import { ParticipantListItem } from '../ParticipantListItem';
+import { CategorySelect } from '../form/CategorySelect';
+import { CurrencySelect } from '../form/CurrencySelect';
+import { LoadingButton } from '../form/LoadingButton';
+import { MoneyField } from '../form/MoneyField';
+import { Select } from '../form/Select';
+import { TextField } from '../form/TextField';
+import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
 type SplitGroupExpenseSplit = {
   participantId: string;
@@ -101,9 +87,7 @@ const calcSplits = (
 const getDefaultRatios = (groupSheet: GroupSheetByIdResponse) =>
   Object.fromEntries(groupSheet.participants.map(({ id }) => [id, 1]));
 
-type SplitConfig = {
-  label: string;
-} & (
+type SplitConfig = (
   | {
       expectedSum: (amount: number) => number;
       formatErrorTooHigh: (diff: number, currencyCode: string) => string;
@@ -121,20 +105,29 @@ type SplitConfig = {
     | { hasInput: false }
   );
 
+const SPLIT_OPTIONS: { value: SplitGroupExpenseSplitType; label: string }[] = [
+  { value: SplitGroupExpenseSplitType.Evenly, label: 'Evenly' },
+
+  { value: SplitGroupExpenseSplitType.Selected, label: 'Select participants' },
+
+  { value: SplitGroupExpenseSplitType.Shares, label: 'Shares' },
+
+  { value: SplitGroupExpenseSplitType.Percentage, label: 'Percentage' },
+
+  { value: SplitGroupExpenseSplitType.Amounts, label: 'Enter amounts' },
+];
+
 const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
   [SplitGroupExpenseSplitType.Evenly]: {
     expectedSum: undefined,
-    label: 'Evenly',
     hasInput: false,
   },
   [SplitGroupExpenseSplitType.Selected]: {
     expectedSum: undefined,
-    label: 'Select participants',
     hasInput: false,
   },
   [SplitGroupExpenseSplitType.Shares]: {
     expectedSum: undefined,
-    label: 'Shares',
     hasInput: true,
     inputMode: 'numeric',
     unit: ['share', 'shares'],
@@ -146,7 +139,6 @@ const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
       `The percentages must add up to 100%. You need to add ${diff} percent.`,
     formatErrorTooLow: (diff: number) =>
       `The percentages must add up to 100%. You need to remove ${diff} percent.`,
-    label: 'Percentage',
     hasInput: true,
     inputMode: 'decimal',
     unit: ['%', '%'],
@@ -164,7 +156,6 @@ const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
         diff,
         currencyCode,
       )} too much.`,
-    label: 'Enter amounts',
     hasInput: false,
   },
 };
@@ -204,15 +195,16 @@ const CalculationHelpText = ({
   const diff = splitConfig.expectedSum(amount) - sumValues(ratios);
 
   return (
-    <Alert
-      severity={diff === 0 ? 'success' : 'warning'}
-      icon={false}
-      sx={{ boxSizing: 'border-box', width: '100%' }}
+    <div
+      className={clsxtw('alert', 'mt-4', 'text-sm', {
+        'alert-success': diff === 0,
+        'alert-error': diff !== 0,
+      })}
     >
       {diff === 0 && 'Splits are valid'}
       {diff < 0 && splitConfig.formatErrorTooLow(Math.abs(diff), currencyCode)}
       {diff > 0 && splitConfig.formatErrorTooHigh(Math.abs(diff), currencyCode)}
-    </Alert>
+    </div>
   );
 };
 
@@ -237,8 +229,6 @@ const SplitsFormSection = ({
   setRatios: Dispatch<SetStateAction<Record<string, number>>>;
   rate: { amount: number; scale: number } | undefined;
 }) => {
-  const toggleButtonOrientation = useToggleButtonOrientation('sm');
-
   const money = useMemo(
     () => toDinero(amount, currencyCode),
     [amount, currencyCode],
@@ -267,11 +257,7 @@ const SplitsFormSection = ({
   );
 
   const handleChangeSplitType = useCallback(
-    (_e: React.MouseEvent<HTMLElement>, value: unknown) => {
-      if (!value) {
-        return;
-      }
-
+    (value: SplitGroupExpenseSplitType) => {
       const newType = z.nativeEnum(SplitGroupExpenseSplitType).parse(value);
 
       switch (newType) {
@@ -331,38 +317,31 @@ const SplitsFormSection = ({
 
   return (
     <>
-      <ToggleButtonGroup
-        color="primary"
+      <ToggleButtonGroup<SplitGroupExpenseSplitType>
+        className="join-vertical w-full md:join-horizontal"
         value={splitType}
-        exclusive
-        onChange={handleChangeSplitType}
-        fullWidth
-        orientation={toggleButtonOrientation}
-      >
-        {Object.entries(SPLIT_CONFIG).map(([type, { label }]) => (
-          <ToggleButton key={type} value={type}>
-            {label}
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
+        setValue={handleChangeSplitType}
+        options={SPLIT_OPTIONS}
+      />
 
-      <List dense>
+      <CalculationHelpText
+        splitConfig={splitConfig}
+        ratios={ratios}
+        amount={amount}
+        currencyCode={currencyCode}
+      />
+
+      <ul className="grid gap-2" style={{ paddingBlock: '1rem' }}>
         {splits.map(({ participantId, participantName, share }) => (
           <ParticipantListItem
             key={participantId}
-            sx={{ paddingInline: 'unset' }}
-            disablePadding={false}
-            avatar={getInitials(participantName)}
+            avatar={<Avatar name={participantName} />}
           >
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
-              width="100%"
-            >
-              <Stack>
-                <Typography color="text.primary">{participantName}</Typography>
-                <Typography variant="body2" color="text.secondary">
+            <div className="flex flex-grow items-center justify-between">
+              <div className="flex-grow">
+                {participantName}
+                <br />
+                <span className="text-gray-500">
                   {splitValid ? (
                     <>
                       {formatCurrency(share)}
@@ -375,59 +354,55 @@ const SplitsFormSection = ({
                   ) : (
                     '...'
                   )}
-                </Typography>
-              </Stack>
+                </span>
+              </div>
               {splitConfig.hasInput && (
-                <TextField
-                  size="small"
-                  sx={{ width: '10rem' }}
-                  value={ratios[participantId]}
-                  onChange={(e) => {
-                    handleChangeRatio(participantId, e.target.value);
-                  }}
-                  aria-label={`${splitConfig.ariaInputLabel} for ${participantName}`}
-                  InputProps={{
-                    endAdornment:
-                      ratios[participantId] === 1
-                        ? splitConfig.unit[0]
-                        : splitConfig.unit[1],
-                    inputProps: { inputMode: splitConfig.inputMode },
-                  }}
-                />
+                <div className="flex items-center gap-4">
+                  <TextField
+                    inputClassName="w-24"
+                    inputMode={splitConfig.inputMode}
+                    maxLength={4}
+                    label={null}
+                    aria-label={`${splitConfig.ariaInputLabel} for ${participantName}`}
+                    value={`${ratios[participantId]}`}
+                    setValue={(val) => {
+                      handleChangeRatio(participantId, val);
+                    }}
+                  />
+                  <div>
+                    {ratios[participantId] === 1
+                      ? splitConfig.unit[0]
+                      : splitConfig.unit[1]}
+                  </div>
+                </div>
               )}
               {splitType === SplitGroupExpenseSplitType.Amounts && (
                 <MoneyField
-                  size="small"
-                  sx={{ width: '10rem' }}
+                  inputClassName="w-full"
                   currencyCode={currencyCode}
                   amount={ratios[participantId] ?? 0}
                   setAmount={(val) => {
                     handleChangeRatio(participantId, val);
                   }}
+                  label={null}
                   aria-label={`Amount for ${participantName}`}
                 />
               )}
               {splitType === SplitGroupExpenseSplitType.Selected && (
-                <Checkbox
+                <input
+                  type="checkbox"
+                  className="checkbox"
                   aria-label={`Include ${participantName}`}
                   checked={ratios[participantId] === 1}
-                  onChange={(_e, checked) => {
-                    handleChangeRatio(participantId, checked ? 1 : 0);
+                  onChange={(e) => {
+                    handleChangeRatio(participantId, e.target.checked ? 1 : 0);
                   }}
                 />
               )}
-            </Stack>
+            </div>
           </ParticipantListItem>
         ))}
-        <ListItem sx={{ paddingInline: 'unset' }}>
-          <CalculationHelpText
-            splitConfig={splitConfig}
-            ratios={ratios}
-            amount={amount}
-            currencyCode={currencyCode}
-          />
-        </ListItem>
-      </List>
+      </ul>
     </>
   );
 };
@@ -445,30 +420,18 @@ const ParticipantSelect = ({
   setSelectedId: (val: string) => void;
   filterId?: (val: string) => boolean;
 }) => {
-  const selectId = useId();
-
   const options = filterId
     ? Object.values(groupSheet.participants).filter(({ id }) => filterId(id))
     : Object.values(groupSheet.participants);
 
   return (
-    <FormControl fullWidth>
-      <InputLabel id={selectId}>{label}</InputLabel>
-      <Select
-        labelId={selectId}
-        label={label}
-        value={selectedId ?? ''}
-        onChange={(e) => {
-          setSelectedId(e.target.value);
-        }}
-      >
-        {options.map(({ id, name }) => (
-          <MenuItem key={id} value={id}>
-            {name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Select
+      label={label}
+      value={selectedId ?? ''}
+      setValue={setSelectedId}
+      schema={z.string()}
+      options={options.map(({ id, name }) => ({ value: id, label: name }))}
+    />
   );
 };
 
@@ -551,9 +514,7 @@ export const RegularExpenseForm = ({
   };
 
   return (
-    <Stack
-      spacing={3}
-      component="form"
+    <form
       onSubmit={(e) => {
         e.preventDefault();
 
@@ -564,21 +525,21 @@ export const RegularExpenseForm = ({
         void handleCreateExpense();
       }}
     >
-      {error && <Alert severity="error">{error.message}</Alert>}
+      {error && <div className="alert alert-error">{error.message}</div>}
 
-      <Stack direction="row" spacing={1}>
+      <div className="flex gap-4">
         <MoneyField
-          fullWidth
+          className="flex-grow"
           autoFocus
           label="How much was spent?"
-          currencyCode={currencyCode}
-          amount={amount}
-          setAmount={setAmount}
-          helperText={
+          bottomLabel={
             convertedMoneySnapshot
               ? formatCurrency(convertedMoneySnapshot)
               : null
           }
+          currencyCode={currencyCode}
+          amount={amount}
+          setAmount={setAmount}
         />
 
         {supportedCurrencies.includes(groupSheet.currencyCode) && (
@@ -586,11 +547,9 @@ export const RegularExpenseForm = ({
             options={supportedCurrencies}
             currencyCode={currencyCode}
             setCurrencyCode={setCurrencyCode}
-            variant="outlined"
-            sx={{ flexShrink: 0 }}
           />
         )}
-      </Stack>
+      </div>
 
       <ParticipantSelect
         groupSheet={groupSheet}
@@ -606,23 +565,19 @@ export const RegularExpenseForm = ({
       <CategorySelect category={category} setCategory={setCategory} />
 
       <TextField
-        fullWidth
         label="Description"
         value={description}
-        onChange={(e) => {
-          setDescription(e.target.value);
-        }}
+        setValue={setDescription}
       />
 
       <TextField
-        fullWidth
         label="When?"
         type="datetime-local"
         value={spentAt}
-        onChange={(e) => {
-          setSpentAt(e.target.value);
-        }}
+        setValue={setSpentAt}
       />
+
+      <div className="divider" />
 
       <SplitsFormSection
         groupSheet={groupSheet}
@@ -637,18 +592,14 @@ export const RegularExpenseForm = ({
       />
 
       <LoadingButton
-        loading={isLoading}
-        color="primary"
-        variant="contained"
-        startIcon={<PlaylistAdd />}
+        className="btn-primary btn-block"
+        isLoading={isLoading}
         type="submit"
         disabled={!valid}
-        // TODO check why it can't be overridden normally
-        sx={{ marginTop: '12px !important' }}
       >
-        Add Expense
+        <MdPlaylistAdd /> Add Expense
       </LoadingButton>
-    </Stack>
+    </form>
   );
 };
 
@@ -699,8 +650,15 @@ export const SettlementForm = ({
   };
 
   return (
-    <Stack spacing={3}>
-      {error && <Alert severity="error">{error.message}</Alert>}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!valid) return;
+
+        void handleCreateSettlement();
+      }}
+    >
+      {error && <div className="alert alert-error">{error.message}</div>}
 
       <ParticipantSelect
         groupSheet={groupSheet}
@@ -719,25 +677,22 @@ export const SettlementForm = ({
 
       <MoneyField
         label="How much was given"
-        fullWidth
         currencyCode={groupSheet.currencyCode}
         amount={amount}
         setAmount={setAmount}
       />
 
       <LoadingButton
+        className="btn-block mt-4"
+        type="submit"
         disabled={!valid}
-        variant="contained"
-        loading={isLoading}
-        onClick={handleCreateSettlement}
+        isLoading={isLoading}
       >
         Log Settlement
       </LoadingButton>
-    </Stack>
+    </form>
   );
 };
-
-const ZExpenseType = z.enum(['expense', 'settlement']);
 
 export const CreateGroupSheetExpenseForm = ({
   groupSheet,
@@ -746,29 +701,25 @@ export const CreateGroupSheetExpenseForm = ({
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
-  const [type, setType] = useState<z.infer<typeof ZExpenseType>>('expense');
+  const [type, setType] = useState<'expense' | 'settlement'>('expense');
 
   return (
-    <Stack spacing={3}>
+    <div className="flex flex-col gap-4">
       <ToggleButtonGroup
-        color="primary"
+        className="w-full"
         value={type}
-        exclusive
-        onChange={(_e, value) => {
-          setType(ZExpenseType.parse(value));
-        }}
-        fullWidth
-      >
-        <ToggleButton value="expense">Expense</ToggleButton>
-        <ToggleButton value="settlement">Settlement</ToggleButton>
-      </ToggleButtonGroup>
-
+        setValue={setType}
+        options={[
+          { value: 'expense', label: 'Expense' },
+          { value: 'settlement', label: 'Settlement' },
+        ]}
+      />
       {type === 'expense' && (
         <RegularExpenseForm groupSheet={groupSheet} me={me} />
       )}
       {type === 'settlement' && (
         <SettlementForm groupSheet={groupSheet} me={me} />
       )}
-    </Stack>
+    </div>
   );
 };

@@ -1,5 +1,5 @@
 import { trpc } from '../../../api/trpc';
-import { CreatePersonalExpenseForm } from '../../../components/CreatePersonalExpenseForm';
+import { CreatePersonalExpenseForm } from '../../../components/personal-sheets/CreatePersonalExpenseForm';
 import { PersonalSheetParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 

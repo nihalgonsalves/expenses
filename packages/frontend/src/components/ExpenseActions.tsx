@@ -1,12 +1,12 @@
-import { DeleteOutline } from '@mui/icons-material';
-import { Stack, Button } from '@mui/material';
 import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
+import { MdDeleteOutline } from 'react-icons/md';
 
 import { type ExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../api/trpc';
+
+import { ConfirmButton } from './form/ConfirmButton';
 
 export const ExpenseActions = ({
   sheetId,
@@ -19,16 +19,16 @@ export const ExpenseActions = ({
   setIsInvalidating: (isInvalidating: boolean) => void;
   onDelete: () => void | Promise<void>;
 }) => {
-  const [deleteConfirm, setDeleteConfirm] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
-  const deleteExpense = trpc.expense.deleteExpense.useMutation();
+  const { mutateAsync: deleteExpense, isLoading } =
+    trpc.expense.deleteExpense.useMutation();
 
   const handleDelete = async () => {
     try {
       setIsInvalidating(true);
 
-      await deleteExpense.mutateAsync({
+      await deleteExpense({
         sheetId: sheetId,
         expenseId: expense.id,
       });
@@ -45,37 +45,16 @@ export const ExpenseActions = ({
     }
   };
 
-  return deleteConfirm ? (
-    <Stack direction="column" spacing={2}>
-      <Button
-        fullWidth
-        variant="outlined"
-        onClick={() => {
-          setDeleteConfirm(false);
-        }}
-      >
-        Cancel
-      </Button>
-      <Button
-        fullWidth
-        variant="contained"
-        color="error"
-        onClick={handleDelete}
-      >
-        Confirm Delete (Irreversible)
-      </Button>
-    </Stack>
-  ) : (
-    <Button
-      fullWidth
-      variant="outlined"
-      color="error"
-      startIcon={<DeleteOutline />}
-      onClick={() => {
-        setDeleteConfirm(true);
-      }}
-    >
-      Delete
-    </Button>
+  return (
+    <ConfirmButton
+      isLoading={isLoading}
+      label={
+        <>
+          <MdDeleteOutline /> Delete Expense
+        </>
+      }
+      confirmLabel="Confirm Delete (Irreversible)"
+      handleConfirmed={handleDelete}
+    />
   );
 };

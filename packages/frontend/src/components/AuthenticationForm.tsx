@@ -1,10 +1,11 @@
-import { LoadingButton } from '@mui/lab';
-import { Alert, Stack, TextField } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { trpc } from '../api/trpc';
 import { prevalidateEmail } from '../utils/utils';
+
+import { LoadingButton } from './form/LoadingButton';
+import { TextField } from './form/TextField';
 
 export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const [name, setName] = useState('');
@@ -23,7 +24,7 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const signInValid = emailValid && passwordValid;
   const valid = isSignUp ? name && signInValid : signInValid;
 
-  const loading = signUpMutation.isLoading || signInMutation.isLoading;
+  const isLoading = signUpMutation.isLoading || signInMutation.isLoading;
   const error = signUpMutation.error ?? signInMutation.error;
 
   const handleAuthenticate = async () => {
@@ -37,9 +38,8 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   };
 
   return (
-    <Stack
-      spacing={3}
-      component="form"
+    <form
+      className="flex flex-col "
       onSubmit={(e) => {
         e.preventDefault();
 
@@ -50,48 +50,41 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
         void handleAuthenticate();
       }}
     >
-      {error && <Alert severity="error">{error.message}</Alert>}
+      {error && <div className="alert alert-error">{error.message}</div>}
 
       {isSignUp && (
         <TextField
           label="Name"
+          autoComplete="name"
           autoFocus
           value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
+          setValue={setName}
         />
       )}
 
       <TextField
-        type="email"
-        autoFocus={!isSignUp}
         label="Email"
+        type="email"
+        autoComplete="email"
+        autoFocus={!isSignUp}
         value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-        }}
+        setValue={setEmail}
       />
 
       <TextField
-        type="password"
         label="Password"
+        type="password"
+        autoComplete="current-password"
+        autoFocus={!isSignUp}
         value={password}
-        onChange={(e) => {
-          setPassword(e.target.value);
-        }}
+        setValue={setPassword}
       />
 
-      <LoadingButton
-        color="primary"
-        variant="contained"
-        type="submit"
-        size="large"
-        disabled={!valid}
-        loading={loading}
-      >
+      <div className="divider" />
+
+      <LoadingButton type="submit" isLoading={isLoading} disabled={!valid}>
         {isSignUp ? 'Sign Up' : 'Sign In'}
       </LoadingButton>
-    </Stack>
+    </form>
   );
 };

@@ -1,13 +1,13 @@
-import { Check, Clear, PersonAdd } from '@mui/icons-material';
-import { Button, IconButton, Stack, TextField } from '@mui/material';
 import { TRPCClientError } from '@trpc/client';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
+import { MdCheck, MdClear, MdPersonAdd } from 'react-icons/md';
 
-import { trpc } from '../api/trpc';
-import { prevalidateEmail } from '../utils/utils';
-
-import { ParticipantListItem } from './ParticipantListItem';
+import { trpc } from '../../api/trpc';
+import { prevalidateEmail } from '../../utils/utils';
+import { Avatar } from '../Avatar';
+import { ParticipantListItem } from '../ParticipantListItem';
+import { TextField } from '../form/TextField';
 
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -50,12 +50,9 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   };
 
   return addMemberOpen ? (
-    <ParticipantListItem>
-      <Stack
-        component="form"
-        direction="row"
-        gap={2}
-        sx={{ width: '100%' }}
+    <ParticipantListItem className="items-end" avatar={<Avatar name="" />}>
+      <form
+        className="flex flex-grow items-end gap-2"
         onSubmit={(e) => {
           if (!valid) {
             return;
@@ -66,37 +63,43 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
         }}
       >
         <TextField
+          className="flex-grow"
           autoFocus
-          fullWidth
-          size="small"
-          label="Participant's email address"
+          label={null}
+          placeholder="Email address"
           disabled={isLoading}
           value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
+          setValue={setEmail}
         />
 
-        <IconButton aria-label="Cancel" onClick={handleClose}>
-          <Clear />
-        </IconButton>
+        <button
+          className="btn btn-square"
+          type="reset"
+          aria-label="Cancel"
+          onClick={handleClose}
+        >
+          <MdClear />
+        </button>
 
-        <IconButton type="submit" aria-label="Add" disabled={!valid}>
-          <Check />
-        </IconButton>
-      </Stack>
+        <button
+          className="btn btn-square"
+          type="submit"
+          aria-label="Add"
+          disabled={!valid}
+        >
+          <MdCheck />
+        </button>
+      </form>
     </ParticipantListItem>
   ) : (
-    <Button
-      fullWidth
-      variant="outlined"
-      color="primary"
-      startIcon={<PersonAdd />}
+    <button
+      className="btn btn-primary btn-outline"
       onClick={() => {
         setAddMemberOpen(true);
       }}
     >
+      <MdPersonAdd />
       Add Participant
-    </Button>
+    </button>
   );
 };

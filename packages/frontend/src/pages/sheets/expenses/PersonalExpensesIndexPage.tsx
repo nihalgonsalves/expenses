@@ -1,9 +1,9 @@
-import { PlaylistAdd } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../../api/trpc';
-import { PersonalSheetExpensesExpandedList } from '../../../components/PersonalSheetExpenseExpandedList';
-import { PersonalSheetParams, RouterLink, useParams } from '../../../router';
+import { FloatingActionButton } from '../../../components/FloatingActionnButton';
+import { PersonalSheetExpensesExpandedList } from '../../../components/personal-sheets/PersonalSheetExpenseExpandedList';
+import { PersonalSheetParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
 export const PersonalExpensesIndexPage = () => {
@@ -16,21 +16,21 @@ export const PersonalExpensesIndexPage = () => {
   if (!personalSheetExpenses) return null;
 
   return (
-    <Root title="Expenses" showBackButton>
+    <Root
+      title="Expenses"
+      showBackButton
+      additionalChildren={
+        <FloatingActionButton
+          to={`/sheets/${sheetId}/expenses/new`}
+          label="Add Expense"
+          icon={<MdPlaylistAdd />}
+        />
+      }
+    >
       <PersonalSheetExpensesExpandedList
         personalSheetId={sheetId}
         expenses={personalSheetExpenses.expenses}
       />
-      <Button
-        fullWidth
-        variant="outlined"
-        color="primary"
-        startIcon={<PlaylistAdd />}
-        LinkComponent={RouterLink}
-        href={`/sheets/${sheetId}/expenses/new`}
-      >
-        Add Expense
-      </Button>
     </Root>
   );
 };

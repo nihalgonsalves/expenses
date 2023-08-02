@@ -1,5 +1,5 @@
 import { trpc } from '../../api/trpc';
-import { PersonalExpenseImportStepper } from '../../components/PersonalExpenseImportStepper';
+import { PersonalExpenseImportStepper } from '../../components/personal-sheets/PersonalExpenseImportStepper';
 import { useParams, PersonalSheetParams } from '../../router';
 import { Root } from '../Root';
 
