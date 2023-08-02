@@ -4,31 +4,16 @@ import { trpc } from '../../api/trpc';
 import { FloatingActionButton } from '../../components/FloatingActionnButton';
 import { GroupSheet } from '../../components/group-sheets/GroupSheet';
 import { GroupParams, useParams } from '../../router';
-import { Root } from '../Root';
+import { RootLoader } from '../Root';
 
 export const GroupDetailPage = () => {
   const { groupSheetId } = useParams(GroupParams);
-  const {
-    data: groupSheet,
-    error,
-    status,
-  } = trpc.sheet.groupSheetById.useQuery(groupSheetId);
-
-  if (status === 'error') {
-    return (
-      <Root title="Group">
-        <div className="alert alert-error">{error.message}</div>
-      </Root>
-    );
-  }
-
-  if (status === 'loading') {
-    return <Root title={null}>...</Root>;
-  }
+  const result = trpc.sheet.groupSheetById.useQuery(groupSheetId);
 
   return (
-    <Root
-      title={groupSheet.name}
+    <RootLoader
+      result={result}
+      getTitle={(groupSheet) => groupSheet.name}
       showBackButton
       additionalChildren={
         <FloatingActionButton
@@ -37,8 +22,7 @@ export const GroupDetailPage = () => {
           icon={<MdPlaylistAdd />}
         />
       }
-    >
-      <GroupSheet groupSheet={groupSheet} />
-    </Root>
+      render={(groupSheet) => <GroupSheet groupSheet={groupSheet} />}
+    />
   );
 };

@@ -4,19 +4,17 @@ import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionnButton';
 import { GroupSheetExpensesExpandedList } from '../../../components/group-sheets/GroupSheetExpensesExpandedList';
 import { GroupParams, useParams } from '../../../router';
-import { Root } from '../../Root';
+import { RootLoader } from '../../Root';
 
 export const GroupExpensesIndexPage = () => {
   const { groupSheetId } = useParams(GroupParams);
-  const { data: groupSheetExpenses } =
-    trpc.expense.getGroupSheetExpenses.useQuery({
-      groupSheetId,
-    });
-
-  if (!groupSheetExpenses) return null;
+  const result = trpc.expense.getGroupSheetExpenses.useQuery({
+    groupSheetId,
+  });
 
   return (
-    <Root
+    <RootLoader
+      result={result}
       title="Expenses"
       showBackButton
       additionalChildren={
@@ -26,11 +24,12 @@ export const GroupExpensesIndexPage = () => {
           icon={<MdPlaylistAdd />}
         />
       }
-    >
-      <GroupSheetExpensesExpandedList
-        groupSheetId={groupSheetId}
-        expenses={groupSheetExpenses.expenses}
-      />
-    </Root>
+      render={(groupSheetExpenses) => (
+        <GroupSheetExpensesExpandedList
+          groupSheetId={groupSheetId}
+          expenses={groupSheetExpenses.expenses}
+        />
+      )}
+    />
   );
 };

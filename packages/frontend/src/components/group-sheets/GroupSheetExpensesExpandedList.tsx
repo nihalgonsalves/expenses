@@ -110,6 +110,7 @@ export const GroupSheetExpensesExpandedList = ({
 }) => {
   return (
     <div className="flex flex-col gap-4">
+      {expenses.length === 0 && <div className="alert">No expenses</div>}
       {expenses.map((expense) => (
         <Fragment key={expense.id}>
           <ExpandedExpenseListItem

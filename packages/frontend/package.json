@@ -15,6 +15,7 @@
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-backend": "*",
     "@tanstack/react-query": "^4.32.0",
+    "@tanstack/react-query-devtools": "^4.32.1",
     "@trpc/client": "^10.36.0",
     "@trpc/react-query": "^10.36.0",
     "@trpc/server": "^10.36.0",

@@ -89,7 +89,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
         className="btn btn-primary btn-outline btn-block"
       >
         <MdCloudUpload />
-        Import
+        Import Expenses from CSV
       </Link>
 
       <ConfirmButton

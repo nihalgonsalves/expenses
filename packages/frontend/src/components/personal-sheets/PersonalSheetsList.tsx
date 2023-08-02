@@ -6,6 +6,7 @@ import { type Sheet } from '@nihalgonsalves/expenses-backend';
 export const PersonalSheetsList = ({ sheets }: { sheets: Sheet[] }) => {
   return (
     <div className="flex flex-col gap-4">
+      {sheets.length === 0 && <div className="alert">No personal sheets</div>}
       {sheets.map((sheet) => (
         <Link
           key={sheet.id}

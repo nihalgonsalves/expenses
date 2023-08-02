@@ -4,19 +4,17 @@ import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionnButton';
 import { PersonalSheetExpensesExpandedList } from '../../../components/personal-sheets/PersonalSheetExpenseExpandedList';
 import { PersonalSheetParams, useParams } from '../../../router';
-import { Root } from '../../Root';
+import { RootLoader } from '../../Root';
 
 export const PersonalExpensesIndexPage = () => {
   const { sheetId } = useParams(PersonalSheetParams);
-  const { data: personalSheetExpenses } =
-    trpc.expense.getPersonalSheetExpenses.useQuery({
-      personalSheetId: sheetId,
-    });
-
-  if (!personalSheetExpenses) return null;
+  const result = trpc.expense.getPersonalSheetExpenses.useQuery({
+    personalSheetId: sheetId,
+  });
 
   return (
-    <Root
+    <RootLoader
+      result={result}
       title="Expenses"
       showBackButton
       additionalChildren={
@@ -26,11 +24,12 @@ export const PersonalExpensesIndexPage = () => {
           icon={<MdPlaylistAdd />}
         />
       }
-    >
-      <PersonalSheetExpensesExpandedList
-        personalSheetId={sheetId}
-        expenses={personalSheetExpenses.expenses}
-      />
-    </Root>
+      render={(personalSheetExpenses) => (
+        <PersonalSheetExpensesExpandedList
+          personalSheetId={sheetId}
+          expenses={personalSheetExpenses.expenses}
+        />
+      )}
+    />
   );
 };

@@ -3,13 +3,14 @@ import { MdPostAdd } from 'react-icons/md';
 import { trpc } from '../../api/trpc';
 import { FloatingActionButton } from '../../components/FloatingActionnButton';
 import { PersonalSheetsList } from '../../components/personal-sheets/PersonalSheetsList';
-import { Root } from '../Root';
+import { RootLoader } from '../Root';
 
 export const SheetsIndexPage = () => {
-  const { data: sheets = [] } = trpc.sheet.myPersonalSheets.useQuery();
+  const result = trpc.sheet.myPersonalSheets.useQuery();
 
   return (
-    <Root
+    <RootLoader
+      result={result}
       title="Personal Sheets"
       additionalChildren={
         <FloatingActionButton
@@ -18,8 +19,7 @@ export const SheetsIndexPage = () => {
           icon={<MdPostAdd />}
         />
       }
-    >
-      {sheets.length > 0 && <PersonalSheetsList sheets={sheets} />}
-    </Root>
+      render={(sheets) => <PersonalSheetsList sheets={sheets} />}
+    />
   );
 };

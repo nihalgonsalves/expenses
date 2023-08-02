@@ -9,3 +9,7 @@
 .card {
   @apply rounded;
 }
+
+select {
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+}

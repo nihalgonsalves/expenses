@@ -1,9 +1,9 @@
 import {
   type Sheet,
   type ExpenseListItem,
+  type GetAllUserExpensesResponse,
 } from '@nihalgonsalves/expenses-backend';
 
-import { trpc } from '../api/trpc';
 import { formatCurrency } from '../utils/money';
 import { formatDateTimeRelative, getExpenseDescription } from '../utils/utils';
 
@@ -45,8 +45,11 @@ const ExpenseRow = ({
   );
 };
 
-export const AllUserExpensesList = () => {
-  const { data } = trpc.expense.getAllUserExpenses.useQuery({});
+export const AllUserExpensesList = ({
+  data,
+}: {
+  data: GetAllUserExpensesResponse;
+}) => {
   return (
     <table className="table table-pin-rows">
       <thead>
@@ -63,7 +66,7 @@ export const AllUserExpensesList = () => {
         </tr>
       </thead>
       <tbody>
-        {data?.expenses.map(({ expense, sheet }) => (
+        {data.expenses.map(({ expense, sheet }) => (
           <ExpenseRow key={expense.id} expense={expense} sheet={sheet} />
         ))}
       </tbody>

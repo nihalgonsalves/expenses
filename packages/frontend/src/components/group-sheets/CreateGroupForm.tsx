@@ -73,6 +73,7 @@ export const CreateGroupForm = () => {
       <TextField
         label="Group name"
         placeholder="WG Expenses"
+        autoFocus
         value={groupSheetName}
         setValue={setGroupSheetName}
       />

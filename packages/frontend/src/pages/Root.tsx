@@ -1,3 +1,7 @@
+import { type TRPCClientErrorLike } from '@trpc/client';
+import { type UseTRPCQueryResult } from '@trpc/react-query/shared';
+import { type AnyProcedure, type AnyRouter } from '@trpc/server';
+import { type TRPCErrorShape } from '@trpc/server/rpc';
 import {
   MdArrowBack,
   MdGroup,
@@ -7,8 +11,17 @@ import {
 } from 'react-icons/md';
 import { NavLink, useNavigate } from 'react-router-dom';
 
+import { LoadingSpinner } from '../components/LoadingSpinner';
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { clsxtw } from '../utils/utils';
+
+type RootProps = {
+  title: React.ReactNode;
+  children: React.ReactNode;
+  showBackButton?: boolean;
+  mainClassName?: string;
+  additionalChildren?: React.ReactNode;
+};
 
 export const Root = ({
   title,
@@ -16,13 +29,7 @@ export const Root = ({
   showBackButton,
   mainClassName,
   additionalChildren,
-}: {
-  title: React.ReactNode;
-  children: React.ReactNode;
-  showBackButton?: boolean;
-  mainClassName?: string;
-  additionalChildren?: React.ReactNode;
-}) => {
+}: RootProps) => {
   const navigate = useNavigate();
 
   return (
@@ -81,5 +88,48 @@ export const Root = ({
         </NavLink>
       </nav>
     </div>
+  );
+};
+
+export const RootLoader = <
+  TData,
+  TProcedure extends AnyProcedure | AnyRouter | TRPCErrorShape<number>,
+>({
+  result,
+  render,
+  title,
+  getTitle,
+  ...rootProps
+}: {
+  result: UseTRPCQueryResult<TData, TRPCClientErrorLike<TProcedure>>;
+  render: (data: TData) => React.ReactNode;
+} & (
+  | {
+      title?: React.ReactNode;
+      getTitle: (data: TData) => React.ReactNode;
+    }
+  | { title: React.ReactNode; getTitle?: undefined }
+) &
+  Omit<RootProps, 'title' | 'children'>) => {
+  if (result.status === 'loading') {
+    return (
+      <Root title={title} {...rootProps}>
+        <LoadingSpinner />
+      </Root>
+    );
+  }
+
+  if (result.status === 'error') {
+    return (
+      <Root title="Error" {...rootProps}>
+        <div className="alert alert-error">{result.error.message}</div>
+      </Root>
+    );
+  }
+
+  return (
+    <Root title={getTitle?.(result.data) ?? title} {...rootProps}>
+      {render(result.data)}
+    </Root>
   );
 };

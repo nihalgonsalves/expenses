@@ -84,6 +84,10 @@ export const ZGetAllUserExpensesResponse = z.object({
   total: z.number().nonnegative(),
 });
 
+export type GetAllUserExpensesResponse = z.infer<
+  typeof ZGetAllUserExpensesResponse
+>;
+
 export const ZGetPersonalSheetExpensesResponse = z.object({
   expenses: z.array(ZExpenseListItem),
   total: z.number().nonnegative(),

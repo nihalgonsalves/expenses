@@ -88,6 +88,7 @@ export const PersonalSheetExpensesExpandedList = ({
 }) => {
   return (
     <div className="flex flex-col gap-4">
+      {expenses.length === 0 && <div className="alert">No expenses</div>}
       {expenses.map((expense) => (
         <ExpandedExpenseListItem
           key={expense.id}

@@ -676,6 +676,7 @@ export const SettlementForm = ({
       />
 
       <MoneyField
+        autoFocus
         label="How much was given"
         currencyCode={groupSheet.currencyCode}
         amount={amount}

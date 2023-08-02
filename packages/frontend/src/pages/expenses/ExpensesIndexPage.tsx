@@ -1,10 +1,16 @@
+import { trpc } from '../../api/trpc';
 import { AllUserExpensesList } from '../../components/AllUserExpensesList';
-import { Root } from '../Root';
+import { RootLoader } from '../Root';
 
 export const ExpensesIndexPage = () => {
+  const result = trpc.expense.getAllUserExpenses.useQuery({});
+
   return (
-    <Root title="Expenses" mainClassName="p-0">
-      <AllUserExpensesList />
-    </Root>
+    <RootLoader
+      result={result}
+      title="Expenses"
+      mainClassName="p-0"
+      render={(data) => <AllUserExpensesList data={data} />}
+    />
   );
 };

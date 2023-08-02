@@ -12,6 +12,7 @@ export const GroupSheetsList = ({
 }) => {
   return (
     <div className="flex flex-col gap-4">
+      {groupSheets.length === 0 && <div className="alert">No groups</div>}
       {groupSheets.map((sheet) => (
         <div key={sheet.id} className="flex items-center gap-4">
           <Link

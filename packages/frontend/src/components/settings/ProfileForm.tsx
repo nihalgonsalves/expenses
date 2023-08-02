@@ -89,7 +89,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
         <TextField
           label="Current Password"
-          labelAlt="(only required if changing password)"
+          labelAlt="(if changing password)"
           type="password"
           autoComplete="current-password"
           value={password}

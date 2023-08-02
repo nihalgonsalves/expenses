@@ -43,6 +43,7 @@ export const CreateSheetForm = () => {
 
       <TextField
         label="Sheet name"
+        autoFocus
         placeholder="Personal Expenses"
         required
         value={name}
@@ -57,7 +58,6 @@ export const CreateSheetForm = () => {
       <LoadingButton
         className="btn-block mt-4"
         type="submit"
-        onClick={handleCreateSheet}
         disabled={!valid}
         isLoading={isLoading}
       >

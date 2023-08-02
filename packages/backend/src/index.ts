@@ -13,6 +13,7 @@ export {
   type GroupSheetExpenseListItem,
   type ExpenseListItem,
   type CreateSheetExpenseInput,
+  type GetAllUserExpensesResponse,
 } from './service/expense/types';
 
 export { type NotificationPayload } from './service/notification/types';
