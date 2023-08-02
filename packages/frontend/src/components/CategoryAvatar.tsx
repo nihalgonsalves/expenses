@@ -1,16 +1,14 @@
-import { QuestionMark } from '@mui/icons-material';
-import { Avatar } from '@mui/material';
+import { MdQuestionMark } from 'react-icons/md';
 
 import { categoryById } from '../data/categories';
 
 export const CategoryAvatar = ({ category }: { category: string }) => {
   return (
-    <Avatar
-      variant="rounded"
-      sx={(theme) => ({ backgroundColor: theme.palette.primary.main })}
+    <div
+      className="flex h-12 w-12 items-center justify-center rounded-md bg-primary text-3xl text-primary-content"
       aria-label={categoryById[category]?.name ?? category}
     >
-      {categoryById[category]?.icon ?? <QuestionMark />}
-    </Avatar>
+      {categoryById[category]?.icon ?? <MdQuestionMark />}
+    </div>
   );
 };

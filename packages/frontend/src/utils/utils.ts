@@ -1,4 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
+import clsx, { type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 import {
   type GroupSheetExpenseListItem,
@@ -8,6 +10,8 @@ import {
 import { categoryById } from '../data/categories';
 
 import { formatCurrency } from './money';
+
+export const clsxtw = (...classes: ClassValue[]) => twMerge(clsx(...classes));
 
 export const getUserLanguage = () => {
   return globalThis.navigator.languages[0];

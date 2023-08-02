@@ -1,9 +1,10 @@
-import { TextField, type TextFieldProps } from '@mui/material';
 import React, { useCallback, useRef } from 'react';
 
 import { dineroToMoney, type Money } from '@nihalgonsalves/expenses-backend';
 
-import { formatCurrency, toDinero } from '../utils/money';
+import { formatCurrency, toDinero } from '../../utils/money';
+
+import { TextField, type TextFieldProps } from './TextField';
 
 /**
  * this is not Number.MAX_SAFE_INTEGER since we'd have to use a BIGINT in postgres
@@ -23,9 +24,9 @@ export const MoneyField = ({
   amount: number;
   currencyCode: string;
   setAmount: (newAmount: number) => void;
-} & Pick<
+} & Omit<
   TextFieldProps,
-  'fullWidth' | 'autoFocus' | 'label' | 'size' | 'sx' | 'error' | 'helperText'
+  'value' | 'setValue' | 'inputRef' | 'inputMode' | 'onKeyDown'
 >) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -95,12 +96,14 @@ export const MoneyField = ({
 
   return (
     <TextField
-      fullWidth
-      inputRef={inputRef}
-      inputProps={{ inputMode: 'numeric' }}
-      value={formatCurrency(moneySnapshot)}
-      onKeyDown={handleAmountKeyDown}
       {...textFieldProps}
+      inputRef={inputRef}
+      inputMode="numeric"
+      value={formatCurrency(moneySnapshot)}
+      setValue={() => {
+        // noop
+      }}
+      onKeyDown={handleAmountKeyDown}
     />
   );
 };

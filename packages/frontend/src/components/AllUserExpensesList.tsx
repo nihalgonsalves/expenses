@@ -1,59 +1,75 @@
-import { Card, CardHeader, ListItem } from '@mui/material';
-
 import {
   type Sheet,
   type ExpenseListItem,
+  type GetAllUserExpensesResponse,
 } from '@nihalgonsalves/expenses-backend';
 
-import { trpc } from '../api/trpc';
 import { formatCurrency } from '../utils/money';
 import { formatDateTimeRelative, getExpenseDescription } from '../utils/utils';
 
 import { CategoryAvatar } from './CategoryAvatar';
 
-const ExpenseListItemComponent = ({
+const ExpenseRow = ({
   expense,
   sheet,
 }: {
   expense: ExpenseListItem;
   sheet: Sheet;
 }) => {
-  const descriptionText = getExpenseDescription(expense);
-
-  const title = (
-    <>
-      <strong>{descriptionText}</strong>{' '}
-      {formatCurrency(expense.money, { signDisplay: 'never' })}
-    </>
-  );
-
-  const subheader = (
-    <em>
-      {formatDateTimeRelative(expense.spentAt)} on {sheet.name}
-    </em>
-  );
+  const money = formatCurrency(expense.money, { signDisplay: 'never' });
+  const description = getExpenseDescription(expense);
+  const dateTime = formatDateTimeRelative(expense.spentAt);
 
   return (
-    <ListItem sx={{ paddingInline: 0 }}>
-      <Card variant="outlined" sx={{ width: '100%' }}>
-        <CardHeader
-          avatar={<CategoryAvatar category={expense.category} />}
-          title={title}
-          subheader={subheader}
-        />
-      </Card>
-    </ListItem>
+    <tr>
+      <td>
+        <div className="flex items-center gap-4">
+          <CategoryAvatar category={expense.category} />
+        </div>
+      </td>
+
+      <td className="hidden md:table-cell">{money}</td>
+      <td className="hidden md:table-cell">
+        <strong>{description}</strong>
+      </td>
+      <td className="hidden md:table-cell">{dateTime}</td>
+
+      <td className="md:hidden">
+        <strong>{description}</strong> {money}
+        <br />
+        <em>{dateTime}</em>
+      </td>
+
+      <td>{sheet.name}</td>
+    </tr>
   );
 };
 
-export const AllUserExpensesList = () => {
-  const { data } = trpc.expense.getAllUserExpenses.useQuery({});
+export const AllUserExpensesList = ({
+  data,
+}: {
+  data: GetAllUserExpensesResponse;
+}) => {
+  return (
+    <table className="table table-pin-rows">
+      <thead>
+        <tr>
+          <th>Category</th>
 
-  return data?.expenses.map(({ expense, sheet }) => (
-    <ExpenseListItemComponent
-      key={expense.id}
-      expense={expense}
-      sheet={sheet}
-    />
-  ));
+          <th className="hidden md:table-cell">Amount</th>
+          <th className="hidden md:table-cell">Description</th>
+          <th className="hidden md:table-cell">Date</th>
+
+          <th className="md:hidden">Details</th>
+
+          <th>Sheet</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.expenses.map(({ expense, sheet }) => (
+          <ExpenseRow key={expense.id} expense={expense} sheet={sheet} />
+        ))}
+      </tbody>
+    </table>
+  );
 };

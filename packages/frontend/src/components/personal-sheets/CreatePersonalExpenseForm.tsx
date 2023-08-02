@@ -1,19 +1,21 @@
-import { LoadingButton } from '@mui/lab';
-import { Alert, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { type Sheet } from '@nihalgonsalves/expenses-backend';
 
-import { useCurrencyConversion } from '../api/currencyConversion';
-import { trpc } from '../api/trpc';
-import { CategoryId } from '../data/categories';
-import { formatCurrency, useMoneyValues } from '../utils/money';
-import { dateTimeLocalToISOString, nowForDateTimeInput } from '../utils/utils';
-
-import { CategorySelect } from './CategorySelect';
-import { CurrencySelect } from './CurrencySelect';
-import { MoneyField } from './MoneyField';
+import { useCurrencyConversion } from '../../api/currencyConversion';
+import { trpc } from '../../api/trpc';
+import { CategoryId } from '../../data/categories';
+import { formatCurrency, useMoneyValues } from '../../utils/money';
+import {
+  dateTimeLocalToISOString,
+  nowForDateTimeInput,
+} from '../../utils/utils';
+import { CategorySelect } from '../form/CategorySelect';
+import { CurrencySelect } from '../form/CurrencySelect';
+import { LoadingButton } from '../form/LoadingButton';
+import { MoneyField } from '../form/MoneyField';
+import { TextField } from '../form/TextField';
 
 export const CreatePersonalExpenseForm = ({
   personalSheet,
@@ -63,22 +65,29 @@ export const CreatePersonalExpenseForm = ({
   };
 
   return (
-    <Stack spacing={3}>
-      {error && <Alert severity="error">{error.message}</Alert>}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (!valid) return;
 
-      <Stack direction="row" spacing={1}>
+        void handleCreateExpense();
+      }}
+    >
+      {error && <div className="alert alert-error">{error.message}</div>}
+
+      <div className="flex items-start gap-4">
         <MoneyField
-          fullWidth
+          className="flex-grow"
           autoFocus
           label="Amount"
-          currencyCode={currencyCode}
-          amount={amount}
-          setAmount={setAmount}
-          helperText={
+          bottomLabel={
             convertedMoneySnapshot
               ? formatCurrency(convertedMoneySnapshot)
               : null
           }
+          currencyCode={currencyCode}
+          amount={amount}
+          setAmount={setAmount}
         />
 
         {supportedCurrencies.includes(personalSheet.currencyCode) && (
@@ -86,41 +95,33 @@ export const CreatePersonalExpenseForm = ({
             options={supportedCurrencies}
             currencyCode={currencyCode}
             setCurrencyCode={setCurrencyCode}
-            variant="outlined"
-            sx={{ flexShrink: 0 }}
           />
         )}
-      </Stack>
+      </div>
 
       <CategorySelect category={category} setCategory={setCategory} />
 
       <TextField
-        fullWidth
         label="Description"
         value={description}
-        onChange={(e) => {
-          setDescription(e.target.value);
-        }}
+        setValue={setDescription}
       />
 
       <TextField
-        fullWidth
         label="Date & Time"
         type="datetime-local"
         value={spentAt}
-        onChange={(e) => {
-          setSpentAt(e.target.value);
-        }}
+        setValue={setSpentAt}
       />
 
       <LoadingButton
+        className="btn-block mt-4"
+        type="submit"
         disabled={!valid}
-        variant="contained"
-        loading={isLoading}
-        onClick={handleCreateExpense}
+        isLoading={isLoading}
       >
         Create
       </LoadingButton>
-    </Stack>
+    </form>
   );
 };

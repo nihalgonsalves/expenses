@@ -61,12 +61,13 @@ export const router = createBrowserRouter([
     errorElement,
     children: [
       {
-        path: '',
+        path: '/',
         element: (
           <AuthenticatedRoute>
-            <Navigate to="/groups" />
+            <ExpensesIndexPage />
           </AuthenticatedRoute>
         ),
+        errorElement,
       },
       {
         path: '/auth/sign-in',
@@ -76,15 +77,6 @@ export const router = createBrowserRouter([
       {
         path: '/auth/sign-up',
         element: <AuthenticationPage />,
-        errorElement,
-      },
-      {
-        path: '/expenses',
-        element: (
-          <AuthenticatedRoute>
-            <ExpensesIndexPage />
-          </AuthenticatedRoute>
-        ),
         errorElement,
       },
       {

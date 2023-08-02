@@ -1,5 +1,5 @@
 import { trpc } from '../../../api/trpc';
-import { CreateGroupSheetExpenseForm } from '../../../components/CreateGroupSheetExpenseForm';
+import { CreateGroupSheetExpenseForm } from '../../../components/group-sheets/CreateGroupSheetExpenseForm';
 import { GroupParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 

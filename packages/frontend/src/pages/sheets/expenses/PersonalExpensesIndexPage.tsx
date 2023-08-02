@@ -1,36 +1,35 @@
-import { PlaylistAdd } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../../api/trpc';
-import { PersonalSheetExpensesExpandedList } from '../../../components/PersonalSheetExpenseExpandedList';
-import { PersonalSheetParams, RouterLink, useParams } from '../../../router';
-import { Root } from '../../Root';
+import { FloatingActionButton } from '../../../components/FloatingActionnButton';
+import { PersonalSheetExpensesExpandedList } from '../../../components/personal-sheets/PersonalSheetExpenseExpandedList';
+import { PersonalSheetParams, useParams } from '../../../router';
+import { RootLoader } from '../../Root';
 
 export const PersonalExpensesIndexPage = () => {
   const { sheetId } = useParams(PersonalSheetParams);
-  const { data: personalSheetExpenses } =
-    trpc.expense.getPersonalSheetExpenses.useQuery({
-      personalSheetId: sheetId,
-    });
-
-  if (!personalSheetExpenses) return null;
+  const result = trpc.expense.getPersonalSheetExpenses.useQuery({
+    personalSheetId: sheetId,
+  });
 
   return (
-    <Root title="Expenses" showBackButton>
-      <PersonalSheetExpensesExpandedList
-        personalSheetId={sheetId}
-        expenses={personalSheetExpenses.expenses}
-      />
-      <Button
-        fullWidth
-        variant="outlined"
-        color="primary"
-        startIcon={<PlaylistAdd />}
-        LinkComponent={RouterLink}
-        href={`/sheets/${sheetId}/expenses/new`}
-      >
-        Add Expense
-      </Button>
-    </Root>
+    <RootLoader
+      result={result}
+      title="Expenses"
+      showBackButton
+      additionalChildren={
+        <FloatingActionButton
+          to={`/sheets/${sheetId}/expenses/new`}
+          label="Add Expense"
+          icon={<MdPlaylistAdd />}
+        />
+      }
+      render={(personalSheetExpenses) => (
+        <PersonalSheetExpensesExpandedList
+          personalSheetId={sheetId}
+          expenses={personalSheetExpenses.expenses}
+        />
+      )}
+    />
   );
 };

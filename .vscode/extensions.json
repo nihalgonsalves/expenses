@@ -2,6 +2,7 @@
   "recommendations": [
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "zixuanchen.vitest-explorer"
+    "zixuanchen.vitest-explorer",
+    "bradlc.vscode-tailwindcss"
   ]
 }

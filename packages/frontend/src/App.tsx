@@ -1,36 +1,40 @@
-import { useMediaQuery } from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { SnackbarProvider } from 'notistack';
+import { useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 import { TrpcProvider } from './api/TrpcProvider';
 import { registerSW } from './registerSW';
 import { RouterProvider, router } from './router';
+import { useMediaQuery } from './utils/hooks';
+import { syncThemeToHtml } from './utils/theme';
 
 void registerSW();
 
 export const App = () => {
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const theme = createTheme({
-    typography: {
-      fontFamily: 'unset',
-    },
-    palette: {
-      mode: prefersDarkMode ? 'dark' : 'light',
-      primary: { main: '#DA0078' },
-    },
-  });
+  useEffect(() => {
+    syncThemeToHtml();
+  }, [isDarkMode]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <TrpcProvider>
-        <SnackbarProvider
-          autoHideDuration={5000}
-          anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-        >
-          <RouterProvider router={router} />
-        </SnackbarProvider>
-      </TrpcProvider>
-    </ThemeProvider>
+    <TrpcProvider>
+      <RouterProvider router={router} />
+      <Toaster
+        toastOptions={{
+          success: {
+            style: {
+              background: 'hsl(var(--su))',
+              color: 'hsl(var(--suc) / var(--tw-text-opacity))',
+            },
+          },
+          error: {
+            style: {
+              background: 'hsl(var(--er))',
+              color: 'hsl(var(--erc) / var(--tw-text-opacity))',
+            },
+          },
+        }}
+      />
+    </TrpcProvider>
   );
 };

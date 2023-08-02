@@ -1,37 +1,35 @@
-import { PlaylistAdd } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../../api/trpc';
-import { GroupSheetExpensesExpandedList } from '../../../components/GroupSheetExpensesExpandedList';
-import { GroupParams, RouterLink, useParams } from '../../../router';
-import { Root } from '../../Root';
+import { FloatingActionButton } from '../../../components/FloatingActionnButton';
+import { GroupSheetExpensesExpandedList } from '../../../components/group-sheets/GroupSheetExpensesExpandedList';
+import { GroupParams, useParams } from '../../../router';
+import { RootLoader } from '../../Root';
 
 export const GroupExpensesIndexPage = () => {
   const { groupSheetId } = useParams(GroupParams);
-  const { data: groupSheetExpenses } =
-    trpc.expense.getGroupSheetExpenses.useQuery({
-      groupSheetId,
-    });
-
-  if (!groupSheetExpenses) return null;
+  const result = trpc.expense.getGroupSheetExpenses.useQuery({
+    groupSheetId,
+  });
 
   return (
-    <Root title="Expenses" showBackButton>
-      <GroupSheetExpensesExpandedList
-        groupSheetId={groupSheetId}
-        expenses={groupSheetExpenses.expenses}
-        sx={{ flexGrow: 1 }}
-      />
-      <Button
-        fullWidth
-        variant="outlined"
-        color="primary"
-        startIcon={<PlaylistAdd />}
-        LinkComponent={RouterLink}
-        href={`/groups/${groupSheetId}/expenses/new`}
-      >
-        Add Expense
-      </Button>
-    </Root>
+    <RootLoader
+      result={result}
+      title="Expenses"
+      showBackButton
+      additionalChildren={
+        <FloatingActionButton
+          to={`/groups/${groupSheetId}/expenses/new`}
+          label="Add Expense"
+          icon={<MdPlaylistAdd />}
+        />
+      }
+      render={(groupSheetExpenses) => (
+        <GroupSheetExpensesExpandedList
+          groupSheetId={groupSheetId}
+          expenses={groupSheetExpenses.expenses}
+        />
+      )}
+    />
   );
 };

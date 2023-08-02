@@ -1,37 +1,28 @@
-import { Alert, Typography } from '@mui/material';
+import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../api/trpc';
-import { GroupSheet } from '../../components/GroupSheet';
+import { FloatingActionButton } from '../../components/FloatingActionnButton';
+import { GroupSheet } from '../../components/group-sheets/GroupSheet';
 import { GroupParams, useParams } from '../../router';
-import { Root } from '../Root';
+import { RootLoader } from '../Root';
 
 export const GroupDetailPage = () => {
   const { groupSheetId } = useParams(GroupParams);
-  const {
-    data: groupSheet,
-    error,
-    status,
-  } = trpc.sheet.groupSheetById.useQuery(groupSheetId);
-
-  if (status === 'error') {
-    return (
-      <Root title="Group">
-        <Alert severity="error">{error.message}</Alert>
-      </Root>
-    );
-  }
-
-  if (status === 'loading') {
-    return (
-      <Root title={null}>
-        <Typography color="text.primary">...</Typography>
-      </Root>
-    );
-  }
+  const result = trpc.sheet.groupSheetById.useQuery(groupSheetId);
 
   return (
-    <Root title={groupSheet.name} showBackButton>
-      <GroupSheet groupSheet={groupSheet} />
-    </Root>
+    <RootLoader
+      result={result}
+      getTitle={(groupSheet) => groupSheet.name}
+      showBackButton
+      additionalChildren={
+        <FloatingActionButton
+          to={`/groups/${groupSheetId}/expenses/new`}
+          label="Add Expense"
+          icon={<MdPlaylistAdd />}
+        />
+      }
+      render={(groupSheet) => <GroupSheet groupSheet={groupSheet} />}
+    />
   );
 };
