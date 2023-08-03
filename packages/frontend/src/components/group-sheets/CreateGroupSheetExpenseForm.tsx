@@ -442,11 +442,8 @@ export const RegularExpenseForm = ({
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
-  const {
-    mutateAsync: createGroupSheetExpense,
-    isLoading,
-    error,
-  } = trpc.expense.createGroupSheetExpense.useMutation();
+  const { mutateAsync: createGroupSheetExpense, isLoading } =
+    trpc.expense.createGroupSheetExpense.useMutation();
 
   const navigate = useNavigate();
 
@@ -525,8 +522,6 @@ export const RegularExpenseForm = ({
         void handleCreateExpense();
       }}
     >
-      {error && <div className="alert alert-error">{error.message}</div>}
-
       <div className="flex gap-4">
         <MoneyField
           className="flex-grow"
@@ -620,11 +615,8 @@ export const SettlementForm = ({
   const [, moneySnapshot] = useMoneyValues(amount, groupSheet.currencyCode);
 
   const utils = trpc.useContext();
-  const {
-    mutateAsync: createGroupSheetSettlement,
-    isLoading,
-    error,
-  } = trpc.expense.createGroupSheetSettlement.useMutation();
+  const { mutateAsync: createGroupSheetSettlement, isLoading } =
+    trpc.expense.createGroupSheetSettlement.useMutation();
 
   const valid =
     fromId != null &&
@@ -665,8 +657,6 @@ export const SettlementForm = ({
         void handleCreateSettlement();
       }}
     >
-      {error && <div className="alert alert-error">{error.message}</div>}
-
       <ParticipantSelect
         groupSheet={groupSheet}
         label="From"

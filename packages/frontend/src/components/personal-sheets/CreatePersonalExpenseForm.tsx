@@ -40,11 +40,8 @@ export const CreatePersonalExpenseForm = ({
     );
 
   const utils = trpc.useContext();
-  const {
-    mutateAsync: createPersonalSheetExpense,
-    isLoading,
-    error,
-  } = trpc.expense.createPersonalSheetExpense.useMutation();
+  const { mutateAsync: createPersonalSheetExpense, isLoading } =
+    trpc.expense.createPersonalSheetExpense.useMutation();
 
   const valid = amount > 0;
 
@@ -73,8 +70,6 @@ export const CreatePersonalExpenseForm = ({
         void handleCreateExpense();
       }}
     >
-      {error && <div className="alert alert-error">{error.message}</div>}
-
       <div className="flex items-start gap-4">
         <MoneyField
           className="flex-grow"

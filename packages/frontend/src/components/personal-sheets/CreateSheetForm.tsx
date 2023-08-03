@@ -11,11 +11,8 @@ import { TextField } from '../form/TextField';
 export const CreateSheetForm = () => {
   const navigate = useNavigate();
 
-  const {
-    mutateAsync: createSheet,
-    isLoading,
-    error,
-  } = trpc.sheet.createPersonalSheet.useMutation();
+  const { mutateAsync: createSheet, isLoading } =
+    trpc.sheet.createPersonalSheet.useMutation();
 
   const [name, setName] = useState('');
   const [currencyCode, setCurrencyCode] = useState(getCurrencyCode());
@@ -39,8 +36,6 @@ export const CreateSheetForm = () => {
         void handleCreateSheet();
       }}
     >
-      {error && <div className="alert alert-error">{error.message}</div>}
-
       <TextField
         label="Sheet name"
         autoFocus

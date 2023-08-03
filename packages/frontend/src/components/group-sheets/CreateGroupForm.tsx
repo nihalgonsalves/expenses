@@ -13,11 +13,8 @@ import { TextField } from '../form/TextField';
 export const CreateGroupForm = () => {
   const navigate = useNavigate();
 
-  const {
-    mutateAsync: createGroupSheet,
-    isLoading,
-    error,
-  } = trpc.sheet.createGroupSheet.useMutation();
+  const { mutateAsync: createGroupSheet, isLoading } =
+    trpc.sheet.createGroupSheet.useMutation();
 
   const [groupSheetName, setGroupSheetName] = useState('');
   const [currencyCode, setCurrencyCode] = useState(getCurrencyCode());
@@ -69,8 +66,6 @@ export const CreateGroupForm = () => {
         void handleCreateGroupSheet();
       }}
     >
-      {error && <div className="alert alert-error">{error.message}</div>}
-
       <TextField
         label="Group name"
         placeholder="WG Expenses"

@@ -25,7 +25,6 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const valid = isSignUp ? name !== '' && signInValid : signInValid;
 
   const isLoading = signUpMutation.isLoading || signInMutation.isLoading;
-  const error = signUpMutation.error ?? signInMutation.error;
 
   const handleAuthenticate = async () => {
     if (isSignUp) {
@@ -50,8 +49,6 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
         void handleAuthenticate();
       }}
     >
-      {error && <div className="alert alert-error">{error.message}</div>}
-
       {isSignUp && (
         <TextField
           label="Name"
