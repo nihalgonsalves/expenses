@@ -13,7 +13,6 @@
     "@typescript-eslint/naming-convention": "error",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/require-array-sort-compare": "error",
-    "@typescript-eslint/sort-type-constituents": "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error"
   },
   "overrides": [

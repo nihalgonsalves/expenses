@@ -87,18 +87,23 @@ const calcSplits = (
 const getDefaultRatios = (groupSheet: GroupSheetByIdResponse) =>
   Object.fromEntries(groupSheet.participants.map(({ id }) => [id, 1]));
 
-type SplitConfig = (| {
-        expectedSum: (amount: number) => number;
-        formatErrorTooHigh: (diff: number, currencyCode: string) => string;
-        formatErrorTooLow: (diff: number, currencyCode: string) => string;
-      }
-    | { expectedSum: undefined }) & (| {
+type SplitConfig = (
+  | {
       hasInput: true;
       inputMode: 'decimal' | 'numeric';
       unit: [singular: string, plural: string];
       ariaInputLabel: string;
     }
-  | { hasInput: false });
+  | { hasInput: false }
+) &
+  (
+    | {
+        expectedSum: (amount: number) => number;
+        formatErrorTooHigh: (diff: number, currencyCode: string) => string;
+        formatErrorTooLow: (diff: number, currencyCode: string) => string;
+      }
+    | { expectedSum: undefined }
+  );
 
 const SPLIT_OPTIONS: { value: SplitGroupExpenseSplitType; label: string }[] = [
   { value: SplitGroupExpenseSplitType.Evenly, label: 'Evenly' },
