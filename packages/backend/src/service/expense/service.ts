@@ -115,7 +115,8 @@ const mapInputToCreatePersonalExpenseTransaction = (
 ): Omit<Prisma.ExpenseTransactionsUncheckedCreateInput, 'expenseId'> => ({
   id: generateId(),
   userId: user.id,
-  amount: -input.money.amount,
+  // NOTE: the amount is already negative if it is an expense
+  amount: input.money.amount,
   scale: input.money.scale,
 });
 
@@ -359,13 +360,15 @@ export class ExpenseService {
               {
                 id: generateId(),
                 user: { connect: { id: input.paidById } },
-                amount: -split.share.amount,
+                // NOTE: the amount is already negative if it is an expense
+                amount: split.share.amount,
                 scale: split.share.scale,
               },
               {
                 id: generateId(),
                 user: { connect: { id: split.participantId } },
-                amount: split.share.amount,
+                // NOTE: this gets flipped to positive for an expense
+                amount: -split.share.amount,
                 scale: split.share.scale,
               },
             ],
@@ -400,6 +403,13 @@ export class ExpenseService {
       throw new ExpenseServiceError({
         code: 'BAD_REQUEST',
         message: 'Currencies do not match',
+      });
+    }
+
+    if (input.money.amount <= 0) {
+      throw new ExpenseServiceError({
+        code: 'BAD_REQUEST',
+        message: 'Settlement amounts must be postive.',
       });
     }
 

@@ -81,3 +81,10 @@ export const useMoneyValues = (rawAmount: number, currencyCode: string) => {
 
   return [dineroValue, moneySnapshot] as const;
 };
+
+// TODO de-dupe backend into utils
+export const negateMoney = ({ amount, scale, currencyCode }: Money): Money => ({
+  amount: -amount,
+  scale,
+  currencyCode,
+});

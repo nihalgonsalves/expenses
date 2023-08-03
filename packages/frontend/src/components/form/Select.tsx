@@ -5,6 +5,7 @@ import { clsxtw } from '../../utils/utils';
 export type SelectOption<T extends z.Schema<string | undefined>> = {
   label: React.ReactNode;
   value: z.infer<T> | '';
+  disabled?: boolean;
 };
 
 export const Select = <T extends z.Schema<string | undefined>>({
@@ -32,8 +33,8 @@ export const Select = <T extends z.Schema<string | undefined>>({
         setValue(e.target.value ? schema.parse(e.target.value) : undefined);
       }}
     >
-      {options.map(({ label: display, value: optValue }) => (
-        <option key={optValue} value={optValue}>
+      {options.map(({ label: display, value: optValue, disabled }) => (
+        <option key={optValue} value={optValue} disabled={disabled}>
           {display}
         </option>
       ))}

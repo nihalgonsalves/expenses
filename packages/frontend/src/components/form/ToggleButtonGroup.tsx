@@ -10,7 +10,7 @@ export const ToggleButtonGroup = <T extends boolean | string>({
   disabled,
 }: {
   className?: string;
-  options: { value: T; label: React.ReactNode }[];
+  options: readonly { value: T; label: React.ReactNode }[];
   value: T;
   setValue: (newValue: T) => void;
   disabled?: boolean;

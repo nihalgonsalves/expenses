@@ -45,6 +45,7 @@ const categoryMatchers: [CategoryId, RegExp][] = [
   [CategoryId.Home, /(home)/i],
   [CategoryId.Rent, /(rent)/i],
   [CategoryId.Utilities, /(utilities|electric|internet|water|power|phone)/i],
+  [CategoryId.Income, /(income|salary)/i],
   [CategoryId.Other, /.*/i],
 ];
 
@@ -57,12 +58,28 @@ const findCategory = (value: string | undefined) =>
 const ZAmountFormat = z.union([
   z.literal('decimal-dot'),
   z.literal('decimal-comma'),
+  z.literal('decimal-dot-inverse'),
+  z.literal('decimal-comma-inverse'),
 ]);
 
 type AmountFormat = z.infer<typeof ZAmountFormat>;
 const amountFormatOptions: SelectOption<typeof ZAmountFormat>[] = [
-  { value: 'decimal-dot', label: 'Decimal, dot (1,000.50)' },
-  { value: 'decimal-comma', label: 'Decimal, comma (1.000,50)' },
+  {
+    value: 'decimal-dot',
+    label: 'Decimal, dot (1,000.50), expenses negative.',
+  },
+  {
+    value: 'decimal-dot-inverse',
+    label: 'Decimal, dot (1,000.50), expenses positive.',
+  },
+  {
+    value: 'decimal-comma',
+    label: 'Decimal, comma (1.000,50), expenses negative.',
+  },
+  {
+    value: 'decimal-comma-inverse',
+    label: 'Decimal, comma (1.000,50), expenses positive.',
+  },
 ];
 
 // Most currencies have 2 decimal places, some have 3.
@@ -70,7 +87,10 @@ const amountFormatOptions: SelectOption<typeof ZAmountFormat>[] = [
 const MAX_PRECISION = 4;
 
 const parseAmount = (value: string, amountFormat: AmountFormat) => {
-  const cleaner = amountFormat === 'decimal-dot' ? /[^0-9.]/g : /[^0-9,]/g;
+  const cleaner =
+    amountFormat === 'decimal-dot' || amountFormat === 'decimal-dot-inverse'
+      ? /[^0-9.-]/g
+      : /[^0-9,-]/g;
   const valueInt = parseFloat(value.replace(cleaner, ''));
 
   if (Number.isNaN(valueInt)) {
@@ -79,9 +99,14 @@ const parseAmount = (value: string, amountFormat: AmountFormat) => {
 
   const scale = Math.min(`${value}`.split('.')[1]?.length ?? 0, MAX_PRECISION);
 
-  const amount = Math.round(Math.abs(valueInt) * Math.pow(10, scale));
+  const amount = Math.round(valueInt * Math.pow(10, scale));
+  const normalizedAmount =
+    amountFormat === 'decimal-dot-inverse' ||
+    amountFormat === 'decimal-comma-inverse'
+      ? -amount
+      : amount;
 
-  return { amount, scale };
+  return { amount: normalizedAmount, scale };
 };
 
 const SafeDisplay = ({
@@ -429,6 +454,16 @@ export const PersonalExpenseImportStepper = ({
             />
             <TextField
               label="Date format"
+              labelAlt={
+                <a
+                  className="link"
+                  href="https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Help
+                </a>
+              }
               value={dateFormat}
               setValue={setDateFormat}
             />

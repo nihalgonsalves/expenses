@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MdArrowCircleDown, MdArrowCircleUp } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import type { Sheet } from '@nihalgonsalves/expenses-backend';
@@ -6,7 +7,7 @@ import type { Sheet } from '@nihalgonsalves/expenses-backend';
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
 import { CategoryId } from '../../data/categories';
-import { formatCurrency, useMoneyValues } from '../../utils/money';
+import { formatCurrency, negateMoney, useMoneyValues } from '../../utils/money';
 import {
   dateTimeLocalToISOString,
   nowForDateTimeInput,
@@ -16,6 +17,32 @@ import { CurrencySelect } from '../form/CurrencySelect';
 import { LoadingButton } from '../form/LoadingButton';
 import { MoneyField } from '../form/MoneyField';
 import { TextField } from '../form/TextField';
+import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+
+const TYPE_OPTIONS = [
+  {
+    value: 'expense',
+    label: (
+      <>
+        <span className="text-xl">
+          <MdArrowCircleUp />
+        </span>
+        Expense
+      </>
+    ),
+  },
+  {
+    value: 'income',
+    label: (
+      <>
+        <span className="text-xl">
+          <MdArrowCircleDown />
+        </span>{' '}
+        Income
+      </>
+    ),
+  },
+] as const;
 
 export const CreatePersonalExpenseForm = ({
   personalSheet,
@@ -23,6 +50,8 @@ export const CreatePersonalExpenseForm = ({
   personalSheet: Sheet;
 }) => {
   const navigate = useNavigate();
+
+  const [type, setType] = useState<'expense' | 'income'>('expense');
 
   const [amount, setAmount] = useState(0);
   const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
@@ -46,9 +75,10 @@ export const CreatePersonalExpenseForm = ({
   const valid = amount > 0;
 
   const handleCreateExpense = async () => {
+    const money = convertedMoneySnapshot ?? moneySnapshot;
     await createPersonalSheetExpense({
       personalSheetId: personalSheet.id,
-      money: convertedMoneySnapshot ?? moneySnapshot,
+      money: type === 'expense' ? negateMoney(money) : money,
       category: category ?? CategoryId.Other,
       description,
       spentAt: dateTimeLocalToISOString(spentAt),
@@ -70,6 +100,13 @@ export const CreatePersonalExpenseForm = ({
         void handleCreateExpense();
       }}
     >
+      <ToggleButtonGroup
+        className="w-full"
+        options={TYPE_OPTIONS}
+        value={type}
+        setValue={setType}
+      />
+
       <div className="flex items-start gap-4">
         <MoneyField
           className="flex-grow"

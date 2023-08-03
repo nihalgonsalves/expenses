@@ -12,6 +12,7 @@ import {
   MdPayments,
   MdQuestionMark,
   MdStore,
+  MdToll,
   MdTravelExplore,
 } from 'react-icons/md';
 
@@ -31,13 +32,12 @@ export enum CategoryId {
   Travel = 'travel',
   Transportation = 'transportation',
   Hobbies = 'hobbies',
-  // false positive?
-
   Home = 'home',
   Rent = 'rent',
   Utilities = 'utilities',
   Other = 'other',
   Transfer = 'transfer',
+  Income = 'income',
 }
 
 // prettier-ignore
@@ -56,6 +56,7 @@ export const categories: Category[] = [
   { id: CategoryId.Utilities,      name: 'Utilities',      icon: <MdElectricBolt /> },
   { id: CategoryId.Other,          name: 'Other',          icon: <MdQuestionMark /> },
   { id: CategoryId.Transfer,       name: 'Transfer',       icon: <MdPayments /> },
+  { id: CategoryId.Income,         name: 'Income',         icon: <MdToll /> },
 ];
 
 export const categoryById = Object.fromEntries(

@@ -7,7 +7,12 @@ import {
   useState,
   useMemo,
 } from 'react';
-import { MdPlaylistAdd } from 'react-icons/md';
+import {
+  MdArrowCircleDown,
+  MdArrowCircleUp,
+  MdPayments,
+  MdPlaylistAdd,
+} from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -27,6 +32,7 @@ import {
   convertCurrency,
   formatCurrency,
   formatDecimalCurrency,
+  negateMoney,
   toDinero,
   useMoneyValues,
 } from '../../utils/money';
@@ -412,17 +418,13 @@ const ParticipantSelect = ({
   label,
   selectedId,
   setSelectedId,
-  filterId,
 }: {
   groupSheet: GroupSheetByIdResponse;
   label: string;
   selectedId: string | undefined;
   setSelectedId: (val: string) => void;
-  filterId?: (val: string) => boolean;
 }) => {
-  const options = filterId
-    ? Object.values(groupSheet.participants).filter(({ id }) => filterId(id))
-    : Object.values(groupSheet.participants);
+  const options = Object.values(groupSheet.participants);
 
   return (
     <Select
@@ -430,17 +432,22 @@ const ParticipantSelect = ({
       value={selectedId ?? ''}
       setValue={setSelectedId}
       schema={z.string()}
-      options={options.map(({ id, name }) => ({ value: id, label: name }))}
+      options={[
+        { label: 'Please Select...', value: '', disabled: true },
+        ...options.map(({ id, name }) => ({ value: id, label: name })),
+      ]}
     />
   );
 };
 
-export const RegularExpenseForm = ({
+export const ExpenseAndIncomeForm = ({
   groupSheet,
   me,
+  type,
 }: {
   groupSheet: GroupSheetByIdResponse;
   me: User;
+  type: 'expense' | 'income';
 }) => {
   const { mutateAsync: createGroupSheetExpense, isLoading } =
     trpc.expense.createGroupSheetExpense.useMutation();
@@ -480,28 +487,41 @@ export const RegularExpenseForm = ({
       return;
     }
 
+    const basePayload = {
+      groupSheetId: groupSheet.id,
+      paidById,
+      description,
+      category: category ?? CategoryId.Other,
+      spentAt: dateTimeLocalToISOString(spentAt),
+    };
+
     if (groupSheet.currencyCode === currencyCode) {
+      const signedMoney =
+        type === 'expense' ? negateMoney(moneySnapshot) : moneySnapshot;
+
       await createGroupSheetExpense({
-        groupSheetId: groupSheet.id,
-        paidById,
-        description,
-        category: category ?? CategoryId.Other,
-        money: moneySnapshot,
-        spentAt: dateTimeLocalToISOString(spentAt),
-        splits,
-      });
-    } else if (convertedMoneySnapshot) {
-      await createGroupSheetExpense({
-        groupSheetId: groupSheet.id,
-        paidById,
-        description,
-        category: category ?? CategoryId.Other,
-        money: convertedMoneySnapshot,
-        spentAt: dateTimeLocalToISOString(spentAt),
+        ...basePayload,
+        money: signedMoney,
         splits: calcSplits(
           groupSheet,
           currencyCode,
-          moneyToDinero(convertedMoneySnapshot),
+          moneyToDinero(signedMoney),
+          ratios,
+        ),
+      });
+    } else if (convertedMoneySnapshot) {
+      const signedMoney =
+        type === 'expense'
+          ? negateMoney(convertedMoneySnapshot)
+          : convertedMoneySnapshot;
+
+      await createGroupSheetExpense({
+        ...basePayload,
+        money: signedMoney,
+        splits: calcSplits(
+          groupSheet,
+          currencyCode,
+          moneyToDinero(signedMoney),
           ratios,
         ),
       });
@@ -526,7 +546,11 @@ export const RegularExpenseForm = ({
         <MoneyField
           className="flex-grow"
           autoFocus
-          label="How much was spent?"
+          label={
+            type === 'expense'
+              ? 'How much was spent?'
+              : 'How much was received?'
+          }
           bottomLabel={
             convertedMoneySnapshot
               ? formatCurrency(convertedMoneySnapshot)
@@ -548,7 +572,7 @@ export const RegularExpenseForm = ({
 
       <ParticipantSelect
         groupSheet={groupSheet}
-        label="Who paid?"
+        label={type === 'expense' ? 'Who paid?' : 'Who received money?'}
         selectedId={paidById}
         setSelectedId={(newId) => {
           if (!newId) return;
@@ -669,7 +693,6 @@ export const SettlementForm = ({
         label="To"
         selectedId={toId}
         setSelectedId={setToId}
-        filterId={(id) => id !== fromId}
       />
 
       <MoneyField
@@ -692,6 +715,42 @@ export const SettlementForm = ({
   );
 };
 
+const TYPE_OPTIONS = [
+  {
+    value: 'expense',
+    label: (
+      <>
+        <span className="text-xl">
+          <MdArrowCircleUp />
+        </span>{' '}
+        Expense
+      </>
+    ),
+  },
+  {
+    value: 'income',
+    label: (
+      <>
+        <span className="text-xl">
+          <MdArrowCircleDown />
+        </span>{' '}
+        Income
+      </>
+    ),
+  },
+  {
+    value: 'settlement',
+    label: (
+      <>
+        <span className="text-xl">
+          <MdPayments />
+        </span>
+        Settlement
+      </>
+    ),
+  },
+] as const;
+
 export const CreateGroupSheetExpenseForm = ({
   groupSheet,
   me,
@@ -699,7 +758,9 @@ export const CreateGroupSheetExpenseForm = ({
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
-  const [type, setType] = useState<'expense' | 'settlement'>('expense');
+  const [type, setType] = useState<'expense' | 'income' | 'settlement'>(
+    'expense',
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -707,16 +768,12 @@ export const CreateGroupSheetExpenseForm = ({
         className="w-full"
         value={type}
         setValue={setType}
-        options={[
-          { value: 'expense', label: 'Expense' },
-          { value: 'settlement', label: 'Settlement' },
-        ]}
+        options={TYPE_OPTIONS}
       />
-      {type === 'expense' && (
-        <RegularExpenseForm groupSheet={groupSheet} me={me} />
-      )}
-      {type === 'settlement' && (
+      {type === 'settlement' ? (
         <SettlementForm groupSheet={groupSheet} me={me} />
+      ) : (
+        <ExpenseAndIncomeForm type={type} groupSheet={groupSheet} me={me} />
       )}
     </div>
   );
