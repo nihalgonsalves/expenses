@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { TrpcProvider } from './api/TrpcProvider';
+import { OfflineToaster } from './components/OfflineToaster';
 import { registerSW } from './registerSW';
 import { RouterProvider, router } from './router';
 import { useMediaQuery } from './utils/hooks';
@@ -19,6 +20,7 @@ export const App = () => {
   return (
     <TrpcProvider>
       <RouterProvider router={router} />
+      <OfflineToaster />
       <Toaster
         toastOptions={{
           success: {
