@@ -27,12 +27,17 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
               if (error instanceof TRPCClientError) {
                 const { httpStatus } = ZData.parse(error.data);
 
-                return (
-                  httpStatus !== 400 &&
-                  httpStatus !== 401 &&
-                  httpStatus !== 403 &&
-                  httpStatus !== 404
-                );
+                if (
+                  httpStatus == 400 ||
+                  httpStatus == 401 ||
+                  httpStatus == 403 ||
+                  httpStatus == 404
+                )
+                  return false;
+
+                if (failureCount === 0) {
+                  toast.error(error.message);
+                }
               }
 
               return failureCount <= 3;
