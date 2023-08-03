@@ -26,7 +26,7 @@
     "validate": "run-p build 'lint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.5.1",
+    "@nihalgonsalves/esconfig": "^0.6.0",
     "@types/node": "20",
     "@vitest/ui": "^0.33.0",
     "eslint": "^8.46.0",
@@ -38,7 +38,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "lefthook": "^1.4.8",
     "npm-run-all2": "^6.0.6",
-    "prettier": "^3.0.0",
+    "prettier": "^3.0.1",
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-sql": "^0.15.1",
     "typescript": "^5.1.6",

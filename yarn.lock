@@ -1437,10 +1437,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@nihalgonsalves/esconfig@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@nihalgonsalves/esconfig/-/esconfig-0.5.1.tgz#0cdaed50d0e95abad820c672924b3fa5ccd533fd"
-  integrity sha512-Rymbnr4eZKfpP4APeV5cqCI4M/0YrWxruRVUYvJHoIN+kuQKNeU4+w0Xnv9QnaHrouzaLYAHmIPoUvkkqeslqw==
+"@nihalgonsalves/esconfig@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@nihalgonsalves/esconfig/-/esconfig-0.6.0.tgz#77766656733bb8de1ea8a25aeeb5268f646cfe16"
+  integrity sha512-fDXlcrj5xEEd3uw9M0E2F7vccybgBoF8qHrtGeFKV8CS5cwS7ywqXBRItfNV4hC+xoo8oEO5mJQ2KtBgOf0zgg==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^6.2.1"
     "@typescript-eslint/parser" "^6.2.1"
@@ -4897,10 +4897,10 @@ prettier-plugin-sql@^0.15.1:
     sql-formatter "^12.2.3"
     tslib "^2.6.0"
 
-prettier@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.0.0.tgz#e7b19f691245a21d618c68bc54dc06122f6105ae"
-  integrity sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g==
+prettier@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.0.1.tgz#65271fc9320ce4913c57747a70ce635b30beaa40"
+  integrity sha512-fcOWSnnpCrovBsmFZIGIy9UqK2FaI7Hqax+DIO0A9UxeVoY4iweyaFjS5TavZN97Hfehph0nhsZnjlVKzEQSrQ==
 
 pretty-bytes@^5.3.0:
   version "5.6.0"
