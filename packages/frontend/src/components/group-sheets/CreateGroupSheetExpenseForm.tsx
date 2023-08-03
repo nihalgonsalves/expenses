@@ -573,6 +573,7 @@ export const RegularExpenseForm = ({
       <TextField
         label="When?"
         type="datetime-local"
+        inputClassName="appearance-none"
         value={spentAt}
         setValue={setSpentAt}
       />

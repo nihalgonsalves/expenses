@@ -110,6 +110,7 @@ export const CreatePersonalExpenseForm = ({
       <TextField
         label="Date & Time"
         type="datetime-local"
+        inputClassName="appearance-none"
         value={spentAt}
         setValue={setSpentAt}
       />
