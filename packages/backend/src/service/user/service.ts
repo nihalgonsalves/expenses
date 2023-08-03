@@ -116,28 +116,12 @@ export class UserService {
         });
       }
 
-      const user = await this.prismaClient.user.findUniqueOrThrow({
-        where: { id },
-      });
-
-      if (!user.passwordHash) {
-        throw new UserServiceError({
-          message: "Can't update if there's no existing password",
-          code: 'BAD_REQUEST',
-        });
-      }
-
-      const passwordMatches = await comparePassword(
+      await this.verifyPassword(
+        id,
+        // don't check against email because this mutation allows changing it too
+        undefined,
         input.password,
-        user.passwordHash,
       );
-
-      if (!passwordMatches) {
-        throw new UserServiceError({
-          message: 'Invalid credentials',
-          code: 'FORBIDDEN',
-        });
-      }
     }
 
     return this.prismaClient.user.update({
@@ -152,6 +136,29 @@ export class UserService {
     });
   }
 
+  async anonymizeUser(id: string, input: AuthorizeUserInput): Promise<string> {
+    await this.verifyPassword(id, input.email, input.password);
+
+    const [{ id: deletedId }] = await this.prismaClient.$transaction([
+      this.prismaClient.user.update({
+        where: { id },
+        data: {
+          name: 'Deleted User',
+          email: `deleted_${id}_${generateId()}@example.com`,
+          passwordHash: null,
+        },
+      }),
+      this.prismaClient.sheet.deleteMany({
+        where: {
+          type: 'PERSONAL',
+          participants: { some: { participantId: id, role: 'ADMIN' } },
+        },
+      }),
+    ]);
+
+    return deletedId;
+  }
+
   private async findByEmail(email: string) {
     try {
       return await this.prismaClient.user.findUnique({
@@ -161,6 +168,39 @@ export class UserService {
       throw new UserServiceError({
         code: 'INTERNAL_SERVER_ERROR',
         cause: error,
+      });
+    }
+  }
+
+  private async verifyPassword(
+    userId: string,
+    email: string | undefined,
+    password: string,
+  ) {
+    const user = await this.prismaClient.user.findUnique({
+      where: email ? { id: userId, email } : { id: userId },
+    });
+
+    if (!user) {
+      throw new UserServiceError({
+        message: 'Invalid credentials',
+        code: 'FORBIDDEN',
+      });
+    }
+
+    if (!user.passwordHash) {
+      throw new UserServiceError({
+        message: "Can't update or delete with no existing password",
+        code: 'BAD_REQUEST',
+      });
+    }
+
+    const passwordMatches = await comparePassword(password, user.passwordHash);
+
+    if (!passwordMatches) {
+      throw new UserServiceError({
+        message: 'Invalid credentials',
+        code: 'FORBIDDEN',
       });
     }
   }

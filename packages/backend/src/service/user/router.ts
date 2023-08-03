@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import { publicProcedure, protectedProcedure, router } from '../../trpc';
 
 import {
@@ -32,6 +34,15 @@ export const userRouter = router({
     .mutation(async ({ input, ctx }) =>
       ctx.userService.updateUser(ctx.user.id, input),
     ),
+
+  anonymizeUser: protectedProcedure
+    .input(ZAuthorizeUserInput)
+    .output(z.string())
+    .mutation(async ({ input, ctx }) => {
+      const deletedId = await ctx.userService.anonymizeUser(ctx.user.id, input);
+      ctx.setJwtToken(null);
+      return deletedId;
+    }),
 
   signOut: publicProcedure.mutation(({ ctx }) => {
     ctx.setJwtToken(null);

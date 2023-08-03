@@ -50,6 +50,9 @@ export const getTRPCCaller = async () => {
     prisma,
     usePublicCaller: (setJwtToken = (_token: JWTToken | null) => {}) =>
       useCaller(undefined, setJwtToken),
-    useProtectedCaller: (user: User) => useCaller(user, () => {}),
+    useProtectedCaller: (
+      user: User,
+      setJwtToken = (_token: JWTToken | null) => {},
+    ) => useCaller(user, setJwtToken),
   };
 };

@@ -1,4 +1,5 @@
 import { trpc } from '../api/trpc';
+import { DeleteUserForm } from '../components/settings/DeleteUserForm';
 import { NotificationPreferenceForm } from '../components/settings/NotificationPreferenceForm';
 import { ProfileForm } from '../components/settings/ProfileForm';
 import { ThemeForm } from '../components/settings/ThemeForm';
@@ -16,6 +17,7 @@ export const SettingsPage = () => {
           <>
             <ProfileForm me={data} />
             <NotificationPreferenceForm />
+            <DeleteUserForm />
           </>
         )}
       </div>

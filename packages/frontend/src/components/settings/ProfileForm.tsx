@@ -20,8 +20,8 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
   const passwordValid =
     (!password && !newPassword) ||
-    (password.length >= 10 &&
-      newPassword.length >= 10 &&
+    (password.length >= 0 &&
+      newPassword.length >= 0 &&
       password !== newPassword);
 
   const valid = name !== '' && prevalidateEmail(email) && passwordValid;

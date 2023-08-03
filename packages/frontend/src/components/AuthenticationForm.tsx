@@ -19,7 +19,7 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const signInMutation = trpc.user.authorizeUser.useMutation();
 
   const emailValid = prevalidateEmail(email);
-  const passwordValid = password.length >= 10;
+  const passwordValid = password.length > 0;
 
   const signInValid = emailValid && passwordValid;
   const valid = isSignUp ? name !== '' && signInValid : signInValid;
