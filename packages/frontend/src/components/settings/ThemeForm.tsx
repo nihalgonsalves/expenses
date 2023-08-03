@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import { CgDarkMode } from 'react-icons/cg';
+import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { z } from 'zod';
 
 import {
@@ -7,82 +9,96 @@ import {
   getDarkTheme,
   setDarkTheme,
   syncThemeToHtml,
+  getThemePreference,
+  type ThemePreference,
+  LIGHT_THEMES,
+  DARK_THEMES,
+  setThemePreference,
 } from '../../utils/theme';
 import { Select } from '../form/Select';
+import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
-const lightThemes = [
-  'light',
-  'cupcake',
-  'bumblebee',
-  'emerald',
-  'corporate',
-  'retro',
-  'cyberpunk',
-  'valentine',
-  'garden',
-  'lofi',
-  'pastel',
-  'fantasy',
-  'wireframe',
-  'cmyk',
-  'autumn',
-  'acid',
-  'lemonade',
-  'winter',
-].map((theme) => ({
+const lightThemeOptions = LIGHT_THEMES.map((theme) => ({
   label: theme,
   value: theme,
 }));
 
-const darkThemes = [
-  'synthwave',
-  'night',
-  'dark',
-  'halloween',
-  'forest',
-  'aqua',
-  'black',
-  'luxury',
-  'dracula',
-  'business',
-  'coffee',
-].map((theme) => ({
+const darkThemeOptions = DARK_THEMES.map((theme) => ({
   label: theme,
   value: theme,
 }));
 
 export const ThemeForm = () => {
+  const [themePreferenceState, setThemePreferenceState] = useState(
+    getThemePreference(),
+  );
   const [lightThemeState, setLightThemeState] = useState(getLightTheme());
   const [darkThemeState, setDarkThemeState] = useState(getDarkTheme());
 
-  const changeLightTheme = (newTheme: string) => {
-    setLightTheme(newTheme);
+  const changeThemePreference = useCallback((value: ThemePreference) => {
+    setThemePreference(value);
+    setThemePreferenceState(value);
+    syncThemeToHtml();
+  }, []);
+
+  const changeLightTheme = useCallback((value: string) => {
+    setLightTheme(value);
     setLightThemeState(getLightTheme());
     syncThemeToHtml();
-  };
+  }, []);
 
-  const changeDarkTheme = (newTheme: string) => {
-    setDarkTheme(newTheme);
+  const changeDarkTheme = useCallback((value: string) => {
+    setDarkTheme(value);
     setDarkThemeState(getDarkTheme());
     syncThemeToHtml();
-  };
+  }, []);
 
   return (
     <div className="card-compact card card-bordered">
       <div className="card-body">
         <h2 className="card-title">Appearance</h2>
+        <ToggleButtonGroup
+          options={[
+            {
+              value: 'light',
+              label: (
+                <>
+                  <MdOutlineLightMode /> Light
+                </>
+              ),
+            },
+            {
+              value: 'system',
+              label: (
+                <>
+                  <CgDarkMode /> System
+                </>
+              ),
+            },
+            {
+              value: 'dark',
+              label: (
+                <>
+                  <MdOutlineDarkMode /> Dark
+                </>
+              ),
+            },
+          ]}
+          value={themePreferenceState}
+          setValue={changeThemePreference}
+        />
         <Select
           label="Light Theme"
           value={lightThemeState}
           setValue={changeLightTheme}
-          options={lightThemes}
+          options={lightThemeOptions}
           schema={z.string()}
         />
         <Select
           label="Dark Theme"
           value={darkThemeState}
           setValue={changeDarkTheme}
-          options={darkThemes}
+          options={darkThemeOptions}
           schema={z.string()}
         />
       </div>

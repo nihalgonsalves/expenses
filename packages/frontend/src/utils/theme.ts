@@ -1,8 +1,66 @@
+import { z } from 'zod';
+
+export const LIGHT_THEMES = [
+  'light',
+  'cupcake',
+  'bumblebee',
+  'emerald',
+  'corporate',
+  'retro',
+  'cyberpunk',
+  'valentine',
+  'garden',
+  'lofi',
+  'pastel',
+  'fantasy',
+  'wireframe',
+  'cmyk',
+  'autumn',
+  'acid',
+  'lemonade',
+  'winter',
+] as const;
+
+export const DARK_THEMES = [
+  'synthwave',
+  'night',
+  'dark',
+  'halloween',
+  'forest',
+  'aqua',
+  'black',
+  'luxury',
+  'dracula',
+  'business',
+  'coffee',
+] as const;
+
+const THEME_PREFERENCE_KEY = 'themePreference';
+
 const LIGHT_THEME_KEY = 'lightTheme';
 const DARK_THEME_KEY = 'darkTheme';
 
 const LIGHT_THEME_DEFAULT = 'light';
 const DARK_THEME_DEFAULT = 'synthwave';
+
+const ZThemePreference = z.union([
+  z.literal('system'),
+  z.literal('light'),
+  z.literal('dark'),
+]);
+
+export type ThemePreference = z.infer<typeof ZThemePreference>;
+
+export const getThemePreference = (): ThemePreference => {
+  const rawValue = localStorage.getItem(THEME_PREFERENCE_KEY);
+  const result = ZThemePreference.safeParse(rawValue);
+
+  return result.success ? result.data : 'system';
+};
+
+export const setThemePreference = (preference: ThemePreference) => {
+  localStorage.setItem(THEME_PREFERENCE_KEY, preference);
+};
 
 export const getLightTheme = () =>
   localStorage.getItem(LIGHT_THEME_KEY) ?? LIGHT_THEME_DEFAULT;
@@ -16,6 +74,16 @@ export const setLightTheme = (theme: string) => {
 
 export const setDarkTheme = (theme: string) => {
   localStorage.setItem(DARK_THEME_KEY, theme);
+};
+
+const isDarkMode = () => {
+  const pref = getThemePreference();
+
+  if (pref === 'system') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  return pref === 'dark';
 };
 
 // https://github.com/saadeghi/daisyui/blob/ab748bf7340ca89467e1be70c61c9169e8f7e7f5/src/theming/themes.js
@@ -52,9 +120,7 @@ const themePrimaryColors: Record<string, string> = {
 };
 
 export const syncThemeToHtml = () => {
-  const themeName = window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? getDarkTheme()
-    : getLightTheme();
+  const themeName = isDarkMode() ? getDarkTheme() : getLightTheme();
 
   document.documentElement.setAttribute('data-theme', themeName);
 
