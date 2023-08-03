@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { useNavigatorOnLine } from '../utils/hooks/useNavigatorOnline';
+import { useNavigatorOnLine } from '../utils/hooks/useNavigatorOnLine';
 
 const TOAST_ID = 'network-toast';
 
