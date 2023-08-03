@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { type ServerResponse, type IncomingMessage } from 'http';
+import type { ServerResponse, IncomingMessage } from 'http';
 import { createServer } from 'https';
 
 import { type CertificateCreationResult, createCertificate } from 'pem';
@@ -21,7 +21,7 @@ export class FakeWebPushService<T extends Record<string, unknown>>
 {
   public messages: { endpoint: string; payload: T }[] = [];
 
-  sendNotification(pushSubscription: PushSubscription, payload: T) {
+  async sendNotification(pushSubscription: PushSubscription, payload: T) {
     this.messages.push({ endpoint: pushSubscription.endpoint, payload });
     return Promise.resolve();
   }
@@ -41,7 +41,7 @@ export const getUserKeys = () => {
 const { clientKey, certificate } = await new Promise<CertificateCreationResult>(
   (resolve, reject) => {
     createCertificate({ days: 1, selfSigned: true }, (err, keys) => {
-      if (err) {
+      if (err != null) {
         reject(err);
       } else {
         resolve(keys);
@@ -50,7 +50,7 @@ const { clientKey, certificate } = await new Promise<CertificateCreationResult>(
   },
 );
 
-export const createPushService = (
+export const createPushService = async (
   onReceive: (req: IncomingMessage, res: ServerResponse) => void,
 ) =>
   new Promise<string>((resolve, reject) => {

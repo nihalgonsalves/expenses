@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { type NotificationPayload } from '../..';
+import type { NotificationPayload } from '../..';
 import {
   groupSheetFactory,
   notificationSubscriptionFactory,

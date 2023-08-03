@@ -1,15 +1,15 @@
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
 import { generateId } from '../../utils/nanoid';
 
-import {
-  type AuthorizeUserInput,
-  type User,
-  type CreateUserInput,
-  type JWTToken,
-  type UpdateUserInput,
+import type {
+  AuthorizeUserInput,
+  User,
+  CreateUserInput,
+  JWTToken,
+  UpdateUserInput,
 } from './types';
 import { comparePassword, hashPassword, signJWT, verifyJWT } from './utils';
 

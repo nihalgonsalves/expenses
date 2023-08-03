@@ -1,14 +1,14 @@
 import { UAParser } from 'ua-parser-js';
 
 import { config } from '../src/config';
-import { type ContextObj } from '../src/context';
+import type { ContextObj } from '../src/context';
 import { appRouter } from '../src/router';
 import { ExpenseService } from '../src/service/expense/service';
 import { FrankfurterService } from '../src/service/frankfurter/FrankfurterService';
 import { NotificationService } from '../src/service/notification/service';
 import { SheetService } from '../src/service/sheet/service';
 import { UserService } from '../src/service/user/service';
-import { type User, type JWTToken } from '../src/service/user/types';
+import type { User, JWTToken } from '../src/service/user/types';
 
 import { getPrisma } from './getPrisma';
 

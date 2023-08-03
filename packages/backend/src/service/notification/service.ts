@@ -1,8 +1,8 @@
-import { type PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { WebPushError } from 'web-push';
 
 import { generateId } from '../../utils/nanoid';
-import { type User } from '../user/types';
+import type { User } from '../user/types';
 
 import { type IWebPushService, WebPushService } from './WebPushService';
 import {
@@ -12,9 +12,9 @@ import {
 } from './types';
 
 type NotificationDispatchResult = { id: string; userId: string } & (
-  | { success: true }
   | { success: false; errorType: 'SERVER'; statusCode: number }
   | { success: false; errorType: 'UNKNOWN'; error: unknown }
+  | { success: true }
 );
 
 export class NotificationService {

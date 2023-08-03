@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { type User } from '@nihalgonsalves/expenses-backend';
+import type { User } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
 import { prevalidateEmail } from '../../utils/utils';
@@ -24,7 +24,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
       newPassword.length >= 10 &&
       password !== newPassword);
 
-  const valid = name && prevalidateEmail(email) && passwordValid;
+  const valid = name !== '' && prevalidateEmail(email) && passwordValid;
   const unchanged =
     name === me.name && email === me.email && !password && !newPassword;
 

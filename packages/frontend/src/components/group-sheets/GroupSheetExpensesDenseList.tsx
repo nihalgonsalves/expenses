@@ -1,4 +1,4 @@
-import { type GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
+import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
 import { formatCurrency } from '../../utils/money';
 import {

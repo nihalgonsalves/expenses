@@ -1,4 +1,4 @@
-import { type z } from 'zod';
+import type { z } from 'zod';
 
 import { clsxtw } from '../../utils/utils';
 
@@ -22,23 +22,21 @@ export const Select = <T extends z.Schema<string | undefined>>({
   schema: T;
   small?: boolean;
   className?: string;
-}) => {
-  return (
-    <div className={clsxtw('form-control', className)}>
-      <label className="label label-text">{label}</label>
-      <select
-        className="select select-bordered"
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value ? schema.parse(e.target.value) : undefined);
-        }}
-      >
-        {options.map(({ label: display, value: optValue }) => (
-          <option key={optValue} value={optValue}>
-            {display}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
+}) => (
+  <div className={clsxtw('form-control', className)}>
+    <label className="label label-text">{label}</label>
+    <select
+      className="select select-bordered"
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.value ? schema.parse(e.target.value) : undefined);
+      }}
+    >
+      {options.map(({ label: display, value: optValue }) => (
+        <option key={optValue} value={optValue}>
+          {display}
+        </option>
+      ))}
+    </select>
+  </div>
+);

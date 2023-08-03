@@ -5,9 +5,9 @@ import { MdWarning } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
-import {
-  type CreateSheetExpenseInput,
-  type Sheet,
+import type {
+  CreateSheetExpenseInput,
+  Sheet,
 } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
@@ -352,18 +352,16 @@ export const PersonalExpenseImportStepper = ({
           }
 
           setAmountField(
-            meta.fields?.find((field) => field.match(fieldMatchers.amount)),
+            meta.fields?.find((field) => fieldMatchers.amount.exec(field)),
           );
           setDateField(
-            meta.fields?.find((field) => field.match(fieldMatchers.date)),
+            meta.fields?.find((field) => fieldMatchers.date.exec(field)),
           );
           setCategoryField(
-            meta.fields?.find((field) => field.match(fieldMatchers.category)),
+            meta.fields?.find((field) => fieldMatchers.category.exec(field)),
           );
           setDescriptionField(
-            meta.fields?.find((field) =>
-              field.match(fieldMatchers.description),
-            ),
+            meta.fields?.find((field) => fieldMatchers.description.exec(field)),
           );
 
           setHeaders(meta.fields);

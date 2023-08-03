@@ -1,7 +1,7 @@
 import { ExpenseType } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
-import { type Sheet, type User } from '../..';
+import type { Sheet, User } from '../..';
 import {
   currencyCodeFactory,
   groupSheetFactory,
@@ -455,7 +455,7 @@ describe('deleteExpense', () => {
     [
       'personalSheet',
       personalSheetFactory,
-      (caller: Caller, personalSheet: Sheet) =>
+      async (caller: Caller, personalSheet: Sheet) =>
         caller.expense.createPersonalSheetExpense(
           createPersonalSheetExpenseInput(
             personalSheet.id,
@@ -466,7 +466,7 @@ describe('deleteExpense', () => {
     [
       'groupSheet',
       groupSheetFactory,
-      (caller: Caller, groupSheet: Sheet, user: User) =>
+      async (caller: Caller, groupSheet: Sheet, user: User) =>
         caller.expense.createGroupSheetExpense(
           createGroupSheetExpenseInput(
             groupSheet.id,

@@ -30,9 +30,7 @@ export const sheetRouter = router({
 
   myPersonalSheets: protectedProcedure
     .output(z.array(ZSheet))
-    .query(async ({ ctx }) => {
-      return ctx.sheetService.getPersonalSheets(ctx.user);
-    }),
+    .query(async ({ ctx }) => ctx.sheetService.getPersonalSheets(ctx.user)),
 
   groupSheetById: protectedProcedure
     .input(z.string().nonempty())
@@ -77,9 +75,9 @@ export const sheetRouter = router({
   createPersonalSheet: protectedProcedure
     .input(ZCreatePersonalSheetInput)
     .output(ZSheet)
-    .mutation(({ ctx, input }) => {
-      return ctx.sheetService.createPersonalSheet(input, ctx.user);
-    }),
+    .mutation(async ({ ctx, input }) =>
+      ctx.sheetService.createPersonalSheet(input, ctx.user),
+    ),
 
   createGroupSheet: protectedProcedure
     .input(ZCreateGroupSheetInput)

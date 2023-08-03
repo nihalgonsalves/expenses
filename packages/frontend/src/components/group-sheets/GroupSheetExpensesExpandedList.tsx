@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
 
-import { type GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
+import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';
@@ -107,18 +107,16 @@ export const GroupSheetExpensesExpandedList = ({
 }: {
   groupSheetId: string;
   expenses: GroupSheetExpenseListItem[];
-}) => {
-  return (
-    <div className="flex flex-col gap-4">
-      {expenses.length === 0 && <div className="alert">No expenses</div>}
-      {expenses.map((expense) => (
-        <Fragment key={expense.id}>
-          <ExpandedExpenseListItem
-            expense={expense}
-            groupSheetId={groupSheetId}
-          />
-        </Fragment>
-      ))}
-    </div>
-  );
-};
+}) => (
+  <div className="flex flex-col gap-4">
+    {expenses.length === 0 && <div className="alert">No expenses</div>}
+    {expenses.map((expense) => (
+      <Fragment key={expense.id}>
+        <ExpandedExpenseListItem
+          expense={expense}
+          groupSheetId={groupSheetId}
+        />
+      </Fragment>
+    ))}
+  </div>
+);

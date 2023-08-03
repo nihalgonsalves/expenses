@@ -186,17 +186,15 @@ export const expenseRouter = router({
 
       return {
         expenses: expenses.map(
-          ({ participantBalances, amount, scale, spentAt, ...expense }) => {
-            return {
-              ...expense,
-              participants: participantBalances,
-              spentAt: spentAt.toISOString(),
-              money: { amount, scale, currencyCode: sheet.currencyCode },
-              yourBalance:
-                participantBalances.find(({ id }) => id === ctx.user.id)
-                  ?.balance ?? zeroMoney(sheet.currencyCode),
-            };
-          },
+          ({ participantBalances, amount, scale, spentAt, ...expense }) => ({
+            ...expense,
+            participants: participantBalances,
+            spentAt: spentAt.toISOString(),
+            money: { amount, scale, currencyCode: sheet.currencyCode },
+            yourBalance:
+              participantBalances.find(({ id }) => id === ctx.user.id)
+                ?.balance ?? zeroMoney(sheet.currencyCode),
+          }),
         ),
         total,
       };

@@ -28,7 +28,7 @@ afterAll(() => {
   delete process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
 });
 
-const sendTestNotification = (userId: string) =>
+const sendTestNotification = async (userId: string) =>
   notificationService.sendNotifications({
     [userId]: {
       type: 'test',

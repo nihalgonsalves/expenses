@@ -29,9 +29,9 @@ export const userRouter = router({
   updateUser: protectedProcedure
     .input(ZUpdateUserInput)
     .output(ZUser)
-    .mutation(async ({ input, ctx }) => {
-      return ctx.userService.updateUser(ctx.user.id, input);
-    }),
+    .mutation(async ({ input, ctx }) =>
+      ctx.userService.updateUser(ctx.user.id, input),
+    ),
 
   signOut: publicProcedure.mutation(({ ctx }) => {
     ctx.setJwtToken(null);

@@ -7,8 +7,8 @@ const safeFetchJson = async (
   input: RequestInfo | URL,
   init?: RequestInit,
 ): Promise<
-  | { ok: true; response: unknown }
   | { ok: false; message: string; status: number | undefined }
+  | { ok: true; response: unknown }
 > => {
   try {
     const response = await fetch(input, init);

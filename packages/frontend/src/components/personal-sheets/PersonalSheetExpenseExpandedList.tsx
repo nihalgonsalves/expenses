@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { type ExpenseListItem } from '@nihalgonsalves/expenses-backend';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
 import { ExpenseActions } from '.././ExpenseActions';
 import { trpc } from '../../api/trpc';
@@ -85,17 +85,15 @@ export const PersonalSheetExpensesExpandedList = ({
 }: {
   personalSheetId: string;
   expenses: ExpenseListItem[];
-}) => {
-  return (
-    <div className="flex flex-col gap-4">
-      {expenses.length === 0 && <div className="alert">No expenses</div>}
-      {expenses.map((expense) => (
-        <ExpandedExpenseListItem
-          key={expense.id}
-          expense={expense}
-          personalSheetId={personalSheetId}
-        />
-      ))}
-    </div>
-  );
-};
+}) => (
+  <div className="flex flex-col gap-4">
+    {expenses.length === 0 && <div className="alert">No expenses</div>}
+    {expenses.map((expense) => (
+      <ExpandedExpenseListItem
+        key={expense.id}
+        expense={expense}
+        personalSheetId={personalSheetId}
+      />
+    ))}
+  </div>
+);

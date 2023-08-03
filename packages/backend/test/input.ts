@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
 
-import {
-  type CreatePersonalSheetExpenseInput,
-  type CreateGroupSheetExpenseInput,
+import type {
+  CreatePersonalSheetExpenseInput,
+  CreateGroupSheetExpenseInput,
 } from '../src/service/expense/types';
 
 export const createPersonalSheetExpenseInput = (

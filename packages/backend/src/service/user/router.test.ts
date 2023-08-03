@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { userFactory } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
 
-import { type JWTToken } from './types';
+import type { JWTToken } from './types';
 import { comparePassword, hashPassword } from './utils';
 
 const userArgs = {

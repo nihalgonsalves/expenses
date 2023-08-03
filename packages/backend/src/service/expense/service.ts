@@ -20,16 +20,16 @@ import {
   getCurrency,
 } from '../../utils/money';
 import { generateId } from '../../utils/nanoid';
-import { type NotificationService } from '../notification/service';
-import { type NotificationPayload } from '../notification/types';
-import { type GroupSheetWithParticipants, type Sheet } from '../sheet/types';
-import { type User } from '../user/types';
+import type { NotificationService } from '../notification/service';
+import type { NotificationPayload } from '../notification/types';
+import type { GroupSheetWithParticipants, Sheet } from '../sheet/types';
+import type { User } from '../user/types';
 
-import {
-  type ExpenseSummaryResponse,
-  type CreateGroupSheetExpenseInput,
-  type CreateGroupSheetSettlementInput,
-  type CreatePersonalSheetExpenseInput,
+import type {
+  ExpenseSummaryResponse,
+  CreateGroupSheetExpenseInput,
+  CreateGroupSheetSettlementInput,
+  CreatePersonalSheetExpenseInput,
 } from './types';
 
 class ExpenseServiceError extends TRPCError {}
@@ -138,7 +138,7 @@ export class ExpenseService {
           },
         },
         orderBy: { spentAt: 'desc' },
-        ...(limit ? { take: limit } : {}),
+        ...(limit != null ? { take: limit } : {}),
       }),
       this.prismaClient.expense.count({
         where: { transactions: { some: { userId: user.id } } },
@@ -210,7 +210,7 @@ export class ExpenseService {
           },
         },
         orderBy: { spentAt: 'desc' },
-        ...(limit ? { take: limit } : {}),
+        ...(limit != null ? { take: limit } : {}),
       }),
       this.prismaClient.expense.count({ where: { sheetId } }),
     ]);

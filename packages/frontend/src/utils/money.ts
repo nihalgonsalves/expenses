@@ -18,19 +18,19 @@ export const CURRENCY_CODES = BACKEND_CURRENCY_CODES.filter((c) =>
 );
 
 // TODO: use IP eventually
-export const getCurrencyCode = () => {
-  return z
+export const getCurrencyCode = () =>
+  z
     .string()
     .catch('EUR')
     .parse(
       countryToCurrency[
         // @ts-expect-error string cannot access const countryToCurrency object
         // not a problem since we provide a fallback
-        globalThis.navigator.language.match(/\w\w-(?<country>[A-Z]*)/)
-          ?.groups?.['country']
+        /\w\w-(?<country>[A-Z]*)/.exec(globalThis.navigator.language)?.groups?.[
+          'country'
+        ]
       ],
     );
-};
 
 export const formatCurrency = (
   { amount, scale, currencyCode }: Money,

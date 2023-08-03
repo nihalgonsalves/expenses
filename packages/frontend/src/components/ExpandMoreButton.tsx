@@ -7,16 +7,14 @@ type ExpandMoreProps = {
 
 // TODO: Flip when open
 
-export const ExpandMoreButton = ({ expand, onClick }: ExpandMoreProps) => {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-expanded={expand}
-      aria-label="show more"
-      className="btn btn-ghost"
-    >
-      <MdExpandMore />
-    </button>
-  );
-};
+export const ExpandMoreButton = ({ expand, onClick }: ExpandMoreProps) => (
+  <button
+    type="button"
+    onClick={onClick}
+    aria-expanded={expand}
+    aria-label="show more"
+    className="btn btn-ghost"
+  >
+    <MdExpandMore />
+  </button>
+);

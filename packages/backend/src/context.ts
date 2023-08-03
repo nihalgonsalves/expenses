@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { type CreateHTTPContextOptions } from '@trpc/server/adapters/standalone';
+import type { CreateHTTPContextOptions } from '@trpc/server/adapters/standalone';
 import cookie from 'cookie';
 import { UAParser } from 'ua-parser-js';
 

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 
-import {
-  type Money,
-  type ExpenseSummaryResponse,
+import type {
+  Money,
+  ExpenseSummaryResponse,
 } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
@@ -36,10 +36,10 @@ const PersonMenu = ({
   sent,
   received,
   setIsInvalidating,
-}: {
+}: ExpenseSummaryResponse[number] & {
   groupSheetId: string;
   setIsInvalidating: (val: boolean) => void;
-} & ExpenseSummaryResponse[number]) => {
+}) => {
   const [open, setOpen] = useState(false);
 
   const utils = trpc.useContext();

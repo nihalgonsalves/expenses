@@ -7,10 +7,10 @@ export const LoadingButton = ({
   className,
   children,
   ...buttonProps
-}: {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   isLoading: boolean;
   className?: string;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+}) => (
   <button
     type="button"
     className={clsxtw('btn', 'btn-primary', className)}

@@ -55,7 +55,8 @@ export const CreateGroupForm = () => {
   };
 
   const valid =
-    groupSheetName && participantEmails.every((e) => prevalidateEmail(e));
+    groupSheetName !== '' &&
+    participantEmails.every((e) => prevalidateEmail(e));
 
   return (
     <form

@@ -87,23 +87,18 @@ const calcSplits = (
 const getDefaultRatios = (groupSheet: GroupSheetByIdResponse) =>
   Object.fromEntries(groupSheet.participants.map(({ id }) => [id, 1]));
 
-type SplitConfig = (
-  | {
-      expectedSum: (amount: number) => number;
-      formatErrorTooHigh: (diff: number, currencyCode: string) => string;
-      formatErrorTooLow: (diff: number, currencyCode: string) => string;
-    }
-  | { expectedSum: undefined }
-) &
-  (
-    | {
-        hasInput: true;
-        inputMode: 'decimal' | 'numeric';
-        unit: [singular: string, plural: string];
-        ariaInputLabel: string;
+type SplitConfig = (| {
+        expectedSum: (amount: number) => number;
+        formatErrorTooHigh: (diff: number, currencyCode: string) => string;
+        formatErrorTooLow: (diff: number, currencyCode: string) => string;
       }
-    | { hasInput: false }
-  );
+    | { expectedSum: undefined }) & (| {
+      hasInput: true;
+      inputMode: 'decimal' | 'numeric';
+      unit: [singular: string, plural: string];
+      ariaInputLabel: string;
+    }
+  | { hasInput: false });
 
 const SPLIT_OPTIONS: { value: SplitGroupExpenseSplitType; label: string }[] = [
   { value: SplitGroupExpenseSplitType.Evenly, label: 'Evenly' },
@@ -625,7 +620,13 @@ export const SettlementForm = ({
     error,
   } = trpc.expense.createGroupSheetSettlement.useMutation();
 
-  const valid = fromId && toId && fromId !== toId && amount > 0;
+  const valid =
+    fromId != null &&
+    fromId !== '' &&
+    toId != null &&
+    toId !== '' &&
+    fromId !== toId &&
+    amount > 0;
 
   const handleCreateSettlement = async () => {
     if (!fromId || !toId) {

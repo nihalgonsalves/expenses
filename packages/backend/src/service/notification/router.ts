@@ -36,5 +36,7 @@ export const notificationRouter = router({
 
   getSubscriptions: protectedProcedure
     .output(ZNotificationSubscriptionsResponse)
-    .query(({ ctx }) => ctx.notificationService.getSubscriptions(ctx.user)),
+    .query(async ({ ctx }) =>
+      ctx.notificationService.getSubscriptions(ctx.user),
+    ),
 });

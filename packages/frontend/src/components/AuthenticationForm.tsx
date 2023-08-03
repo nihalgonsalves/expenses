@@ -22,7 +22,7 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   const passwordValid = password.length >= 10;
 
   const signInValid = emailValid && passwordValid;
-  const valid = isSignUp ? name && signInValid : signInValid;
+  const valid = isSignUp ? name !== '' && signInValid : signInValid;
 
   const isLoading = signUpMutation.isLoading || signInMutation.isLoading;
   const error = signUpMutation.error ?? signInMutation.error;

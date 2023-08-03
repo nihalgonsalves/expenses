@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type Money } from '@nihalgonsalves/expenses-backend';
+import type { Money } from '@nihalgonsalves/expenses-backend';
 
 import { convertCurrency } from '../utils/money';
 

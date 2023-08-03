@@ -1,7 +1,7 @@
 import { MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { type GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
+import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
 import { ConfirmButton } from '../form/ConfirmButton';

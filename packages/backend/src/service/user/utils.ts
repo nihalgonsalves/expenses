@@ -14,10 +14,10 @@ const REISSUE_MIN_AGE_SECS = Temporal.Duration.from({ hours: 1 }).total(
   'seconds',
 );
 
-export const hashPassword = (password: string): Promise<string> =>
+export const hashPassword = async (password: string): Promise<string> =>
   bcrypt.hash(password, SALT_ROUNDS);
 
-export const comparePassword = (
+export const comparePassword = async (
   password: string,
   hash: string,
 ): Promise<boolean> => bcrypt.compare(password, hash);

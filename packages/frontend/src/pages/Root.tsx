@@ -1,7 +1,7 @@
-import { type TRPCClientErrorLike } from '@trpc/client';
-import { type UseTRPCQueryResult } from '@trpc/react-query/shared';
-import { type AnyProcedure, type AnyRouter } from '@trpc/server';
-import { type TRPCErrorShape } from '@trpc/server/rpc';
+import type { TRPCClientErrorLike } from '@trpc/client';
+import type { UseTRPCQueryResult } from '@trpc/react-query/shared';
+import type { AnyProcedure, AnyRouter } from '@trpc/server';
+import type { TRPCErrorShape } from '@trpc/server/rpc';
 import {
   MdArrowBack,
   MdGroup,
@@ -103,17 +103,16 @@ export const RootLoader = <
   title,
   getTitle,
   ...rootProps
-}: {
+}: Omit<RootProps, 'children' | 'title'> & {
   result: UseTRPCQueryResult<TData, TRPCClientErrorLike<TProcedure>>;
   render: (data: TData) => React.ReactNode;
 } & (
-  | {
-      title?: React.ReactNode;
-      getTitle: (data: TData) => React.ReactNode;
-    }
-  | { title: React.ReactNode; getTitle?: undefined }
-) &
-  Omit<RootProps, 'title' | 'children'>) => {
+    | {
+        title?: React.ReactNode;
+        getTitle: (data: TData) => React.ReactNode;
+      }
+    | { title: React.ReactNode; getTitle?: undefined }
+  )) => {
   if (result.status === 'loading') {
     return (
       <Root title={title} {...rootProps}>

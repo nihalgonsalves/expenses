@@ -1,6 +1,21 @@
 {
   "extends": "./node_modules/@nihalgonsalves/esconfig/.eslintrc",
   "ignorePatterns": ["**/build/", "**/dist/", "*.config.ts"],
+  "rules": {
+    "arrow-body-style": "error",
+    "@typescript-eslint/strict-boolean-expressions": [
+      "error",
+      { "allowNullableBoolean": true, "allowNullableString": true }
+    ],
+    "@typescript-eslint/prefer-regexp-exec": "error",
+    "@typescript-eslint/promise-function-async": "error",
+    "@typescript-eslint/method-signature-style": "error",
+    "@typescript-eslint/naming-convention": "error",
+    "@typescript-eslint/no-import-type-side-effects": "error",
+    "@typescript-eslint/require-array-sort-compare": "error",
+    "@typescript-eslint/sort-type-constituents": "error",
+    "@typescript-eslint/switch-exhaustiveness-check": "error"
+  },
   "overrides": [
     {
       "files": ["*.test.ts", "./packages/*/test/**/*"],

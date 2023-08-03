@@ -1,7 +1,7 @@
-import {
-  type Sheet,
-  type ExpenseListItem,
-  type GetAllUserExpensesResponse,
+import type {
+  Sheet,
+  ExpenseListItem,
+  GetAllUserExpensesResponse,
 } from '@nihalgonsalves/expenses-backend';
 
 import { formatCurrency } from '../utils/money';
@@ -49,27 +49,25 @@ export const AllUserExpensesList = ({
   data,
 }: {
   data: GetAllUserExpensesResponse;
-}) => {
-  return (
-    <table className="table table-pin-rows">
-      <thead>
-        <tr>
-          <th>Category</th>
+}) => (
+  <table className="table table-pin-rows">
+    <thead>
+      <tr>
+        <th>Category</th>
 
-          <th className="hidden md:table-cell">Amount</th>
-          <th className="hidden md:table-cell">Description</th>
-          <th className="hidden md:table-cell">Date</th>
+        <th className="hidden md:table-cell">Amount</th>
+        <th className="hidden md:table-cell">Description</th>
+        <th className="hidden md:table-cell">Date</th>
 
-          <th className="md:hidden">Details</th>
+        <th className="md:hidden">Details</th>
 
-          <th>Sheet</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.expenses.map(({ expense, sheet }) => (
-          <ExpenseRow key={expense.id} expense={expense} sheet={sheet} />
-        ))}
-      </tbody>
-    </table>
-  );
-};
+        <th>Sheet</th>
+      </tr>
+    </thead>
+    <tbody>
+      {data.expenses.map(({ expense, sheet }) => (
+        <ExpenseRow key={expense.id} expense={expense} sheet={sheet} />
+      ))}
+    </tbody>
+  </table>
+);

@@ -29,7 +29,7 @@ import { PersonalExpensesIndexPage } from './pages/sheets/expenses/PersonalExpen
 
 export const RouterLink = forwardRef<
   HTMLAnchorElement,
-  { href: string } & Omit<LinkProps, 'to'>
+  Omit<LinkProps, 'to'> & { href: string }
 >(({ href, ...props }, ref) => (
   <Link ref={ref} to={href} {...props} role={undefined} />
 ));

@@ -39,7 +39,7 @@ describe('getMaybeUser', () => {
         cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
         setJwtToken,
         {
-          exchangeToken: () =>
+          exchangeToken: async () =>
             Promise.reject(
               new UserServiceError({
                 code: 'FORBIDDEN',
@@ -60,7 +60,7 @@ describe('getMaybeUser', () => {
         cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
         setJwtToken,
         {
-          exchangeToken: () => Promise.reject(new Error('Error')),
+          exchangeToken: async () => Promise.reject(new Error('Error')),
         },
       ),
     ).rejects.toThrowError('Error');
@@ -75,7 +75,7 @@ describe('getMaybeUser', () => {
       cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
       setJwtToken,
       {
-        exchangeToken: (token) =>
+        exchangeToken: async (token) =>
           // @ts-expect-error mock
           Promise.resolve({
             user: {

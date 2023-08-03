@@ -23,14 +23,12 @@ export const CategorySelect = ({
 }: {
   category: CategoryId | undefined;
   setCategory: (newCategory: CategoryId | undefined) => void;
-}) => {
-  return (
-    <Select
-      label="Category"
-      value={category}
-      setValue={setCategory}
-      schema={schema}
-      options={options}
-    />
-  );
-};
+}) => (
+  <Select
+    label="Category"
+    value={category}
+    setValue={setCategory}
+    schema={schema}
+    options={options}
+  />
+);

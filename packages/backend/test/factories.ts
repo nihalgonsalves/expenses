@@ -6,7 +6,7 @@ import {
   SheetType,
 } from '@prisma/client';
 
-import { type User } from '../src/service/user/types';
+import type { User } from '../src/service/user/types';
 import { CURRENCY_CODES } from '../src/utils/money';
 import { generateId } from '../src/utils/nanoid';
 

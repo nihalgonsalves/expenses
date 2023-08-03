@@ -20,14 +20,14 @@ export const MoneyField = ({
   setAmount,
   currencyCode,
   ...textFieldProps
-}: {
+}: Omit<
+  TextFieldProps,
+  'inputMode' | 'inputRef' | 'onKeyDown' | 'setValue' | 'value'
+> & {
   amount: number;
   currencyCode: string;
   setAmount: (newAmount: number) => void;
-} & Omit<
-  TextFieldProps,
-  'value' | 'setValue' | 'inputRef' | 'inputMode' | 'onKeyDown'
->) => {
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   /**
@@ -62,7 +62,7 @@ export const MoneyField = ({
             if (selectionStart === 0 && selectionEnd === length) {
               if (e.key === 'Backspace' || e.key === 'Delete') {
                 return '0';
-              } else if (e.key.match(/^[0-9]$/)) {
+              } else if (/^[0-9]$/.exec(e.key)) {
                 return e.key;
               }
             } else {
@@ -76,7 +76,7 @@ export const MoneyField = ({
 
           if (e.key === 'Backspace') {
             return amountAsString.slice(0, -1) || '0';
-          } else if (e.key.match(/^[0-9]$/)) {
+          } else if (/^[0-9]$/.exec(e.key)) {
             return `${amountAsString}${e.key}`;
           }
 

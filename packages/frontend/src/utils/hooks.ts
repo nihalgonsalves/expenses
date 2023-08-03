@@ -83,7 +83,7 @@ export const useNotificationPermission = (): {
   if (!PUSH_SUPPORTED || !serviceWorkerRegistration) {
     return {
       permission: 'not_supported',
-      request: () => Promise.resolve('not_supported'),
+      request: async () => Promise.resolve('not_supported'),
     };
   }
 
@@ -109,24 +109,12 @@ export const useMediaQuery = (query: string): boolean => {
   useEffect(() => {
     const matchMedia = window.matchMedia(query);
 
-    // Triggered at the first client-side load and if query changes
     handleChange();
 
-    // Listen matchMedia
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (matchMedia.addListener) {
-      matchMedia.addListener(handleChange);
-    } else {
-      matchMedia.addEventListener('change', handleChange);
-    }
+    matchMedia.addEventListener('change', handleChange);
 
     return () => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (matchMedia.removeListener) {
-        matchMedia.removeListener(handleChange);
-      } else {
-        matchMedia.removeEventListener('change', handleChange);
-      }
+      matchMedia.removeEventListener('change', handleChange);
     };
   }, [query, handleChange]);
 

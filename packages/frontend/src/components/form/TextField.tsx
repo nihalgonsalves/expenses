@@ -2,7 +2,10 @@ import React, { useCallback } from 'react';
 
 import { clsxtw } from '../../utils/utils';
 
-export type TextFieldProps = {
+export type TextFieldProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'value'
+> & {
   label: React.ReactNode;
   labelAlt?: React.ReactNode;
   bottomLabel?: React.ReactNode;
@@ -11,7 +14,7 @@ export type TextFieldProps = {
   className?: string;
   inputClassName?: string;
   inputRef?: React.Ref<HTMLInputElement>;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value'>;
+};
 
 export const TextField = ({
   label,
@@ -33,7 +36,7 @@ export const TextField = ({
 
   return (
     <div className={clsxtw('form-control', className)}>
-      {(label || labelAlt) && (
+      {(label != null || labelAlt != null) && (
         <label className="label">
           <span className="label-text">{label}</span>
           <span className="label-text-alt">{labelAlt}</span>
@@ -49,7 +52,7 @@ export const TextField = ({
         {...inputProps}
       />
 
-      {bottomLabel && (
+      {bottomLabel != null && (
         <label className="label">
           <span className="label-text">{bottomLabel}</span>
         </label>
