@@ -26,6 +26,7 @@
     "date-fns": "^2.30.0",
     "dexie": "^3.2.4",
     "dinero.js": "^2.0.0-alpha.14",
+    "framer-motion": "^10.15.0",
     "immer": "^10.0.2",
     "jotai": "^2.2.3",
     "papaparse": "^5.4.1",

@@ -1,3 +1,4 @@
+import { easeIn } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -34,7 +35,7 @@ export const usePullToRefresh = (
 
       touchDiffYRef.current = touchDiffY;
       if (touchDiffY > displayThreshold) {
-        const ratio = touchDiffY / reloadThreshold;
+        const ratio = easeIn(touchDiffY / reloadThreshold);
 
         toast(
           () => (
@@ -49,6 +50,7 @@ export const usePullToRefresh = (
           ),
           {
             id: toastId,
+            className: 'w-48',
             duration: Infinity,
             style: {
               backgroundColor: `rgba(255, 255, 255, ${ratio.toFixed(2)})`,

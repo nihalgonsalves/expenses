@@ -2,6 +2,7 @@ import type { TRPCClientErrorLike } from '@trpc/client';
 import type { UseTRPCQueryResult } from '@trpc/react-query/shared';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import {
@@ -141,22 +142,9 @@ export const RootLoader = <
 
   usePullToRefresh(ROOT_TOAST, refetch);
 
-  if (result.status === 'loading') {
-    return (
-      <Root
-        title={
-          <>
-            {title} <div className="loading loading-spinner loading-xs ml-4" />
-          </>
-        }
-        {...rootProps}
-      />
-    );
-  }
-
   if (result.status === 'error') {
     return (
-      <Root title="Error" {...rootProps}>
+      <Root title="" {...rootProps}>
         <div className="alert alert-error">{result.error.message}</div>
       </Root>
     );
@@ -166,8 +154,13 @@ export const RootLoader = <
     <Root
       title={
         <>
-          {getTitle?.(result.data) ?? title}
-          {onLine && (
+          {result.status === 'success'
+            ? getTitle?.(result.data) ?? title
+            : title}
+          {result.status === 'loading' && (
+            <div className="loading loading-spinner loading-xs ml-4" />
+          )}
+          {result.status !== 'loading' && onLine && (
             <Button className="btn-ghost" onClick={refetch}>
               <RiRefreshLine />
             </Button>
@@ -176,7 +169,17 @@ export const RootLoader = <
       }
       {...rootProps}
     >
-      {render(result.data)}
+      <AnimatePresence>
+        {result.status === 'success' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {render(result.data)}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Root>
   );
 };
