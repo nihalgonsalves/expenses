@@ -9,6 +9,7 @@ export const TroubleshootingForm = () => {
   const handleResetCache = async () => {
     await resetCache();
     await serviceWorker?.unregister();
+    localStorage.clear();
     window.location.reload();
   };
 

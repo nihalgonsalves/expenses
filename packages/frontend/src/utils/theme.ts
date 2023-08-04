@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
+// https://github.com/saadeghi/daisyui/blob/ab748bf7340ca89467e1be70c61c9169e8f7e7f5/src/theming/themes.js
+
 export const LIGHT_THEMES = [
+  'expenses-light',
   'light',
   'cupcake',
   'bumblebee',
@@ -22,6 +25,7 @@ export const LIGHT_THEMES = [
 ] as const;
 
 export const DARK_THEMES = [
+  'expenses-dark',
   'synthwave',
   'night',
   'dark',
@@ -40,8 +44,8 @@ const THEME_PREFERENCE_KEY = 'themePreference';
 const LIGHT_THEME_KEY = 'lightTheme';
 const DARK_THEME_KEY = 'darkTheme';
 
-const LIGHT_THEME_DEFAULT = 'light';
-const DARK_THEME_DEFAULT = 'synthwave';
+const LIGHT_THEME_DEFAULT = 'expenses-light';
+const DARK_THEME_DEFAULT = 'expenses-dark';
 
 const ZThemePreference = z.union([
   z.literal('system'),
@@ -86,8 +90,9 @@ const isDarkMode = () => {
   return pref === 'dark';
 };
 
-// https://github.com/saadeghi/daisyui/blob/ab748bf7340ca89467e1be70c61c9169e8f7e7f5/src/theming/themes.js
 const themePrimaryColors: Record<string, string> = {
+  'expenses-light': '#38bdf8',
+  'expenses-dark': '#38bdf8',
   aqua: '#09ecf3',
   black: '#343232',
   bumblebee: '#f9d72f',
