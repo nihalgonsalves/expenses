@@ -2,6 +2,7 @@ import type { TRPCClientErrorLike } from '@trpc/client';
 import type { UseTRPCQueryResult } from '@trpc/react-query/shared';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
+import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import {
   MdArrowBack,
@@ -13,6 +14,7 @@ import {
 import { RiRefreshLine } from 'react-icons/ri';
 import { NavLink, useNavigate } from 'react-router-dom';
 
+import { usePullToRefresh } from '../api/usePullToRefresh';
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { Button } from '../components/form/Button';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
@@ -96,6 +98,8 @@ export const Root = ({
   );
 };
 
+const ROOT_TOAST = 'root-toast';
+
 export const RootLoader = <
   TData,
   TProcedure extends AnyProcedure | AnyRouter | TRPCErrorShape<number>,
@@ -116,6 +120,26 @@ export const RootLoader = <
     | { title: React.ReactNode; getTitle?: undefined }
   )) => {
   const onLine = useNavigatorOnLine();
+
+  const refetch = useCallback(async () => {
+    await toast.promise(
+      result.refetch(),
+      {
+        loading: 'Refreshing',
+        success: 'Done',
+        error: 'Error',
+      },
+      {
+        id: ROOT_TOAST,
+        className: 'w-48',
+        success: {
+          duration: 1000,
+        },
+      },
+    );
+  }, [result]);
+
+  usePullToRefresh(ROOT_TOAST, refetch);
 
   if (result.status === 'loading') {
     return (
@@ -144,20 +168,7 @@ export const RootLoader = <
         <>
           {getTitle?.(result.data) ?? title}
           {onLine && (
-            <Button
-              className="btn-ghost"
-              onClick={() => {
-                void toast.promise(
-                  result.refetch(),
-                  {
-                    loading: 'Refreshing',
-                    success: 'Done',
-                    error: 'Error',
-                  },
-                  { className: 'w-36' },
-                );
-              }}
-            >
+            <Button className="btn-ghost" onClick={refetch}>
               <RiRefreshLine />
             </Button>
           )}

@@ -13,3 +13,7 @@
 select {
   font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
+
+body {
+  overscroll-behavior-y: auto;
+}
