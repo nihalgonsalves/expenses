@@ -6,6 +6,7 @@ import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 
 const displayThreshold = () => window.innerHeight * 0.05;
 const reloadThreshold = () => window.innerHeight * 0.4;
+const inverseReloadThreshold = () => window.innerHeight * 0.6;
 
 export const usePullToRefresh = (
   toastId: string,
@@ -39,7 +40,7 @@ export const usePullToRefresh = (
       if (
         // if the touch started at over 60% of the screen height,
         // theres no chance the user will be able to cross more than 40% of the screen height
-        touchStartYRef.current < reloadThreshold() &&
+        touchStartYRef.current < inverseReloadThreshold() &&
         touchDiffY > displayThreshold()
       ) {
         const ratio = easeIn(touchDiffY / reloadThreshold());
