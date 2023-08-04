@@ -2,57 +2,37 @@ import { Temporal } from '@js-temporal/polyfill';
 import Papa from 'papaparse';
 import { toast } from 'react-hot-toast';
 import { MdCloudDownload } from 'react-icons/md';
-
-import type { Sheet } from '@nihalgonsalves/expenses-backend';
-
-import { trpc } from '../../api/trpc';
-import { moneyToString } from '../../utils/money';
-
 const TOAST_ID = 'download-toast';
 
-export const ExportExpensesButtonGroup = ({
-  personalSheet,
+export const ExportExpensesButtonGroup = <TData, TOutput>({
+  id,
+  name,
+  fetch,
+  mapItem,
 }: {
-  personalSheet: Pick<Sheet, 'id' | 'name'>;
+  id: string;
+  name: string;
+  fetch: () => Promise<TData[]>;
+  mapItem: (data: TData) => TOutput;
 }) => {
-  const { refetch } = trpc.expense.getPersonalSheetExpenses.useQuery(
-    {
-      personalSheetId: personalSheet.id,
-    },
-    { enabled: false },
-  );
-
   const handleRequestDownload = async (type: 'json' | 'csv') => {
     await toast.promise(
-      refetch({ throwOnError: true }),
+      fetch(),
       {
         loading: 'Preparing download...',
-        success: ({ data }) => {
-          if (!data) throw new Error();
-
-          const flat = data.expenses.map(
-            ({ id, category, description, spentAt, money }) => ({
-              id,
-              category,
-              description,
-              spent_at: spentAt,
-              currency_code: money.currencyCode,
-              amount_decimal: moneyToString(money),
-              money_amount: money.amount,
-              money_scale: money.scale,
-            }),
-          );
+        success: (data) => {
+          const mapped = data.map((item) => mapItem(item));
 
           const blob =
             type === 'json'
-              ? new Blob([JSON.stringify(flat, null, 2)], {
+              ? new Blob([JSON.stringify(mapped, null, 2)], {
                   type: 'application/json',
                 })
-              : new Blob([Papa.unparse(flat)], { type: 'text/csv' });
+              : new Blob([Papa.unparse(mapped)], { type: 'text/csv' });
 
           const objectURL = URL.createObjectURL(blob);
 
-          const filename = `${personalSheet.id}-${personalSheet.name
+          const filename = `${id}-${name
             .replace(/[^\w]/g, '_')
             .toLowerCase()}-${Temporal.Now.instant().epochSeconds}.${type}`;
 

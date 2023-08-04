@@ -7,6 +7,7 @@ import { trpc } from '../../api/trpc';
 import { ConfirmButton } from '../form/ConfirmButton';
 
 import { BalanceSummary } from './BalanceSummary';
+import { ExportGroupExpensesButtonGroup } from './ExportGroupExpensesButtonGroup';
 import { GroupSheetExpensesDenseList } from './GroupSheetExpensesDenseList';
 
 export const GroupSheet = ({
@@ -56,6 +57,8 @@ export const GroupSheet = ({
       </Link>
 
       <div className="divider" />
+
+      <ExportGroupExpensesButtonGroup groupSheet={groupSheet} />
 
       <ConfirmButton
         isLoading={deleteGroupLoading}

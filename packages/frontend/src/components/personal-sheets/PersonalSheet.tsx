@@ -12,7 +12,7 @@ import {
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ConfirmButton } from '../form/ConfirmButton';
 
-import { ExportExpensesButtonGroup } from './ExportExpensesButton';
+import { ExportPersonalExpensesButtonGroup } from './ExportPersonalExpensesButtonGroup';
 
 const ExpenseListItemComponent = ({
   expense,
@@ -78,7 +78,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
         Import Expenses (CSV)
       </Link>
 
-      <ExportExpensesButtonGroup personalSheet={personalSheet} />
+      <ExportPersonalExpensesButtonGroup personalSheet={personalSheet} />
 
       <ConfirmButton
         isLoading={deleteSheetLoading}
