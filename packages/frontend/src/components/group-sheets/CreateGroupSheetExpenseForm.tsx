@@ -772,7 +772,7 @@ export const CreateGroupSheetExpenseForm = ({
   return (
     <div className="flex flex-col gap-4">
       <ToggleButtonGroup
-        className="w-full"
+        className="w-full join-vertical sm:join-horizontal"
         value={type}
         setValue={setType}
         options={TYPE_OPTIONS}
