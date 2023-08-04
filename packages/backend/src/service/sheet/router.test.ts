@@ -8,6 +8,7 @@ import {
   userFactory,
 } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
+import { createGroupSheetExpenseInput } from '../../../test/input';
 import { generateId } from '../../utils/nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
@@ -374,9 +375,11 @@ describe('addGroupSheetMember', () => {
 });
 
 describe('deleteParticipant', () => {
-  it('deletes a participant', async () => {
-    const user = await userFactory(prisma);
-    const member = await userFactory(prisma);
+  it('deletes a participant as admin', async () => {
+    const [user, member] = await Promise.all([
+      userFactory(prisma),
+      userFactory(prisma),
+    ]);
 
     const caller = useProtectedCaller(user);
     const groupSheet = await groupSheetFactory(prisma, {
@@ -401,6 +404,66 @@ describe('deleteParticipant', () => {
     ).toBe(null);
   });
 
+  it('leaves as a participant', async () => {
+    const user = await userFactory(prisma);
+
+    const caller = useProtectedCaller(user);
+    const groupSheet = await groupSheetFactory(prisma, {
+      withParticipantIds: [user.id],
+    });
+
+    await caller.sheet.deleteGroupSheetMember({
+      groupSheetId: groupSheet.id,
+      participantId: user.id,
+    });
+
+    expect(
+      await prisma.sheetMemberships.findUnique({
+        where: {
+          sheetMembership: {
+            participantId: user.id,
+            sheetId: groupSheet.id,
+          },
+        },
+      }),
+    ).toBe(null);
+  });
+
+  it('leaves as a participant with settled balance', async () => {
+    const user = await userFactory(prisma);
+
+    const caller = useProtectedCaller(user);
+    const groupSheet = await groupSheetFactory(prisma, {
+      withParticipantIds: [user.id],
+    });
+
+    // Paid for self, so settled de-facto
+    await caller.expense.createGroupSheetExpense(
+      createGroupSheetExpenseInput(
+        groupSheet.id,
+        groupSheet.currencyCode,
+        user.id,
+        user.id,
+      ),
+    );
+
+    await caller.sheet.deleteGroupSheetMember({
+      groupSheetId: groupSheet.id,
+      participantId: user.id,
+    });
+
+    expect(
+      await prisma.sheetMemberships.findUnique({
+        where: {
+          sheetMembership: {
+            participantId: user.id,
+            sheetId: groupSheet.id,
+          },
+        },
+      }),
+    ).toBe(null);
+  });
+
   it('returns a 400 if the admin tries to remove themselves', async () => {
     const admin = await userFactory(prisma);
 
@@ -415,6 +478,35 @@ describe('deleteParticipant', () => {
         participantId: admin.id,
       }),
     ).rejects.toThrow('You cannot delete yourself as the last admin');
+  });
+
+  it("returns a 400 if the participant's balance is non zero", async () => {
+    const [admin, member] = await Promise.all([
+      userFactory(prisma),
+      userFactory(prisma),
+    ]);
+
+    const caller = useProtectedCaller(admin);
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: admin.id,
+      withParticipantIds: [member.id],
+    });
+
+    await caller.expense.createGroupSheetExpense(
+      createGroupSheetExpenseInput(
+        groupSheet.id,
+        groupSheet.currencyCode,
+        admin.id,
+        member.id,
+      ),
+    );
+
+    await expect(
+      caller.sheet.deleteGroupSheetMember({
+        groupSheetId: groupSheet.id,
+        participantId: member.id,
+      }),
+    ).rejects.toThrow('Cannot delete a member with a non-zero balance');
   });
 
   it('returns a 404 if the participant has no access', async () => {
@@ -435,7 +527,10 @@ describe('deleteParticipant', () => {
   });
 
   it('returns a 403 if the participant is not an admin', async () => {
-    const member = await userFactory(prisma);
+    const [member, otherMember] = await Promise.all([
+      userFactory(prisma),
+      userFactory(prisma),
+    ]);
 
     const caller = useProtectedCaller(member);
     const groupSheet = await groupSheetFactory(prisma, {
@@ -445,8 +540,8 @@ describe('deleteParticipant', () => {
     await expect(
       caller.sheet.deleteGroupSheetMember({
         groupSheetId: groupSheet.id,
-        participantId: member.id,
+        participantId: otherMember.id,
       }),
-    ).rejects.toThrow('Only admins can remove participants');
+    ).rejects.toThrow('Only admins can remove other participants');
   });
 });

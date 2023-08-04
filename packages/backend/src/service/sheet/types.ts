@@ -8,12 +8,12 @@ export const ZSheet = z.object({
 });
 export type Sheet = z.infer<typeof ZSheet>;
 
-export const ZParticipantWithName = z.object({
+export const ZParticipant = z.object({
   id: z.string().nonempty(),
   name: z.string(),
 });
 
-export const ZFullParticipant = ZParticipantWithName.extend({
+export const ZFullParticipant = ZParticipant.extend({
   email: z.string(),
   role: z.nativeEnum(SheetParticipantRole),
 });
@@ -34,13 +34,13 @@ export const ZCreateGroupSheetInput = z.object({
 export type CreateGroupSheetInput = z.infer<typeof ZCreateGroupSheetInput>;
 
 export const ZGroupSheetByIdResponse = ZSheet.extend({
-  participants: z.array(ZParticipantWithName),
+  participants: z.array(ZFullParticipant),
 });
 export type GroupSheetByIdResponse = z.infer<typeof ZGroupSheetByIdResponse>;
 
 export const ZGroupSheetsResponse = z.array(
   ZSheet.extend({
-    participants: z.array(ZParticipantWithName),
+    participants: z.array(ZParticipant),
   }),
 );
 export type GroupSheetsResponse = z.infer<typeof ZGroupSheetsResponse>;

@@ -9,6 +9,7 @@ import {
 } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
+import { sumMoney } from '../../utils/money';
 import { generateId } from '../../utils/nanoid';
 import { getTRPCError } from '../../utils/trpcUtils';
 import type { User } from '../user/types';
@@ -201,18 +202,26 @@ export class SheetService {
   }
 
   async deleteGroupSheetMember(groupSheet: Sheet, participantId: string) {
-    const expenseTransactionCount =
-      await this.prismaClient.expenseTransactions.count({
+    const expenseTransactions =
+      await this.prismaClient.expenseTransactions.findMany({
         where: {
           expense: { sheetId: groupSheet.id },
           userId: participantId,
         },
       });
 
-    if (expenseTransactionCount > 0) {
+    const balance = sumMoney(
+      expenseTransactions.map(({ amount, scale }) => ({
+        amount,
+        scale,
+        currencyCode: groupSheet.currencyCode,
+      })),
+    );
+
+    if (balance?.amount != null && balance.amount !== 0) {
       throw new SheetServiceError({
         code: 'BAD_REQUEST',
-        message: 'Cannot delete participant with existing expenses',
+        message: 'Cannot delete a member with a non-zero balance',
       });
     }
 

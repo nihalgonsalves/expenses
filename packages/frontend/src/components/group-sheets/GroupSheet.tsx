@@ -1,12 +1,14 @@
+import { useMemo } from 'react';
 import { MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
 import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
+import { useCurrentUser } from '../../api/useCurrentUser';
 import { ConfirmButton } from '../form/ConfirmButton';
 
-import { BalanceSummary } from './BalanceSummary';
+import { type ActorInfo, BalanceSummary } from './BalanceSummary';
 import { ExportGroupExpensesButtonGroup } from './ExportGroupExpensesButtonGroup';
 import { GroupSheetExpensesDenseList } from './GroupSheetExpensesDenseList';
 
@@ -18,6 +20,8 @@ export const GroupSheet = ({
   const navigate = useNavigate();
 
   const utils = trpc.useContext();
+
+  const { data: me } = useCurrentUser();
   const { data: groupSheetExpensesResponse } =
     trpc.expense.getGroupSheetExpenses.useQuery({
       groupSheetId: groupSheet.id,
@@ -36,11 +40,25 @@ export const GroupSheet = ({
     navigate('/groups');
   };
 
+  const actorInfo: ActorInfo | undefined = useMemo(
+    () =>
+      me
+        ? {
+            id: me.id,
+            isAdmin:
+              groupSheet.participants.find(({ id }) => id === me.id)?.role ===
+              'ADMIN',
+          }
+        : undefined,
+    [groupSheet, me],
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-xl font-semibold">People</h2>
-
-      <BalanceSummary groupSheetId={groupSheet.id} />
+      {actorInfo && (
+        <BalanceSummary groupSheetId={groupSheet.id} actorInfo={actorInfo} />
+      )}
 
       <div className="divider" />
 
@@ -60,16 +78,18 @@ export const GroupSheet = ({
 
       <ExportGroupExpensesButtonGroup groupSheet={groupSheet} />
 
-      <ConfirmButton
-        isLoading={deleteGroupLoading}
-        label={
-          <>
-            <MdDeleteOutline /> Delete Group
-          </>
-        }
-        confirmLabel="Confirm Delete (Irreversible)"
-        handleConfirmed={handleDelete}
-      />
+      {actorInfo?.isAdmin && (
+        <ConfirmButton
+          isLoading={deleteGroupLoading}
+          label={
+            <>
+              <MdDeleteOutline /> Delete Group
+            </>
+          }
+          confirmLabel="Confirm Delete (Irreversible)"
+          handleConfirmed={handleDelete}
+        />
+      )}
     </div>
   );
 };

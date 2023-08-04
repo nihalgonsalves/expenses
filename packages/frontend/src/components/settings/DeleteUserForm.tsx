@@ -37,21 +37,17 @@ export const DeleteUserForm = () => {
 
   return (
     <div className="card card-bordered card-compact">
-      <div className="card-body">
+      <div className="card-body text-justify">
         <h2 className="card-title">Privacy and Data</h2>
         <p>
           Enter your current email and password to delete all personal sheets
           and expenses, as well as anonymize your name and email address.
         </p>
         <p>
-          Note that the account will remain linked to any groups that you were
-          part of, as there is no meaningful way to remove you from group
-          expenses without affecting other users in the group. You will appear
-          as a {'"Deleted User"'} in groups.
-        </p>
-        <p>
-          If you would like to delete any groups where you are an admin, please
-          do it <strong>before</strong> anonymising your account.
+          If you would like to delete or leave any groups, please do this{' '}
+          <strong>before</strong> anonymising your account. Note that the
+          anonymized account will remain linked to any remaining groups as a
+          Deleted User.
         </p>
         <p>
           You can sign up with the same email address at any point in the

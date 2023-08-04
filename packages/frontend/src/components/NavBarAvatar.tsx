@@ -3,11 +3,12 @@ import { MdAccountCircle } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
+import { useCurrentUser } from '../api/useCurrentUser';
 
 export const NavBarAvatar = () => {
   const queryClient = useQueryClient();
 
-  const { data, status, error } = trpc.user.me.useQuery();
+  const { data, status, error } = useCurrentUser();
   const signOut = trpc.user.signOut.useMutation();
 
   const handleSignOut = async () => {

@@ -14,6 +14,7 @@ export {
   type ExpenseListItem,
   type CreateSheetExpenseInput,
   type GetAllUserExpensesResponse,
+  type SheetParticipantRole,
 } from './service/expense/types';
 
 export { type NotificationPayload } from './service/notification/types';

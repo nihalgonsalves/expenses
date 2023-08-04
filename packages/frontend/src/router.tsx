@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import { z, type ZodRawShape } from 'zod';
 
-import { trpc } from './api/trpc';
+import { useCurrentUser } from './api/useCurrentUser';
 import { AuthenticationPage } from './pages/AuthenticationPage';
 import { ErrorPage } from './pages/ErrorPage';
 import { NotFoundPage } from './pages/NotFoundPage';
@@ -40,9 +40,7 @@ const errorElement = <ErrorPage />;
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
-  const { error } = trpc.user.me.useQuery(undefined, {
-    retry: false,
-  });
+  const { error } = useCurrentUser();
 
   if (error?.data?.httpStatus === 401) {
     const searchParams = new URLSearchParams({

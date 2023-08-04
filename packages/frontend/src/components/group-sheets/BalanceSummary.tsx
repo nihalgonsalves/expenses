@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 
 import type {
   Money,
@@ -14,6 +15,8 @@ import { ParticipantListItem } from '../ParticipantListItem';
 
 import { AddMemberButton } from './AddMemberButton';
 
+export type ActorInfo = { id: string; isAdmin: boolean };
+
 const InfoMenuItem = ({
   label,
   children,
@@ -22,7 +25,7 @@ const InfoMenuItem = ({
   children: React.ReactNode;
 }) => (
   <div className="flex flex-row justify-between">
-    <div>{label}</div>
+    <div className="font-semibold">{label}</div>
     <div>{children}</div>
   </div>
 );
@@ -36,11 +39,13 @@ const PersonMenu = ({
   sent,
   received,
   setIsInvalidating,
+  actorInfo,
 }: ExpenseSummaryResponse[number] & {
   groupSheetId: string;
   setIsInvalidating: (val: boolean) => void;
+  actorInfo: ActorInfo;
 }) => {
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const utils = trpc.useContext();
   const { mutateAsync: deleteGroupSheetMember } =
@@ -59,26 +64,29 @@ const PersonMenu = ({
         utils.sheet.groupSheetById.invalidate(groupSheetId),
         utils.expense.getParticipantSummaries.invalidate(groupSheetId),
       ]);
+
+      if (actorInfo.id === participantId) {
+        navigate('/groups');
+      }
     } catch {
       setIsInvalidating(false);
     }
   };
 
   return (
-    <div
-      className={clsxtw('dropdown dropdown-left', { 'dropdown-open': open })}
-    >
-      <button
-        type="button"
+    <div className="dropdown dropdown-left">
+      <label
+        tabIndex={0}
+        className="btn btn-ghost"
         aria-label="more"
         aria-haspopup="true"
-        onClick={() => {
-          setOpen((prev) => !prev);
-        }}
       >
         <MdMoreVert />
-      </button>
-      <div className="text-content card dropdown-content card-bordered card-compact z-[1] w-64 bg-base-100 p-2 shadow">
+      </label>
+      <div
+        tabIndex={0}
+        className="text-content card dropdown-content card-bordered card-compact z-[1] w-72 bg-base-100 p-2 shadow"
+      >
         <div className="card-body">
           <InfoMenuItem label="Spent for group">
             {formatCurrency(spent)}
@@ -91,15 +99,34 @@ const PersonMenu = ({
             {formatCurrency(received)}
           </InfoMenuItem>
           <InfoMenuItem label="=">{formatCurrency(balance)}</InfoMenuItem>
-          <div className="divider" />
-          <button
-            type="button"
-            className="btn btn-error btn-outline"
-            onClick={handleDelete}
-          >
-            <MdDeleteOutline />
-            Delete Participant
-          </button>
+          {actorInfo.isAdmin && actorInfo.id !== participantId && (
+            <>
+              <div className="divider" />
+              <button
+                type="button"
+                className="btn btn-error btn-outline"
+                onClick={handleDelete}
+                disabled={balance.amount !== 0}
+              >
+                <MdDeleteOutline />
+                Remove Participant
+              </button>
+            </>
+          )}
+          {!actorInfo.isAdmin && actorInfo.id === participantId && (
+            <>
+              <div className="divider" />
+              <button
+                type="button"
+                className="btn btn-error btn-outline"
+                onClick={handleDelete}
+                disabled={balance.amount !== 0}
+              >
+                <MdDeleteOutline />
+                Leave
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -125,9 +152,11 @@ const getBalanceText = (balance: Money) => {
 const SummaryCard = ({
   summary,
   groupSheetId,
+  actorInfo,
 }: {
   summary: ExpenseSummaryResponse[number];
   groupSheetId: string;
+  actorInfo: ActorInfo;
 }) => {
   const [isInvalidating, setIsInvalidating] = useState(false);
 
@@ -149,13 +178,20 @@ const SummaryCard = ({
       <PersonMenu
         groupSheetId={groupSheetId}
         setIsInvalidating={setIsInvalidating}
+        actorInfo={actorInfo}
         {...summary}
       />
     </ParticipantListItem>
   );
 };
 
-export const BalanceSummary = ({ groupSheetId }: { groupSheetId: string }) => {
+export const BalanceSummary = ({
+  groupSheetId,
+  actorInfo,
+}: {
+  groupSheetId: string;
+  actorInfo: ActorInfo;
+}) => {
   const { data: summaries } =
     trpc.expense.getParticipantSummaries.useQuery(groupSheetId);
 
@@ -166,10 +202,11 @@ export const BalanceSummary = ({ groupSheetId }: { groupSheetId: string }) => {
           key={summary.participantId}
           groupSheetId={groupSheetId}
           summary={summary}
+          actorInfo={actorInfo}
         />
       ))}
 
-      <AddMemberButton groupSheetId={groupSheetId} />
+      {actorInfo.isAdmin && <AddMemberButton groupSheetId={groupSheetId} />}
     </div>
   );
 };

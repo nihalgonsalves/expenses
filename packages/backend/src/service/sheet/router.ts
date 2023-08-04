@@ -48,9 +48,11 @@ export const sheetRouter = router({
       return {
         ...groupSheet,
         participants: groupSheet.participants.map(
-          ({ participant: { id, name } }) => ({
+          ({ participant: { id, name, email }, role }) => ({
             id,
             name,
+            email,
+            role,
           }),
         ),
       };
@@ -165,18 +167,18 @@ export const sheetRouter = router({
           ctx.user.id,
         );
 
-      if (actorRole !== SheetParticipantRole.ADMIN) {
+      if (actorRole === SheetParticipantRole.ADMIN) {
+        // TODO: modify when adding more admins is possible
+        if (participantId === ctx.user.id) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'You cannot delete yourself as the last admin',
+          });
+        }
+      } else if (participantId !== ctx.user.id) {
         throw new TRPCError({
           code: 'FORBIDDEN',
-          message: 'Only admins can remove participants',
-        });
-      }
-
-      // TODO: modify when adding more admins is possible
-      if (participantId === ctx.user.id) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'You cannot delete yourself as the last admin',
+          message: 'Only admins can remove other participants',
         });
       }
 

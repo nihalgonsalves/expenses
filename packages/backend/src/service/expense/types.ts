@@ -1,7 +1,9 @@
 import { ExpenseType } from '@prisma/client';
 import { z } from 'zod';
 
-import { ZParticipantWithName, ZSheet } from '../sheet/types';
+import { ZParticipant, ZSheet } from '../sheet/types';
+
+export { type SheetParticipantRole } from '@prisma/client';
 
 export const ZMoney = z.object({
   amount: z.number().int(),
@@ -98,7 +100,7 @@ export type GetPersonalSheetExpensesResponse = z.infer<
 >;
 
 const ZGroupSheetExpenseListItem = ZExpenseListItem.extend({
-  participants: z.array(ZParticipantWithName.extend({ balance: ZMoney })),
+  participants: z.array(ZParticipant.extend({ balance: ZMoney })),
   yourBalance: ZMoney,
 });
 
