@@ -256,7 +256,7 @@ export const PersonalExpenseImportStepper = ({
   const navigate = useNavigate();
 
   const utils = trpc.useContext();
-  const { mutateAsync: batchCreatePersonalSheetExpenses, error: createError } =
+  const { mutateAsync: batchCreatePersonalSheetExpenses } =
     trpc.expense.batchCreatePersonalSheetExpenses.useMutation();
 
   const [headers, setHeaders] = useState<string[]>();
@@ -501,9 +501,6 @@ export const PersonalExpenseImportStepper = ({
             />
           )}
           <div className="join join-vertical md:join-horizontal">
-            {createError && (
-              <div className="alert alert-error">{createError.message}</div>
-            )}
             <button
               type="button"
               className="btn btn-outline join-item flex-grow"

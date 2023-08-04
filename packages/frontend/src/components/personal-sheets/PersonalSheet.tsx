@@ -12,6 +12,8 @@ import {
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ConfirmButton } from '../form/ConfirmButton';
 
+import { ExportExpensesButtonGroup } from './ExportExpensesButton';
+
 const ExpenseListItemComponent = ({
   expense,
 }: {
@@ -70,11 +72,13 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
 
       <Link
         to={`/sheets/${personalSheet.id}/import`}
-        className="btn btn-primary btn-outline btn-block"
+        className="join-item flex-grow btn btn-primary btn-outline"
       >
         <MdCloudUpload />
-        Import Expenses from CSV
+        Import Expenses (CSV)
       </Link>
+
+      <ExportExpensesButtonGroup personalSheet={personalSheet} />
 
       <ConfirmButton
         isLoading={deleteSheetLoading}

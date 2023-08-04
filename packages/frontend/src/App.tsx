@@ -28,11 +28,19 @@ export const App = () => {
               background: 'hsl(var(--su))',
               color: 'hsl(var(--suc) / var(--tw-text-opacity))',
             },
+            iconTheme: {
+              primary: '#ffffff',
+              secondary: 'hsl(var(--su))',
+            },
           },
           error: {
             style: {
               background: 'hsl(var(--er))',
               color: 'hsl(var(--erc) / var(--tw-text-opacity))',
+            },
+            iconTheme: {
+              primary: '#ffffff',
+              secondary: 'hsl(var(--er))',
             },
           },
         }}

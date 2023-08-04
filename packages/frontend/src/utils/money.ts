@@ -1,5 +1,5 @@
 import countryToCurrency from 'country-to-currency';
-import { dinero, convert, transformScale } from 'dinero.js';
+import { dinero, convert, transformScale, toUnits } from 'dinero.js';
 import { useMemo } from 'react';
 import { z } from 'zod';
 
@@ -34,7 +34,10 @@ export const getCurrencyCode = () =>
 
 export const formatCurrency = (
   { amount, scale, currencyCode }: Money,
-  options: Pick<Intl.NumberFormatOptions, 'signDisplay'> = {},
+  options: Pick<
+    Intl.NumberFormatOptions,
+    'signDisplay' | 'currencyDisplay'
+  > = {},
 ) => {
   const floatValue = amount / Math.pow(10, scale);
 
@@ -88,3 +91,13 @@ export const negateMoney = ({ amount, scale, currencyCode }: Money): Money => ({
   scale,
   currencyCode,
 });
+
+export const moneyToString = ({ currencyCode, amount, scale }: Money) => {
+  const unsigned = toUnits(
+    moneyToDinero({ currencyCode, amount: Math.abs(amount), scale }),
+  )
+    .map((val) => val.toFixed(0))
+    .join('.');
+
+  return `${amount < 0 ? '-' : ''}${unsigned}`;
+};
