@@ -2,7 +2,7 @@ import cookie from 'cookie';
 import { vi, describe, it, expect } from 'vitest';
 
 import { AUTH_COOKIE_NAME, getMaybeUser } from './context';
-import { UserServiceError } from './service/user/service';
+import { UserServiceError } from './service/user/utils';
 
 describe('getMaybeUser', () => {
   it('exchanges a cookie header token for a user', async () => {

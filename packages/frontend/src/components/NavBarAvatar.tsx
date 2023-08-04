@@ -43,7 +43,10 @@ export const NavBarAvatar = () => {
     );
   }
 
-  if (status === 'error' && error.data?.httpStatus === 401) {
+  if (
+    status === 'error' &&
+    (error.data?.httpStatus === 401 || error.data?.httpStatus === 403)
+  ) {
     return (
       <>
         <Link className="btn btn-ghost" to="/auth/sign-in">

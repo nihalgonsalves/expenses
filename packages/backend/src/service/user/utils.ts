@@ -14,6 +14,8 @@ const REISSUE_MIN_AGE_SECS = Temporal.Duration.from({ hours: 1 }).total(
   'seconds',
 );
 
+export class UserServiceError extends TRPCError {}
+
 export const hashPassword = async (password: string): Promise<string> =>
   bcrypt.hash(password, SALT_ROUNDS);
 
@@ -65,7 +67,7 @@ export const verifyJWT = async (
     };
   } catch (e) {
     if (e instanceof errors.JOSEError) {
-      throw new TRPCError({
+      throw new UserServiceError({
         message: 'Invalid token',
         code: 'FORBIDDEN',
         cause: e,

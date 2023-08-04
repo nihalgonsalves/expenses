@@ -1,6 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { TRPCError } from '@trpc/server';
 
 import { generateId } from '../../utils/nanoid';
 
@@ -11,9 +10,13 @@ import type {
   JWTToken,
   UpdateUserInput,
 } from './types';
-import { comparePassword, hashPassword, signJWT, verifyJWT } from './utils';
-
-export class UserServiceError extends TRPCError {}
+import {
+  UserServiceError,
+  comparePassword,
+  hashPassword,
+  signJWT,
+  verifyJWT,
+} from './utils';
 
 export class UserService {
   constructor(private prismaClient: PrismaClient) {}

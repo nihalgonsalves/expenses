@@ -8,8 +8,9 @@ import { ExpenseService } from './service/expense/service';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
 import { NotificationService } from './service/notification/service';
 import { SheetService } from './service/sheet/service';
-import { UserService, UserServiceError } from './service/user/service';
+import { UserService } from './service/user/service';
 import { type JWTToken, ZJWTToken, type User } from './service/user/types';
+import { UserServiceError } from './service/user/utils';
 
 const prisma = new PrismaClient();
 const userService = new UserService(prisma);
