@@ -8,6 +8,7 @@ export const useServiceWorkerRegistration = () => {
     queryKey: ['serviceWorkerRegistration'],
     queryFn: async () =>
       (await globalThis.navigator.serviceWorker.getRegistration()) ?? null,
+    networkMode: 'always',
   });
 
   return serviceWorkerRegistration ?? undefined;

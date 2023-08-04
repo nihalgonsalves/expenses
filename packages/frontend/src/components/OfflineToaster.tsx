@@ -19,8 +19,7 @@ export const OfflineToaster = () => {
       toast(() => 'You are offline', {
         id: TOAST_ID,
         style: {
-          color: 'hsl(var(--wac))',
-          background: 'hsl(var(--wa))',
+          color: 'hsl(var(--wa))',
         },
         duration: Infinity,
       });

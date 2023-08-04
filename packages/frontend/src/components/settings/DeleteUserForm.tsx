@@ -1,8 +1,8 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
+import { useResetCache } from '../../api/useCacheReset';
 import { prevalidateEmail } from '../../utils/utils';
 import { LoadingButton } from '../form/LoadingButton';
 import { TextField } from '../form/TextField';
@@ -15,7 +15,7 @@ export const DeleteUserForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const queryClient = useQueryClient();
+  const resetCache = useResetCache();
   const { mutateAsync: anonymizeUser, isLoading } =
     trpc.user.anonymizeUser.useMutation();
 
@@ -31,7 +31,7 @@ export const DeleteUserForm = () => {
 
     await anonymizeUser({ email, password });
 
-    await queryClient.invalidateQueries();
+    await resetCache();
     navigate('/');
   };
 

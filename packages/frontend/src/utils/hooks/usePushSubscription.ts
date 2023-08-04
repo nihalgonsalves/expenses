@@ -10,6 +10,7 @@ export const usePushSubscription = () => {
     queryFn: async () =>
       (await serviceWorkerRegistration?.pushManager.getSubscription()) ?? null,
     enabled: serviceWorkerRegistration != null,
+    networkMode: 'always',
   });
 
   return pushSubscription ?? undefined;

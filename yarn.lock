@@ -1573,10 +1573,29 @@
   dependencies:
     remove-accents "0.4.2"
 
+"@tanstack/query-async-storage-persister@^4.32.5":
+  version "4.32.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-async-storage-persister/-/query-async-storage-persister-4.32.5.tgz#9eecc61d621a6a05246c3b45d98183adb4251379"
+  integrity sha512-5D8C/3RGBhuTwq6okdkUCiJQBozZzYbj8LSFNharcI74A0CYsEgxuoR/HVGVUDeQKb2T38Oj63E6olq8jZJ3Ag==
+  dependencies:
+    "@tanstack/query-persist-client-core" "4.32.5"
+
 "@tanstack/query-core@4.32.0":
   version "4.32.0"
   resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.32.0.tgz#e0f4a830283612430450c13badd353766423f523"
   integrity sha512-ei4IYwL2kmlKSlCw9WgvV7PpXi0MiswVwfQRxawhJA690zWO3dU49igaQ/UMTl+Jy9jj9dK5IKAYvbX7kUvviQ==
+
+"@tanstack/query-core@4.32.5":
+  version "4.32.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.32.5.tgz#1c9da404ba4906c35b3998ba03ea4ab44019750c"
+  integrity sha512-UOxiDYmzYWD21ASIUnW3w+Nq3LcW1BPFFfIyZOor6UsRl76KGLlvUhJ402/dof1JxcQFPK7nZ5iUGPVqLiT8zg==
+
+"@tanstack/query-persist-client-core@4.32.5":
+  version "4.32.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-persist-client-core/-/query-persist-client-core-4.32.5.tgz#a1dfe90e2246a326c2f83a0736e2569f7de63ad2"
+  integrity sha512-+fxI9QcR8SbWoBjdnbB6M+Xbv381w0ygm4kKRLz/QKfNVMm8uTcAVz9lbnKyDO9AJ0rB8h7ps5IKGvdH0szzHA==
+  dependencies:
+    "@tanstack/query-core" "4.32.5"
 
 "@tanstack/react-query-devtools@^4.32.1":
   version "4.32.1"
@@ -1586,6 +1605,13 @@
     "@tanstack/match-sorter-utils" "^8.7.0"
     superjson "^1.10.0"
     use-sync-external-store "^1.2.0"
+
+"@tanstack/react-query-persist-client@^4.32.5":
+  version "4.32.5"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query-persist-client/-/react-query-persist-client-4.32.5.tgz#9af6ed70e4c7c28450ca57b50afa1a070e3b700d"
+  integrity sha512-vq5onulghFAl5G0MXJUkeK7SRkUN/QSdJYpJYCemGYayFlmZxQOo6fF3fyn9xnZowvUdufCsCoXWgQf5duIW1A==
+  dependencies:
+    "@tanstack/query-persist-client-core" "4.32.5"
 
 "@tanstack/react-query@^4.32.0":
   version "4.32.0"
@@ -2791,6 +2817,11 @@ detect-libc@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-2.0.1.tgz#e1897aa88fa6ad197862937fbc0441ef352ee0cd"
   integrity sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w==
+
+dexie@^3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.2.4.tgz#b22a9729be1102acb2eee16102ea6e2bc76454cf"
+  integrity sha512-VKoTQRSv7+RnffpOJ3Dh6ozknBqzWw/F3iqMdsZg958R0AS8AnY9x9d1lbwENr0gzeGJHXKcGhAMRaqys6SxqA==
 
 didyoumean@^1.2.2:
   version "1.2.2"

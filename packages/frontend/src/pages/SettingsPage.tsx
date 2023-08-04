@@ -3,6 +3,7 @@ import { DeleteUserForm } from '../components/settings/DeleteUserForm';
 import { NotificationPreferenceForm } from '../components/settings/NotificationPreferenceForm';
 import { ProfileForm } from '../components/settings/ProfileForm';
 import { ThemeForm } from '../components/settings/ThemeForm';
+import { TroubleshootingForm } from '../components/settings/TroubleshootingForm';
 
 import { Root } from './Root';
 
@@ -20,6 +21,7 @@ export const SettingsPage = () => {
             <DeleteUserForm />
           </>
         )}
+        <TroubleshootingForm />
       </div>
     </Root>
   );

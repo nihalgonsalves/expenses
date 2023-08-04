@@ -24,23 +24,15 @@ export const App = () => {
       <Toaster
         toastOptions={{
           success: {
-            style: {
-              background: 'hsl(var(--su))',
-              color: 'hsl(var(--suc) / var(--tw-text-opacity))',
-            },
             iconTheme: {
-              primary: '#ffffff',
-              secondary: 'hsl(var(--su))',
+              primary: 'hsl(var(--su))',
+              secondary: '#ffffff',
             },
           },
           error: {
-            style: {
-              background: 'hsl(var(--er))',
-              color: 'hsl(var(--erc) / var(--tw-text-opacity))',
-            },
             iconTheme: {
-              primary: '#ffffff',
-              secondary: 'hsl(var(--er))',
+              primary: 'hsl(var(--er))',
+              secondary: '#ffffff',
             },
           },
         }}

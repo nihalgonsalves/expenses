@@ -2,6 +2,7 @@ import type { TRPCClientErrorLike } from '@trpc/client';
 import type { UseTRPCQueryResult } from '@trpc/react-query/shared';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
+import { toast } from 'react-hot-toast';
 import {
   MdArrowBack,
   MdGroup,
@@ -9,15 +10,15 @@ import {
   MdSettings,
   MdTableView,
 } from 'react-icons/md';
+import { RiRefreshLine } from 'react-icons/ri';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-import { LoadingSpinner } from '../components/LoadingSpinner';
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { clsxtw } from '../utils/utils';
 
 type RootProps = {
   title: React.ReactNode;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   showBackButton?: boolean;
   mainClassName?: string;
   additionalChildren?: React.ReactNode;
@@ -115,9 +116,14 @@ export const RootLoader = <
   )) => {
   if (result.status === 'loading') {
     return (
-      <Root title={title} {...rootProps}>
-        <LoadingSpinner />
-      </Root>
+      <Root
+        title={
+          <>
+            {title} <div className="loading loading-spinner loading-xs ml-4" />
+          </>
+        }
+        {...rootProps}
+      />
     );
   }
 
@@ -130,7 +136,30 @@ export const RootLoader = <
   }
 
   return (
-    <Root title={getTitle?.(result.data) ?? title} {...rootProps}>
+    <Root
+      title={
+        <>
+          {getTitle?.(result.data) ?? title}
+          <button
+            className="btn btn-ghost"
+            onClick={() => {
+              void toast.promise(
+                result.refetch(),
+                {
+                  loading: 'Refreshing',
+                  success: 'Done',
+                  error: 'Error',
+                },
+                { className: 'w-36' },
+              );
+            }}
+          >
+            <RiRefreshLine />
+          </button>
+        </>
+      }
+      {...rootProps}
+    >
       {render(result.data)}
     </Root>
   );

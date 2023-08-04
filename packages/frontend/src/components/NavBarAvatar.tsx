@@ -1,19 +1,19 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { MdAccountCircle } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
+import { useResetCache } from '../api/useCacheReset';
 import { useCurrentUser } from '../api/useCurrentUser';
 
 export const NavBarAvatar = () => {
-  const queryClient = useQueryClient();
+  const resetCache = useResetCache();
 
   const { data, status, error } = useCurrentUser();
   const signOut = trpc.user.signOut.useMutation();
 
   const handleSignOut = async () => {
     await signOut.mutateAsync();
-    await queryClient.resetQueries();
+    await resetCache();
   };
 
   if (status == 'success') {
