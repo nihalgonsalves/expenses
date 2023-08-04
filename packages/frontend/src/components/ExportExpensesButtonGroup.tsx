@@ -2,6 +2,8 @@ import { Temporal } from '@js-temporal/polyfill';
 import Papa from 'papaparse';
 import { toast } from 'react-hot-toast';
 import { MdCloudDownload } from 'react-icons/md';
+
+import { Button } from './form/Button';
 const TOAST_ID = 'download-toast';
 
 export const ExportExpensesButtonGroup = <TData, TOutput>({
@@ -64,24 +66,22 @@ export const ExportExpensesButtonGroup = <TData, TOutput>({
 
   return (
     <div className="join join-vertical md:join-horizontal">
-      <button
-        type="button"
-        className="btn btn-primary btn-outline join-item flex-grow"
+      <Button
+        className="btn-primary btn-outline join-item flex-grow"
         onClick={() => {
           void handleRequestDownload('json');
         }}
       >
         <MdCloudDownload /> Export Expenses (.json)
-      </button>
-      <button
-        type="button"
-        className="btn btn-primary btn-outline join-item flex-grow"
+      </Button>
+      <Button
+        className="btn-primary btn-outline join-item flex-grow"
         onClick={() => {
           void handleRequestDownload('csv');
         }}
       >
         <MdCloudDownload /> Export Expenses (.csv)
-      </button>
+      </Button>
     </div>
   );
 };

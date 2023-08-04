@@ -5,6 +5,7 @@ import { trpc } from '../../api/trpc';
 import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
 import { usePushSubscription } from '../../utils/hooks/usePushSubscription';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
+import { Button } from '../form/Button';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
 const IS_IOS_AND_NOT_STANDALONE = z.boolean().optional().parse(
@@ -141,16 +142,15 @@ export const NotificationPreferenceForm = () => {
                   Notifications enabled
                 </div>
                 <div className="flex-grow" />
-                <button
-                  type="button"
-                  className="btn btn-ghost text-error text-2xl"
+                <Button
+                  className="btn-ghost text-error text-2xl"
                   aria-label="Delete Subscription"
                   onClick={async () =>
                     handleDeleteSubscription(subscription.id)
                   }
                 >
                   <MdDelete />
-                </button>
+                </Button>
               </li>
             ))}
           </ul>

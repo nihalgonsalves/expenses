@@ -12,9 +12,9 @@ import {
   dateTimeLocalToISOString,
   nowForDateTimeInput,
 } from '../../utils/utils';
+import { Button } from '../form/Button';
 import { CategorySelect } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
-import { LoadingButton } from '../form/LoadingButton';
 import { MoneyField } from '../form/MoneyField';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
@@ -147,14 +147,14 @@ export const CreatePersonalExpenseForm = ({
         setValue={setSpentAt}
       />
 
-      <LoadingButton
-        className="btn-block mt-4"
+      <Button
+        className="btn-primary btn-block mt-4"
         type="submit"
         disabled={!valid}
         isLoading={isLoading}
       >
         Create
-      </LoadingButton>
+      </Button>
     </form>
   );
 };

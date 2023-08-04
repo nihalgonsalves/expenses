@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { trpc } from '../../api/trpc';
 import { useResetCache } from '../../api/useCacheReset';
 import { prevalidateEmail } from '../../utils/utils';
-import { LoadingButton } from '../form/LoadingButton';
+import { Button } from '../form/Button';
 import { TextField } from '../form/TextField';
 
 export const DeleteUserForm = () => {
@@ -74,14 +74,14 @@ export const DeleteUserForm = () => {
             value={password}
             setValue={setPassword}
           />
-          <LoadingButton
+          <Button
             isLoading={isLoading}
             disabled={!valid}
             type="submit"
-            className="btn btn-error btn-block mt-4"
+            className="btn-error btn-block mt-4"
           >
             {isReconfirming ? 'Are you sure?' : 'Anonymise your account'}
-          </LoadingButton>
+          </Button>
         </form>
       </div>
     </div>

@@ -42,14 +42,15 @@ import {
   nowForDateTimeInput,
 } from '../../utils/utils';
 import { Avatar } from '../Avatar';
-import { ParticipantListItem } from '../ParticipantListItem';
+import { Button } from '../form/Button';
 import { CategorySelect } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
-import { LoadingButton } from '../form/LoadingButton';
 import { MoneyField } from '../form/MoneyField';
 import { Select } from '../form/Select';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+
+import { ParticipantListItem } from './ParticipantListItem';
 
 type SplitGroupExpenseSplit = {
   participantId: string;
@@ -611,14 +612,14 @@ export const ExpenseAndIncomeForm = ({
         rate={rate}
       />
 
-      <LoadingButton
+      <Button
         className="btn-primary btn-block"
         isLoading={isLoading}
         type="submit"
         disabled={!valid}
       >
         <MdPlaylistAdd /> Add Expense
-      </LoadingButton>
+      </Button>
     </form>
   );
 };
@@ -703,14 +704,14 @@ export const SettlementForm = ({
         setAmount={setAmount}
       />
 
-      <LoadingButton
-        className="btn-block mt-4"
+      <Button
+        className="btn-primary btn-block mt-4"
         type="submit"
         disabled={!valid}
         isLoading={isLoading}
       >
         Log Settlement
-      </LoadingButton>
+      </Button>
     </form>
   );
 };

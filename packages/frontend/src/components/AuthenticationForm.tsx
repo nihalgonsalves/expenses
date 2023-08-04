@@ -4,7 +4,7 @@ import { trpc } from '../api/trpc';
 import { useResetCache } from '../api/useCacheReset';
 import { prevalidateEmail } from '../utils/utils';
 
-import { LoadingButton } from './form/LoadingButton';
+import { Button } from './form/Button';
 import { TextField } from './form/TextField';
 
 export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
@@ -79,9 +79,14 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
 
       <div className="divider" />
 
-      <LoadingButton type="submit" isLoading={isLoading} disabled={!valid}>
+      <Button
+        className="btn-primary"
+        type="submit"
+        isLoading={isLoading}
+        disabled={!valid}
+      >
         {isSignUp ? 'Sign Up' : 'Sign In'}
-      </LoadingButton>
+      </Button>
     </form>
   );
 };

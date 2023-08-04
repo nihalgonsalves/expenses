@@ -1,5 +1,7 @@
 import { MdExpandMore } from 'react-icons/md';
 
+import { Button } from './form/Button';
+
 type ExpandMoreProps = {
   expand: boolean;
   onClick: () => void;
@@ -8,13 +10,12 @@ type ExpandMoreProps = {
 // TODO: Flip when open
 
 export const ExpandMoreButton = ({ expand, onClick }: ExpandMoreProps) => (
-  <button
-    type="button"
+  <Button
     onClick={onClick}
     aria-expanded={expand}
     aria-label="show more"
-    className="btn btn-ghost"
+    className="btn-ghost"
   >
     <MdExpandMore />
-  </button>
+  </Button>
 );

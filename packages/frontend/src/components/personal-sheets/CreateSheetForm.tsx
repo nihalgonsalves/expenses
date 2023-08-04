@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
 import { getCurrencyCode } from '../../utils/money';
+import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
-import { LoadingButton } from '../form/LoadingButton';
 import { TextField } from '../form/TextField';
 
 export const CreateSheetForm = () => {
@@ -50,14 +50,14 @@ export const CreateSheetForm = () => {
         setCurrencyCode={setCurrencyCode}
       />
 
-      <LoadingButton
-        className="btn-block mt-4"
+      <Button
+        className="btn-primary btn-block mt-4"
         type="submit"
         disabled={!valid}
         isLoading={isLoading}
       >
         <MdAddCircle /> Create Sheet
-      </LoadingButton>
+      </Button>
     </form>
   );
 };

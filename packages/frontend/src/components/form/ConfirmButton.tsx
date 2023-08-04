@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { LoadingButton } from './LoadingButton';
+import { Button } from './Button';
 
 export const ConfirmButton = ({
   label,
@@ -17,32 +17,30 @@ export const ConfirmButton = ({
 
   return clicked ? (
     <>
-      <button
-        type="button"
-        className="btn btn-outline btn-block"
+      <Button
+        className="btn-outline btn-block"
         onClick={() => {
           setClicked(false);
         }}
       >
         Cancel
-      </button>
-      <LoadingButton
+      </Button>
+      <Button
         isLoading={isLoading}
-        className="btn btn-error btn-block"
+        className="btn-error btn-block"
         onClick={handleConfirmed}
       >
         {confirmLabel}
-      </LoadingButton>
+      </Button>
     </>
   ) : (
-    <button
-      type="button"
-      className="btn btn-error btn-outline btn-block"
+    <Button
+      className="btn-error btn-outline btn-block"
       onClick={() => {
         setClicked(true);
       }}
     >
       {label}
-    </button>
+    </Button>
   );
 };

@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { trpc } from '../../api/trpc';
 import { getCurrencyCode } from '../../utils/money';
 import { prevalidateEmail } from '../../utils/utils';
+import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
-import { LoadingButton } from '../form/LoadingButton';
 import { TextField } from '../form/TextField';
 
 export const CreateGroupForm = () => {
@@ -93,38 +93,36 @@ export const CreateGroupForm = () => {
             }}
             className="flex-grow"
           />
-          <button
-            type="button"
-            className="btn btn-square btn-ghost text-xl text-error"
+          <Button
+            className="btn-square btn-ghost text-xl text-error"
             aria-label="Delete"
             onClick={() => {
               handleDeleteParticipant(i);
             }}
           >
             <MdDeleteOutline />
-          </button>
+          </Button>
         </div>
       ))}
 
-      <button
-        type="button"
-        className="btn btn-primary btn-outline btn-block mt-4"
+      <Button
+        className="btn-primary btn-outline btn-block mt-4"
         onClick={handleAddParticipant}
       >
         <MdPersonAdd />
         Add Participant
-      </button>
+      </Button>
 
       <div className="divider" />
 
-      <LoadingButton
+      <Button
         type="submit"
-        className="btn-blocksd btn-primary"
+        className="btn-primary"
         disabled={!valid}
         isLoading={isLoading}
       >
         <MdAddCircle /> Create Group
-      </LoadingButton>
+      </Button>
     </form>
   );
 };

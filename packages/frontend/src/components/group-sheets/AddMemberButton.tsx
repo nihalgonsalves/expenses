@@ -4,8 +4,10 @@ import { MdCheck, MdClear, MdPersonAdd } from 'react-icons/md';
 import { trpc } from '../../api/trpc';
 import { prevalidateEmail } from '../../utils/utils';
 import { Avatar } from '../Avatar';
-import { ParticipantListItem } from '../ParticipantListItem';
+import { Button } from '../form/Button';
 import { TextField } from '../form/TextField';
+
+import { ParticipantListItem } from './ParticipantListItem';
 
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const { mutateAsync: addGroupSheetMember, isLoading } =
@@ -59,34 +61,34 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
           setValue={setEmail}
         />
 
-        <button
-          className="btn btn-square"
+        <Button
+          className="btn-square"
           type="reset"
           aria-label="Cancel"
           onClick={handleClose}
         >
           <MdClear />
-        </button>
+        </Button>
 
-        <button
-          className="btn btn-square"
+        <Button
+          className="btn-square"
           type="submit"
           aria-label="Add"
           disabled={!valid}
         >
           <MdCheck />
-        </button>
+        </Button>
       </form>
     </ParticipantListItem>
   ) : (
-    <button
-      className="btn btn-primary btn-outline"
+    <Button
+      className="btn-primary btn-outline"
       onClick={() => {
         setAddMemberOpen(true);
       }}
     >
       <MdPersonAdd />
       Add Participant
-    </button>
+    </Button>
   );
 };

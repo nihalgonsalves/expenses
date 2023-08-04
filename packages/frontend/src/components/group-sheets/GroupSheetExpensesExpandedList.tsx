@@ -13,7 +13,8 @@ import { Avatar } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
 import { ExpenseActions } from '../ExpenseActions';
-import { ParticipantListItem } from '../ParticipantListItem';
+
+import { ParticipantListItem } from './ParticipantListItem';
 
 const ExpandedExpenseListItem = ({
   expense,

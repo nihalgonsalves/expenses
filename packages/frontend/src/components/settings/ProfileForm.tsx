@@ -5,7 +5,7 @@ import type { User } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
 import { prevalidateEmail } from '../../utils/utils';
-import { LoadingButton } from '../form/LoadingButton';
+import { Button } from '../form/Button';
 import { TextField } from '../form/TextField';
 
 export const ProfileForm = ({ me }: { me: User }) => {
@@ -91,14 +91,14 @@ export const ProfileForm = ({ me }: { me: User }) => {
           setValue={setNewPassword}
         />
 
-        <LoadingButton
+        <Button
           type="submit"
           isLoading={isLoading}
           disabled={!valid || unchanged}
-          className="btn btn-primary mt-4 w-full"
+          className="btn-primary mt-4 w-full"
         >
           Save
-        </LoadingButton>
+        </Button>
       </div>
     </form>
   );

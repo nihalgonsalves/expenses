@@ -14,6 +14,7 @@ import { RiRefreshLine } from 'react-icons/ri';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { NavBarAvatar } from '../components/NavBarAvatar';
+import { Button } from '../components/form/Button';
 import { clsxtw } from '../utils/utils';
 
 type RootProps = {
@@ -37,15 +38,14 @@ export const Root = ({
     <div className="flex flex-col" style={{ height: '100dvh' }}>
       <header className="navbar bg-primary text-primary-content">
         {showBackButton && (
-          <button
-            type="button"
-            className="btn btn-ghost text-2xl"
+          <Button
+            className="btn-ghost text-2xl"
             onClick={() => {
               navigate(-1);
             }}
           >
             <MdArrowBack />
-          </button>
+          </Button>
         )}
 
         <div className="ms-2 flex-grow text-2xl font-semibold normal-case">
@@ -140,8 +140,8 @@ export const RootLoader = <
       title={
         <>
           {getTitle?.(result.data) ?? title}
-          <button
-            className="btn btn-ghost"
+          <Button
+            className="btn-ghost"
             onClick={() => {
               void toast.promise(
                 result.refetch(),
@@ -155,7 +155,7 @@ export const RootLoader = <
             }}
           >
             <RiRefreshLine />
-          </button>
+          </Button>
         </>
       }
       {...rootProps}

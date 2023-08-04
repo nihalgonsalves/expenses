@@ -11,9 +11,10 @@ import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';
 import { clsxtw } from '../../utils/utils';
 import { Avatar } from '../Avatar';
-import { ParticipantListItem } from '../ParticipantListItem';
+import { Button } from '../form/Button';
 
 import { AddMemberButton } from './AddMemberButton';
+import { ParticipantListItem } from './ParticipantListItem';
 
 export type ActorInfo = { id: string; isAdmin: boolean };
 
@@ -102,29 +103,27 @@ const PersonMenu = ({
           {actorInfo.isAdmin && actorInfo.id !== participantId && (
             <>
               <div className="divider" />
-              <button
-                type="button"
-                className="btn btn-error btn-outline"
+              <Button
+                className="btn-error btn-outline"
                 onClick={handleDelete}
                 disabled={balance.amount !== 0}
               >
                 <MdDeleteOutline />
                 Remove Participant
-              </button>
+              </Button>
             </>
           )}
           {!actorInfo.isAdmin && actorInfo.id === participantId && (
             <>
               <div className="divider" />
-              <button
-                type="button"
-                className="btn btn-error btn-outline"
+              <Button
+                className="btn-error btn-outline"
                 onClick={handleDelete}
                 disabled={balance.amount !== 0}
               >
                 <MdDeleteOutline />
                 Leave
-              </button>
+              </Button>
             </>
           )}
         </div>

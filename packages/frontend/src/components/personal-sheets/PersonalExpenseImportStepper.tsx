@@ -14,6 +14,7 @@ import { trpc } from '../../api/trpc';
 import { CategoryId } from '../../data/categories';
 import { formatCurrency } from '../../utils/money';
 import { dateToISOString } from '../../utils/utils';
+import { Button } from '../form/Button';
 import { Select, type SelectOption } from '../form/Select';
 import { TextField } from '../form/TextField';
 
@@ -131,9 +132,9 @@ const SafeDisplay = ({
           e instanceof Error ? e.message : 'Unknown Error'
         } (${value})`}
       >
-        <button className="btn btn-circle btn-ghost">
+        <Button className="btn-circle btn-ghost">
           <MdWarning />
-        </button>
+        </Button>
       </div>
     );
   }
@@ -222,27 +223,27 @@ const DataPreview = ({
         </tbody>
       </table>
       <div className="join">
-        <button
-          className="btn join-item"
+        <Button
+          className="join-item"
           disabled={page === 0}
           onClick={() => {
             setPage((prev) => prev - 1);
           }}
         >
           «
-        </button>
-        <button className="btn join-item flex-grow">
+        </Button>
+        <Button className="join-item flex-grow">
           Page {page + 1} of {maxPage + 1}
-        </button>
-        <button
-          className="btn join-item"
+        </Button>
+        <Button
+          className="join-item"
           disabled={page === maxPage}
           onClick={() => {
             setPage((prev) => prev + 1);
           }}
         >
           »
-        </button>
+        </Button>
       </div>
     </>
   );
@@ -501,23 +502,21 @@ export const PersonalExpenseImportStepper = ({
             />
           )}
           <div className="join join-vertical md:join-horizontal">
-            <button
-              type="button"
-              className="btn btn-outline join-item flex-grow"
+            <Button
+              className="btn-outline join-item flex-grow"
               onClick={() => {
                 setActiveStep(ImportStep.UPLOAD_FILE);
               }}
             >
               Back
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary join-item flex-grow"
+            </Button>
+            <Button
+              className="btn-primary join-item flex-grow"
               disabled={!amountField}
               onClick={handleCreate}
             >
               Import all valid rows ({validRows.length} of {data?.length})
-            </button>
+            </Button>
           </div>
         </div>
       )}

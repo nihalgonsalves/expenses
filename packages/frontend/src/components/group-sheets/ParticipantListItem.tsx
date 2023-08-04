@@ -1,4 +1,4 @@
-import { clsxtw } from '../utils/utils';
+import { clsxtw } from '../../utils/utils';
 
 export const ParticipantListItem = ({
   children,

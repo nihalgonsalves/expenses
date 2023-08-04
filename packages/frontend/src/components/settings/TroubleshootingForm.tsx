@@ -1,5 +1,6 @@
 import { useResetCache } from '../../api/useCacheReset';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
+import { Button } from '../form/Button';
 
 export const TroubleshootingForm = () => {
   const resetCache = useResetCache();
@@ -17,13 +18,12 @@ export const TroubleshootingForm = () => {
         <h2 className="card-title">Troubleshooting</h2>
         If you are experiencing issues with the app, you can reset the cache
         here. This is safe but you need to be online to reload data.
-        <button
-          type="button"
+        <Button
           className="btn btn-error btn-outline btn-block mt-4"
           onClick={handleResetCache}
         >
           Reset Cache
-        </button>
+        </Button>
       </div>
     </div>
   );
