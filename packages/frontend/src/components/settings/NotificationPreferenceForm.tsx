@@ -1,3 +1,4 @@
+import { MdDelete } from 'react-icons/md';
 import { z } from 'zod';
 
 import { trpc } from '../../api/trpc';
@@ -77,6 +78,11 @@ export const NotificationPreferenceForm = () => {
     await utils.notification.getSubscriptions.invalidate();
   };
 
+  const handleDeleteSubscription = async (id: string) => {
+    await deleteSubscription(id);
+    await utils.notification.getSubscriptions.invalidate();
+  };
+
   const disabled =
     permission === 'denied' ||
     permission === 'not_supported' ||
@@ -89,7 +95,8 @@ export const NotificationPreferenceForm = () => {
         {permission === 'denied' && (
           <div className="alert alert-warning">
             You have denied notifications. Please allow them in your browser
-            settings.
+            settings, and make sure that you&rsquo;re not using private
+            browsing, which denies notifications automatically.
           </div>
         )}
         {permission === 'not_supported' && (
@@ -123,14 +130,27 @@ export const NotificationPreferenceForm = () => {
         {subscriptions && subscriptions.length > 0 && (
           <ul className="grid gap-4">
             {subscriptions.map((subscription) => (
-              <li key={subscription.id}>
-                <span className="font-semibold">
-                  {subscription.description}
-                  {subscription.endpoint === pushSubscription?.endpoint &&
-                    ' – this device'}
-                </span>
-                <br />
-                Notifications enabled
+              <li key={subscription.id} className="flex items-center">
+                <div>
+                  <span className="font-semibold">
+                    {subscription.description}
+                    {subscription.endpoint === pushSubscription?.endpoint &&
+                      ' – this device'}
+                  </span>
+                  <br />
+                  Notifications enabled
+                </div>
+                <div className="flex-grow" />
+                <button
+                  type="button"
+                  className="btn btn-ghost text-error text-2xl"
+                  aria-label="Delete Subscription"
+                  onClick={async () =>
+                    handleDeleteSubscription(subscription.id)
+                  }
+                >
+                  <MdDelete />
+                </button>
               </li>
             ))}
           </ul>
