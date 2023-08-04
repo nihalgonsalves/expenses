@@ -5,7 +5,7 @@ import { TrpcProvider } from './api/TrpcProvider';
 import { OfflineToaster } from './components/OfflineToaster';
 import { registerSW } from './registerSW';
 import { RouterProvider, router } from './router';
-import { useMediaQuery } from './utils/hooks';
+import { useMediaQuery } from './utils/hooks/useMediaQuery';
 import { syncThemeToHtml } from './utils/theme';
 
 void registerSW();

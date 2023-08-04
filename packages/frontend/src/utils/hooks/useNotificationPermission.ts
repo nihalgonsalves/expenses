@@ -1,31 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect, useCallback } from 'react';
 
-const PUSH_SUPPORTED =
-  'serviceWorker' in globalThis.navigator && 'PushManager' in globalThis.window;
-
-export const useServiceWorkerRegistration = () => {
-  const { data: serviceWorkerRegistration } = useQuery({
-    queryKey: ['serviceWorkerRegistration'],
-    queryFn: async () =>
-      (await globalThis.navigator.serviceWorker.getRegistration()) ?? null,
-  });
-
-  return serviceWorkerRegistration ?? undefined;
-};
-
-export const usePushSubscription = () => {
-  const serviceWorkerRegistration = useServiceWorkerRegistration();
-
-  const { data: pushSubscription } = useQuery({
-    queryKey: ['pushSubscription'],
-    queryFn: async () =>
-      (await serviceWorkerRegistration?.pushManager.getSubscription()) ?? null,
-    enabled: serviceWorkerRegistration != null,
-  });
-
-  return pushSubscription ?? undefined;
-};
+import {
+  useServiceWorkerRegistration,
+  PUSH_SUPPORTED,
+} from './useServiceWorkerRegistration';
 
 // undefined on iOS when not installed, for example
 const notificationGlobal =
@@ -88,35 +66,4 @@ export const useNotificationPermission = (): {
   }
 
   return { permission, request };
-};
-
-// adapted from https://usehooks-ts.com/react-hook/use-media-query
-export const useMediaQuery = (query: string): boolean => {
-  const getMatches = (q: string): boolean => {
-    // Prevents SSR issues
-    if (typeof window !== 'undefined') {
-      return window.matchMedia(q).matches;
-    }
-    return false;
-  };
-
-  const [matches, setMatches] = useState<boolean>(getMatches(query));
-
-  const handleChange = useCallback(() => {
-    setMatches(getMatches(query));
-  }, [query]);
-
-  useEffect(() => {
-    const matchMedia = window.matchMedia(query);
-
-    handleChange();
-
-    matchMedia.addEventListener('change', handleChange);
-
-    return () => {
-      matchMedia.removeEventListener('change', handleChange);
-    };
-  }, [query, handleChange]);
-
-  return matches;
 };

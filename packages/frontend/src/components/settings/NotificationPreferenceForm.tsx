@@ -1,11 +1,9 @@
 import { z } from 'zod';
 
 import { trpc } from '../../api/trpc';
-import {
-  useNotificationPermission,
-  usePushSubscription,
-  useServiceWorkerRegistration,
-} from '../../utils/hooks';
+import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
+import { usePushSubscription } from '../../utils/hooks/usePushSubscription';
+import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
 const IS_IOS_AND_NOT_STANDALONE = z.boolean().optional().parse(
