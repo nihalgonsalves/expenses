@@ -4,6 +4,9 @@ import { toast } from 'react-hot-toast';
 
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 
+const displayThreshold = () => window.innerHeight * 0.05;
+const reloadThreshold = () => window.innerHeight * 0.4;
+
 export const usePullToRefresh = (
   toastId: string,
   onRefetch: () => Promise<void>,
@@ -30,12 +33,16 @@ export const usePullToRefresh = (
       if (clientY == null) return;
 
       const touchDiffY = clientY - touchStartYRef.current;
-      const displayThreshold = window.innerHeight * 0.05;
-      const reloadThreshold = window.innerHeight * 0.4;
 
       touchDiffYRef.current = touchDiffY;
-      if (touchDiffY > displayThreshold) {
-        const ratio = easeIn(touchDiffY / reloadThreshold);
+
+      if (
+        // if the touch started at over 60% of the screen height,
+        // theres no chance the user will be able to cross more than 40% of the screen height
+        touchStartYRef.current < reloadThreshold() &&
+        touchDiffY > displayThreshold()
+      ) {
+        const ratio = easeIn(touchDiffY / reloadThreshold());
 
         toast(
           () => (
@@ -63,9 +70,7 @@ export const usePullToRefresh = (
     };
 
     const onTouchEnd = () => {
-      const reloadThreshold = window.innerHeight * 0.4;
-
-      if (touchDiffYRef.current > reloadThreshold) {
+      if (touchDiffYRef.current > reloadThreshold()) {
         void onRefetch();
       } else {
         toast.dismiss(toastId);

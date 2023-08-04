@@ -19,6 +19,7 @@ import { usePullToRefresh } from '../api/usePullToRefresh';
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { Button } from '../components/form/Button';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
+import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 import { clsxtw } from '../utils/utils';
 
 type RootProps = {
@@ -121,6 +122,9 @@ export const RootLoader = <
     | { title: React.ReactNode; getTitle?: undefined }
   )) => {
   const onLine = useNavigatorOnLine();
+  const isStandalone = useIsStandalone();
+
+  const mobileStandalone = isStandalone && 'ontouchstart' in window;
 
   const refetch = useCallback(async () => {
     await toast.promise(
@@ -160,7 +164,7 @@ export const RootLoader = <
           {result.status === 'loading' && (
             <div className="loading loading-spinner loading-xs ml-4" />
           )}
-          {result.status !== 'loading' && onLine && (
+          {!mobileStandalone && result.status !== 'loading' && onLine && (
             <Button className="btn-ghost" onClick={refetch}>
               <RiRefreshLine />
             </Button>
