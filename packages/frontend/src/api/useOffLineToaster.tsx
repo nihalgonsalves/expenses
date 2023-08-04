@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { useNavigatorOnLine } from '../utils/hooks/useNavigatorOnLine';
+import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 
 const TOAST_ID = 'network-toast';
 
-export const OfflineToaster = () => {
+export const useOffLineToaster = () => {
   const onLine = useNavigatorOnLine();
 
   useEffect(() => {
@@ -25,6 +25,4 @@ export const OfflineToaster = () => {
       });
     }
   }, [onLine]);
-
-  return null;
 };

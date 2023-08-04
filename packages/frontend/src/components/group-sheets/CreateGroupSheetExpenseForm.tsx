@@ -28,6 +28,7 @@ import {
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
 import { CategoryId } from '../../data/categories';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import {
   convertCurrency,
   formatCurrency,
@@ -453,6 +454,7 @@ export const ExpenseAndIncomeForm = ({
   const { mutateAsync: createGroupSheetExpense, isLoading } =
     trpc.expense.createGroupSheetExpense.useMutation();
 
+  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const [paidById, setPaidById] = useState(me.id);
@@ -482,9 +484,10 @@ export const ExpenseAndIncomeForm = ({
 
   const valid =
     moneySnapshot.amount > 0 && validateSplit(splitType, ratios, amount);
+  const disabled = !valid || !onLine;
 
   const handleCreateExpense = async () => {
-    if (!valid) {
+    if (disabled) {
       return;
     }
 
@@ -536,7 +539,7 @@ export const ExpenseAndIncomeForm = ({
       onSubmit={(e) => {
         e.preventDefault();
 
-        if (!valid) {
+        if (!valid || !onLine) {
           return;
         }
 
@@ -616,7 +619,7 @@ export const ExpenseAndIncomeForm = ({
         className="btn-primary btn-block"
         isLoading={isLoading}
         type="submit"
-        disabled={!valid}
+        disabled={disabled}
       >
         <MdPlaylistAdd /> Add Expense
       </Button>
@@ -631,6 +634,7 @@ export const SettlementForm = ({
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
+  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const [amount, setAmount] = useState(0);
@@ -673,11 +677,13 @@ export const SettlementForm = ({
     navigate(`/groups/${groupSheet.id}`);
   };
 
+  const disabled = !valid || !onLine;
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!valid) return;
+        if (disabled) return;
 
         void handleCreateSettlement();
       }}
@@ -707,7 +713,7 @@ export const SettlementForm = ({
       <Button
         className="btn-primary btn-block mt-4"
         type="submit"
-        disabled={!valid}
+        disabled={disabled}
         isLoading={isLoading}
       >
         Log Settlement

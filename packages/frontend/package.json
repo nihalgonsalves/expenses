@@ -27,6 +27,7 @@
     "dexie": "^3.2.4",
     "dinero.js": "^2.0.0-alpha.14",
     "immer": "^10.0.2",
+    "jotai": "^2.2.3",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

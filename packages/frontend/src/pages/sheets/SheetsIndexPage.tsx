@@ -1,7 +1,7 @@
 import { MdPostAdd } from 'react-icons/md';
 
 import { trpc } from '../../api/trpc';
-import { FloatingActionButton } from '../../components/FloatingActionnButton';
+import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { PersonalSheetsList } from '../../components/personal-sheets/PersonalSheetsList';
 import { RootLoader } from '../Root';
 

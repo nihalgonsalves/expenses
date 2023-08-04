@@ -3,6 +3,8 @@ import Papa from 'papaparse';
 import { toast } from 'react-hot-toast';
 import { MdCloudDownload } from 'react-icons/md';
 
+import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
+
 import { Button } from './form/Button';
 const TOAST_ID = 'download-toast';
 
@@ -17,6 +19,8 @@ export const ExportExpensesButtonGroup = <TData, TOutput>({
   fetch: () => Promise<TData[]>;
   mapItem: (data: TData) => TOutput;
 }) => {
+  const onLine = useNavigatorOnLine();
+
   const handleRequestDownload = async (type: 'json' | 'csv') => {
     await toast.promise(
       fetch(),
@@ -71,6 +75,7 @@ export const ExportExpensesButtonGroup = <TData, TOutput>({
         onClick={() => {
           void handleRequestDownload('json');
         }}
+        disabled={!onLine}
       >
         <MdCloudDownload /> Export Expenses (.json)
       </Button>
@@ -79,6 +84,7 @@ export const ExportExpensesButtonGroup = <TData, TOutput>({
         onClick={() => {
           void handleRequestDownload('csv');
         }}
+        disabled={!onLine}
       >
         <MdCloudDownload /> Export Expenses (.csv)
       </Button>

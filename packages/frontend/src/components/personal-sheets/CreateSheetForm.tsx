@@ -3,12 +3,14 @@ import { MdAddCircle } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { getCurrencyCode } from '../../utils/money';
 import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { TextField } from '../form/TextField';
 
 export const CreateSheetForm = () => {
+  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const { mutateAsync: createSheet, isLoading } =
@@ -26,12 +28,13 @@ export const CreateSheetForm = () => {
   };
 
   const valid = name;
+  const disabled = !valid || !onLine;
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!valid) return;
+        if (disabled) return;
 
         void handleCreateSheet();
       }}
@@ -53,7 +56,7 @@ export const CreateSheetForm = () => {
       <Button
         className="btn-primary btn-block mt-4"
         type="submit"
-        disabled={!valid}
+        disabled={disabled}
         isLoading={isLoading}
       >
         <MdAddCircle /> Create Sheet

@@ -7,6 +7,7 @@ import type { Sheet } from '@nihalgonsalves/expenses-backend';
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
 import { CategoryId } from '../../data/categories';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency, negateMoney, useMoneyValues } from '../../utils/money';
 import {
   dateTimeLocalToISOString,
@@ -50,6 +51,7 @@ export const CreatePersonalExpenseForm = ({
   personalSheet: Sheet;
 }) => {
   const navigate = useNavigate();
+  const onLine = useNavigatorOnLine();
 
   const [type, setType] = useState<'expense' | 'income'>('expense');
 
@@ -91,11 +93,13 @@ export const CreatePersonalExpenseForm = ({
     navigate(`/sheets/${personalSheet.id}`);
   };
 
+  const disabled = !valid || !onLine;
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (!valid) return;
+        if (disabled) return;
 
         void handleCreateExpense();
       }}
@@ -150,7 +154,7 @@ export const CreatePersonalExpenseForm = ({
       <Button
         className="btn-primary btn-block mt-4"
         type="submit"
-        disabled={!valid}
+        disabled={disabled}
         isLoading={isLoading}
       >
         Create

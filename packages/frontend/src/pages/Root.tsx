@@ -15,6 +15,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { Button } from '../components/form/Button';
+import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { clsxtw } from '../utils/utils';
 
 type RootProps = {
@@ -114,6 +115,8 @@ export const RootLoader = <
       }
     | { title: React.ReactNode; getTitle?: undefined }
   )) => {
+  const onLine = useNavigatorOnLine();
+
   if (result.status === 'loading') {
     return (
       <Root
@@ -140,22 +143,24 @@ export const RootLoader = <
       title={
         <>
           {getTitle?.(result.data) ?? title}
-          <Button
-            className="btn-ghost"
-            onClick={() => {
-              void toast.promise(
-                result.refetch(),
-                {
-                  loading: 'Refreshing',
-                  success: 'Done',
-                  error: 'Error',
-                },
-                { className: 'w-36' },
-              );
-            }}
-          >
-            <RiRefreshLine />
-          </Button>
+          {onLine && (
+            <Button
+              className="btn-ghost"
+              onClick={() => {
+                void toast.promise(
+                  result.refetch(),
+                  {
+                    loading: 'Refreshing',
+                    success: 'Done',
+                    error: 'Error',
+                  },
+                  { className: 'w-36' },
+                );
+              }}
+            >
+              <RiRefreshLine />
+            </Button>
+          )}
         </>
       }
       {...rootProps}

@@ -8,6 +8,7 @@ import type {
 } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency } from '../../utils/money';
 import { clsxtw } from '../../utils/utils';
 import { Avatar } from '../Avatar';
@@ -46,6 +47,7 @@ const PersonMenu = ({
   setIsInvalidating: (val: boolean) => void;
   actorInfo: ActorInfo;
 }) => {
+  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const utils = trpc.useContext();
@@ -106,7 +108,7 @@ const PersonMenu = ({
               <Button
                 className="btn-error btn-outline"
                 onClick={handleDelete}
-                disabled={balance.amount !== 0}
+                disabled={balance.amount !== 0 || !onLine}
               >
                 <MdDeleteOutline />
                 Remove Participant
@@ -119,7 +121,7 @@ const PersonMenu = ({
               <Button
                 className="btn-error btn-outline"
                 onClick={handleDelete}
-                disabled={balance.amount !== 0}
+                disabled={balance.amount !== 0 || !onLine}
               >
                 <MdDeleteOutline />
                 Leave

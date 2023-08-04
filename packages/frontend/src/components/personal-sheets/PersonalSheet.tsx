@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import type { ExpenseListItem, Sheet } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency } from '../../utils/money';
 import {
   formatDateTimeRelative,
@@ -34,6 +35,7 @@ const ExpenseListItemComponent = ({
 };
 
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
+  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const utils = trpc.useContext();
@@ -41,7 +43,6 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const { data: personalSheetExpensesResponse } =
     trpc.expense.getPersonalSheetExpenses.useQuery({
       personalSheetId: personalSheet.id,
-      limit: 4,
     });
   const { mutateAsync: deleteSheet, isLoading: deleteSheetLoading } =
     trpc.sheet.deleteSheet.useMutation();
@@ -57,9 +58,11 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     <div className="flex flex-col gap-4">
       <h2 className="text-xl font-semibold">Latest Expenses</h2>
 
-      {personalSheetExpensesResponse?.expenses.map((expense) => (
-        <ExpenseListItemComponent key={expense.id} expense={expense} />
-      ))}
+      {personalSheetExpensesResponse?.expenses
+        .slice(0, 4)
+        .map((expense) => (
+          <ExpenseListItemComponent key={expense.id} expense={expense} />
+        ))}
 
       <Link
         to={`/sheets/${personalSheet.id}/expenses`}
@@ -87,6 +90,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             <MdDeleteOutline /> Delete Sheet
           </>
         }
+        disabled={!onLine}
         confirmLabel="Confirm Delete (Irreversible)"
         handleConfirmed={handleDelete}
       />

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MdCheck, MdClear, MdPersonAdd } from 'react-icons/md';
 
 import { trpc } from '../../api/trpc';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { prevalidateEmail } from '../../utils/utils';
 import { Avatar } from '../Avatar';
 import { Button } from '../form/Button';
@@ -10,6 +11,8 @@ import { TextField } from '../form/TextField';
 import { ParticipantListItem } from './ParticipantListItem';
 
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
+  const onLine = useNavigatorOnLine();
+
   const { mutateAsync: addGroupSheetMember, isLoading } =
     trpc.sheet.addGroupSheetMember.useMutation();
   const utils = trpc.useContext();
@@ -83,6 +86,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   ) : (
     <Button
       className="btn-primary btn-outline"
+      disabled={!onLine}
       onClick={() => {
         setAddMemberOpen(true);
       }}

@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
 import { useResetCache } from '../../api/useCacheReset';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { TextField } from '../form/TextField';
 
 export const DeleteUserForm = () => {
+  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const [isReconfirming, setIsReconfirming] = useState(false);
@@ -35,6 +37,8 @@ export const DeleteUserForm = () => {
     navigate('/');
   };
 
+  const disabled = !valid || !onLine;
+
   return (
     <div className="card card-bordered card-compact">
       <div className="card-body text-justify">
@@ -57,6 +61,8 @@ export const DeleteUserForm = () => {
           onSubmit={(e) => {
             e.preventDefault();
 
+            if (disabled) return;
+
             void handleAnonymize();
           }}
         >
@@ -76,7 +82,7 @@ export const DeleteUserForm = () => {
           />
           <Button
             isLoading={isLoading}
-            disabled={!valid}
+            disabled={disabled}
             type="submit"
             className="btn-error btn-block mt-4"
           >

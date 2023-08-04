@@ -4,6 +4,7 @@ import { MdAddCircle, MdDeleteOutline, MdPersonAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { getCurrencyCode } from '../../utils/money';
 import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
@@ -12,6 +13,7 @@ import { TextField } from '../form/TextField';
 
 export const CreateGroupForm = () => {
   const navigate = useNavigate();
+  const onLine = useNavigatorOnLine();
 
   const { mutateAsync: createGroupSheet, isLoading } =
     trpc.sheet.createGroupSheet.useMutation();
@@ -55,13 +57,15 @@ export const CreateGroupForm = () => {
     groupSheetName !== '' &&
     participantEmails.every((e) => prevalidateEmail(e));
 
+  const disabled = !valid || !onLine;
+
   return (
     <form
       className="flex flex-col"
       onSubmit={(e) => {
         e.preventDefault();
 
-        if (!valid) return;
+        if (disabled) return;
 
         void handleCreateGroupSheet();
       }}
@@ -118,7 +122,7 @@ export const CreateGroupForm = () => {
       <Button
         type="submit"
         className="btn-primary"
-        disabled={!valid}
+        disabled={disabled}
         isLoading={isLoading}
       >
         <MdAddCircle /> Create Group

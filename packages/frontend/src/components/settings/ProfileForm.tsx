@@ -4,11 +4,13 @@ import { toast } from 'react-hot-toast';
 import type { User } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { TextField } from '../form/TextField';
 
 export const ProfileForm = ({ me }: { me: User }) => {
+  const onLine = useNavigatorOnLine();
   const utils = trpc.useContext();
   const { mutateAsync: updateUser, isLoading } =
     trpc.user.updateUser.useMutation();
@@ -27,6 +29,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
   const valid = name !== '' && prevalidateEmail(email) && passwordValid;
   const unchanged =
     name === me.name && email === me.email && !password && !newPassword;
+  const disabled = !valid || !onLine || unchanged;
 
   const handleSubmit = async () => {
     const { name: newName, email: newEmail } = await updateUser({
@@ -51,6 +54,8 @@ export const ProfileForm = ({ me }: { me: User }) => {
       className="card card-bordered card-compact"
       onSubmit={(e) => {
         e.preventDefault();
+
+        if (disabled) return;
 
         void handleSubmit();
       }}
@@ -94,7 +99,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
         <Button
           type="submit"
           isLoading={isLoading}
-          disabled={!valid || unchanged}
+          disabled={disabled}
           className="btn-primary mt-4 w-full"
         >
           Save

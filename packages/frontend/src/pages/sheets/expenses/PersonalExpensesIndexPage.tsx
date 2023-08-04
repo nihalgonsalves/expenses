@@ -1,7 +1,7 @@
 import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../../api/trpc';
-import { FloatingActionButton } from '../../../components/FloatingActionnButton';
+import { FloatingActionButton } from '../../../components/FloatingActionButton';
 import { PersonalSheetExpensesExpandedList } from '../../../components/personal-sheets/PersonalSheetExpenseExpandedList';
 import { PersonalSheetParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';

@@ -9,7 +9,6 @@ import React, { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
-import { PrefetchQueries } from './PrefetchQueries';
 import { trpc } from './trpc';
 
 const ZData = z.object({
@@ -121,7 +120,6 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
         client={queryClient}
         persistOptions={{ persister: asyncStoragePersister }}
       >
-        <PrefetchQueries />
         {children}
         <ReactQueryDevtools initialIsOpen={false} />
       </PersistQueryClientProvider>

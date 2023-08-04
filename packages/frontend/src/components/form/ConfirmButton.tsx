@@ -7,11 +7,13 @@ export const ConfirmButton = ({
   confirmLabel,
   isLoading,
   handleConfirmed,
+  disabled,
 }: {
   label: React.ReactNode;
   confirmLabel: React.ReactNode;
   isLoading: boolean;
   handleConfirmed: () => void;
+  disabled?: boolean;
 }) => {
   const [clicked, setClicked] = useState(false);
 
@@ -35,6 +37,7 @@ export const ConfirmButton = ({
     </>
   ) : (
     <Button
+      disabled={disabled}
       className="btn-error btn-outline btn-block"
       onClick={() => {
         setClicked(true);

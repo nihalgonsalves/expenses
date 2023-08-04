@@ -6,6 +6,7 @@ import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
 import { useCurrentUser } from '../../api/useCurrentUser';
+import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { ConfirmButton } from '../form/ConfirmButton';
 
 import { type ActorInfo, BalanceSummary } from './BalanceSummary';
@@ -17,6 +18,7 @@ export const GroupSheet = ({
 }: {
   groupSheet: GroupSheetByIdResponse;
 }) => {
+  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const utils = trpc.useContext();
@@ -25,7 +27,6 @@ export const GroupSheet = ({
   const { data: groupSheetExpensesResponse } =
     trpc.expense.getGroupSheetExpenses.useQuery({
       groupSheetId: groupSheet.id,
-      limit: 2,
     });
 
   const { mutateAsync: deleteGroupSheet, isLoading: deleteGroupLoading } =
@@ -65,7 +66,7 @@ export const GroupSheet = ({
       <h2 className="text-xl font-semibold">Latest Expenses</h2>
 
       <GroupSheetExpensesDenseList
-        expenses={groupSheetExpensesResponse?.expenses ?? []}
+        expenses={groupSheetExpensesResponse?.expenses.slice(0, 2) ?? []}
       />
       <Link
         to={`/groups/${groupSheet.id}/expenses`}
@@ -80,6 +81,7 @@ export const GroupSheet = ({
 
       {actorInfo?.isAdmin && (
         <ConfirmButton
+          disabled={!onLine}
           isLoading={deleteGroupLoading}
           label={
             <>

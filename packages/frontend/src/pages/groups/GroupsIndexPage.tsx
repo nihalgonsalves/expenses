@@ -1,7 +1,7 @@
 import { MdGroupAdd } from 'react-icons/md';
 
 import { trpc } from '../../api/trpc';
-import { FloatingActionButton } from '../../components/FloatingActionnButton';
+import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { GroupSheetsList } from '../../components/group-sheets/GroupSheetsList';
 import { RootLoader } from '../Root';
 
