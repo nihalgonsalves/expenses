@@ -15,5 +15,5 @@ select {
 }
 
 body {
-  overscroll-behavior-y: auto;
+  overscroll-behavior-y: contain;
 }

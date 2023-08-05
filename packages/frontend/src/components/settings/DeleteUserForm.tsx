@@ -76,7 +76,7 @@ export const DeleteUserForm = () => {
           <TextField
             label="Password"
             type="password"
-            autoComplete="current-pasword"
+            autoComplete="current-password"
             value={password}
             setValue={setPassword}
           />

@@ -43,8 +43,9 @@ export default defineConfig(({ mode }) => ({
         // prettier-ignore
         icons: [
           { src: '/favicon.ico', type: 'image/x-icon', sizes: '256x256' },
-          { src: '/assets/icon.svg', type: 'image/png', sizes: '512x512' },
-          { src: '/assets/icon-maskable.svg', type: 'image/png', sizes: '512x512', purpose: 'maskable' },
+          { src: '/assets/icon.svg', type: 'image/svg+xml', sizes: '512x512' },
+          { src: '/assets/icon-maskable.svg', type: 'image/svg+xml', sizes: '512x512', purpose: 'maskable' },
+          { src: '/assets/icon-monochrome.svg', type: 'image/svg+xml', sizes: '16x16', purpose: 'monochrome' },
         ],
       },
     }),
