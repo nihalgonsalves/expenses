@@ -353,29 +353,31 @@ export class ExpenseService {
           ).toInstant().epochMilliseconds,
         ),
         transactions: {
-          create: input.splits.flatMap(
-            (
-              split,
-            ): [
-              Prisma.ExpenseTransactionsCreateWithoutExpenseInput,
-              Prisma.ExpenseTransactionsCreateWithoutExpenseInput,
-            ] => [
-              {
-                id: generateId(),
-                user: { connect: { id: input.paidById } },
-                // NOTE: the amount is already negative if it is an expense
-                amount: split.share.amount,
-                scale: split.share.scale,
-              },
-              {
-                id: generateId(),
-                user: { connect: { id: split.participantId } },
-                // NOTE: this gets flipped to positive for an expense
-                amount: -split.share.amount,
-                scale: split.share.scale,
-              },
-            ],
-          ),
+          create: input.splits
+            .filter(({ share }) => share.amount !== 0)
+            .flatMap(
+              (
+                split,
+              ): [
+                Prisma.ExpenseTransactionsCreateWithoutExpenseInput,
+                Prisma.ExpenseTransactionsCreateWithoutExpenseInput,
+              ] => [
+                {
+                  id: generateId(),
+                  user: { connect: { id: input.paidById } },
+                  // NOTE: the amount is already negative if it is an expense
+                  amount: split.share.amount,
+                  scale: split.share.scale,
+                },
+                {
+                  id: generateId(),
+                  user: { connect: { id: split.participantId } },
+                  // NOTE: this gets flipped to positive for an expense
+                  amount: -split.share.amount,
+                  scale: split.share.scale,
+                },
+              ],
+            ),
         },
       },
     });
