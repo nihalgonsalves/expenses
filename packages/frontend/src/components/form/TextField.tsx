@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import React, { useCallback } from 'react';
+import React, { useCallback, useId } from 'react';
 
 import { clsxtw } from '../../utils/utils';
 
@@ -28,6 +28,8 @@ export const TextField = ({
   inputRef,
   ...inputProps
 }: TextFieldProps) => {
+  const id = useId();
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setValue(e.target.value);
@@ -40,6 +42,7 @@ export const TextField = ({
       <AnimatePresence>
         {(label != null || labelAlt != null) && (
           <motion.label
+            key={`${id}-top-label`}
             className="label"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -61,6 +64,7 @@ export const TextField = ({
 
         {bottomLabel != null && (
           <motion.label
+            key={`${id}-bottom-label`}
             className="label"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
