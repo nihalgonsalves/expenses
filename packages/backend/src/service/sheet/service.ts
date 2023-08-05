@@ -216,9 +216,10 @@ export class SheetService {
         scale,
         currencyCode: groupSheet.currencyCode,
       })),
+      groupSheet.currencyCode,
     );
 
-    if (balance?.amount != null && balance.amount !== 0) {
+    if (balance.amount !== 0) {
       throw new SheetServiceError({
         code: 'BAD_REQUEST',
         message: 'Cannot delete a member with a non-zero balance',

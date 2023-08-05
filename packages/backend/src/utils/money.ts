@@ -39,11 +39,12 @@ export const zeroMoney = (currencyCode: string): Money => ({
 export const addMoney = (a: Money, b: Money): Money =>
   dineroToMoney(dineroAdd(moneyToDinero(a), moneyToDinero(b)));
 
-export const sumMoney = ([firstValue, ...otherValues]: Money[]):
-  | Money
-  | undefined => {
+export const sumMoney = (
+  [firstValue, ...otherValues]: Money[],
+  currencyCode: string,
+): Money => {
   if (!firstValue) {
-    return undefined;
+    return zeroMoney(currencyCode);
   }
 
   return dineroToMoney(

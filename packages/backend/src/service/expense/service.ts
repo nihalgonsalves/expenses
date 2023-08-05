@@ -68,7 +68,8 @@ const calculateUserBalance = (
         amount: txn.amount,
         scale: txn.scale,
       })),
-  ) ?? zeroMoney(currencyCode);
+    currencyCode,
+  );
 
 const calculateBalances = (
   groupSheet: Sheet,
@@ -309,10 +310,12 @@ export class ExpenseService {
       });
     }
 
-    const splitTotal = sumMoney(input.splits.map(({ share }) => share));
+    const splitTotal = sumMoney(
+      input.splits.map(({ share }) => share),
+      groupSheet.currencyCode,
+    );
 
     if (
-      !splitTotal ||
       !equal(
         dinero({
           amount: input.money.amount,
@@ -506,6 +509,7 @@ export class ExpenseService {
                   currencyCode: groupSheet.currencyCode,
                 }),
               ),
+            groupSheet.currencyCode,
           ),
         ]),
       );
@@ -570,7 +574,10 @@ export class ExpenseService {
       const sent = sentMap[id] ?? zero;
       const received = receivedMap[id] ?? zero;
 
-      const balance = sumMoney([cost, spent, sent, received]) ?? zero;
+      const balance = sumMoney(
+        [cost, spent, sent, received],
+        groupSheet.currencyCode,
+      );
 
       return {
         name,
