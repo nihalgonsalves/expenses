@@ -1,4 +1,5 @@
-import { Fragment, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
@@ -25,7 +26,6 @@ const ExpandedExpenseListItem = ({
 }) => {
   const utils = trpc.useContext();
 
-  const [isInvalidating, setIsInvalidating] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   const descriptionText = getExpenseDescription(expense);
@@ -37,8 +37,12 @@ const ExpandedExpenseListItem = ({
   );
 
   return (
-    <div
-      className={clsxtw('card card-bordered', { 'opacity-50': isInvalidating })}
+    <motion.div
+      key={expense.id}
+      className="card card-bordered"
+      layout
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.5, opacity: 0 }}
     >
       <div
         tabIndex={0}
@@ -86,7 +90,9 @@ const ExpandedExpenseListItem = ({
           <ExpenseActions
             sheetId={groupSheetId}
             expense={expense}
-            setIsInvalidating={setIsInvalidating}
+            onBeforeDelete={() => {
+              setExpanded(false);
+            }}
             onDelete={async () => {
               await Promise.all([
                 utils.expense.getGroupSheetExpenses.invalidate({
@@ -98,7 +104,7 @@ const ExpandedExpenseListItem = ({
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -111,13 +117,14 @@ export const GroupSheetExpensesExpandedList = ({
 }) => (
   <div className="flex flex-col gap-4">
     {expenses.length === 0 && <div className="alert">No expenses</div>}
-    {expenses.map((expense) => (
-      <Fragment key={expense.id}>
+    <AnimatePresence initial={false}>
+      {expenses.map((expense) => (
         <ExpandedExpenseListItem
+          key={expense.id}
           expense={expense}
           groupSheetId={groupSheetId}
         />
-      </Fragment>
-    ))}
+      ))}
+    </AnimatePresence>
   </div>
 );

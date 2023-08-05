@@ -173,7 +173,7 @@ export const RootLoader = <
       }
       {...rootProps}
     >
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {result.status === 'success' && (
           <motion.div
             initial={{ opacity: 0 }}

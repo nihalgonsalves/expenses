@@ -1,3 +1,5 @@
+import { AnimatePresence, motion } from 'framer-motion';
+
 import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
 import { formatCurrency } from '../../utils/money';
@@ -16,7 +18,13 @@ const DenseExpenseListItem = ({
   const descriptionText = getExpenseDescription(expense);
 
   return (
-    <div className="flex flex-row items-center gap-4">
+    <motion.div
+      key={expense.id}
+      className="flex flex-row items-center gap-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       <CategoryAvatar category={expense.category} />
       <div>
         <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
@@ -44,7 +52,7 @@ const DenseExpenseListItem = ({
           .filter(({ balance: { amount } }) => amount !== 0)
           .map(({ name }) => name)}
       ></AvatarGroup>
-    </div>
+    </motion.div>
   );
 };
 
@@ -54,8 +62,10 @@ export const GroupSheetExpensesDenseList = ({
   expenses: GroupSheetExpenseListItem[];
 }) => (
   <div className="flex flex-col gap-4">
-    {expenses.map((expense) => (
-      <DenseExpenseListItem key={expense.id} expense={expense} />
-    ))}
+    <AnimatePresence initial={false}>
+      {expenses.map((expense) => (
+        <DenseExpenseListItem key={expense.id} expense={expense} />
+      ))}
+    </AnimatePresence>
   </div>
 );

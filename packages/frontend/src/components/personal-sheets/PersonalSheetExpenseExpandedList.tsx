@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 
 import type { ExpenseListItem } from '@nihalgonsalves/expenses-backend';
@@ -22,7 +23,6 @@ const ExpandedExpenseListItem = ({
 }) => {
   const utils = trpc.useContext();
 
-  const [isInvalidating, setIsInvalidating] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
   const descriptionText = getExpenseDescription(expense);
@@ -34,10 +34,12 @@ const ExpandedExpenseListItem = ({
   );
 
   return (
-    <div
-      className={clsxtw('card card-bordered', {
-        'opacity-50': isInvalidating,
-      })}
+    <motion.div
+      key={expense.id}
+      layout
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.5, opacity: 0 }}
+      className="card card-bordered"
     >
       <div
         tabIndex={0}
@@ -66,7 +68,9 @@ const ExpandedExpenseListItem = ({
           <ExpenseActions
             sheetId={personalSheetId}
             expense={expense}
-            setIsInvalidating={setIsInvalidating}
+            onBeforeDelete={() => {
+              setExpanded(false);
+            }}
             onDelete={async () => {
               await utils.expense.getPersonalSheetExpenses.invalidate({
                 personalSheetId,
@@ -75,7 +79,7 @@ const ExpandedExpenseListItem = ({
           />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -88,12 +92,14 @@ export const PersonalSheetExpensesExpandedList = ({
 }) => (
   <div className="flex flex-col gap-4">
     {expenses.length === 0 && <div className="alert">No expenses</div>}
-    {expenses.map((expense) => (
-      <ExpandedExpenseListItem
-        key={expense.id}
-        expense={expense}
-        personalSheetId={personalSheetId}
-      />
-    ))}
+    <AnimatePresence initial={false}>
+      {expenses.map((expense) => (
+        <ExpandedExpenseListItem
+          key={expense.id}
+          expense={expense}
+          personalSheetId={personalSheetId}
+        />
+      ))}
+    </AnimatePresence>
   </div>
 );

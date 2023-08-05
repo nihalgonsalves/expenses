@@ -1,3 +1,5 @@
+import { motion, AnimatePresence } from 'framer-motion';
+
 import type {
   Sheet,
   ExpenseListItem,
@@ -21,7 +23,7 @@ const ExpenseRow = ({
   const dateTime = formatDateTimeRelative(expense.spentAt);
 
   return (
-    <tr>
+    <motion.tr key={expense.id} layout>
       <td>
         <div className="flex items-center gap-4">
           <CategoryAvatar category={expense.category} />
@@ -41,7 +43,7 @@ const ExpenseRow = ({
       </td>
 
       <td>{sheet.name}</td>
-    </tr>
+    </motion.tr>
   );
 };
 
@@ -65,9 +67,11 @@ export const AllUserExpensesList = ({
       </tr>
     </thead>
     <tbody>
-      {data.expenses.map(({ expense, sheet }) => (
-        <ExpenseRow key={expense.id} expense={expense} sheet={sheet} />
-      ))}
+      <AnimatePresence mode="wait">
+        {data.expenses.map(({ expense, sheet }) => (
+          <ExpenseRow key={expense.id} expense={expense} sheet={sheet} />
+        ))}
+      </AnimatePresence>
     </tbody>
   </table>
 );

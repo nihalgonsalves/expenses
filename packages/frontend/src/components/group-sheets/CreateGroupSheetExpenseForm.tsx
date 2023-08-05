@@ -451,6 +451,7 @@ export const ExpenseAndIncomeForm = ({
   me: User;
   type: 'expense' | 'income';
 }) => {
+  const utils = trpc.useContext();
   const { mutateAsync: createGroupSheetExpense, isLoading } =
     trpc.expense.createGroupSheetExpense.useMutation();
 
@@ -532,6 +533,14 @@ export const ExpenseAndIncomeForm = ({
     }
 
     navigate(`/groups/${groupSheet.id}`);
+
+    await Promise.all([
+      utils.expense.getAllUserExpenses.invalidate(),
+      utils.expense.getGroupSheetExpenses.invalidate({
+        groupSheetId: groupSheet.id,
+      }),
+      utils.expense.getParticipantSummaries.invalidate(groupSheet.id),
+    ]);
   };
 
   return (
@@ -668,6 +677,7 @@ export const SettlementForm = ({
     });
 
     await Promise.all([
+      utils.expense.getAllUserExpenses.invalidate(),
       utils.expense.getGroupSheetExpenses.invalidate({
         groupSheetId: groupSheet.id,
       }),

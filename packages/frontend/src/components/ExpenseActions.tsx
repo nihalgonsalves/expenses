@@ -9,30 +9,26 @@ import { ConfirmButton } from './form/ConfirmButton';
 export const ExpenseActions = ({
   sheetId,
   expense,
-  setIsInvalidating,
+  onBeforeDelete,
   onDelete,
 }: {
   sheetId: string;
   expense: ExpenseListItem;
-  setIsInvalidating: (isInvalidating: boolean) => void;
+  onBeforeDelete: () => void;
   onDelete: () => Promise<void> | void;
 }) => {
   const { mutateAsync: deleteExpense, isLoading } =
     trpc.expense.deleteExpense.useMutation();
 
   const handleDelete = async () => {
-    try {
-      setIsInvalidating(true);
+    onBeforeDelete();
 
-      await deleteExpense({
-        sheetId,
-        expenseId: expense.id,
-      });
+    await deleteExpense({
+      sheetId,
+      expenseId: expense.id,
+    });
 
-      await onDelete();
-    } catch {
-      setIsInvalidating(false);
-    }
+    await onDelete();
   };
 
   return (

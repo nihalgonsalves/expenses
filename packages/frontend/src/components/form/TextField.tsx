@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import React, { useCallback } from 'react';
 
 import { clsxtw } from '../../utils/utils';
@@ -36,27 +37,39 @@ export const TextField = ({
 
   return (
     <div className={clsxtw('form-control', className)}>
-      {(label != null || labelAlt != null) && (
-        <label className="label">
-          <span className="label-text">{label}</span>
-          <span className="label-text-alt">{labelAlt}</span>
-        </label>
-      )}
+      <AnimatePresence>
+        {(label != null || labelAlt != null) && (
+          <motion.label
+            className="label"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <span className="label-text">{label}</span>
+            <span className="label-text-alt">{labelAlt}</span>
+          </motion.label>
+        )}
 
-      <input
-        type="text"
-        className={clsxtw('input', 'input-bordered', inputClassName)}
-        value={value}
-        onChange={handleChange}
-        ref={inputRef}
-        {...inputProps}
-      />
+        <input
+          type="text"
+          className={clsxtw('input', 'input-bordered', inputClassName)}
+          value={value}
+          onChange={handleChange}
+          ref={inputRef}
+          {...inputProps}
+        />
 
-      {bottomLabel != null && (
-        <label className="label">
-          <span className="label-text">{bottomLabel}</span>
-        </label>
-      )}
+        {bottomLabel != null && (
+          <motion.label
+            className="label"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <span className="label-text">{bottomLabel}</span>
+          </motion.label>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

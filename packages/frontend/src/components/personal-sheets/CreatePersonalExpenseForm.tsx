@@ -86,11 +86,14 @@ export const CreatePersonalExpenseForm = ({
       spentAt: dateTimeLocalToISOString(spentAt),
     });
 
-    await utils.expense.getPersonalSheetExpenses.invalidate({
-      personalSheetId: personalSheet.id,
-    });
+    navigate(`/sheets/${personalSheet.id}/expenses`);
 
-    navigate(`/sheets/${personalSheet.id}`);
+    await Promise.all([
+      utils.expense.getAllUserExpenses.invalidate(),
+      utils.expense.getPersonalSheetExpenses.invalidate({
+        personalSheetId: personalSheet.id,
+      }),
+    ]);
   };
 
   const disabled = !valid || !onLine;
