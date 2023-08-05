@@ -18,7 +18,9 @@ const ExpenseRow = ({
   expense: ExpenseListItem;
   sheet: Sheet;
 }) => {
-  const money = formatCurrency(expense.money, { signDisplay: 'never' });
+  const money = formatCurrency(expense.money, {
+    signDisplay: expense.type === 'TRANSFER' ? 'never' : 'always',
+  });
   const description = getExpenseDescription(expense);
   const dateTime = formatDateTimeRelative(expense.spentAt);
 
@@ -30,19 +32,21 @@ const ExpenseRow = ({
         </div>
       </td>
 
-      <td className="hidden md:table-cell">{money}</td>
-      <td className="hidden md:table-cell">
+      <td className="hidden sm:table-cell">
         <strong>{description}</strong>
       </td>
-      <td className="hidden md:table-cell">{dateTime}</td>
+      <td className="hidden sm:table-cell">{dateTime}</td>
 
-      <td className="md:hidden">
-        <strong>{description}</strong> {money}
+      <td className="sm:hidden">
+        <strong>{description}</strong>
         <br />
         <em>{dateTime}</em>
+        <br />
+        {sheet.name}
       </td>
 
-      <td>{sheet.name}</td>
+      <td className="text-right">{money}</td>
+      <td className="hidden sm:table-cell">{sheet.name}</td>
     </motion.tr>
   );
 };
@@ -57,13 +61,13 @@ export const AllUserExpensesList = ({
       <tr>
         <th>Category</th>
 
-        <th className="hidden md:table-cell">Amount</th>
-        <th className="hidden md:table-cell">Description</th>
-        <th className="hidden md:table-cell">Date</th>
+        <th className="hidden sm:table-cell">Description</th>
+        <th className="hidden sm:table-cell">Date</th>
 
-        <th className="md:hidden">Details</th>
+        <th className="sm:hidden">Details</th>
 
-        <th>Sheet</th>
+        <th className="text-right">Amount</th>
+        <th className="hidden sm:table-cell">Sheet</th>
       </tr>
     </thead>
     <tbody>
