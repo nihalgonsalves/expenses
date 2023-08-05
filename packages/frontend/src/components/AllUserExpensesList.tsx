@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { Fragment } from 'react';
 
 import type {
   Sheet,
@@ -7,7 +8,12 @@ import type {
 } from '@nihalgonsalves/expenses-backend';
 
 import { formatCurrency } from '../utils/money';
-import { formatDateTimeRelative, getExpenseDescription } from '../utils/utils';
+import {
+  formatDateTimeRelative,
+  getExpenseDescription,
+  groupBySpentAt,
+  shortDateFormatter,
+} from '../utils/utils';
 
 import { CategoryAvatar } from './CategoryAvatar';
 
@@ -55,27 +61,48 @@ export const AllUserExpensesList = ({
   data,
 }: {
   data: GetAllUserExpensesResponse;
-}) => (
-  <table className="table table-pin-rows">
-    <thead>
-      <tr>
-        <th>Category</th>
+}) => {
+  const groupedByDate = groupBySpentAt(
+    data.expenses,
+    ({ expense }) => expense.spentAt,
+  );
 
-        <th className="hidden sm:table-cell">Description</th>
-        <th className="hidden sm:table-cell">Date</th>
-
-        <th className="sm:hidden">Details</th>
-
-        <th className="text-right">Amount</th>
-        <th className="hidden sm:table-cell">Sheet</th>
-      </tr>
-    </thead>
-    <tbody>
+  return (
+    <table className="table table-pin-rows table-auto">
       <AnimatePresence mode="wait">
-        {data.expenses.map(({ expense, sheet }) => (
-          <ExpenseRow key={expense.id} expense={expense} sheet={sheet} />
+        {[...groupedByDate.keys()].map((date) => (
+          <Fragment key={date}>
+            <thead>
+              <tr>
+                <th>Category</th>
+
+                <th className="hidden sm:table-cell">Description</th>
+                <th className="hidden sm:table-cell">
+                  Date ({shortDateFormatter.format(date)})
+                </th>
+
+                <th className="sm:hidden">
+                  Details ({shortDateFormatter.format(date)})
+                </th>
+
+                <th className="text-right">Amount</th>
+                <th className="hidden sm:table-cell">Sheet</th>
+              </tr>
+            </thead>
+            <tbody>
+              {groupedByDate
+                .get(date)
+                ?.map(({ expense, sheet }) => (
+                  <ExpenseRow
+                    key={expense.id}
+                    expense={expense}
+                    sheet={sheet}
+                  />
+                ))}
+            </tbody>
+          </Fragment>
         ))}
       </AnimatePresence>
-    </tbody>
-  </table>
-);
+    </table>
+  );
+};

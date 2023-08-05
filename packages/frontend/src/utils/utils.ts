@@ -38,15 +38,25 @@ export const dateToISOString = (date: Date) =>
     .toZonedDateTimeISO(CURRENT_TIMEZONE)
     .toString();
 
+export const isoToTemporalZonedDateTime = (iso: string) =>
+  Temporal.Instant.from(iso).toZonedDateTimeISO(CURRENT_TIMEZONE);
+
 export const nowForDateTimeInput = () =>
   Temporal.Now.plainDateTimeISO().round('minutes').toString();
 
-export const shortDateTime = new Intl.DateTimeFormat(getUserLanguage(), {
+export const shortDateFormatter = new Intl.DateTimeFormat(getUserLanguage(), {
   dateStyle: 'short',
-  timeStyle: 'short',
 });
 
-const shortRelativeFormat = new Intl.RelativeTimeFormat(getUserLanguage(), {
+export const shortDateTimeFormatter = new Intl.DateTimeFormat(
+  getUserLanguage(),
+  {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  },
+);
+
+const shortRelativeFormatter = new Intl.RelativeTimeFormat(getUserLanguage(), {
   style: 'short',
 });
 
@@ -63,19 +73,19 @@ export const formatDateTimeRelative = (iso8601: string) => {
   const { days, hours, minutes } = durationRounded.abs();
 
   if (days >= 7) {
-    return shortDateTime.format(instant.epochMilliseconds);
+    return shortDateTimeFormatter.format(instant.epochMilliseconds);
   }
 
   if (days >= 1) {
-    return shortRelativeFormat.format(durationRounded.days, 'day');
+    return shortRelativeFormatter.format(durationRounded.days, 'day');
   }
 
   if (hours >= 1) {
-    return shortRelativeFormat.format(durationRounded.hours, 'hours');
+    return shortRelativeFormatter.format(durationRounded.hours, 'hours');
   }
 
   if (minutes >= 1) {
-    return shortRelativeFormat.format(durationRounded.minutes, 'minutes');
+    return shortRelativeFormatter.format(durationRounded.minutes, 'minutes');
   }
 
   return 'just now';
@@ -137,4 +147,28 @@ export const getGroupSheetExpenseSummaryText = (
     expense.yourBalance.amount < 0 ? 'You receive' : 'You owe';
 
   return `${oweOrReceive} ${balanceFormatted}`;
+};
+
+export const groupBySpentAt = <T>(
+  expenses: T[],
+  getSpentAt: (expense: T) => string,
+) => {
+  const groupedByDate = new Map<number, T[]>();
+
+  // TODO: proposal-array-grouping (TypeScript 5.3?)
+  for (const expense of expenses) {
+    const date = isoToTemporalZonedDateTime(getSpentAt(expense)).round(
+      'day',
+    ).epochMilliseconds;
+
+    const existing = groupedByDate.get(date);
+
+    if (existing) {
+      existing.push(expense);
+    } else {
+      groupedByDate.set(date, [expense]);
+    }
+  }
+
+  return groupedByDate;
 };

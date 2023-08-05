@@ -3,7 +3,11 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { describe, it, expect } from 'vitest';
 
-import { formatDateTimeRelative, joinList, shortDateTime } from './utils';
+import {
+  formatDateTimeRelative,
+  joinList,
+  shortDateTimeFormatter,
+} from './utils';
 
 describe('joinList', () => {
   it('returns an empty string for an empty list', () => {
@@ -30,7 +34,7 @@ describe('formatDateTimeRelative', () => {
     const date = Temporal.Now.zonedDateTimeISO().subtract({ days: 7 });
 
     expect(formatDateTimeRelative(date.toString())).toBe(
-      shortDateTime.format(date.epochMilliseconds),
+      shortDateTimeFormatter.format(date.epochMilliseconds),
     );
   });
 

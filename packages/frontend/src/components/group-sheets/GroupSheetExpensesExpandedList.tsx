@@ -9,6 +9,8 @@ import {
   clsxtw,
   getExpenseDescription,
   getGroupSheetExpenseSummaryText,
+  groupBySpentAt,
+  shortDateFormatter,
 } from '../../utils/utils';
 import { Avatar } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';
@@ -114,17 +116,34 @@ export const GroupSheetExpensesExpandedList = ({
 }: {
   groupSheetId: string;
   expenses: GroupSheetExpenseListItem[];
-}) => (
-  <div className="flex flex-col gap-4">
-    {expenses.length === 0 && <div className="alert">No expenses</div>}
-    <AnimatePresence initial={false}>
-      {expenses.map((expense) => (
-        <ExpandedExpenseListItem
-          key={expense.id}
-          expense={expense}
-          groupSheetId={groupSheetId}
-        />
-      ))}
-    </AnimatePresence>
-  </div>
-);
+}) => {
+  const groupedByDate = groupBySpentAt(expenses, ({ spentAt }) => spentAt);
+
+  return (
+    <div className="flex flex-col gap-4">
+      {expenses.length === 0 && <div className="alert">No expenses</div>}
+      <AnimatePresence initial={false}>
+        {[...groupedByDate.keys()].flatMap((date) => [
+          <motion.div
+            key={date}
+            className="divider"
+            layout
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+          >
+            {shortDateFormatter.format(date)}
+          </motion.div>,
+          groupedByDate
+            .get(date)
+            ?.map((expense) => (
+              <ExpandedExpenseListItem
+                key={expense.id}
+                expense={expense}
+                groupSheetId={groupSheetId}
+              />
+            )),
+        ])}
+      </AnimatePresence>
+    </div>
+  );
+};
