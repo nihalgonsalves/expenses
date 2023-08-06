@@ -23,10 +23,17 @@ const prefs = new PreferencesDexie();
 
 const CURRENCY_CODE_PREFERENCE_KEY = 'preferred_currency_code' as const;
 
+const setPreferredCurrencyCode = async (currencyCode: string) => {
+  await prefs.preferences.put({
+    key: CURRENCY_CODE_PREFERENCE_KEY,
+    value: currencyCode,
+  });
+};
+
 export const usePreferredCurrencyCode = () => {
   const currencyCodeItem = useLiveQuery(async () =>
     prefs.preferences.get(CURRENCY_CODE_PREFERENCE_KEY),
   );
 
-  return [currencyCodeItem?.value ?? 'EUR'] as const;
+  return [currencyCodeItem?.value ?? 'EUR', setPreferredCurrencyCode] as const;
 };

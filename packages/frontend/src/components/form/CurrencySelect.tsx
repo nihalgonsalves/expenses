@@ -8,10 +8,12 @@ import { Select } from './Select';
 export const CurrencySelect = ({
   currencyCode,
   setCurrencyCode,
+  label = 'Currency',
   options = CURRENCY_CODES,
 }: {
   currencyCode: string;
   setCurrencyCode: (newCode: string) => void;
+  label?: string;
   options?: string[];
 }) => {
   const optionDownProp = useMemo(
@@ -25,7 +27,7 @@ export const CurrencySelect = ({
 
   return (
     <Select
-      label="Currency"
+      label={label}
       value={currencyCode}
       setValue={setCurrencyCode}
       options={optionDownProp}

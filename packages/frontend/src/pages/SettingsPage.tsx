@@ -1,6 +1,7 @@
 import { useCurrentUser } from '../api/useCurrentUser';
 import { DeleteUserForm } from '../components/settings/DeleteUserForm';
 import { NotificationPreferenceForm } from '../components/settings/NotificationPreferenceForm';
+import { PreferencesForm } from '../components/settings/PreferencesForm';
 import { ProfileForm } from '../components/settings/ProfileForm';
 import { ThemeForm } from '../components/settings/ThemeForm';
 import { TroubleshootingForm } from '../components/settings/TroubleshootingForm';
@@ -13,6 +14,7 @@ export const SettingsPage = () => {
   return (
     <Root title="Settings">
       <div className="flex flex-col gap-8">
+        <PreferencesForm />
         <ThemeForm />
         {status === 'success' && (
           <>
