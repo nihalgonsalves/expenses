@@ -16,6 +16,7 @@ export const CreateSheetForm = ({
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
+  const utils = trpc.useContext();
   const { mutateAsync: createSheet, isLoading } =
     trpc.sheet.createPersonalSheet.useMutation();
 
@@ -27,7 +28,10 @@ export const CreateSheetForm = ({
       name,
       currencyCode,
     });
+
     navigate(`/sheets/${id}`);
+
+    await utils.sheet.myPersonalSheets.invalidate();
   };
 
   const valid = name !== '';

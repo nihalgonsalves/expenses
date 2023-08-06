@@ -18,6 +18,7 @@ export const CreateGroupForm = ({
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
+  const utils = trpc.useContext();
   const { mutateAsync: createGroupSheet, isLoading } =
     trpc.sheet.createGroupSheet.useMutation();
 
@@ -54,6 +55,8 @@ export const CreateGroupForm = ({
     });
 
     navigate(`/groups/${id}`);
+
+    await utils.sheet.myGroupSheets.invalidate();
   };
 
   const valid =
