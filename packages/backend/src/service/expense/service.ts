@@ -208,7 +208,8 @@ export class ExpenseService {
         money: sumTransactions(
           expense.sheet.currencyCode,
           transactions.filter(
-            ({ amount, userId }) => amount < 0 && userId === user.id,
+            ({ amount, userId }) =>
+              expense.type === 'EXPENSE' && amount < 0 && userId === user.id,
           ),
         ),
       }))
@@ -220,7 +221,8 @@ export class ExpenseService {
         money: sumTransactions(
           expense.sheet.currencyCode,
           transactions.filter(
-            ({ amount, userId }) => amount > 0 && userId === user.id,
+            ({ amount, userId }) =>
+              expense.type === 'INCOME' && amount > 0 && userId === user.id,
           ),
         ),
       }))

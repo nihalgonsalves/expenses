@@ -36,7 +36,7 @@ const ExpenseRow = ({
     ? formatCurrency(expense.convertedMoney, {
         signDisplay: expense.type === 'TRANSFER' ? 'never' : 'always',
       })
-    : money;
+    : undefined;
 
   const description = getExpenseDescription(expense);
   const dateTime = formatDateTimeRelative(expense.spentAt);
@@ -63,9 +63,15 @@ const ExpenseRow = ({
       </td>
 
       <td className="text-right">
-        {convertedMoney}
-        <br />
-        <span className="text-gray-300">{money}</span>
+        {convertedMoney == undefined || convertedMoney === money ? (
+          <span>{money}</span>
+        ) : (
+          <>
+            {convertedMoney}
+            <br />
+            <span className="text-gray-300">{money}</span>
+          </>
+        )}
       </td>
       <td className="hidden sm:table-cell">{sheet.name}</td>
     </motion.tr>
