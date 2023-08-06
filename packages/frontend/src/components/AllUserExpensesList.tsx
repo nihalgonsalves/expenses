@@ -4,12 +4,11 @@ import { Fragment, useMemo, useState } from 'react';
 import type {
   Sheet,
   ExpenseListItem,
-  GetAllUserExpensesResponse,
   Money,
 } from '@nihalgonsalves/expenses-backend';
 import { sumMoney } from '@nihalgonsalves/expenses-backend/src/utils/money';
 
-import { useConvertCurrency } from '../api/currencyConversion';
+import type { AllConvertedUserExpenses } from '../api/useAllUserExpenses';
 import { usePreferredCurrencyCode } from '../state/preferences';
 import { formatCurrency } from '../utils/money';
 import {
@@ -126,58 +125,24 @@ const ButtonStat = ({
 export const AllUserExpensesList = ({
   data,
 }: {
-  data: GetAllUserExpensesResponse;
+  data: AllConvertedUserExpenses;
 }) => {
+  const [preferredCurrencyCode] = usePreferredCurrencyCode();
+
   const [selectedView, setSelectedView] = useState<'EXPENSES' | 'INCOME'>(
     'EXPENSES',
   );
   const nextMotionTowardsDirection =
     selectedView === 'EXPENSES' ? ('left' as const) : ('right' as const);
 
-  const [preferredCurrencyCode] = usePreferredCurrencyCode();
-
-  const convertCurrency = useConvertCurrency(
-    [
-      ...new Set([
-        ...data.expenses.map(({ expense }) => expense.money.currencyCode),
-        ...data.earnings.map(({ expense }) => expense.money.currencyCode),
-      ]),
-    ],
-    preferredCurrencyCode,
-  );
-
-  const convertedExpenses = useMemo(
-    () =>
-      data.expenses.map(({ sheet, expense }) => ({
-        sheet,
-        expense: {
-          ...expense,
-          convertedMoney: convertCurrency(expense.money),
-        },
-      })),
-    [data.expenses, convertCurrency],
-  );
-
-  const convertedEarnings = useMemo(
-    () =>
-      data.earnings.map(({ sheet, expense }) => ({
-        sheet,
-        expense: {
-          ...expense,
-          convertedMoney: convertCurrency(expense.money),
-        },
-      })),
-    [data.earnings, convertCurrency],
-  );
-
   const totalSpent = sumMoney(
-    convertedExpenses
+    data.expenses
       .map(({ expense }) => expense.convertedMoney)
       .filter((x): x is NonNullable<typeof x> => x != null),
     preferredCurrencyCode,
   );
   const totalEarned = sumMoney(
-    convertedEarnings
+    data.earnings
       .map(({ expense }) => expense.convertedMoney)
       .filter((x): x is NonNullable<typeof x> => x != null),
     preferredCurrencyCode,
@@ -186,10 +151,10 @@ export const AllUserExpensesList = ({
   const groupedByDate = useMemo(
     () =>
       groupBySpentAt(
-        selectedView === 'EXPENSES' ? convertedExpenses : convertedEarnings,
+        selectedView === 'EXPENSES' ? data.expenses : data.earnings,
         ({ expense }) => expense.spentAt,
       ),
-    [selectedView, convertedExpenses, convertedEarnings],
+    [selectedView, data.expenses, data.earnings],
   );
 
   return (

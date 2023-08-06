@@ -24,6 +24,7 @@ export {
   type Money,
   dineroToMoney,
   getCurrency,
+  addMoney,
   zeroMoney,
   moneyToDinero,
   CURRENCY_CODES,

@@ -3,27 +3,31 @@ import { useCallback, useMemo } from 'react';
 
 import type { Money } from '@nihalgonsalves/expenses-backend';
 
+import { usePreferredCurrencyCode } from '../state/preferences';
 import { convertCurrency } from '../utils/money';
 
 import { trpc } from './trpc';
 
-export const useConvertCurrency = (
-  sourceCodes: string[],
-  targetCode: string,
-) => {
+export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
+  const [preferredCurrencyCode] = usePreferredCurrencyCode();
+
   const { data: supportedCurrencies = [] } =
     trpc.currencyConversion.getSupportedCurrencies.useQuery();
 
   const rates = trpc.useQueries((t) =>
-    sourceCodes
-      .filter((s) => s !== targetCode && supportedCurrencies.includes(s))
-      .map((sourceCode) =>
-        t.currencyConversion.getConversionRate({
-          date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
-          from: sourceCode,
-          to: targetCode,
-        }),
+    [
+      ...new Set(
+        sourceCodes.filter(
+          (s) => s !== preferredCurrencyCode && supportedCurrencies.includes(s),
+        ),
       ),
+    ].map((sourceCode) =>
+      t.currencyConversion.getConversionRate({
+        date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
+        from: sourceCode,
+        to: preferredCurrencyCode,
+      }),
+    ),
   );
 
   // Record<SourceCurrency, Rate SourceCurrency->TargetCurrency>>
@@ -40,9 +44,9 @@ export const useConvertCurrency = (
     [rates],
   );
 
-  return useCallback(
+  const convertToPreferred = useCallback(
     (sourceSnapshot: Money) => {
-      if (sourceSnapshot.currencyCode === targetCode) {
+      if (sourceSnapshot.currencyCode === preferredCurrencyCode) {
         return sourceSnapshot;
       }
 
@@ -50,10 +54,12 @@ export const useConvertCurrency = (
 
       if (!rate) return undefined;
 
-      return convertCurrency(sourceSnapshot, targetCode, rate);
+      return convertCurrency(sourceSnapshot, preferredCurrencyCode, rate);
     },
-    [sourceRateMap, targetCode],
+    [sourceRateMap, preferredCurrencyCode],
   );
+
+  return [convertToPreferred, preferredCurrencyCode] as const;
 };
 
 export const useCurrencyConversion = (

@@ -2,10 +2,10 @@ import { Temporal } from '@js-temporal/polyfill';
 import { useState } from 'react';
 
 import { useAllUserExpenses } from '../../api/useAllUserExpenses';
-import { AllUserExpensesList } from '../../components/AllUserExpensesList';
+import { CategoryStats } from '../../components/CategoryStats';
 import { RootLoader } from '../Root';
 
-export const ExpensesIndexPage = () => {
+export const StatsIndexPage = () => {
   const [from] = useState(
     Temporal.Now.zonedDateTimeISO()
       .subtract({ months: 2 })
@@ -22,9 +22,9 @@ export const ExpensesIndexPage = () => {
   return (
     <RootLoader
       result={result}
-      title="Expenses"
+      title="Stats"
       mainClassName="p-0"
-      render={(data) => <AllUserExpensesList data={data} />}
+      render={(data) => <CategoryStats data={data} />}
     />
   );
 };

@@ -8,7 +8,7 @@ import { useCurrentUser } from '../api/useCurrentUser';
 export const NavBarAvatar = () => {
   const resetCache = useResetCache();
 
-  const { data, status, error } = useCurrentUser();
+  const { status, error } = useCurrentUser();
   const signOut = trpc.user.signOut.useMutation();
 
   const handleSignOut = async () => {
@@ -33,7 +33,7 @@ export const NavBarAvatar = () => {
         >
           <li>
             <Link to="/settings" className="justify-between">
-              {data.name}
+              Settings
             </Link>
           </li>
           <li>

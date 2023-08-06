@@ -26,6 +26,7 @@ import { SheetImportPage } from './pages/sheets/SheetImportPage';
 import { SheetsIndexPage } from './pages/sheets/SheetsIndexPage';
 import { NewPersonalSheetExpensePage } from './pages/sheets/expenses/NewExpensePage';
 import { PersonalExpensesIndexPage } from './pages/sheets/expenses/PersonalExpensesIndexPage';
+import { StatsIndexPage } from './pages/stats/StatsIndexPage';
 
 export const RouterLink = forwardRef<
   HTMLAnchorElement,
@@ -63,6 +64,15 @@ export const router = createBrowserRouter([
         element: (
           <AuthenticatedRoute>
             <ExpensesIndexPage />
+          </AuthenticatedRoute>
+        ),
+        errorElement,
+      },
+      {
+        path: '/stats',
+        element: (
+          <AuthenticatedRoute>
+            <StatsIndexPage />
           </AuthenticatedRoute>
         ),
         errorElement,

@@ -83,9 +83,14 @@ export const ZExpenseListItem = z.object({
 
 export type ExpenseListItem = z.infer<typeof ZExpenseListItem>;
 
+export const ZExpenseWithSheet = z.object({
+  expense: ZExpenseListItem,
+  sheet: ZSheet,
+});
+
 export const ZGetAllUserExpensesResponse = z.object({
-  expenses: z.array(z.object({ expense: ZExpenseListItem, sheet: ZSheet })),
-  earnings: z.array(z.object({ expense: ZExpenseListItem, sheet: ZSheet })),
+  expenses: z.array(ZExpenseWithSheet),
+  earnings: z.array(ZExpenseWithSheet),
 });
 
 export type GetAllUserExpensesResponse = z.infer<

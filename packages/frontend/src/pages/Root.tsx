@@ -1,5 +1,4 @@
 import type { TRPCClientErrorLike } from '@trpc/client';
-import type { UseTRPCQueryResult } from '@trpc/react-query/shared';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -9,7 +8,7 @@ import {
   MdArrowBack,
   MdGroup,
   MdHome,
-  MdSettings,
+  MdPieChart,
   MdTableView,
 } from 'react-icons/md';
 import { RiRefreshLine } from 'react-icons/ri';
@@ -84,16 +83,16 @@ export const Root = ({
           <MdHome />
         </NavLink>
 
+        <NavLink to="/stats" aria-label="Stats" title="Stats">
+          <MdPieChart />
+        </NavLink>
+
         <NavLink to="/sheets" aria-label="Sheets" title="Sheets">
           <MdTableView />
         </NavLink>
 
         <NavLink to="/groups" aria-label="Groups" title="Groups">
           <MdGroup />
-        </NavLink>
-
-        <NavLink to="/settings" aria-label="Settings" title="Settings">
-          <MdSettings />
         </NavLink>
       </nav>
     </div>
@@ -104,7 +103,9 @@ const ROOT_TOAST = 'root-toast';
 
 export const RootLoader = <
   TData,
-  TProcedure extends AnyProcedure | AnyRouter | TRPCErrorShape<number>,
+  TError extends TRPCClientErrorLike<
+    AnyProcedure | AnyRouter | TRPCErrorShape<number>
+  >,
 >({
   result,
   render,
@@ -112,8 +113,13 @@ export const RootLoader = <
   getTitle,
   ...rootProps
 }: Omit<RootProps, 'children' | 'title'> & {
-  result: UseTRPCQueryResult<TData, TRPCClientErrorLike<TProcedure>>;
   render: (data: TData) => React.ReactNode;
+  result: {
+    data: TData | undefined;
+    error: TError | null;
+    isLoading: boolean;
+    refetch: () => Promise<unknown>;
+  };
 } & (
     | {
         title?: React.ReactNode;
@@ -150,13 +156,11 @@ export const RootLoader = <
     <Root
       title={
         <>
-          {result.status === 'success'
-            ? getTitle?.(result.data) ?? title
-            : title}
-          {result.status === 'loading' && (
+          {result.data != null ? getTitle?.(result.data) ?? title : title}
+          {result.isLoading && (
             <div className="loading loading-spinner loading-xs ml-4" />
           )}
-          {!mobileStandalone && result.status !== 'loading' && onLine && (
+          {!mobileStandalone && !result.isLoading && onLine && (
             <Button className="btn-ghost" onClick={refetch}>
               <RiRefreshLine />
             </Button>
@@ -166,10 +170,10 @@ export const RootLoader = <
       {...rootProps}
     >
       <AnimatePresence mode="wait">
-        {result.status === 'error' && (
+        {result.error != null && (
           <div className="alert alert-error">{result.error.message}</div>
         )}
-        {result.status === 'success' && (
+        {result.data != null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

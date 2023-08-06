@@ -12,7 +12,7 @@ export const SettingsPage = () => {
   const { data, status } = useCurrentUser();
 
   return (
-    <Root title="Settings">
+    <Root title="Settings" showBackButton>
       <div className="flex flex-col gap-8">
         <PreferencesForm />
         <ThemeForm />
