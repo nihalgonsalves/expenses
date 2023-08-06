@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { z } from 'zod';
 
 import { protectedProcedure, router } from '../../trpc';
@@ -21,7 +22,14 @@ export const currencyConversionRouter = router({
     }),
 
   getConversionRate: protectedProcedure
-    .input(z.object({ from: z.string().length(3), to: z.string().length(3) }))
+    .input(
+      z.object({
+        // ISO date-only string
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        from: z.string().length(3),
+        to: z.string().length(3),
+      }),
+    )
     .output(
       z.object({
         from: z.string().length(3),
@@ -30,8 +38,12 @@ export const currencyConversionRouter = router({
         scale: z.number(),
       }),
     )
-    .query(async ({ ctx, input: { from, to } }) => {
-      const rate = await ctx.frankfurterService.getConversionRate(from, to);
+    .query(async ({ ctx, input: { date, from, to } }) => {
+      const rate = await ctx.frankfurterService.getConversionRate(
+        from,
+        to,
+        Temporal.PlainDate.from(date),
+      );
       return { from, to, ...decimalToScaled(rate) };
     }),
 });

@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { useCallback, useMemo } from 'react';
 
 import type { Money } from '@nihalgonsalves/expenses-backend';
@@ -10,11 +11,15 @@ export const useConvertCurrency = (
   sourceCodes: string[],
   targetCode: string,
 ) => {
+  const { data: supportedCurrencies = [] } =
+    trpc.currencyConversion.getSupportedCurrencies.useQuery();
+
   const rates = trpc.useQueries((t) =>
     sourceCodes
-      .filter((s) => s !== targetCode)
+      .filter((s) => s !== targetCode && supportedCurrencies.includes(s))
       .map((sourceCode) =>
         t.currencyConversion.getConversionRate({
+          date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
           from: sourceCode,
           to: targetCode,
         }),
@@ -52,6 +57,7 @@ export const useConvertCurrency = (
 };
 
 export const useCurrencyConversion = (
+  date: Temporal.PlainDate,
   sourceCode: string,
   targetCode: string,
   sourceSnapshot: Money,
@@ -61,6 +67,7 @@ export const useCurrencyConversion = (
 
   const { data: rate } = trpc.currencyConversion.getConversionRate.useQuery(
     {
+      date: date.toString(),
       from: sourceCode,
       to: targetCode,
     },

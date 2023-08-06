@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -66,20 +67,36 @@ export class FrankfurterService {
     return parseResult.data;
   }
 
-  async getConversionRate(baseCurrency: string, targetCurrency: string) {
-    const rates = await this.getRates(baseCurrency, targetCurrency);
+  async getConversionRate(
+    baseCurrency: string,
+    targetCurrency: string,
+    date: Temporal.PlainDate,
+  ) {
+    const rates = await this.getRates(baseCurrency, targetCurrency, date);
 
     // this is only called for currencies returned by getCurrencies,
     // safe to assert and not safe parse
     return z.number().parse(rates[targetCurrency]);
   }
 
-  private async getRates(baseCurrency: string, targetCurrency?: string) {
-    const url = new URL('/latest', this.baseUrl);
-    url.searchParams.set('from', baseCurrency);
-    if (targetCurrency) {
-      url.searchParams.set('to', targetCurrency);
+  private async getRates(
+    baseCurrency: string,
+    targetCurrency: string,
+    date: Temporal.PlainDate,
+  ) {
+    if (
+      Temporal.PlainDate.compare(date, Temporal.PlainDate.from('1999-01-04')) <
+      0
+    ) {
+      throw new FrankfurterServiceError({
+        code: 'NOT_FOUND',
+        message: 'Rates not available before 1999-01-04',
+      });
     }
+
+    const url = new URL(`/${date.toString()}`, this.baseUrl);
+    url.searchParams.set('from', baseCurrency);
+    url.searchParams.set('to', targetCurrency);
 
     const fetchResult = await safeFetchJson(url);
 

@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { type Dinero, allocate } from 'dinero.js';
 import { produce } from 'immer';
 import {
@@ -477,6 +478,7 @@ export const ExpenseAndIncomeForm = ({
     rate,
     targetSnapshot: convertedMoneySnapshot,
   } = useCurrencyConversion(
+    Temporal.PlainDate.from(spentAt),
     currencyCode,
     groupSheet.currencyCode,
     moneySnapshot,
