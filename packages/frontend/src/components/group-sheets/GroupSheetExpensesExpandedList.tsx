@@ -70,25 +70,34 @@ const ExpandedExpenseListItem = ({
         <div className="collapse-content flex flex-col gap-4 p-0">
           <div className="divider mb-0" />
 
-          {expense.type === 'EXPENSE' &&
-            expense.participants
-              .filter(({ balance: { amount } }) => amount !== 0)
-              .map(({ id, name, balance }) => (
+          {expense.type !== 'TRANSFER' && (
+            <>
+              {expense.participants.map(({ id, name, balance }) => (
                 <ParticipantListItem key={id} avatar={<Avatar name={name} />}>
                   <span>
                     <span className="font-semibold">{name}</span>
                     <br />
-                    {`${
-                      balance.amount < 0 ? 'Receives' : 'Owes'
-                    } ${formatCurrency(balance, {
+                    {balance.actual.amount !== 0 ? (
+                      <>
+                        {expense.type === 'EXPENSE' ? ' Paid ' : ' Received'}
+                        {formatCurrency(balance.actual, {
+                          signDisplay: 'never',
+                        })}
+                        {' with own share of '}
+                      </>
+                    ) : (
+                      ''
+                    )}
+                    {formatCurrency(balance.share, {
                       signDisplay: 'never',
-                    })}`}
+                    })}
                   </span>
                 </ParticipantListItem>
               ))}
 
-          <div className="divider m-0" />
-
+              <div className="divider m-0" />
+            </>
+          )}
           <ExpenseActions
             sheetId={groupSheetId}
             expense={expense}

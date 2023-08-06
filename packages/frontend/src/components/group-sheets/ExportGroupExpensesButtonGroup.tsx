@@ -2,6 +2,7 @@ import type { Sheet } from '@nihalgonsalves/expenses-backend';
 
 import { trpc } from '../../api/trpc';
 import { moneyToString } from '../../utils/money';
+import { getShortName } from '../../utils/utils';
 import { ExportExpensesButtonGroup } from '../ExportExpensesButtonGroup';
 
 export const ExportGroupExpensesButtonGroup = ({
@@ -36,21 +37,29 @@ export const ExportGroupExpensesButtonGroup = ({
         spentAt,
         money,
         participants,
-      }) => ({
-        id,
-        type,
-        category,
-        description,
-        spent_at: spentAt,
-        currency_code: money.currencyCode,
-        amount: moneyToString(money),
-        ...Object.fromEntries(
-          participants.map(({ name, balance }) => [
-            name.toLowerCase().replace(/[^\w]/g, '_'),
-            moneyToString(balance),
-          ]),
-        ),
-      })}
+      }) => {
+        const participantColumns: Record<string, string> = {};
+
+        participants.forEach(({ name, balance }) => {
+          participantColumns[`${getShortName(name).toLowerCase()}_share`] =
+            balance.share.amount === 0 ? '' : moneyToString(balance.share);
+
+          participantColumns[
+            `${getShortName(name).toLowerCase()}_paid_or_received`
+          ] = balance.actual.amount === 0 ? '' : moneyToString(balance.actual);
+        });
+
+        return {
+          id,
+          type,
+          category,
+          description,
+          spent_at: spentAt,
+          currency_code: money.currencyCode,
+          amount: moneyToString(money),
+          ...participantColumns,
+        };
+      }}
     />
   );
 };

@@ -57,13 +57,18 @@ describe('ExpenseService', () => {
       } = await useSetup();
 
       const input = createGroupSheetExpenseInput(
+        'EXPENSE',
         groupSheet.id,
         currencyCode,
         creator.id,
         otherParticipant.id,
       );
 
-      await expenseService.createGroupSheetExpense(creator, input, groupSheet);
+      await expenseService.createGroupSheetExpenseOrIncome(
+        creator,
+        input,
+        groupSheet,
+      );
 
       expect(webPushService.messages).toMatchObject([
         {

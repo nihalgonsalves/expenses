@@ -135,18 +135,13 @@ export const getGroupSheetExpenseSummaryText = (
     )}`;
   }
 
-  if (expense.yourBalance.amount === 0) {
+  if (expense.yourBalance == null) {
     return 'Not involved';
   }
 
-  const balanceFormatted = formatCurrency(expense.yourBalance, {
+  return `Your share: ${formatCurrency(expense.yourBalance.share, {
     signDisplay: 'never',
-  });
-
-  const oweOrReceive =
-    expense.yourBalance.amount < 0 ? 'You receive' : 'You owe';
-
-  return `${oweOrReceive} ${balanceFormatted}`;
+  })}`;
 };
 
 export const groupBySpentAt = <T>(

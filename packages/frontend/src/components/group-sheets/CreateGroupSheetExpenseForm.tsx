@@ -33,7 +33,6 @@ import {
   convertCurrency,
   formatCurrency,
   formatDecimalCurrency,
-  negateMoney,
   toDinero,
   useMoneyValues,
 } from '../../utils/money';
@@ -449,16 +448,16 @@ export const ExpenseAndIncomeForm = ({
 }: {
   groupSheet: GroupSheetByIdResponse;
   me: User;
-  type: 'expense' | 'income';
+  type: 'EXPENSE' | 'INCOME';
 }) => {
   const utils = trpc.useContext();
-  const { mutateAsync: createGroupSheetExpense, isLoading } =
-    trpc.expense.createGroupSheetExpense.useMutation();
+  const { mutateAsync: createGroupSheetExpenseOrIncome, isLoading } =
+    trpc.expense.createGroupSheetExpenseOrIncome.useMutation();
 
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
-  const [paidById, setPaidById] = useState(me.id);
+  const [paidOrReceivedById, setPaidOrReceivedById] = useState(me.id);
   const [currencyCode, setCurrencyCode] = useState(groupSheet.currencyCode);
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState<CategoryId>();
@@ -493,40 +492,28 @@ export const ExpenseAndIncomeForm = ({
     }
 
     const basePayload = {
+      type,
       groupSheetId: groupSheet.id,
-      paidById,
+      paidOrReceivedById,
       description,
       category: category ?? CategoryId.Other,
       spentAt: dateTimeLocalToISOString(spentAt),
     };
 
     if (groupSheet.currencyCode === currencyCode) {
-      const signedMoney =
-        type === 'expense' ? negateMoney(moneySnapshot) : moneySnapshot;
-
-      await createGroupSheetExpense({
+      await createGroupSheetExpenseOrIncome({
         ...basePayload,
-        money: signedMoney,
-        splits: calcSplits(
-          groupSheet,
-          currencyCode,
-          moneyToDinero(signedMoney),
-          ratios,
-        ),
+        money: moneySnapshot,
+        splits,
       });
     } else if (convertedMoneySnapshot) {
-      const signedMoney =
-        type === 'expense'
-          ? negateMoney(convertedMoneySnapshot)
-          : convertedMoneySnapshot;
-
-      await createGroupSheetExpense({
+      await createGroupSheetExpenseOrIncome({
         ...basePayload,
-        money: signedMoney,
+        money: convertedMoneySnapshot,
         splits: calcSplits(
           groupSheet,
           currencyCode,
-          moneyToDinero(signedMoney),
+          moneyToDinero(convertedMoneySnapshot),
           ratios,
         ),
       });
@@ -560,7 +547,7 @@ export const ExpenseAndIncomeForm = ({
           className="flex-grow"
           autoFocus
           label={
-            type === 'expense'
+            type === 'EXPENSE'
               ? 'How much was spent?'
               : 'How much was received?'
           }
@@ -585,12 +572,12 @@ export const ExpenseAndIncomeForm = ({
 
       <ParticipantSelect
         groupSheet={groupSheet}
-        label={type === 'expense' ? 'Who paid?' : 'Who received money?'}
-        selectedId={paidById}
+        label={type === 'EXPENSE' ? 'Who paid?' : 'Who received money?'}
+        selectedId={paidOrReceivedById}
         setSelectedId={(newId) => {
           if (!newId) return;
 
-          setPaidById(newId);
+          setPaidOrReceivedById(newId);
         }}
       />
 
@@ -734,7 +721,7 @@ export const SettlementForm = ({
 
 const TYPE_OPTIONS = [
   {
-    value: 'expense',
+    value: 'EXPENSE',
     label: (
       <>
         <span className="text-xl">
@@ -745,7 +732,7 @@ const TYPE_OPTIONS = [
     ),
   },
   {
-    value: 'income',
+    value: 'INCOME',
     label: (
       <>
         <span className="text-xl">
@@ -756,7 +743,7 @@ const TYPE_OPTIONS = [
     ),
   },
   {
-    value: 'settlement',
+    value: 'SETTLEMENT',
     label: (
       <>
         <span className="text-xl">
@@ -775,8 +762,8 @@ export const CreateGroupSheetExpenseForm = ({
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
-  const [type, setType] = useState<'expense' | 'income' | 'settlement'>(
-    'expense',
+  const [type, setType] = useState<'EXPENSE' | 'INCOME' | 'SETTLEMENT'>(
+    'EXPENSE',
   );
 
   return (
@@ -787,7 +774,7 @@ export const CreateGroupSheetExpenseForm = ({
         setValue={setType}
         options={TYPE_OPTIONS}
       />
-      {type === 'settlement' ? (
+      {type === 'SETTLEMENT' ? (
         <SettlementForm groupSheet={groupSheet} me={me} />
       ) : (
         <ExpenseAndIncomeForm type={type} groupSheet={groupSheet} me={me} />

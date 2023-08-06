@@ -30,6 +30,7 @@ describe('createPersonalSheetExpense', () => {
       createPersonalSheetExpenseInput(
         personalSheet.id,
         personalSheet.currencyCode,
+        'EXPENSE',
       ),
     );
 
@@ -64,6 +65,7 @@ describe('createPersonalSheetExpense', () => {
       createPersonalSheetExpenseInput(
         personalSheet.id,
         personalSheet.currencyCode,
+        'INCOME',
         100_00,
       ),
     );
@@ -78,7 +80,7 @@ describe('createPersonalSheetExpense', () => {
     });
 
     expect(expense).toMatchObject({
-      type: ExpenseType.EXPENSE,
+      type: ExpenseType.INCOME,
     });
 
     expect(expense?.transactions).toMatchObject([
@@ -98,6 +100,7 @@ describe('createPersonalSheetExpense', () => {
     const invalidInput = createPersonalSheetExpenseInput(
       personalSheet.id,
       'GBP',
+      'EXPENSE',
     );
 
     await expect(
@@ -111,7 +114,11 @@ describe('createPersonalSheetExpense', () => {
 
     await expect(
       caller.expense.createPersonalSheetExpense(
-        createPersonalSheetExpenseInput(generateId(), currencyCodeFactory()),
+        createPersonalSheetExpenseInput(
+          generateId(),
+          currencyCodeFactory(),
+          'EXPENSE',
+        ),
       ),
     ).rejects.toThrow('Sheet not found');
   });
@@ -124,7 +131,11 @@ describe('createPersonalSheetExpense', () => {
 
     await expect(
       caller.expense.createPersonalSheetExpense(
-        createPersonalSheetExpenseInput(groupSheet.id, groupSheet.currencyCode),
+        createPersonalSheetExpenseInput(
+          groupSheet.id,
+          groupSheet.currencyCode,
+          'EXPENSE',
+        ),
       ),
     ).rejects.toThrow('Sheet not found');
   });
@@ -145,6 +156,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
         createPersonalSheetExpenseInput(
           personalSheet.id,
           personalSheet.currencyCode,
+          'EXPENSE',
         ),
       ],
     });
@@ -174,6 +186,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
     const invalidInput = createPersonalSheetExpenseInput(
       personalSheet.id,
       'GBP',
+      'EXPENSE',
     );
 
     await expect(
@@ -184,12 +197,35 @@ describe('batchCreatePersonalSheetExpenses', () => {
     ).rejects.toThrow('Currencies do not match');
   });
 
+  it("returns 400 if the amount isn't abosolute", async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    const invalidInput = createPersonalSheetExpenseInput(
+      personalSheet.id,
+      personalSheet.currencyCode,
+      'EXPENSE',
+      -100_00,
+    );
+
+    await expect(
+      caller.expense.batchCreatePersonalSheetExpenses({
+        personalSheetId: personalSheet.id,
+        expenses: [invalidInput],
+      }),
+    ).rejects.toThrow('Amount must be absolute');
+  });
+
   it.todo('returns 404 if the personalSheet does not exist');
 
   it.todo('returns 404 if the user is not the personalSheet owner');
 });
 
-describe('createGroupSheetExpense', () => {
+describe('createGroupSheetExpenseOrIncome', () => {
   it('creates an expense', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
@@ -203,58 +239,13 @@ describe('createGroupSheetExpense', () => {
       withParticipantIds: [member.id],
     });
 
-    const response = await caller.expense.createGroupSheetExpense(
+    const response = await caller.expense.createGroupSheetExpenseOrIncome(
       createGroupSheetExpenseInput(
+        'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
         member.id,
-      ),
-    );
-
-    expect(response).toMatchObject({
-      id: expect.any(String),
-    });
-
-    const expense = await prisma.expense.findUnique({
-      where: { id: response.id },
-      include: { transactions: true },
-    });
-
-    expect(expense).toMatchObject({
-      type: ExpenseType.EXPENSE,
-    });
-
-    expect(expense?.transactions).toMatchObject([
-      { scale: 2, amount: +75_00, userId: member.id },
-      { scale: 2, amount: -75_00, userId: user.id },
-      { scale: 2, amount: +25_00, userId: user.id },
-      { scale: 2, amount: -25_00, userId: user.id },
-    ]);
-  });
-
-  it('creates an income "expense"', async () => {
-    const [user, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
-    ]);
-
-    const caller = useProtectedCaller(user);
-
-    const groupSheet = await groupSheetFactory(prisma, {
-      withOwnerId: user.id,
-      withParticipantIds: [member.id],
-    });
-
-    const response = await caller.expense.createGroupSheetExpense(
-      createGroupSheetExpenseInput(
-        groupSheet.id,
-        groupSheet.currencyCode,
-        user.id,
-        member.id,
-        100_00,
-        25_00,
-        75_00,
       ),
     );
 
@@ -279,6 +270,78 @@ describe('createGroupSheetExpense', () => {
     ]);
   });
 
+  it('creates an income "expense"', async () => {
+    const [user, member] = await Promise.all([
+      userFactory(prisma),
+      userFactory(prisma),
+    ]);
+
+    const caller = useProtectedCaller(user);
+
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [member.id],
+    });
+
+    const response = await caller.expense.createGroupSheetExpenseOrIncome(
+      createGroupSheetExpenseInput(
+        'INCOME',
+        groupSheet.id,
+        groupSheet.currencyCode,
+        user.id,
+        member.id,
+        100_00,
+        25_00,
+        75_00,
+      ),
+    );
+
+    expect(response).toMatchObject({
+      id: expect.any(String),
+    });
+
+    const expense = await prisma.expense.findUnique({
+      where: { id: response.id },
+      include: { transactions: true },
+    });
+
+    expect(expense).toMatchObject({
+      type: ExpenseType.INCOME,
+    });
+
+    expect(expense?.transactions).toMatchObject([
+      { scale: 2, amount: +75_00, userId: member.id },
+      { scale: 2, amount: -75_00, userId: user.id },
+      { scale: 2, amount: +25_00, userId: user.id },
+      { scale: 2, amount: -25_00, userId: user.id },
+    ]);
+  });
+
+  it('returns 400 if the amount is not absolute', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: 'EUR',
+    });
+
+    const invalidInput = createGroupSheetExpenseInput(
+      'EXPENSE',
+      groupSheet.id,
+      groupSheet.currencyCode,
+      user.id,
+      user.id,
+      -100_00,
+      -25_00,
+      -75_00,
+    );
+
+    await expect(
+      caller.expense.createGroupSheetExpenseOrIncome(invalidInput),
+    ).rejects.toThrow('Amount must be absolute');
+  });
+
   it("returns 400 if the expense currency doesn't match", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
@@ -289,6 +352,7 @@ describe('createGroupSheetExpense', () => {
     });
 
     const invalidInput = createGroupSheetExpenseInput(
+      'EXPENSE',
       groupSheet.id,
       'GBP',
       user.id,
@@ -296,7 +360,7 @@ describe('createGroupSheetExpense', () => {
     );
 
     await expect(
-      caller.expense.createGroupSheetExpense(invalidInput),
+      caller.expense.createGroupSheetExpenseOrIncome(invalidInput),
     ).rejects.toThrow('Currencies do not match');
   });
 
@@ -310,6 +374,7 @@ describe('createGroupSheetExpense', () => {
     });
 
     const input = createGroupSheetExpenseInput(
+      'EXPENSE',
       groupSheet.id,
       groupSheet.currencyCode,
       user.id,
@@ -318,9 +383,9 @@ describe('createGroupSheetExpense', () => {
 
     input.splits[0]!.share.currencyCode = 'GBP';
 
-    await expect(caller.expense.createGroupSheetExpense(input)).rejects.toThrow(
-      'Currencies do not match',
-    );
+    await expect(
+      caller.expense.createGroupSheetExpenseOrIncome(input),
+    ).rejects.toThrow('Currencies do not match');
   });
 
   it("returns 400 if shares don't add up to the total amount", async () => {
@@ -332,19 +397,20 @@ describe('createGroupSheetExpense', () => {
     });
 
     const input = createGroupSheetExpenseInput(
+      'EXPENSE',
       groupSheet.id,
       groupSheet.currencyCode,
       user.id,
       user.id,
-      -100_00,
-      // total -200_00 split
-      -100_00,
-      -100_00,
+      +100_00,
+      // total +200_00 split
+      +100_00,
+      +100_00,
     );
 
-    await expect(caller.expense.createGroupSheetExpense(input)).rejects.toThrow(
-      'Invalid splits',
-    );
+    await expect(
+      caller.expense.createGroupSheetExpenseOrIncome(input),
+    ).rejects.toThrow('Invalid splits');
   });
 
   it('returns 400 if split participants are not part of the groupSheet', async () => {
@@ -357,15 +423,16 @@ describe('createGroupSheetExpense', () => {
     });
 
     const input = createGroupSheetExpenseInput(
+      'EXPENSE',
       groupSheet.id,
       groupSheet.currencyCode,
       user.id,
       otherUser.id,
     );
 
-    await expect(caller.expense.createGroupSheetExpense(input)).rejects.toThrow(
-      'Invalid participants',
-    );
+    await expect(
+      caller.expense.createGroupSheetExpenseOrIncome(input),
+    ).rejects.toThrow('Invalid participants');
   });
 
   it('returns 404 if the groupSheet does not exist', async () => {
@@ -373,8 +440,9 @@ describe('createGroupSheetExpense', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.createGroupSheetExpense(
+      caller.expense.createGroupSheetExpenseOrIncome(
         createGroupSheetExpenseInput(
+          'EXPENSE',
           generateId(),
           currencyCodeFactory(),
           user.id,
@@ -391,8 +459,9 @@ describe('createGroupSheetExpense', () => {
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.createGroupSheetExpense(
+      caller.expense.createGroupSheetExpenseOrIncome(
         createGroupSheetExpenseInput(
+          'EXPENSE',
           groupSheet.id,
           groupSheet.currencyCode,
           user.id,
@@ -442,8 +511,8 @@ describe('createGroupSheetSettlement', () => {
     });
 
     expect(expense?.transactions).toMatchObject([
-      { scale: 2, amount: +100_00, userId: member.id },
-      { scale: 2, amount: -100_00, userId: user.id },
+      { scale: 2, amount: -100_00, userId: member.id },
+      { scale: 2, amount: +100_00, userId: user.id },
     ]);
   });
 
@@ -485,7 +554,7 @@ describe('createGroupSheetSettlement', () => {
         fromId: user.id,
         toId: user.id,
       }),
-    ).rejects.toThrow('Settlement amounts must be postive.');
+    ).rejects.toThrow('Amount must be absolute');
   });
 
   it('returns 400 if participants are not part of the groupSheet', async () => {
@@ -565,6 +634,7 @@ describe('deleteExpense', () => {
           createPersonalSheetExpenseInput(
             personalSheet.id,
             personalSheet.currencyCode,
+            'EXPENSE',
           ),
         ),
     ],
@@ -572,8 +642,9 @@ describe('deleteExpense', () => {
       'groupSheet',
       groupSheetFactory,
       async (caller: Caller, groupSheet: Sheet, user: User) =>
-        caller.expense.createGroupSheetExpense(
+        caller.expense.createGroupSheetExpenseOrIncome(
           createGroupSheetExpenseInput(
+            'EXPENSE',
             groupSheet.id,
             groupSheet.currencyCode,
             user.id,
@@ -679,8 +750,9 @@ describe('getGroupSheetExpenses', () => {
       withParticipantIds: [member.id],
     });
 
-    const expense = await caller.expense.createGroupSheetExpense(
+    const expense = await caller.expense.createGroupSheetExpenseOrIncome(
       createGroupSheetExpenseInput(
+        'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
@@ -697,8 +769,8 @@ describe('getGroupSheetExpenses', () => {
         id: expense.id,
         description: expense.description,
         participants: [
-          { id: user.id, balance: { amount: -75_00, scale: 2 } },
-          { id: member.id, balance: { amount: 75_00, scale: 2 } },
+          { id: member.id, balance: { share: { amount: -75_00, scale: 2 } } },
+          { id: user.id, balance: { share: { amount: -25_00, scale: 2 } } },
         ],
       },
     ]);
@@ -728,7 +800,7 @@ describe('getGroupSheetExpenses', () => {
 });
 
 describe('getParticipantSummaries', () => {
-  it('returns spent, cost, sent, received and balance amount for each participant', async () => {
+  it('returns balance for each participant', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -744,8 +816,9 @@ describe('getParticipantSummaries', () => {
     const paidById = user.id;
     const otherId = member.id;
 
-    await caller.expense.createGroupSheetExpense(
+    await caller.expense.createGroupSheetExpenseOrIncome(
       createGroupSheetExpenseInput(
+        'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
         paidById,
@@ -765,21 +838,13 @@ describe('getParticipantSummaries', () => {
     expect(summary).toMatchObject([
       {
         balance: { amount: -62_00, scale: 2 },
-        cost: { amount: 25_00, scale: 2 },
         participantId: user.id,
         name: user.name,
-        spent: { amount: -100_00, scale: 2 },
-        sent: { amount: 0, scale: 0 },
-        received: { amount: 13_00, scale: 2 },
       },
       {
         balance: { amount: 62_00, scale: 2 },
-        cost: { amount: 75_00, scale: 2 },
         participantId: member.id,
         name: member.name,
-        spent: { amount: 0, scale: 0 },
-        sent: { amount: -13_00, scale: 2 },
-        received: { amount: 0, scale: 0 },
       },
     ]);
   });

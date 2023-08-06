@@ -301,9 +301,13 @@ export const PersonalExpenseImportStepper = ({
                 throw new Error('Missing amount');
               }
 
+              const { amount, scale } = amountParser(amountValue);
+
               return {
+                type: amount < 0 ? 'EXPENSE' : 'INCOME',
                 money: {
-                  ...amountParser(amountValue),
+                  amount: Math.abs(amount),
+                  scale,
                   currencyCode: personalSheet.currencyCode,
                 },
                 spentAt: dateToISOString(

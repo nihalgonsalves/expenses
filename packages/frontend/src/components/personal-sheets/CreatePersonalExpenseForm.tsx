@@ -8,7 +8,7 @@ import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
 import { CategoryId } from '../../data/categories';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { formatCurrency, negateMoney, useMoneyValues } from '../../utils/money';
+import { formatCurrency, useMoneyValues } from '../../utils/money';
 import {
   dateTimeLocalToISOString,
   nowForDateTimeInput,
@@ -22,7 +22,7 @@ import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
 const TYPE_OPTIONS = [
   {
-    value: 'expense',
+    value: 'EXPENSE',
     label: (
       <>
         <span className="text-xl">
@@ -33,7 +33,7 @@ const TYPE_OPTIONS = [
     ),
   },
   {
-    value: 'income',
+    value: 'INCOME',
     label: (
       <>
         <span className="text-xl">
@@ -53,7 +53,7 @@ export const CreatePersonalExpenseForm = ({
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
-  const [type, setType] = useState<'expense' | 'income'>('expense');
+  const [type, setType] = useState<'EXPENSE' | 'INCOME'>('EXPENSE');
 
   const [amount, setAmount] = useState(0);
   const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
@@ -79,8 +79,9 @@ export const CreatePersonalExpenseForm = ({
   const handleCreateExpense = async () => {
     const money = convertedMoneySnapshot ?? moneySnapshot;
     await createPersonalSheetExpense({
+      type,
       personalSheetId: personalSheet.id,
-      money: type === 'expense' ? negateMoney(money) : money,
+      money,
       category: category ?? CategoryId.Other,
       description,
       spentAt: dateTimeLocalToISOString(spentAt),

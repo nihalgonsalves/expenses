@@ -56,7 +56,7 @@ export const sumMoney = (
 };
 
 export const negateMoney = ({ amount, scale, currencyCode }: Money): Money => ({
-  amount: -amount,
+  amount: amount === 0 ? amount : -amount,
   scale,
   currencyCode,
 });

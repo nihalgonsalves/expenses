@@ -48,9 +48,7 @@ const DenseExpenseListItem = ({
       <AvatarGroup
         className="-space-x-6"
         max={5}
-        names={expense.participants
-          .filter(({ balance: { amount } }) => amount !== 0)
-          .map(({ name }) => name)}
+        names={expense.participants.map(({ name }) => name)}
       ></AvatarGroup>
     </motion.div>
   );

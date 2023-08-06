@@ -87,6 +87,7 @@ model SheetMemberships {
 
 enum ExpenseType {
   EXPENSE
+  INCOME
   TRANSFER
 
   @@map("expense_type")
@@ -97,7 +98,7 @@ model Expense {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
-  type ExpenseType @default(EXPENSE)
+  type ExpenseType
 
   sheet   Sheet  @relation(fields: [sheetId], references: [id], onDelete: Cascade)
   sheetId String @map("sheet_id")

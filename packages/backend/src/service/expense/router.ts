@@ -2,10 +2,9 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import { protectedProcedure, router } from '../../trpc';
-import { zeroMoney } from '../../utils/money';
 
 import {
-  ZCreateGroupSheetExpenseInput,
+  ZCreateGroupSheetExpenseOrIncomeInput,
   ZCreateSheetExpenseResponse,
   ZCreateGroupSheetSettlementInput,
   ZCreateGroupSheetSettlementResponse,
@@ -50,8 +49,8 @@ export const expenseRouter = router({
       );
     }),
 
-  createGroupSheetExpense: protectedProcedure
-    .input(ZCreateGroupSheetExpenseInput)
+  createGroupSheetExpenseOrIncome: protectedProcedure
+    .input(ZCreateGroupSheetExpenseOrIncomeInput)
     .output(ZCreateSheetExpenseResponse)
     .mutation(async ({ input, ctx }) => {
       const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(
@@ -61,7 +60,7 @@ export const expenseRouter = router({
 
       const groupParticipants = new Set(sheet.participants.map(({ id }) => id));
       const expenseParticipants = [
-        input.paidById,
+        input.paidOrReceivedById,
         ...input.splits.map(({ participantId }) => participantId),
       ];
 
@@ -72,7 +71,11 @@ export const expenseRouter = router({
         });
       }
 
-      return ctx.expenseService.createGroupSheetExpense(ctx.user, input, sheet);
+      return ctx.expenseService.createGroupSheetExpenseOrIncome(
+        ctx.user,
+        input,
+        sheet,
+      );
     }),
 
   createGroupSheetSettlement: protectedProcedure
@@ -191,9 +194,9 @@ export const expenseRouter = router({
             participants: participantBalances,
             spentAt: spentAt.toISOString(),
             money: { amount, scale, currencyCode: sheet.currencyCode },
-            yourBalance:
-              participantBalances.find(({ id }) => id === ctx.user.id)
-                ?.balance ?? zeroMoney(sheet.currencyCode),
+            yourBalance: participantBalances.find(
+              ({ id }) => id === ctx.user.id,
+            )?.balance,
           }),
         ),
         total,

@@ -19,27 +19,10 @@ import { ParticipantListItem } from './ParticipantListItem';
 
 export type ActorInfo = { id: string; isAdmin: boolean };
 
-const InfoMenuItem = ({
-  label,
-  children,
-}: {
-  label: React.ReactNode;
-  children: React.ReactNode;
-}) => (
-  <div className="flex flex-row justify-between">
-    <div className="font-semibold">{label}</div>
-    <div>{children}</div>
-  </div>
-);
-
 const PersonMenu = ({
   groupSheetId,
   participantId,
   balance,
-  spent,
-  cost,
-  sent,
-  received,
   setIsInvalidating,
   actorInfo,
 }: ExpenseSummaryResponse[number] & {
@@ -76,6 +59,14 @@ const PersonMenu = ({
     }
   };
 
+  const visible = actorInfo.isAdmin
+    ? actorInfo.id !== participantId
+    : actorInfo.id === participantId;
+
+  if (!visible) {
+    return null;
+  }
+
   return (
     <div className="dropdown dropdown-left">
       <label
@@ -91,43 +82,14 @@ const PersonMenu = ({
         className="text-content card dropdown-content card-bordered card-compact z-[1] w-72 bg-base-100 p-2 shadow"
       >
         <div className="card-body">
-          <InfoMenuItem label="Spent for group">
-            {formatCurrency(spent)}
-          </InfoMenuItem>
-          <InfoMenuItem label="Cost to group">
-            {formatCurrency(cost)}
-          </InfoMenuItem>
-          <InfoMenuItem label="Sent">{formatCurrency(sent)}</InfoMenuItem>
-          <InfoMenuItem label="Received">
-            {formatCurrency(received)}
-          </InfoMenuItem>
-          <InfoMenuItem label="=">{formatCurrency(balance)}</InfoMenuItem>
-          {actorInfo.isAdmin && actorInfo.id !== participantId && (
-            <>
-              <div className="divider" />
-              <Button
-                className="btn-error btn-outline"
-                onClick={handleDelete}
-                disabled={balance.amount !== 0 || !onLine}
-              >
-                <MdDeleteOutline />
-                Remove Participant
-              </Button>
-            </>
-          )}
-          {!actorInfo.isAdmin && actorInfo.id === participantId && (
-            <>
-              <div className="divider" />
-              <Button
-                className="btn-error btn-outline"
-                onClick={handleDelete}
-                disabled={balance.amount !== 0 || !onLine}
-              >
-                <MdDeleteOutline />
-                Leave
-              </Button>
-            </>
-          )}
+          <Button
+            className="btn-error btn-outline"
+            onClick={handleDelete}
+            disabled={balance.amount !== 0 || !onLine}
+          >
+            <MdDeleteOutline />
+            {actorInfo.isAdmin ? 'Remove Participant' : 'Leave'}
+          </Button>
         </div>
       </div>
     </div>

@@ -146,14 +146,6 @@ export const RootLoader = <
 
   usePullToRefresh(ROOT_TOAST, refetch);
 
-  if (result.status === 'error') {
-    return (
-      <Root title="" {...rootProps}>
-        <div className="alert alert-error">{result.error.message}</div>
-      </Root>
-    );
-  }
-
   return (
     <Root
       title={
@@ -174,6 +166,9 @@ export const RootLoader = <
       {...rootProps}
     >
       <AnimatePresence mode="wait">
+        {result.status === 'error' && (
+          <div className="alert alert-error">{result.error.message}</div>
+        )}
         {result.status === 'success' && (
           <motion.div
             initial={{ opacity: 0 }}

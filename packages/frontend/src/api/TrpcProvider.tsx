@@ -57,13 +57,14 @@ const queryClient = new QueryClient({
       staleTime: Temporal.Duration.from({ minutes: 5 }).total('milliseconds'),
       retry(failureCount, error) {
         if (error instanceof TRPCClientError) {
-          const { httpStatus } = ZData.parse(error.data);
+          const result = ZData.safeParse(error.data);
 
           if (
-            httpStatus == 400 ||
-            httpStatus == 401 ||
-            httpStatus == 403 ||
-            httpStatus == 404
+            result.success &&
+            (result.data.httpStatus == 400 ||
+              result.data.httpStatus == 401 ||
+              result.data.httpStatus == 403 ||
+              result.data.httpStatus == 404)
           )
             return false;
 

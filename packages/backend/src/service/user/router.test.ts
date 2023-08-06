@@ -239,6 +239,7 @@ describe('anonymizeUser', () => {
       createPersonalSheetExpenseInput(
         personalSheet.id,
         personalSheet.currencyCode,
+        'EXPENSE',
       ),
     );
 

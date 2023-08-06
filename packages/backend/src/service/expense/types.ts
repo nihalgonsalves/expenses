@@ -12,6 +12,7 @@ export const ZMoney = z.object({
 });
 
 const ZCreateSheetExpenseInput = z.object({
+  type: z.union([z.literal('EXPENSE'), z.literal('INCOME')]),
   money: ZMoney,
   spentAt: z.string().nonempty(),
   description: z.string(),
@@ -35,19 +36,20 @@ export type CreatePersonalSheetExpenseInput = z.infer<
   typeof ZCreatePersonalSheetExpenseInput
 >;
 
-export const ZCreateGroupSheetExpenseInput = ZCreateSheetExpenseInput.extend({
-  groupSheetId: z.string().nonempty(),
-  paidById: z.string().nonempty(),
-  splits: z.array(
-    z.object({
-      participantId: z.string(),
-      share: ZMoney,
-    }),
-  ),
-});
+export const ZCreateGroupSheetExpenseOrIncomeInput =
+  ZCreateSheetExpenseInput.extend({
+    paidOrReceivedById: z.string().nonempty(),
+    groupSheetId: z.string().nonempty(),
+    splits: z.array(
+      z.object({
+        participantId: z.string(),
+        share: ZMoney,
+      }),
+    ),
+  });
 
-export type CreateGroupSheetExpenseInput = z.infer<
-  typeof ZCreateGroupSheetExpenseInput
+export type CreateGroupSheetExpenseOrIncomeInput = z.infer<
+  typeof ZCreateGroupSheetExpenseOrIncomeInput
 >;
 
 export const ZCreateSheetExpenseResponse = z.object({
@@ -99,9 +101,16 @@ export type GetPersonalSheetExpensesResponse = z.infer<
   typeof ZGetPersonalSheetExpensesResponse
 >;
 
+export const ZBalance = z.object({
+  actual: ZMoney,
+  share: ZMoney,
+});
+
+export type Balance = z.infer<typeof ZBalance>;
+
 const ZGroupSheetExpenseListItem = ZExpenseListItem.extend({
-  participants: z.array(ZParticipant.extend({ balance: ZMoney })),
-  yourBalance: ZMoney,
+  participants: z.array(ZParticipant.extend({ balance: ZBalance })),
+  yourBalance: ZBalance.optional(),
 });
 
 export type GroupSheetExpenseListItem = z.infer<
@@ -121,10 +130,6 @@ export const ZExpenseSummaryResponse = z.array(
   z.object({
     participantId: z.string().nonempty(),
     name: z.string(),
-    cost: ZMoney,
-    spent: ZMoney,
-    sent: ZMoney,
-    received: ZMoney,
     balance: ZMoney,
   }),
 );

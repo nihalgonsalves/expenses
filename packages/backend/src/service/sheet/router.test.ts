@@ -440,8 +440,9 @@ describe('deleteParticipant', () => {
     });
 
     // Paid for self, so settled de-facto
-    await caller.expense.createGroupSheetExpense(
+    await caller.expense.createGroupSheetExpenseOrIncome(
       createGroupSheetExpenseInput(
+        'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
@@ -494,8 +495,9 @@ describe('deleteParticipant', () => {
       withParticipantIds: [member.id],
     });
 
-    await caller.expense.createGroupSheetExpense(
+    await caller.expense.createGroupSheetExpenseOrIncome(
       createGroupSheetExpenseInput(
+        'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
         admin.id,

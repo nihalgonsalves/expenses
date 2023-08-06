@@ -27,9 +27,10 @@ import type { User } from '../user/types';
 
 import type {
   ExpenseSummaryResponse,
-  CreateGroupSheetExpenseInput,
+  CreateGroupSheetExpenseOrIncomeInput,
   CreateGroupSheetSettlementInput,
   CreatePersonalSheetExpenseInput,
+  Balance,
 } from './types';
 
 class ExpenseServiceError extends TRPCError {}
@@ -55,26 +56,28 @@ const expenseToPayload = (
   },
 });
 
-const calculateUserBalance = (
-  id: string,
+const sumTransactions = (
   currencyCode: string,
-  transactions: (ExpenseTransactions & { user: PrismaUser })[],
+  transactions: ExpenseTransactions[],
 ): Money =>
   sumMoney(
-    transactions
-      .filter(({ userId }) => userId === id)
-      .map((txn) => ({
-        currencyCode,
-        amount: txn.amount,
-        scale: txn.scale,
-      })),
+    transactions.map((txn) => ({
+      currencyCode,
+      amount: txn.amount,
+      scale: txn.scale,
+    })),
     currencyCode,
   );
 
 const calculateBalances = (
   groupSheet: Sheet,
+  type: ExpenseType,
   transactions: (ExpenseTransactions & { user: PrismaUser })[],
-) => {
+): { id: string; name: string; balance: Balance }[] => {
+  if (type === 'TRANSFER') {
+    return [];
+  }
+
   const participants = new Map(
     transactions.map(({ userId, user: { name } }) => [
       userId,
@@ -83,12 +86,39 @@ const calculateBalances = (
   ).values();
 
   const participantBalances = [...participants]
-    .map(({ id, name }) => ({
-      id,
-      name,
-      balance: calculateUserBalance(id, groupSheet.currencyCode, transactions),
-    }))
-    .sort((a, b) => a.balance.amount - b.balance.amount);
+    .map(({ id, name }) => {
+      const userTransactions = transactions.filter(
+        ({ userId }) => userId === id,
+      );
+
+      const positiveTransactions = userTransactions.filter(
+        ({ amount }) => 0 < amount,
+      );
+
+      const negativeTransactions = userTransactions.filter(
+        ({ amount }) => amount < 0,
+      );
+
+      return {
+        id,
+        name,
+        balance: {
+          actual: sumTransactions(
+            groupSheet.currencyCode,
+            type === 'EXPENSE' ? positiveTransactions : negativeTransactions,
+          ),
+          share: sumTransactions(
+            groupSheet.currencyCode,
+            type === 'EXPENSE' ? negativeTransactions : positiveTransactions,
+          ),
+        },
+      };
+    })
+    .filter(
+      ({ balance: { actual, share } }) =>
+        actual.amount !== 0 || share.amount !== 0,
+    )
+    .sort((a, b) => a.balance.share.amount - b.balance.share.amount);
 
   return participantBalances;
 };
@@ -100,9 +130,9 @@ const mapInputToCreatePersonalExpense = (
 ): Prisma.ExpenseUncheckedCreateInput => ({
   id,
   sheetId: personalSheet.id,
-  amount: input.money.amount,
+  amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
   scale: input.money.scale,
-  type: ExpenseType.EXPENSE,
+  type: input.type,
   category: input.category,
   description: input.description,
   spentAt: new Date(
@@ -116,10 +146,31 @@ const mapInputToCreatePersonalExpenseTransaction = (
 ): Omit<Prisma.ExpenseTransactionsUncheckedCreateInput, 'expenseId'> => ({
   id: generateId(),
   userId: user.id,
-  // NOTE: the amount is already negative if it is an expense
-  amount: input.money.amount,
+  amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
   scale: input.money.scale,
 });
+
+const verifyCurrencies = (
+  sheetCurrencyCode: string,
+  ...inputCurrencyCodes: string[]
+) => {
+  const allCodes = new Set([sheetCurrencyCode, ...inputCurrencyCodes]);
+  if (allCodes.size !== 1 || !allCodes.has(sheetCurrencyCode)) {
+    throw new ExpenseServiceError({
+      code: 'BAD_REQUEST',
+      message: 'Currencies do not match',
+    });
+  }
+};
+
+const verifyAmountIsAbsolute = (money: Money) => {
+  if (money.amount < 0) {
+    throw new ExpenseServiceError({
+      code: 'BAD_REQUEST',
+      message: 'Amount must be absolute',
+    });
+  }
+};
 
 export class ExpenseService {
   constructor(
@@ -130,7 +181,10 @@ export class ExpenseService {
   async getAllUserExpenses(user: User, limit: number | undefined) {
     const [expenses, count] = await this.prismaClient.$transaction([
       this.prismaClient.expense.findMany({
-        where: { transactions: { some: { userId: user.id } } },
+        where: {
+          type: 'EXPENSE',
+          transactions: { some: { userId: user.id, amount: { lt: 0 } } },
+        },
         include: {
           sheet: true,
           transactions: {
@@ -150,10 +204,11 @@ export class ExpenseService {
     return {
       expenses: expenses.map(({ transactions, ...expense }) => ({
         ...expense,
-        money: calculateUserBalance(
-          user.id,
+        money: sumTransactions(
           expense.sheet.currencyCode,
-          transactions,
+          transactions.filter(
+            ({ amount, userId }) => amount < 0 && userId === user.id,
+          ),
         ),
       })),
       count,
@@ -187,6 +242,7 @@ export class ExpenseService {
         ...expense,
         participantBalances: calculateBalances(
           groupSheet,
+          expense.type,
           expense.transactions,
         ),
       })),
@@ -228,12 +284,8 @@ export class ExpenseService {
     input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>,
     personalSheet: Sheet,
   ) {
-    if (personalSheet.currencyCode !== input.money.currencyCode) {
-      throw new ExpenseServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Currencies do not match',
-      });
-    }
+    verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
+    verifyAmountIsAbsolute(input.money);
 
     return this.prismaClient.expense.create({
       include: {
@@ -257,17 +309,14 @@ export class ExpenseService {
     input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>[],
     personalSheet: Sheet,
   ) {
-    const allCurrencies = new Set(input.map((txn) => txn.money.currencyCode));
+    verifyCurrencies(
+      personalSheet.currencyCode,
+      ...input.map((txn) => txn.money.currencyCode),
+    );
 
-    if (
-      allCurrencies.size > 1 ||
-      !allCurrencies.has(personalSheet.currencyCode)
-    ) {
-      throw new ExpenseServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Currencies do not match',
-      });
-    }
+    input.forEach((txn) => {
+      verifyAmountIsAbsolute(txn.money);
+    });
 
     const inputWithIds = input.map((item) => ({ id: generateId(), item }));
 
@@ -286,29 +335,18 @@ export class ExpenseService {
     ]);
   }
 
-  async createGroupSheetExpense(
+  async createGroupSheetExpenseOrIncome(
     user: User,
-    input: Omit<CreateGroupSheetExpenseInput, 'groupSheetId'>,
+    input: Omit<CreateGroupSheetExpenseOrIncomeInput, 'groupSheetId'>,
     groupSheet: Sheet,
   ) {
-    if (groupSheet.currencyCode !== input.money.currencyCode) {
-      throw new ExpenseServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Currencies do not match',
-      });
-    }
-
-    const allCurrencies = new Set([
+    verifyCurrencies(
+      groupSheet.currencyCode,
       input.money.currencyCode,
-      ...input.splits.map(({ share: { currencyCode } }) => currencyCode),
-    ]);
+      ...input.splits.map(({ share }) => share.currencyCode),
+    );
 
-    if (allCurrencies.size !== 1) {
-      throw new ExpenseServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Currencies do not match',
-      });
-    }
+    verifyAmountIsAbsolute(input.money);
 
     const splitTotal = sumMoney(
       input.splits.map(({ share }) => share),
@@ -344,7 +382,7 @@ export class ExpenseService {
         sheet: { connect: { id: groupSheet.id } },
         amount: input.money.amount,
         scale: input.money.scale,
-        type: ExpenseType.EXPENSE,
+        type: input.type,
         category: input.category,
         description: input.description,
         spentAt: new Date(
@@ -364,16 +402,24 @@ export class ExpenseService {
               ] => [
                 {
                   id: generateId(),
-                  user: { connect: { id: input.paidById } },
-                  // NOTE: the amount is already negative if it is an expense
-                  amount: split.share.amount,
+                  user: {
+                    connect: {
+                      id: input.paidOrReceivedById,
+                    },
+                  },
+                  amount:
+                    input.type === 'EXPENSE'
+                      ? split.share.amount
+                      : -split.share.amount,
                   scale: split.share.scale,
                 },
                 {
                   id: generateId(),
                   user: { connect: { id: split.participantId } },
-                  // NOTE: this gets flipped to positive for an expense
-                  amount: -split.share.amount,
+                  amount:
+                    input.type === 'EXPENSE'
+                      ? -split.share.amount
+                      : split.share.amount,
                   scale: split.share.scale,
                 },
               ],
@@ -382,16 +428,20 @@ export class ExpenseService {
       },
     });
 
-    const balances = calculateBalances(groupSheet, expense.transactions);
+    const balances = calculateBalances(
+      groupSheet,
+      expense.type,
+      expense.transactions,
+    );
 
     // TODO: Background task
     await this.notificationService.sendNotifications(
       Object.fromEntries(
         balances
-          .filter(({ id, balance }) => id !== user.id && balance.amount !== 0)
+          .filter(({ id }) => id !== user.id)
           .map(({ id, balance }): [string, NotificationPayload] => [
             id,
-            expenseToPayload(expense, groupSheet, balance),
+            expenseToPayload(expense, groupSheet, balance.share),
           ]),
       ),
     );
@@ -404,19 +454,8 @@ export class ExpenseService {
     input: Omit<CreateGroupSheetSettlementInput, 'groupSheetId'>,
     groupSheet: Sheet,
   ) {
-    if (groupSheet.currencyCode !== input.money.currencyCode) {
-      throw new ExpenseServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Currencies do not match',
-      });
-    }
-
-    if (input.money.amount <= 0) {
-      throw new ExpenseServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Settlement amounts must be postive.',
-      });
-    }
+    verifyCurrencies(groupSheet.currencyCode, input.money.currencyCode);
+    verifyAmountIsAbsolute(input.money);
 
     const expense = await this.prismaClient.expense.create({
       data: {
@@ -433,13 +472,13 @@ export class ExpenseService {
             {
               id: generateId(),
               user: { connect: { id: input.fromId } },
-              amount: -input.money.amount,
+              amount: input.money.amount,
               scale: input.money.scale,
             },
             {
               id: generateId(),
               user: { connect: { id: input.toId } },
-              amount: input.money.amount,
+              amount: -input.money.amount,
               scale: input.money.scale,
             },
           ],
@@ -501,95 +540,46 @@ export class ExpenseService {
           // queryRaw, so we instead just group by scale and then add them up. in most cases
           // there should be only a single scale anyway.
           // (note: could use a view instead of queryRaw)
-          sumMoney(
-            summary
-              .filter(({ userId }) => userId === id)
-              .map(
-                ({ scale, _sum }): Money => ({
-                  scale,
-                  amount: _sum.amount ?? 0,
-                  currencyCode: groupSheet.currencyCode,
-                }),
-              ),
-            groupSheet.currencyCode,
+          // we negate this because the transaction amounts are stored flipped so that expenses
+          // are stored negative and the owed payer balance is positive. to calculate who owes
+          // (has a negative balance) or vice versa, it needs to be flipped back.
+          negateMoney(
+            sumMoney(
+              summary
+                .filter(({ userId }) => userId === id)
+                .map(
+                  ({ scale, _sum }): Money => ({
+                    scale,
+                    amount: _sum.amount ?? 0,
+                    currencyCode: groupSheet.currencyCode,
+                  }),
+                ),
+              groupSheet.currencyCode,
+            ),
           ),
         ]),
       );
 
-    const [costMap, spentMap, sentMap, receivedMap, participants] =
-      await Promise.all([
-        this.prismaClient.expenseTransactions
-          .groupBy({
-            by: ['userId', 'scale'],
-            // amount > 0 means this is money spent _for_ the user by someone else (or themselves)
-            where: {
-              expense: { sheetId: groupSheet.id, type: ExpenseType.EXPENSE },
-              amount: { gt: 0 },
-            },
-            _sum: { amount: true },
-          })
-          .then(mapSummary),
-        this.prismaClient.expenseTransactions
-          .groupBy({
-            by: ['userId', 'scale'],
-            // amount < 0 means this is money spent _by_ the user for someone else (or themselves)
-            where: {
-              expense: { sheetId: groupSheet.id, type: ExpenseType.EXPENSE },
-              amount: { lt: 0 },
-            },
-            _sum: { amount: true },
-          })
-          .then(mapSummary),
-        this.prismaClient.expenseTransactions
-          .groupBy({
-            by: ['userId', 'scale'],
-            // amount < 0 means this is money sent to the user from someone else
-            where: {
-              expense: { sheetId: groupSheet.id, type: ExpenseType.TRANSFER },
-              amount: { lt: 0 },
-            },
-            _sum: { amount: true },
-          })
-          .then(mapSummary),
-        this.prismaClient.expenseTransactions
-          .groupBy({
-            by: ['userId', 'scale'],
-            // amount > 0 means this is money received from someone else
-            where: {
-              expense: { sheetId: groupSheet.id, type: ExpenseType.TRANSFER },
-              amount: { gt: 0 },
-            },
-            _sum: { amount: true },
-          })
-          .then(mapSummary),
-        this.prismaClient.sheetMemberships.findMany({
-          where: { sheetId: groupSheet.id },
-          include: { participant: true },
-        }),
-      ]);
+    const [balanceMap, participants] = await Promise.all([
+      this.prismaClient.expenseTransactions
+        .groupBy({
+          by: ['userId', 'scale'],
+          where: {
+            expense: { sheetId: groupSheet.id },
+          },
+          _sum: { amount: true },
+        })
+        .then(mapSummary),
+      this.prismaClient.sheetMemberships.findMany({
+        where: { sheetId: groupSheet.id },
+        include: { participant: true },
+      }),
+    ]);
 
-    const zero = zeroMoney(groupSheet.currencyCode);
-
-    return participants.map(({ participant: { name, id } }) => {
-      const cost = costMap[id] ?? zero;
-      const spent = spentMap[id] ?? zero;
-      const sent = sentMap[id] ?? zero;
-      const received = receivedMap[id] ?? zero;
-
-      const balance = sumMoney(
-        [cost, spent, sent, received],
-        groupSheet.currencyCode,
-      );
-
-      return {
-        name,
-        participantId: id,
-        cost,
-        spent,
-        sent,
-        received,
-        balance,
-      };
-    });
+    return participants.map(({ participant: { name, id } }) => ({
+      name,
+      participantId: id,
+      balance: balanceMap[id] ?? zeroMoney(groupSheet.currencyCode),
+    }));
   }
 }
