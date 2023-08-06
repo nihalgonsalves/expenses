@@ -1,32 +1,57 @@
-import { ExpenseType } from '@prisma/client';
 import { z } from 'zod';
 
 import { ZMoney } from '../expense/types';
 
+const ZNotificationExpense = z.object({
+  id: z.string().nonempty(),
+  category: z.string().nonempty(),
+  description: z.string(),
+  money: ZMoney,
+});
+
 const ZExpenseNotificationPayload = z.object({
-  type: z.literal('expense'),
+  type: z.literal('EXPENSE'),
   groupSheet: z.object({
     id: z.string().nonempty(),
     name: z.string().nonempty(),
   }),
-  expense: z.object({
+  expense: ZNotificationExpense.extend({
+    yourShare: ZMoney,
+  }),
+});
+
+const ZIncomeNotificationPayload = z.object({
+  type: z.literal('INCOME'),
+  groupSheet: z.object({
     id: z.string().nonempty(),
-    category: z.string().nonempty(),
-    description: z.string(),
-    type: z.nativeEnum(ExpenseType),
-    money: ZMoney,
-    yourBalance: ZMoney,
+    name: z.string().nonempty(),
+  }),
+  expense: ZNotificationExpense.extend({
+    yourShare: ZMoney,
+  }),
+});
+
+const ZTransferNotificationPayload = z.object({
+  type: z.literal('TRANSFER'),
+  groupSheet: z.object({
+    id: z.string().nonempty(),
+    name: z.string().nonempty(),
+  }),
+  expense: ZNotificationExpense.extend({
+    type: z.union([z.literal('sent'), z.literal('received')]),
   }),
 });
 
 const ZTestNotificationPayload = z.object({
-  type: z.literal('test'),
+  type: z.literal('TEST'),
   message: z.string().nonempty(),
 });
 
 export const ZNotificationPayload = z.union([
   ZTestNotificationPayload,
   ZExpenseNotificationPayload,
+  ZIncomeNotificationPayload,
+  ZTransferNotificationPayload,
 ]);
 
 export type NotificationPayload = z.infer<typeof ZNotificationPayload>;

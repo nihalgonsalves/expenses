@@ -29,48 +29,45 @@ if (!import.meta.env.DEV) {
   );
 }
 
+const getNotificationPresentation = (payload: NotificationPayload) => {
+  if (payload.type === 'TEST') {
+    return { title: 'Test Notification', body: payload.message };
+  }
+
+  const description = getExpenseDescription(payload.expense);
+  const formattedMoney = formatCurrency(payload.expense.money, {
+    signDisplay: 'never',
+  });
+
+  const title = `💶 ${payload.groupSheet.name} – ${description} (${formattedMoney})`;
+
+  if (payload.type === 'EXPENSE') {
+    return {
+      title,
+      body: `New expense: ${description} – your share is ${formattedMoney}`,
+    };
+  }
+
+  if (payload.type === 'INCOME') {
+    return {
+      title,
+      body: `New income: ${description} – your share is ${formattedMoney}`,
+    };
+  }
+
+  // (payload.type === 'TRANSFER')
+  return {
+    title,
+    body: `You ${payload.expense.type} ${formattedMoney} for ${description}`,
+  };
+};
+
 const handlePush = async (event: PushEvent) => {
   // TODO: move ZNotificationPayload to shared util and use it here to safeParse
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const payload: NotificationPayload = event.data?.json();
 
-  if (payload.type === 'test') {
-    await self.registration.showNotification('Test Notification', {
-      body: payload.message,
-    });
-    return;
-  }
-
-  const description = getExpenseDescription(payload.expense);
-
-  const formattedMoney = formatCurrency(payload.expense.money);
-
-  const formattedBalance = formatCurrency(payload.expense.yourBalance, {
-    signDisplay: 'never',
-  });
-
-  const negative = payload.expense.yourBalance.amount < 0;
-
-  // Expense:
-  //   💶 WG Expenses – Rent (€1,000.00)
-  //   You owe €500.00 for Rent (€1,000.00)
-
-  // Transfer:
-  //   💶 WG Expenses – Transfer
-  //   You sent €500.00
-
-  const title =
-    payload.expense.type === 'EXPENSE'
-      ? `💶 ${payload.groupSheet.name} – ${description} (${formattedMoney})`
-      : `💶 ${payload.groupSheet.name} – Transfer`;
-
-  const body =
-    payload.expense.type === 'EXPENSE'
-      ? `${
-          negative ? 'You receive' : 'You owe'
-        } ${formattedBalance} for ${description} (${formattedMoney})`
-      : `${negative ? 'You sent' : 'You received'} ${formattedBalance}`;
-
+  const { title, body } = getNotificationPresentation(payload);
   await self.registration.showNotification(title, {
     body,
   });

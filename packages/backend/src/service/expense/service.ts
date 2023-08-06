@@ -35,12 +35,12 @@ import type {
 
 class ExpenseServiceError extends TRPCError {}
 
-const expenseToPayload = (
-  expense: Expense,
+const expenseOrIncomeToNotificationPayload = (
+  expense: Omit<Expense, 'type'> & { type: 'INCOME' | 'EXPENSE' },
   groupSheet: Sheet,
-  yourBalance: Omit<Money, 'currencyCode'>,
+  yourShare: Omit<Money, 'currencyCode'>,
 ): NotificationPayload => ({
-  type: 'expense',
+  type: expense.type,
   groupSheet,
   expense: {
     ...expense,
@@ -49,9 +49,27 @@ const expenseToPayload = (
       amount: expense.amount,
       scale: expense.scale,
     },
-    yourBalance: {
+    yourShare: {
+      ...yourShare,
       currencyCode: groupSheet.currencyCode,
-      ...yourBalance,
+    },
+  },
+});
+
+const transferToNotificationPayload = (
+  expense: Omit<Expense, 'type'> & { type: 'TRANSFER' },
+  groupSheet: Sheet,
+  transferType: 'sent' | 'received',
+): NotificationPayload => ({
+  type: expense.type,
+  groupSheet,
+  expense: {
+    ...expense,
+    type: transferType,
+    money: {
+      currencyCode: groupSheet.currencyCode,
+      amount: expense.amount,
+      scale: expense.scale,
     },
   },
 });
@@ -460,7 +478,11 @@ export class ExpenseService {
           .filter(({ id }) => id !== user.id)
           .map(({ id, balance }): [string, NotificationPayload] => [
             id,
-            expenseToPayload(expense, groupSheet, balance.share),
+            expenseOrIncomeToNotificationPayload(
+              { ...expense, type: input.type },
+              groupSheet,
+              balance.share,
+            ),
           ]),
       ),
     );
@@ -508,13 +530,17 @@ export class ExpenseService {
     // TODO: Background task
     const messages: Record<string, NotificationPayload> = {};
     if (input.fromId !== user.id)
-      messages[input.fromId] = expenseToPayload(
-        expense,
+      messages[input.fromId] = transferToNotificationPayload(
+        { ...expense, type: 'TRANSFER' },
         groupSheet,
-        negateMoney(input.money),
+        'sent',
       );
     if (input.toId !== user.id)
-      messages[input.toId] = expenseToPayload(expense, groupSheet, input.money);
+      messages[input.toId] = transferToNotificationPayload(
+        { ...expense, type: 'TRANSFER' },
+        groupSheet,
+        'received',
+      );
 
     await this.notificationService.sendNotifications(messages);
 

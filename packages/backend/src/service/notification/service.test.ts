@@ -31,7 +31,7 @@ afterAll(() => {
 const sendTestNotification = async (userId: string) =>
   notificationService.sendNotifications({
     [userId]: {
-      type: 'test',
+      type: 'TEST',
       message: 'test',
     },
   });

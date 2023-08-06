@@ -64,15 +64,37 @@ describe('ExpenseService', () => {
         otherParticipant.id,
       );
 
-      await expenseService.createGroupSheetExpenseOrIncome(
+      const { id } = await expenseService.createGroupSheetExpenseOrIncome(
         creator,
         input,
         groupSheet,
       );
 
-      expect(webPushService.messages).toMatchObject([
+      expect(webPushService.messages).toEqual([
         {
           endpoint: `https://push.example.com/user/${otherParticipant.id}`,
+          payload: {
+            type: 'EXPENSE',
+            expense: {
+              id,
+              category: 'other',
+              description: 'Test expense',
+              money: {
+                currencyCode: groupSheet.currencyCode,
+                amount: 100_00,
+                scale: 2,
+              },
+              yourShare: {
+                currencyCode: groupSheet.currencyCode,
+                amount: -75_00,
+                scale: 2,
+              },
+            },
+            groupSheet: {
+              id: groupSheet.id,
+              name: groupSheet.name,
+            },
+          },
         },
       ]);
     });
@@ -88,7 +110,7 @@ describe('ExpenseService', () => {
         user2: toUser,
       } = await useSetup();
 
-      await expenseService.createSettlement(
+      const { id } = await expenseService.createSettlement(
         fromUser,
         {
           money: {
@@ -102,9 +124,27 @@ describe('ExpenseService', () => {
         groupSheet,
       );
 
-      expect(webPushService.messages).toMatchObject([
+      expect(webPushService.messages).toEqual([
         {
           endpoint: `https://push.example.com/user/${toUser.id}`,
+          payload: {
+            type: 'TRANSFER',
+            expense: {
+              id: id,
+              type: 'received',
+              category: 'transfer',
+              description: '',
+              money: {
+                currencyCode: groupSheet.currencyCode,
+                amount: 100_00,
+                scale: 2,
+              },
+            },
+            groupSheet: {
+              id: groupSheet.id,
+              name: groupSheet.name,
+            },
+          },
         },
       ]);
     });
@@ -118,7 +158,7 @@ describe('ExpenseService', () => {
         user2: toUser,
       } = await useSetup();
 
-      await expenseService.createSettlement(
+      const { id } = await expenseService.createSettlement(
         toUser,
         {
           money: {
@@ -132,9 +172,27 @@ describe('ExpenseService', () => {
         groupSheet,
       );
 
-      expect(webPushService.messages).toMatchObject([
+      expect(webPushService.messages).toEqual([
         {
           endpoint: `https://push.example.com/user/${fromUser.id}`,
+          payload: {
+            type: 'TRANSFER',
+            expense: {
+              id: id,
+              type: 'sent',
+              category: 'transfer',
+              description: '',
+              money: {
+                currencyCode: groupSheet.currencyCode,
+                amount: 100_00,
+                scale: 2,
+              },
+            },
+            groupSheet: {
+              id: groupSheet.id,
+              name: groupSheet.name,
+            },
+          },
         },
       ]);
     });
