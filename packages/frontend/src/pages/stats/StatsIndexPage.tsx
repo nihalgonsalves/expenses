@@ -8,13 +8,15 @@ import { RootLoader } from '../Root';
 export const StatsIndexPage = () => {
   const [from] = useState(
     Temporal.Now.zonedDateTimeISO()
-      .subtract({ months: 2 })
       .with({ day: 1 })
-      .round('day'),
+      .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
   );
 
   const [to] = useState(
-    Temporal.Now.zonedDateTimeISO().add({ months: 1 }).with({ day: 1 }),
+    Temporal.Now.zonedDateTimeISO()
+      .add({ months: 1 })
+      .with({ day: 1 })
+      .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
   );
 
   const result = useAllUserExpenses(from, to);
