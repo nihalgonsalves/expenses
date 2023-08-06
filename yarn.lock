@@ -2685,11 +2685,6 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-country-to-currency@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/country-to-currency/-/country-to-currency-1.0.10.tgz#007f5dcb1a04296f506879a4a68675e23bc779c1"
-  integrity sha512-M/RiNYiJ2Xp1okxqlINc/aTPXbxeYItgd0xTD4dtxREce8vjRqV3Vehrulcy8IimV/Of0wG5f//YSJp4KyGZFA==
-
 cpu-features@~0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/cpu-features/-/cpu-features-0.0.8.tgz#a2d464b023b8ad09004c8cdca23b33f192f63546"
@@ -2829,6 +2824,11 @@ detect-libc@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-2.0.1.tgz#e1897aa88fa6ad197862937fbc0441ef352ee0cd"
   integrity sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w==
+
+dexie-react-hooks@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/dexie-react-hooks/-/dexie-react-hooks-1.1.6.tgz#42d4d4d314b049c23e2abe20c8543107ed85b0bd"
+  integrity sha512-xSblWtmPwhafWNWMECsW7zMMmBu8goH3QqTxEfwBNoNG1mgsM0oFclippev7ss9HhKICqBwTjgqpscci5Ed4mA==
 
 dexie@^3.2.4:
   version "3.2.4"

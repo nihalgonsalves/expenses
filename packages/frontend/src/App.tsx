@@ -16,36 +16,35 @@ const GlobalHookContainer = () => {
   useOffLineToaster();
   usePrefetchQueries();
   useHydrateState();
-  return null;
-};
 
-export const App = () => {
   const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   useEffect(() => {
     syncThemeToHtml();
   }, [isDarkMode]);
 
-  return (
-    <TrpcProvider>
-      <GlobalHookContainer />
-      <RouterProvider router={router} />
-      <Toaster
-        toastOptions={{
-          success: {
-            iconTheme: {
-              primary: 'hsl(var(--su))',
-              secondary: '#ffffff',
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: 'hsl(var(--er))',
-              secondary: '#ffffff',
-            },
-          },
-        }}
-      />
-    </TrpcProvider>
-  );
+  return null;
 };
+
+export const App = () => (
+  <TrpcProvider>
+    <GlobalHookContainer />
+    <RouterProvider router={router} />
+    <Toaster
+      toastOptions={{
+        success: {
+          iconTheme: {
+            primary: 'hsl(var(--su))',
+            secondary: '#ffffff',
+          },
+        },
+        error: {
+          iconTheme: {
+            primary: 'hsl(var(--er))',
+            secondary: '#ffffff',
+          },
+        },
+      }}
+    />
+  </TrpcProvider>
+);

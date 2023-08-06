@@ -178,31 +178,32 @@ export class ExpenseService {
     private notificationService: NotificationService,
   ) {}
 
-  async getAllUserExpenses(user: User, limit: number | undefined) {
-    const [expenses, count] = await this.prismaClient.$transaction([
-      this.prismaClient.expense.findMany({
-        where: {
-          type: 'EXPENSE',
-          transactions: { some: { userId: user.id, amount: { lt: 0 } } },
+  async getAllUserExpenses(
+    user: User,
+    { from, to }: { from: Temporal.Instant; to: Temporal.Instant },
+  ) {
+    const data = await this.prismaClient.expense.findMany({
+      where: {
+        type: { in: ['EXPENSE', 'INCOME'] },
+        transactions: { some: { userId: user.id } },
+        spentAt: {
+          gte: new Date(from.epochMilliseconds),
+          lte: new Date(to.epochMilliseconds),
         },
-        include: {
-          sheet: true,
-          transactions: {
-            include: {
-              user: true,
-            },
+      },
+      include: {
+        sheet: true,
+        transactions: {
+          include: {
+            user: true,
           },
         },
-        orderBy: { spentAt: 'desc' },
-        ...(limit != null ? { take: limit } : {}),
-      }),
-      this.prismaClient.expense.count({
-        where: { transactions: { some: { userId: user.id } } },
-      }),
-    ]);
+      },
+      orderBy: { spentAt: 'desc' },
+    });
 
-    return {
-      expenses: expenses.map(({ transactions, ...expense }) => ({
+    const expenses = data
+      .map(({ transactions, ...expense }) => ({
         ...expense,
         money: sumTransactions(
           expense.sheet.currencyCode,
@@ -210,8 +211,24 @@ export class ExpenseService {
             ({ amount, userId }) => amount < 0 && userId === user.id,
           ),
         ),
-      })),
-      count,
+      }))
+      .filter(({ money }) => money.amount !== 0);
+
+    const earnings = data
+      .map(({ transactions, ...expense }) => ({
+        ...expense,
+        money: sumTransactions(
+          expense.sheet.currencyCode,
+          transactions.filter(
+            ({ amount, userId }) => amount > 0 && userId === user.id,
+          ),
+        ),
+      }))
+      .filter(({ money }) => money.amount !== 0);
+
+    return {
+      expenses,
+      earnings,
     };
   }
 

@@ -5,13 +5,16 @@ import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { getCurrencyCode } from '../../utils/money';
 import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { TextField } from '../form/TextField';
 
-export const CreateGroupForm = () => {
+export const CreateGroupForm = ({
+  defaultCurrencyCode,
+}: {
+  defaultCurrencyCode: string;
+}) => {
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
@@ -19,7 +22,7 @@ export const CreateGroupForm = () => {
     trpc.sheet.createGroupSheet.useMutation();
 
   const [groupSheetName, setGroupSheetName] = useState('');
-  const [currencyCode, setCurrencyCode] = useState(getCurrencyCode());
+  const [currencyCode, setCurrencyCode] = useState(defaultCurrencyCode);
 
   const [participantEmails, setParticipantEmails] = useState<string[]>([]);
 

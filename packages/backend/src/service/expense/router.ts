@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -120,20 +121,29 @@ export const expenseRouter = router({
     }),
 
   getAllUserExpenses: protectedProcedure
-    .input(z.object({ limit: z.number().positive().optional() }))
+    .input(
+      z.object({
+        fromTimestamp: z.string().datetime(),
+        toTimestamp: z.string().datetime(),
+      }),
+    )
     .output(ZGetAllUserExpensesResponse)
     .query(async ({ ctx, input }) => {
-      const { expenses, count } = await ctx.expenseService.getAllUserExpenses(
-        ctx.user,
-        input.limit,
-      );
+      const { expenses, earnings } =
+        await ctx.expenseService.getAllUserExpenses(ctx.user, {
+          from: Temporal.Instant.from(input.fromTimestamp),
+          to: Temporal.Instant.from(input.toTimestamp),
+        });
 
       return {
         expenses: expenses.map(({ spentAt, sheet, ...expense }) => ({
           expense: { ...expense, spentAt: spentAt.toISOString() },
           sheet,
         })),
-        total: count,
+        earnings: earnings.map(({ spentAt, sheet, ...expense }) => ({
+          expense: { ...expense, spentAt: spentAt.toISOString() },
+          sheet,
+        })),
       };
     }),
 

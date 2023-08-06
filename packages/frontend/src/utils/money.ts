@@ -1,7 +1,5 @@
-import countryToCurrency from 'country-to-currency';
 import { dinero, convert, transformScale, toUnits } from 'dinero.js';
 import { useMemo } from 'react';
-import { z } from 'zod';
 
 import {
   type Money,
@@ -16,21 +14,6 @@ import { getUserLanguage } from './utils';
 export const CURRENCY_CODES = BACKEND_CURRENCY_CODES.filter((c) =>
   Intl.supportedValuesOf('currency').includes(c),
 );
-
-// TODO: use IP eventually
-export const getCurrencyCode = () =>
-  z
-    .string()
-    .catch('EUR')
-    .parse(
-      countryToCurrency[
-        // @ts-expect-error string cannot access const countryToCurrency object
-        // not a problem since we provide a fallback
-        /\w\w-(?<country>[A-Z]*)/.exec(globalThis.navigator.language)?.groups?.[
-          'country'
-        ]
-      ],
-    );
 
 export const formatCurrency = (
   { amount, scale, currencyCode }: Money,

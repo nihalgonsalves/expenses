@@ -4,10 +4,11 @@ import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { TRPCClientError, httpBatchLink } from '@trpc/client';
-import Dexie, { type Table } from 'dexie';
 import React, { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
+
+import { queryCache } from '../state/queryCache';
 
 import { trpc } from './trpc';
 
@@ -21,32 +22,12 @@ const ZData = z.object({
     .nullish(),
 });
 
-type CacheItem = {
-  key: string;
-  value: string;
-};
-
-class CacheDexie extends Dexie {
-  // 'friends' is added by dexie when declaring the stores()
-  // We just tell the typing system this is the case
-  queryCache!: Table<CacheItem>;
-
-  constructor() {
-    super('react-query-cache');
-    this.version(1).stores({
-      queryCache: '++key, value',
-    });
-  }
-}
-
-export const dexieCache = new CacheDexie();
-
 const asyncStoragePersister = createAsyncStoragePersister({
   storage: {
     getItem: async (key) =>
-      dexieCache.queryCache.get(key).then((item) => item?.value ?? null),
-    removeItem: async (key) => dexieCache.queryCache.delete(key),
-    setItem: async (key, value) => dexieCache.queryCache.put({ key, value }),
+      queryCache.get(key).then((item) => item?.value ?? null),
+    removeItem: async (key) => queryCache.delete(key),
+    setItem: async (key, value) => queryCache.put({ key, value }),
   },
 });
 

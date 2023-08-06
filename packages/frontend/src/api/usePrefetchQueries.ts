@@ -5,8 +5,6 @@ export const usePrefetchQueries = () => {
   const { data: me } = useCurrentUser();
   const enabled = me != null;
 
-  trpc.expense.getAllUserExpenses.useQuery({}, { enabled });
-
   trpc.sheet.myGroupSheets.useQuery(undefined, { enabled });
   trpc.sheet.myPersonalSheets.useQuery(undefined, { enabled });
 

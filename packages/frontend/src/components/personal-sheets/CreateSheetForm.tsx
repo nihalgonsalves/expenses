@@ -4,12 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { getCurrencyCode } from '../../utils/money';
 import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { TextField } from '../form/TextField';
 
-export const CreateSheetForm = () => {
+export const CreateSheetForm = ({
+  defaultCurrencyCode,
+}: {
+  defaultCurrencyCode: string;
+}) => {
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
@@ -17,7 +20,7 @@ export const CreateSheetForm = () => {
     trpc.sheet.createPersonalSheet.useMutation();
 
   const [name, setName] = useState('');
-  const [currencyCode, setCurrencyCode] = useState(getCurrencyCode());
+  const [currencyCode, setCurrencyCode] = useState(defaultCurrencyCode);
 
   const handleCreateSheet = async () => {
     const { id } = await createSheet({
@@ -27,7 +30,7 @@ export const CreateSheetForm = () => {
     navigate(`/sheets/${id}`);
   };
 
-  const valid = name;
+  const valid = name !== '';
   const disabled = !valid || !onLine;
 
   return (

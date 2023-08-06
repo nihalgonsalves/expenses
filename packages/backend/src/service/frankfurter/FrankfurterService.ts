@@ -31,6 +31,13 @@ const safeFetchJson = async (
   }
 };
 
+const ZRateSchema = z.object({
+  amount: z.number(),
+  base: z.string(),
+  date: z.string(),
+  rates: z.record(z.number()),
+});
+
 export class FrankfurterService {
   constructor(private baseUrl: string) {}
 
@@ -60,16 +67,19 @@ export class FrankfurterService {
   }
 
   async getConversionRate(baseCurrency: string, targetCurrency: string) {
+    const rates = await this.getRates(baseCurrency, targetCurrency);
+
+    // this is only called for currencies returned by getCurrencies,
+    // safe to assert and not safe parse
+    return z.number().parse(rates[targetCurrency]);
+  }
+
+  private async getRates(baseCurrency: string, targetCurrency?: string) {
     const url = new URL('/latest', this.baseUrl);
     url.searchParams.set('from', baseCurrency);
-    url.searchParams.set('to', targetCurrency);
-
-    const ZSchema = z.object({
-      amount: z.number(),
-      base: z.literal(baseCurrency),
-      date: z.string(),
-      rates: z.object({ [targetCurrency]: z.number() }),
-    });
+    if (targetCurrency) {
+      url.searchParams.set('to', targetCurrency);
+    }
 
     const fetchResult = await safeFetchJson(url);
 
@@ -87,7 +97,7 @@ export class FrankfurterService {
       });
     }
 
-    const parseResult = ZSchema.safeParse(fetchResult.response);
+    const parseResult = ZRateSchema.safeParse(fetchResult.response);
 
     if (!parseResult.success) {
       throw new FrankfurterServiceError({
@@ -96,9 +106,6 @@ export class FrankfurterService {
       });
     }
 
-    // shouldn't be required because the schema checks for the existence
-    // of the specific value, but since it's typed as `string` this possibly
-    // returns undefined
-    return z.number().parse(parseResult.data.rates[targetCurrency]);
+    return parseResult.data.rates;
   }
 }
