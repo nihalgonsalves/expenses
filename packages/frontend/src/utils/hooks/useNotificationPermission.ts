@@ -1,9 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import {
-  useServiceWorkerRegistration,
-  PUSH_SUPPORTED,
-} from '../../state/useServiceWorkerRegistration';
+import { PUSH_SUPPORTED } from './usePushSubscription';
+import { useServiceWorkerRegistration } from './useServiceWorkerRegistration';
 
 // undefined on iOS when not installed, for example
 const notificationGlobal =

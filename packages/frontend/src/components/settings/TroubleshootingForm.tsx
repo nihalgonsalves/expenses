@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useResetCache } from '../../api/useCacheReset';
-import { useServiceWorkerRegistration } from '../../state/useServiceWorkerRegistration';
+import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
 import { Button } from '../form/Button';
 
 export const TroubleshootingForm = () => {

@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useServiceWorkerRegistration } from '../../state/useServiceWorkerRegistration';
+import { useServiceWorkerRegistration } from './useServiceWorkerRegistration';
+
+export const PUSH_SUPPORTED =
+  'serviceWorker' in globalThis.navigator && 'PushManager' in globalThis.window;
 
 export const usePushSubscription = () => {
   const serviceWorkerRegistration = useServiceWorkerRegistration();
@@ -12,6 +15,7 @@ export const usePushSubscription = () => {
     enabled: serviceWorkerRegistration != null,
     networkMode: 'always',
     cacheTime: 0,
+    staleTime: 0,
   });
 
   return pushSubscription ?? undefined;

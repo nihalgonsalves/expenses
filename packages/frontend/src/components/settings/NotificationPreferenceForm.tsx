@@ -2,9 +2,9 @@ import { MdDelete } from 'react-icons/md';
 import { z } from 'zod';
 
 import { trpc } from '../../api/trpc';
-import { useServiceWorkerRegistration } from '../../state/useServiceWorkerRegistration';
 import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
 import { usePushSubscription } from '../../utils/hooks/usePushSubscription';
+import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
 import { Button } from '../form/Button';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
