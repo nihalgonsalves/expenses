@@ -1,6 +1,20 @@
 {
   "extends": "./node_modules/@nihalgonsalves/esconfig/.eslintrc",
   "ignorePatterns": ["**/build/", "**/dist/", "*.config.ts"],
+  "plugins": ["unused-imports"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ]
+  },
   "overrides": [
     {
       "files": ["*.test.ts", "./packages/*/test/**/*"],
