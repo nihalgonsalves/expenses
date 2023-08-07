@@ -9,6 +9,7 @@ import {
   MdGroup,
   MdHome,
   MdPieChart,
+  MdSettings,
   MdTableView,
 } from 'react-icons/md';
 import { RiRefreshLine } from 'react-icons/ri';
@@ -84,16 +85,20 @@ export const Root = ({
           <MdHome />
         </NavLink>
 
-        <NavLink to="/stats" aria-label="Stats" title="Stats">
-          <MdPieChart />
-        </NavLink>
-
         <NavLink to="/sheets" aria-label="Sheets" title="Sheets">
           <MdTableView />
         </NavLink>
 
         <NavLink to="/groups" aria-label="Groups" title="Groups">
           <MdGroup />
+        </NavLink>
+
+        <NavLink to="/stats" aria-label="Stats" title="Stats">
+          <MdPieChart />
+        </NavLink>
+
+        <NavLink to="/settings" aria-label="Settings" title="Settings">
+          <MdSettings />
         </NavLink>
       </nav>
     </div>

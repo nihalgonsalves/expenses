@@ -32,11 +32,6 @@ export const NavBarAvatar = () => {
           className="menu dropdown-content rounded-box z-[2] mt-3 w-52 bg-base-200 p-2 text-primary shadow"
         >
           <li>
-            <Link to="/settings" className="justify-between">
-              Settings
-            </Link>
-          </li>
-          <li>
             <a onClick={handleSignOut}>Sign out</a>
           </li>
         </ul>
