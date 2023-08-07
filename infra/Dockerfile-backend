@@ -1,7 +1,8 @@
 FROM node:20-slim as builder
 
+# hadolint ignore=DL3008
 RUN apt-get update -y && \
-  apt-get install -y \
+  apt-get install -y --no-install-recommends \
     # for prisma
     openssl \
   && rm -rf /var/lib/apt/lists/*
@@ -9,21 +10,18 @@ RUN apt-get update -y && \
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 
-RUN mkdir -p ./packages/frontend/
-RUN mkdir -p ./packages/backend/
+COPY package.json .
+COPY ./packages/frontend/package.json ./packages/frontend/
+COPY ./packages/backend/package.json ./packages/backend/
+COPY ./packages/shared/package.json ./packages/shared/
+COPY yarn.lock .
 
-ADD package.json .
-ADD ./packages/frontend/package.json ./packages/frontend/
-ADD ./packages/backend/package.json ./packages/backend/
-ADD ./packages/shared/package.json ./packages/shared/
-ADD yarn.lock .
+RUN yarn install --frozen-lockfile && yarn cache clean
 
-RUN yarn install --frozen-lockfile
-
-ADD ./tsconfig.json ./tsconfig.base.json ./
-ADD ./packages/frontend/ ./packages/frontend/
-ADD ./packages/backend/ ./packages/backend/
-ADD ./packages/shared/ ./packages/shared/
+COPY ./tsconfig.json ./tsconfig.base.json ./
+COPY ./packages/frontend/ ./packages/frontend/
+COPY ./packages/backend/ ./packages/backend/
+COPY ./packages/shared/ ./packages/shared/
 
 ENV NODE_ENV=production
 
@@ -31,8 +29,9 @@ RUN yarn be build
 
 FROM node:20-slim
 
+# hadolint ignore=DL3008
 RUN apt-get update -y && \
-  apt-get install -y \
+  apt-get install -y --no-install-recommends \
     # for prisma
     openssl \
   && rm -rf /var/lib/apt/lists/*
@@ -42,7 +41,7 @@ WORKDIR /opt/app
 
 COPY --from=builder /opt/app/packages/backend/prisma ./prisma
 
-RUN yarn install
+RUN yarn install && yarn cache clean
 
 ENV NODE_ENV=production
 
