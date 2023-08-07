@@ -8,7 +8,7 @@ import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { TextField } from '../form/TextField';
 
-export const DeleteUserForm = () => {
+export const PrivacyForm = () => {
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ export const DeleteUserForm = () => {
   const disabled = !valid || !onLine;
 
   return (
-    <div className="card card-bordered card-compact">
+    <section className="card card-bordered card-compact">
       <div className="card-body text-justify">
         <h2 className="card-title">Privacy and Data</h2>
         <p>
@@ -90,6 +90,6 @@ export const DeleteUserForm = () => {
           </Button>
         </form>
       </div>
-    </div>
+    </section>
   );
 };

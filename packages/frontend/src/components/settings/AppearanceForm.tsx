@@ -2,6 +2,8 @@ import { CgDarkMode } from 'react-icons/cg';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { z } from 'zod';
 
+import { trpc } from '../../api/trpc';
+import { usePreferredCurrencyCode } from '../../state/preferences';
 import {
   LIGHT_THEMES,
   DARK_THEMES,
@@ -9,6 +11,7 @@ import {
   useDarkTheme,
   useLightTheme,
 } from '../../state/theme';
+import { CurrencySelect } from '../form/CurrencySelect';
 import { Select } from '../form/Select';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
@@ -22,15 +25,21 @@ const darkThemeOptions = DARK_THEMES.map((theme) => ({
   value: theme,
 }));
 
-export const ThemeForm = () => {
+export const AppearanceForm = () => {
   const [themePreference, setThemePreference] = useThemePreference();
 
   const [lightTheme, setLightTheme] = useLightTheme();
   const [darkTheme, setDarkTheme] = useDarkTheme();
 
+  const [preferredCurrencyCode, setPreferredCurrencyCode] =
+    usePreferredCurrencyCode();
+
+  const { data: supportedCurrencies = [] } =
+    trpc.currencyConversion.getSupportedCurrencies.useQuery();
+
   return (
-    <div className="card-compact card card-bordered">
-      <div className="card-body">
+    <section className="card card-bordered card-compact">
+      <div className="card-body flex flex-col gap-4">
         <h2 className="card-title">Appearance</h2>
         <ToggleButtonGroup
           options={[
@@ -76,7 +85,14 @@ export const ThemeForm = () => {
           options={darkThemeOptions}
           schema={z.string()}
         />
+
+        <CurrencySelect
+          label="Preferred display currency"
+          options={supportedCurrencies}
+          currencyCode={preferredCurrencyCode}
+          setCurrencyCode={setPreferredCurrencyCode}
+        />
       </div>
-    </div>
+    </section>
   );
 };

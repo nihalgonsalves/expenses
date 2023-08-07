@@ -1,9 +1,8 @@
 import { useCurrentUser } from '../api/useCurrentUser';
-import { DeleteUserForm } from '../components/settings/DeleteUserForm';
+import { AppearanceForm } from '../components/settings/AppearanceForm';
 import { NotificationPreferenceForm } from '../components/settings/NotificationPreferenceForm';
-import { PreferencesForm } from '../components/settings/PreferencesForm';
+import { PrivacyForm } from '../components/settings/PrivacyForm';
 import { ProfileForm } from '../components/settings/ProfileForm';
-import { ThemeForm } from '../components/settings/ThemeForm';
 import { TroubleshootingForm } from '../components/settings/TroubleshootingForm';
 
 import { Root } from './Root';
@@ -13,14 +12,13 @@ export const SettingsPage = () => {
 
   return (
     <Root title="Settings" showBackButton>
-      <div className="flex flex-col gap-8">
-        <PreferencesForm />
-        <ThemeForm />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-8">
+        <AppearanceForm />
         {status === 'success' && (
           <>
             <ProfileForm me={data} />
             <NotificationPreferenceForm />
-            <DeleteUserForm />
+            <PrivacyForm />
           </>
         )}
         <TroubleshootingForm />

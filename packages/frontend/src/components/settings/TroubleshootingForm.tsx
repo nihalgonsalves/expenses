@@ -26,8 +26,8 @@ export const TroubleshootingForm = () => {
   };
 
   return (
-    <div className="card card-bordered card-compact">
-      <div className="card-body ">
+    <section className="card card-bordered card-compact">
+      <div className="card-body">
         <h2 className="card-title">Troubleshooting</h2>
         If you are experiencing issues with the app, you can reset the cache
         here. This is safe but you need to be online to reload data.
@@ -39,6 +39,6 @@ export const TroubleshootingForm = () => {
           {state === 'done' ? 'Done, reloading...' : 'Reset Cache'}
         </Button>
       </div>
-    </div>
+    </section>
   );
 };
