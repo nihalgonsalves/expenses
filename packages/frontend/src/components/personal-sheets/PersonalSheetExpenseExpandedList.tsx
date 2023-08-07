@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 
 import type { ExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
@@ -16,13 +16,13 @@ import {
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
 
-const ExpandedExpenseListItem = ({
-  expense,
-  personalSheetId,
-}: {
-  expense: ExpenseListItem;
-  personalSheetId: string;
-}) => {
+const ExpandedExpenseListItem = forwardRef<
+  HTMLDivElement,
+  {
+    expense: ExpenseListItem;
+    personalSheetId: string;
+  }
+>(({ expense, personalSheetId }, ref) => {
   const utils = trpc.useContext();
 
   const [expanded, setExpanded] = useState(false);
@@ -37,10 +37,12 @@ const ExpandedExpenseListItem = ({
 
   return (
     <motion.div
+      ref={ref}
       key={expense.id}
       layout
+      initial={{ scale: 0.8, opacity: 1 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.5, opacity: 0 }}
+      exit={{ scale: 0.8, opacity: 0 }}
       className="card card-bordered"
     >
       <div
@@ -83,7 +85,8 @@ const ExpandedExpenseListItem = ({
       </div>
     </motion.div>
   );
-};
+});
+ExpandedExpenseListItem.displayName = 'ExpandedExpenseListItem';
 
 export const PersonalSheetExpensesExpandedList = ({
   personalSheetId,
@@ -97,14 +100,15 @@ export const PersonalSheetExpensesExpandedList = ({
   return (
     <div className="flex flex-col gap-4">
       {expenses.length === 0 && <div className="alert">No expenses</div>}
-      <AnimatePresence initial={false}>
+      <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => [
           <motion.div
             key={date}
             className="divider"
             layout
+            initial={{ scale: 0.8, opacity: 1 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
+            exit={{ scale: 0.8, opacity: 0 }}
           >
             {shortDateFormatter.format(date)}
           </motion.div>,

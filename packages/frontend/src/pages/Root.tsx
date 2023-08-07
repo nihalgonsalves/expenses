@@ -10,7 +10,12 @@ import {
   MdHome,
   MdPieChart,
   MdSettings,
-  MdTableView,
+  MdTableRows,
+  MdOutlineGroup,
+  MdOutlineHome,
+  MdOutlinePieChart,
+  MdOutlineSettings,
+  MdOutlineTableRows,
 } from 'react-icons/md';
 import { RiRefreshLine } from 'react-icons/ri';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -72,34 +77,76 @@ export const Root = ({
       {additionalChildren}
 
       <nav
-        className="btm-nav flex-shrink-0 border-t-2 border-primary text-3xl text-primary"
-        style={{
-          paddingBottom: 'calc(env(safe-area-inset-bottom) - 1em)',
-          position: 'unset',
-          top: 'unset',
-          left: 'unset',
-          right: 'unset',
-        }}
+        className="flex-shrink-0 border-t-2 border-primary flex text-3xl"
+        style={{}}
       >
-        <NavLink to="/" aria-label="Home" title="Home">
-          <MdHome />
-        </NavLink>
-
-        <NavLink to="/sheets" aria-label="Sheets" title="Sheets">
-          <MdTableView />
-        </NavLink>
-
-        <NavLink to="/groups" aria-label="Groups" title="Groups">
-          <MdGroup />
-        </NavLink>
-
-        <NavLink to="/stats" aria-label="Stats" title="Stats">
-          <MdPieChart />
-        </NavLink>
-
-        <NavLink to="/settings" aria-label="Settings" title="Settings">
-          <MdSettings />
-        </NavLink>
+        {[
+          {
+            to: '/',
+            text: 'Home',
+            activeIcon: <MdHome />,
+            icon: <MdOutlineHome />,
+          },
+          {
+            to: '/sheets',
+            text: 'Sheets',
+            activeIcon: <MdTableRows />,
+            icon: <MdOutlineTableRows />,
+          },
+          {
+            to: '/groups',
+            text: 'Groups',
+            activeIcon: <MdGroup />,
+            icon: <MdOutlineGroup />,
+          },
+          {
+            to: '/stats',
+            text: 'Stats',
+            activeIcon: <MdPieChart />,
+            icon: <MdOutlinePieChart />,
+          },
+          {
+            to: '/settings',
+            text: 'Settings',
+            activeIcon: <MdSettings />,
+            icon: <MdOutlineSettings />,
+          },
+        ].map(({ to, text, activeIcon, icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            aria-label={text}
+            title={text}
+            className="flex-grow flex flex-col"
+          >
+            {({ isActive }) => (
+              <>
+                {isActive ? (
+                  <motion.span
+                    className="bg-primary h-1"
+                    layoutId="activeLine"
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
+                  />
+                ) : (
+                  <span className="h-1" />
+                )}
+                <motion.span
+                  animate={{ scale: 1 }}
+                  whileTap={{ scale: 0.8 }}
+                  className="flex flex-grow justify-center p-4"
+                  style={{
+                    paddingBottom:
+                      'max(1rem, calc(env(safe-area-inset-bottom) - 1rem))',
+                  }}
+                >
+                  <span />
+                  {isActive ? activeIcon : icon}
+                  <span />
+                </motion.span>
+              </>
+            )}
+          </NavLink>
+        ))}
       </nav>
     </div>
   );

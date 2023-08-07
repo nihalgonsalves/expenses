@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 
 import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-backend';
 
@@ -19,13 +19,13 @@ import { ExpenseActions } from '../ExpenseActions';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
-const ExpandedExpenseListItem = ({
-  expense,
-  groupSheetId,
-}: {
-  expense: GroupSheetExpenseListItem;
-  groupSheetId: string;
-}) => {
+const ExpandedExpenseListItem = forwardRef<
+  HTMLDivElement,
+  {
+    expense: GroupSheetExpenseListItem;
+    groupSheetId: string;
+  }
+>(({ expense, groupSheetId }, ref) => {
   const utils = trpc.useContext();
 
   const [expanded, setExpanded] = useState(false);
@@ -40,11 +40,12 @@ const ExpandedExpenseListItem = ({
 
   return (
     <motion.div
+      ref={ref}
       key={expense.id}
       className="card card-bordered"
       layout
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.5, opacity: 0 }}
+      exit={{ scale: 0.8, opacity: 0 }}
     >
       <div
         tabIndex={0}
@@ -118,7 +119,8 @@ const ExpandedExpenseListItem = ({
       </div>
     </motion.div>
   );
-};
+});
+ExpandedExpenseListItem.displayName = 'ExpandedExpenseListItem';
 
 export const GroupSheetExpensesExpandedList = ({
   groupSheetId,
@@ -132,14 +134,14 @@ export const GroupSheetExpensesExpandedList = ({
   return (
     <div className="flex flex-col gap-4">
       {expenses.length === 0 && <div className="alert">No expenses</div>}
-      <AnimatePresence initial={false}>
+      <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => [
           <motion.div
             key={date}
             className="divider"
             layout
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.5, opacity: 0 }}
+            exit={{ scale: 0.8, opacity: 0 }}
           >
             {shortDateFormatter.format(date)}
           </motion.div>,
