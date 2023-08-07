@@ -111,10 +111,23 @@ export const ZBalance = z.object({
   share: ZMoney,
 });
 
-export type Balance = z.infer<typeof ZBalance>;
+const ZExpenseParticipantType = z.union([
+  z.literal('participant'),
+  z.literal('transfer_from'),
+  z.literal('transfer_to'),
+]);
+
+const ZGroupSheetParticipantItem = ZParticipant.extend({
+  balance: ZBalance,
+  type: ZExpenseParticipantType,
+});
+
+export type GroupSheetParticipantItem = z.infer<
+  typeof ZGroupSheetParticipantItem
+>;
 
 const ZGroupSheetExpenseListItem = ZExpenseListItem.extend({
-  participants: z.array(ZParticipant.extend({ balance: ZBalance })),
+  participants: z.array(ZGroupSheetParticipantItem),
   yourBalance: ZBalance.optional(),
 });
 
@@ -126,10 +139,6 @@ export const ZGetGroupSheetExpensesResponse = z.object({
   expenses: z.array(ZGroupSheetExpenseListItem),
   total: z.number().nonnegative(),
 });
-
-export type GetGroupSheetExpensesResponse = z.infer<
-  typeof ZGetPersonalSheetExpensesResponse
->;
 
 export const ZExpenseSummaryResponse = z.array(
   z.object({

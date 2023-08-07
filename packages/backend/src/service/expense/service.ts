@@ -30,7 +30,7 @@ import type {
   CreateGroupSheetExpenseOrIncomeInput,
   CreateGroupSheetSettlementInput,
   CreatePersonalSheetExpenseInput,
-  Balance,
+  GroupSheetParticipantItem,
 } from './types';
 
 class ExpenseServiceError extends TRPCError {}
@@ -91,11 +91,7 @@ const calculateBalances = (
   groupSheet: Sheet,
   type: ExpenseType,
   transactions: (ExpenseTransactions & { user: PrismaUser })[],
-): { id: string; name: string; balance: Balance }[] => {
-  if (type === 'TRANSFER') {
-    return [];
-  }
-
+): GroupSheetParticipantItem[] => {
   const participants = new Map(
     transactions.map(({ userId, user: { name } }) => [
       userId,
@@ -103,8 +99,8 @@ const calculateBalances = (
     ]),
   ).values();
 
-  const participantBalances = [...participants]
-    .map(({ id, name }) => {
+  return [...participants]
+    .map(({ id, name }): GroupSheetParticipantItem => {
       const userTransactions = transactions.filter(
         ({ userId }) => userId === id,
       );
@@ -117,8 +113,26 @@ const calculateBalances = (
         ({ amount }) => amount < 0,
       );
 
+      if (type === 'TRANSFER') {
+        const balance = sumTransactions(
+          groupSheet.currencyCode,
+          userTransactions,
+        );
+
+        return {
+          id,
+          type: balance.amount < 0 ? 'transfer_from' : 'transfer_to',
+          name,
+          balance: {
+            actual: balance,
+            share: balance,
+          },
+        };
+      }
+
       return {
         id,
+        type: 'participant',
         name,
         balance: {
           actual: sumTransactions(
@@ -137,8 +151,6 @@ const calculateBalances = (
         actual.amount !== 0 || share.amount !== 0,
     )
     .sort((a, b) => a.balance.share.amount - b.balance.share.amount);
-
-  return participantBalances;
 };
 
 const mapInputToCreatePersonalExpense = (

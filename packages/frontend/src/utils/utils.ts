@@ -126,9 +126,8 @@ export const getGroupSheetExpenseSummaryText = (
   expense: GroupSheetExpenseListItem,
 ): string => {
   if (expense.type === 'TRANSFER') {
-    // TODO improve API for transfer type
-    // This works because of the sorting of + first
-    const [to, from] = expense.participants;
+    const to = expense.participants.find((p) => p.type === 'transfer_to');
+    const from = expense.participants.find((p) => p.type === 'transfer_from');
 
     return `${getShortName(to?.name ?? '')} paid ${getShortName(
       from?.name ?? '',

@@ -74,24 +74,25 @@ const ExpandedExpenseListItem = ({
             <>
               {expense.participants.map(({ id, name, balance }) => (
                 <ParticipantListItem key={id} avatar={<Avatar name={name} />}>
-                  <span>
+                  <div>
                     <span className="font-semibold">{name}</span>
-                    <br />
-                    {balance.actual.amount !== 0 ? (
+                    {balance.actual.amount !== 0 && (
                       <>
-                        {expense.type === 'EXPENSE' ? ' Paid ' : ' Received'}
-                        {formatCurrency(balance.actual, {
-                          signDisplay: 'never',
-                        })}
-                        {' with own share of '}
+                        {expense.type === 'EXPENSE' ? ' paid ' : ' received '}
+                        <span className="badge badge-primary">
+                          {formatCurrency(balance.actual, {
+                            signDisplay: 'never',
+                          })}
+                        </span>
                       </>
-                    ) : (
-                      ''
                     )}
-                    {formatCurrency(balance.share, {
-                      signDisplay: 'never',
-                    })}
-                  </span>
+                    <br />
+                    <span className="badge badge-neutral">
+                      {formatCurrency(balance.share, {
+                        signDisplay: 'never',
+                      })}
+                    </span>
+                  </div>
                 </ParticipantListItem>
               ))}
 
