@@ -33,11 +33,3 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn test
-
-  docker-build:
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: docker/setup-qemu-action@v2
-      - run: docker compose build --pull

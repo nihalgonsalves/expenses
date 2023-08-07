@@ -1,4 +1,5 @@
 version: '3.8'
+name: expenses-dev
 services:
   expenses-postgres:
     image: 'postgres:15.3-alpine'
