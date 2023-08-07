@@ -24,7 +24,7 @@ type Category = {
 
 export enum CategoryId {
   Groceries = 'groceries',
-  Restauraunts = 'restaurants',
+  Restaurants = 'restaurants',
   Bars = 'bars',
   Entertainment = 'entertainment',
   Cinema = 'cinema',
@@ -43,7 +43,7 @@ export enum CategoryId {
 // prettier-ignore
 export const categories: Category[] = [
   { id: CategoryId.Groceries,      name: 'Groceries',      icon: <MdLocalGroceryStore /> },
-  { id: CategoryId.Restauraunts,   name: 'Restauraunts',   icon: <MdLocalDining /> },
+  { id: CategoryId.Restaurants,    name: 'Restaurants',    icon: <MdLocalDining /> },
   { id: CategoryId.Bars,           name: 'Bars',           icon: <MdLocalBar /> },
   { id: CategoryId.Entertainment,  name: 'Entertainment',  icon: <MdAttractions />, },
   { id: CategoryId.Cinema,         name: 'Cinema',         icon: <MdMovie /> },

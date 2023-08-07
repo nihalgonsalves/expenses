@@ -32,7 +32,7 @@ const fieldMatchers = {
 
 const categoryMatchers: [CategoryId, RegExp][] = [
   [CategoryId.Groceries, /(groceries)/i],
-  [CategoryId.Restauraunts, /(restaurants|eating|dining)/i],
+  [CategoryId.Restaurants, /(restaurants|eating|dining)/i],
   [CategoryId.Bars, /(drink|bar)/i],
   [CategoryId.Entertainment, /(entertainment)/i],
   [CategoryId.Cinema, /(cinema|theater|theatre)/i],
