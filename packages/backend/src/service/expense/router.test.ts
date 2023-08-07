@@ -1,7 +1,9 @@
 import { ExpenseType } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
-import type { Sheet, User } from '../..';
+import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+
 import {
   currencyCodeFactory,
   groupSheetFactory,

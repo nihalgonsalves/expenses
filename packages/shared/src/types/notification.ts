@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ZMoney } from '../expense/types';
+import { ZMoney } from './expense';
 
 const ZNotificationExpense = z.object({
   id: z.string().nonempty(),

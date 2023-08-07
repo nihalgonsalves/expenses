@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
-import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-backend';
+import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
 import { useCurrentUser } from '../../api/useCurrentUser';

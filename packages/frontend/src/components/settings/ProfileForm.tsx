@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-import type { User } from '@nihalgonsalves/expenses-backend';
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';

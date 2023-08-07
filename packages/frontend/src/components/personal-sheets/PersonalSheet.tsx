@@ -1,7 +1,8 @@
 import { MdCloudUpload, MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
-import type { ExpenseListItem, Sheet } from '@nihalgonsalves/expenses-backend';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
+import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';

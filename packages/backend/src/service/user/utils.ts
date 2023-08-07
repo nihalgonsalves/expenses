@@ -4,9 +4,13 @@ import bcrypt from 'bcrypt';
 import { SignJWT, jwtVerify, errors } from 'jose';
 import { z } from 'zod';
 
-import { config } from '../../config';
+import {
+  ZJWTToken,
+  type User,
+  type JWTToken,
+} from '@nihalgonsalves/expenses-shared/types/user';
 
-import { ZJWTToken, type User, type JWTToken } from './types';
+import { config } from '../../config';
 
 const SALT_ROUNDS = 10;
 // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration

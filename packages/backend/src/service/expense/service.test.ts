@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { NotificationPayload } from '../..';
+import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
+
 import {
   groupSheetFactory,
   notificationSubscriptionFactory,

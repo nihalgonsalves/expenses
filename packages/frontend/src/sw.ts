@@ -8,7 +8,7 @@ import {
 } from 'workbox-precaching';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
 
-import type { NotificationPayload } from '@nihalgonsalves/expenses-backend';
+import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
 
 import { formatCurrency } from './utils/money';
 import { getExpenseDescription } from './utils/utils';

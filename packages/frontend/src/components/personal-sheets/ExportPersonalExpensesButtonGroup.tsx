@@ -1,4 +1,4 @@
-import type { Sheet } from '@nihalgonsalves/expenses-backend';
+import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
 import { moneyToString } from '../../utils/money';

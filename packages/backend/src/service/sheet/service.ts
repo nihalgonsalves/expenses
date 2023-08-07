@@ -9,17 +9,17 @@ import {
 } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
-import { sumMoney } from '../../utils/money';
-import { generateId } from '../../utils/nanoid';
-import { getTRPCError } from '../../utils/trpcUtils';
-import type { User } from '../user/types';
-
+import { sumMoney } from '@nihalgonsalves/expenses-shared/money';
 import type {
   Sheet,
   CreateGroupSheetInput,
   CreatePersonalSheetInput,
   GroupSheetWithParticipants,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+
+import { generateId } from '../../utils/nanoid';
+import { getTRPCError } from '../../utils/trpcUtils';
 
 class SheetServiceError extends TRPCError {}
 

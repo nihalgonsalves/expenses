@@ -18,13 +18,13 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import {
-  type User,
   type Money,
-  type GroupSheetByIdResponse,
   dineroToMoney,
   moneyToDinero,
   zeroMoney,
-} from '@nihalgonsalves/expenses-backend';
+} from '@nihalgonsalves/expenses-shared/money';
+import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';

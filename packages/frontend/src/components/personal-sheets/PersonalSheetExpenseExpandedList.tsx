@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef, useState } from 'react';
 
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-backend';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
 
 import { ExpenseActions } from '.././ExpenseActions';
 import { trpc } from '../../api/trpc';

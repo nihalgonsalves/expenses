@@ -2,8 +2,6 @@ import { SheetParticipantRole } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { protectedProcedure, router } from '../../trpc';
-
 import {
   ZCreateGroupSheetInput,
   ZCreatePersonalSheetInput,
@@ -12,7 +10,9 @@ import {
   ZGroupSheetWithParticipants,
   ZGroupSheetsResponse,
   ZSheet,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/sheet';
+
+import { protectedProcedure, router } from '../../trpc';
 
 export const sheetRouter = router({
   myGroupSheets: protectedProcedure

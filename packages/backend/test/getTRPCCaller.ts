@@ -1,5 +1,10 @@
 import { UAParser } from 'ua-parser-js';
 
+import type {
+  User,
+  JWTToken,
+} from '@nihalgonsalves/expenses-shared/types/user';
+
 import { config } from '../src/config';
 import type { ContextObj } from '../src/context';
 import { appRouter } from '../src/router';
@@ -8,7 +13,6 @@ import { FrankfurterService } from '../src/service/frankfurter/FrankfurterServic
 import { NotificationService } from '../src/service/notification/service';
 import { SheetService } from '../src/service/sheet/service';
 import { UserService } from '../src/service/user/service';
-import type { User, JWTToken } from '../src/service/user/types';
 
 import { getPrisma } from './getPrisma';
 

@@ -1,12 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Fragment, useMemo, useState } from 'react';
 
-import type {
-  Sheet,
-  ExpenseListItem,
-  Money,
-} from '@nihalgonsalves/expenses-backend';
-import { sumMoney } from '@nihalgonsalves/expenses-backend/src/utils/money';
+import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
+import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import type { AllConvertedUserExpenses } from '../api/useAllUserExpenses';
 import { usePreferredCurrencyCode } from '../state/preferences';

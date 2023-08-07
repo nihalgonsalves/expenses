@@ -1,4 +1,3 @@
-import { SheetParticipantRole } from '@prisma/client';
 import { z } from 'zod';
 
 export const ZSheet = z.object({
@@ -15,7 +14,7 @@ export const ZParticipant = z.object({
 
 export const ZFullParticipant = ZParticipant.extend({
   email: z.string(),
-  role: z.nativeEnum(SheetParticipantRole),
+  role: z.union([z.literal('ADMIN'), z.literal('MEMBER')]),
 });
 
 export const ZGroupSheetWithParticipants = ZSheet.extend({

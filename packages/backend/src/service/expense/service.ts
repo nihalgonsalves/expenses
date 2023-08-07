@@ -9,29 +9,30 @@ import {
 } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
-import { dinero, equal } from 'dinero.js';
 
 import {
   type Money,
   sumMoney,
   zeroMoney,
-  moneyToDinero,
   negateMoney,
-  getCurrency,
-} from '../../utils/money';
-import { generateId } from '../../utils/nanoid';
-import type { NotificationService } from '../notification/service';
-import type { NotificationPayload } from '../notification/types';
-import type { GroupSheetWithParticipants, Sheet } from '../sheet/types';
-import type { User } from '../user/types';
-
+  equalMoney,
+} from '@nihalgonsalves/expenses-shared/money';
 import type {
   ExpenseSummaryResponse,
   CreateGroupSheetExpenseOrIncomeInput,
   CreateGroupSheetSettlementInput,
   CreatePersonalSheetExpenseInput,
   GroupSheetParticipantItem,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/expense';
+import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
+import type {
+  GroupSheetWithParticipants,
+  Sheet,
+} from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+
+import { generateId } from '../../utils/nanoid';
+import type { NotificationService } from '../notification/service';
 
 class ExpenseServiceError extends TRPCError {}
 
@@ -402,16 +403,7 @@ export class ExpenseService {
       groupSheet.currencyCode,
     );
 
-    if (
-      !equal(
-        dinero({
-          amount: input.money.amount,
-          scale: input.money.scale,
-          currency: getCurrency(input.money.currencyCode),
-        }),
-        moneyToDinero(splitTotal),
-      )
-    ) {
+    if (!equalMoney(input.money, splitTotal)) {
       throw new ExpenseServiceError({
         code: 'BAD_REQUEST',
         message: 'Invalid splits',

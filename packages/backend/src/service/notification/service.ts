@@ -1,15 +1,16 @@
 import type { PrismaClient } from '@prisma/client';
 import { WebPushError } from 'web-push';
 
-import { generateId } from '../../utils/nanoid';
-import type { User } from '../user/types';
-
-import { type IWebPushService, WebPushService } from './WebPushService';
 import {
   type NotificationSubscriptionUpsertInput,
   type NotificationPayload,
   ZNotificationPayload,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/notification';
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+
+import { generateId } from '../../utils/nanoid';
+
+import { type IWebPushService, WebPushService } from './WebPushService';
 
 type NotificationDispatchResult = { id: string; userId: string } & (
   | { success: false; errorType: 'SERVER'; statusCode: number }
