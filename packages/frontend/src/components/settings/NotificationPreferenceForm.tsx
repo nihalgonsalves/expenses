@@ -50,26 +50,30 @@ export const NotificationPreferenceForm = () => {
       if (!thisDeviceSubscription) return;
 
       await deleteSubscription(thisDeviceSubscription.id);
-
       await setEndpoint(undefined);
-
       await utils.notification.getSubscriptions.invalidate();
       return;
     }
 
-    if (!applicationServerKey) return;
-    if (permission === 'default' && (await request()) !== 'granted') return;
+    if (
+      !applicationServerKey ||
+      (permission === 'default' && (await request()) !== 'granted') ||
+      !serviceWorkerRegistration
+    ) {
+      console.debug('[NotificationPreferenceForm] Push subscription failed', {
+        applicationServerKey,
+        permission,
+        serviceWorkerRegistration,
+      });
 
-    if (!serviceWorkerRegistration) {
       return;
     }
 
-    const { pushManager } = serviceWorkerRegistration;
-
-    const rawSubscription = await pushManager.subscribe({
-      applicationServerKey,
-      userVisibleOnly: true,
-    });
+    const rawSubscription =
+      await serviceWorkerRegistration.pushManager.subscribe({
+        applicationServerKey,
+        userVisibleOnly: true,
+      });
 
     const parsedSubscription = ZPushSubscription.parse(
       JSON.parse(JSON.stringify(rawSubscription)),
