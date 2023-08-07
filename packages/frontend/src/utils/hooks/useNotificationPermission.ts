@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import { PUSH_SUPPORTED } from './usePushSubscription';
 import { useServiceWorkerRegistration } from './useServiceWorkerRegistration';
 
 // undefined on iOS when not installed, for example
@@ -11,6 +10,9 @@ const navigatorPermissions =
   'permissions' in globalThis.navigator
     ? globalThis.navigator.permissions
     : undefined;
+
+export const PUSH_SUPPORTED =
+  'serviceWorker' in globalThis.navigator && 'PushManager' in globalThis.window;
 
 export const useNotificationPermission = (): {
   permission: NotificationPermission | 'not_supported';

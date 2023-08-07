@@ -1,9 +1,9 @@
+import { useEffect, useState } from 'react';
 import { MdDelete } from 'react-icons/md';
 import { z } from 'zod';
 
 import { trpc } from '../../api/trpc';
 import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
-import { usePushSubscription } from '../../utils/hooks/usePushSubscription';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
 import { Button } from '../form/Button';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
@@ -25,7 +25,7 @@ const ZPushSubscription = z.object({
 export const NotificationPreferenceForm = () => {
   const { permission, request } = useNotificationPermission();
   const serviceWorkerRegistration = useServiceWorkerRegistration();
-  const pushSubscription = usePushSubscription();
+  const [endpoint, setEndpoint] = useState<string>();
 
   const utils = trpc.useContext();
   const { data: applicationServerKey } =
@@ -37,8 +37,15 @@ export const NotificationPreferenceForm = () => {
   const { mutateAsync: deleteSubscription } =
     trpc.notification.deleteSubscription.useMutation();
 
+  useEffect(() => {
+    void (async () => {
+      const s = await serviceWorkerRegistration?.pushManager.getSubscription();
+      setEndpoint(s?.endpoint);
+    })();
+  });
+
   const thisDeviceSubscription = subscriptions?.find(
-    ({ endpoint }) => endpoint === pushSubscription?.endpoint,
+    (s) => s.endpoint === endpoint,
   );
 
   const notificationPreference = thisDeviceSubscription != null;
@@ -135,8 +142,7 @@ export const NotificationPreferenceForm = () => {
                 <div>
                   <span className="font-semibold">
                     {subscription.description}
-                    {subscription.endpoint === pushSubscription?.endpoint &&
-                      ' – this device'}
+                    {subscription.endpoint === endpoint && ' – this device'}
                   </span>
                   <br />
                   Notifications enabled
