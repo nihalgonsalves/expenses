@@ -3,21 +3,18 @@ FROM node:20-slim as builder
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 
-RUN mkdir -p ./packages/frontend/
-RUN mkdir -p ./packages/backend/
-
-ADD package.json .
-ADD ./packages/frontend/package.json ./packages/frontend/
-ADD ./packages/backend/package.json ./packages/backend/
-ADD ./packages/shared/package.json ./packages/shared/
-ADD yarn.lock .
+COPY package.json .
+COPY ./packages/frontend/package.json ./packages/frontend/
+COPY ./packages/backend/package.json ./packages/backend/
+COPY ./packages/shared/package.json ./packages/shared/
+COPY yarn.lock .
 
 RUN yarn install --frozen-lockfile
 
-ADD ./tsconfig.json ./tsconfig.base.json ./
-ADD ./packages/frontend/ ./packages/frontend/
-ADD ./packages/backend/ ./packages/backend/
-ADD ./packages/shared/ ./packages/shared/
+COPY ./tsconfig.json ./tsconfig.base.json ./
+COPY ./packages/frontend/ ./packages/frontend/
+COPY ./packages/backend/ ./packages/backend/
+COPY ./packages/shared/ ./packages/shared/
 
 RUN yarn fe build
 
