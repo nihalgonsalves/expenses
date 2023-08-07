@@ -55,43 +55,54 @@ export const GroupSheet = ({
   );
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-semibold">People</h2>
-      {actorInfo && (
-        <BalanceSummary groupSheetId={groupSheet.id} actorInfo={actorInfo} />
-      )}
+    <>
+      <div className="flex flex-col md:grid md:grid-cols-2 md:gap-4">
+        <div className="flex flex-col flex-grow gap-4">
+          <h2 className="text-xl font-semibold">People</h2>
+          {actorInfo && (
+            <BalanceSummary
+              groupSheetId={groupSheet.id}
+              actorInfo={actorInfo}
+            />
+          )}
+        </div>
+
+        <div className="divider md:hidden" />
+
+        <div className="flex flex-col flex-grow gap-4">
+          <h2 className="text-xl font-semibold">Latest Expenses</h2>
+
+          <GroupSheetExpensesDenseList
+            expenses={groupSheetExpensesResponse?.expenses.slice(0, 2) ?? []}
+          />
+          <Link
+            to={`/groups/${groupSheet.id}/expenses`}
+            className="btn btn-primary btn-outline btn-block"
+          >
+            <MdListAlt /> All Expenses ({groupSheetExpensesResponse?.total})
+          </Link>
+        </div>
+      </div>
 
       <div className="divider" />
 
-      <h2 className="text-xl font-semibold">Latest Expenses</h2>
+      <div className="flex flex-col gap-4">
+        <ExportGroupExpensesButtonGroup groupSheet={groupSheet} />
 
-      <GroupSheetExpensesDenseList
-        expenses={groupSheetExpensesResponse?.expenses.slice(0, 2) ?? []}
-      />
-      <Link
-        to={`/groups/${groupSheet.id}/expenses`}
-        className="btn btn-primary btn-outline"
-      >
-        <MdListAlt /> All Expenses ({groupSheetExpensesResponse?.total})
-      </Link>
-
-      <div className="divider" />
-
-      <ExportGroupExpensesButtonGroup groupSheet={groupSheet} />
-
-      {actorInfo?.isAdmin && (
-        <ConfirmButton
-          disabled={!onLine}
-          isLoading={deleteGroupLoading}
-          label={
-            <>
-              <MdDeleteOutline /> Delete Group
-            </>
-          }
-          confirmLabel="Confirm Delete (Irreversible)"
-          handleConfirmed={handleDelete}
-        />
-      )}
-    </div>
+        {actorInfo?.isAdmin && (
+          <ConfirmButton
+            disabled={!onLine}
+            isLoading={deleteGroupLoading}
+            label={
+              <>
+                <MdDeleteOutline /> Delete Group
+              </>
+            }
+            confirmLabel="Confirm Delete (Irreversible)"
+            handleConfirmed={handleDelete}
+          />
+        )}
+      </div>
+    </>
   );
 };

@@ -11,7 +11,7 @@ import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency } from '../../utils/money';
 import { clsxtw } from '../../utils/utils';
-import { Avatar } from '../Avatar';
+import { AvatarGroup } from '../Avatar';
 import { Button } from '../form/Button';
 
 import { AddMemberButton } from './AddMemberButton';
@@ -128,7 +128,7 @@ const SummaryCard = ({
       className={clsxtw({
         'opacity-50': isInvalidating,
       })}
-      avatar={<Avatar name={summary.name} />}
+      avatar={<AvatarGroup names={[summary.name]} max={1} />}
     >
       <div className="flex flex-col">
         <span>

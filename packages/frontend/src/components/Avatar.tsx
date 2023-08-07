@@ -6,7 +6,7 @@ export const Avatar = ({ name }: { name: string }) => (
     aria-label={name}
     data-tip={name}
   >
-    <div className="w-12 rounded-full bg-neutral-focus text-neutral-content">
+    <div className="w-12 h-12 rounded-full bg-neutral-focus text-neutral-content">
       <span className="text-2xl">{getInitials(name)}</span>
     </div>
   </div>

@@ -16,4 +16,5 @@ select {
 
 body {
   overscroll-behavior-y: contain;
+  @apply bg-base-200;
 }

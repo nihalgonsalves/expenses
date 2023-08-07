@@ -46,7 +46,7 @@ export const Root = ({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col" style={{ height: '100dvh' }}>
+    <div className="flex flex-col bg-base-100 max-w-screen-2xl h-[100dvh] m-auto">
       <header className="navbar bg-primary text-primary-content">
         {showBackButton && (
           <Button
