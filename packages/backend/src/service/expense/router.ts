@@ -2,8 +2,6 @@ import { Temporal } from '@js-temporal/polyfill';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { protectedProcedure, router } from '../../trpc';
-
 import {
   ZCreateGroupSheetExpenseOrIncomeInput,
   ZCreateSheetExpenseResponse,
@@ -15,7 +13,9 @@ import {
   ZGetGroupSheetExpensesResponse,
   ZBatchCreatePersonalSheetExpenseInput,
   ZGetAllUserExpensesResponse,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/expense';
+
+import { protectedProcedure, router } from '../../trpc';
 
 export const expenseRouter = router({
   createPersonalSheetExpense: protectedProcedure

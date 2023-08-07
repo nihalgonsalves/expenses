@@ -9,6 +9,7 @@ RUN mkdir -p ./packages/backend/
 ADD package.json .
 ADD ./packages/frontend/package.json ./packages/frontend/
 ADD ./packages/backend/package.json ./packages/backend/
+ADD ./packages/backend/package.json ./packages/shared/
 ADD yarn.lock .
 
 RUN yarn install --frozen-lockfile
@@ -16,6 +17,7 @@ RUN yarn install --frozen-lockfile
 ADD ./tsconfig.json ./tsconfig.base.json ./
 ADD ./packages/frontend/ ./packages/frontend/
 ADD ./packages/backend/ ./packages/backend/
+ADD ./packages/backend/ ./packages/shared/
 
 RUN yarn fe build
 

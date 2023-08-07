@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { MdArrowCircleDown, MdArrowCircleUp } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-import type { Sheet } from '@nihalgonsalves/expenses-backend';
+import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';

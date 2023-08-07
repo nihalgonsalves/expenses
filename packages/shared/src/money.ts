@@ -1,12 +1,20 @@
-// TODO: move to utils package
-
 import * as Currencies from '@dinero.js/currencies';
-import { type Dinero, add as dineroAdd, dinero, toSnapshot } from 'dinero.js';
-import type { z } from 'zod';
-
-import type { ZMoney } from '../service/expense/types';
+import {
+  type Dinero,
+  add as dineroAdd,
+  dinero,
+  toSnapshot,
+  equal,
+} from 'dinero.js';
+import { z } from 'zod';
 
 export const CURRENCY_CODES = Object.keys(Currencies);
+
+export const ZMoney = z.object({
+  amount: z.number().int(),
+  scale: z.number().int().nonnegative(),
+  currencyCode: z.string().length(3),
+});
 
 export type Money = z.infer<typeof ZMoney>;
 
@@ -54,6 +62,9 @@ export const sumMoney = (
     ),
   );
 };
+
+export const equalMoney = (a: Money, b: Money) =>
+  equal(moneyToDinero(a), moneyToDinero(b));
 
 export const negateMoney = ({ amount, scale, currencyCode }: Money): Money => ({
   amount: amount === 0 ? amount : -amount,

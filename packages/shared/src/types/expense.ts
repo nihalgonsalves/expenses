@@ -1,9 +1,6 @@
-import { ExpenseType } from '@prisma/client';
 import { z } from 'zod';
 
-import { ZParticipant, ZSheet } from '../sheet/types';
-
-export { type SheetParticipantRole } from '@prisma/client';
+import { ZParticipant, ZSheet } from './sheet';
 
 export const ZMoney = z.object({
   amount: z.number().int(),
@@ -78,7 +75,11 @@ export const ZExpenseListItem = z.object({
   spentAt: z.string().nonempty(),
   description: z.string(),
   category: z.string().nonempty(),
-  type: z.nativeEnum(ExpenseType),
+  type: z.union([
+    z.literal('EXPENSE'),
+    z.literal('INCOME'),
+    z.literal('TRANSFER'),
+  ]),
 });
 
 export type ExpenseListItem = z.infer<typeof ZExpenseListItem>;

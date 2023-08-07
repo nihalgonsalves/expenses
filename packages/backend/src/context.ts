@@ -3,13 +3,18 @@ import type { CreateHTTPContextOptions } from '@trpc/server/adapters/standalone'
 import cookie from 'cookie';
 import { UAParser } from 'ua-parser-js';
 
+import {
+  type JWTToken,
+  ZJWTToken,
+  type User,
+} from '@nihalgonsalves/expenses-shared/types/user';
+
 import { config } from './config';
 import { ExpenseService } from './service/expense/service';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
 import { NotificationService } from './service/notification/service';
 import { SheetService } from './service/sheet/service';
 import { UserService } from './service/user/service';
-import { type JWTToken, ZJWTToken, type User } from './service/user/types';
 import { UserServiceError } from './service/user/utils';
 
 const prisma = new PrismaClient();

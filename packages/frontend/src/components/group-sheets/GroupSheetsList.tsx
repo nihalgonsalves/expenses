@@ -1,7 +1,7 @@
 import { MdGroup } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-import type { GroupSheetsResponse } from '@nihalgonsalves/expenses-backend';
+import type { GroupSheetsResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { Avatar } from '../Avatar';
 

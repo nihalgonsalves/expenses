@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { publicProcedure, protectedProcedure, router } from '../../trpc';
-
 import {
   ZAuthorizeUserInput,
   ZUser,
   ZCreateUserInput,
   ZUpdateUserInput,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/user';
+
+import { publicProcedure, protectedProcedure, router } from '../../trpc';
 
 export const userRouter = router({
   createUser: publicProcedure

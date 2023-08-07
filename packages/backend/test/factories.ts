@@ -6,8 +6,9 @@ import {
   SheetType,
 } from '@prisma/client';
 
-import type { User } from '../src/service/user/types';
-import { CURRENCY_CODES } from '../src/utils/money';
+import { CURRENCY_CODES } from '@nihalgonsalves/expenses-shared/money';
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+
 import { generateId } from '../src/utils/nanoid';
 
 import { getUserKeys } from './webPushUtils';

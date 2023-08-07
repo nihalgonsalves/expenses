@@ -1,4 +1,4 @@
-import { addMoney, type Money } from '@nihalgonsalves/expenses-backend';
+import { addMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 
 import type {
   AllConvertedUserExpenses,

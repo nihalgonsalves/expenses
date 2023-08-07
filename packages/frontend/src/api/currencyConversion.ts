@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { useCallback, useMemo } from 'react';
 
-import type { Money } from '@nihalgonsalves/expenses-backend';
+import type { Money } from '@nihalgonsalves/expenses-shared/money';
 
 import { usePreferredCurrencyCode } from '../state/preferences';
 import { convertCurrency } from '../utils/money';

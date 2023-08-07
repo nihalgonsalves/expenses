@@ -1,7 +1,7 @@
 import { MdListAlt } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-import type { Sheet } from '@nihalgonsalves/expenses-backend';
+import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 export const PersonalSheetsList = ({ sheets }: { sheets: Sheet[] }) => (
   <div className="flex flex-col gap-4">

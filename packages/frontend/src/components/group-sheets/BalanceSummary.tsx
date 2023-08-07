@@ -2,10 +2,8 @@ import { useState } from 'react';
 import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
-import type {
-  Money,
-  ExpenseSummaryResponse,
-} from '@nihalgonsalves/expenses-backend';
+import type { Money } from '@nihalgonsalves/expenses-shared/money';
+import type { ExpenseSummaryResponse } from '@nihalgonsalves/expenses-shared/types/expense';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';

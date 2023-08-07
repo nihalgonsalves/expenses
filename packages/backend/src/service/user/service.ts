@@ -1,15 +1,16 @@
 import type { PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
-import { generateId } from '../../utils/nanoid';
-
 import type {
   AuthorizeUserInput,
   User,
   CreateUserInput,
   JWTToken,
   UpdateUserInput,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/user';
+
+import { generateId } from '../../utils/nanoid';
+
 import {
   UserServiceError,
   comparePassword,

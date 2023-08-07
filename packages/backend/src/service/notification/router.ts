@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { config } from '../../config';
-import { protectedProcedure, router } from '../../trpc';
-
 import {
   ZNotificationSubscription,
   ZNotificationSubscriptionUpsertInput,
   ZNotificationSubscriptionsResponse,
-} from './types';
+} from '@nihalgonsalves/expenses-shared/types/notification';
+
+import { config } from '../../config';
+import { protectedProcedure, router } from '../../trpc';
 
 export const notificationRouter = router({
   getPublicKey: protectedProcedure

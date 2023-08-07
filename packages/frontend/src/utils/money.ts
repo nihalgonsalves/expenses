@@ -7,7 +7,7 @@ import {
   getCurrency,
   dineroToMoney,
   moneyToDinero,
-} from '@nihalgonsalves/expenses-backend';
+} from '@nihalgonsalves/expenses-shared/money';
 
 import { getUserLanguage } from './utils';
 

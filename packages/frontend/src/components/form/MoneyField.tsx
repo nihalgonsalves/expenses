@@ -1,6 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 
-import { dineroToMoney, type Money } from '@nihalgonsalves/expenses-backend';
+import {
+  dineroToMoney,
+  type Money,
+} from '@nihalgonsalves/expenses-shared/money';
 
 import { formatCurrency, toDinero } from '../../utils/money';
 
