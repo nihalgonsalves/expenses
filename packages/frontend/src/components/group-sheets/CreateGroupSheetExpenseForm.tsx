@@ -673,7 +673,7 @@ export const SettlementForm = ({
       utils.expense.getParticipantSummaries.invalidate(groupSheet.id),
     ]);
 
-    navigate(`/groups/${groupSheet.id}`);
+    navigate(`/groups/${groupSheet.id}`, { replace: true });
   };
 
   const disabled = !valid || !onLine;

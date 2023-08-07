@@ -46,7 +46,7 @@ const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
       redirect: location.pathname,
     });
 
-    return <Navigate to={`/auth/sign-in?${searchParams.toString()}`} />;
+    return <Navigate to={`/auth/sign-in?${searchParams.toString()}`} replace />;
   }
 
   return children;

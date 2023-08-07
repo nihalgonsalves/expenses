@@ -14,7 +14,7 @@ export const AuthenticationPage = () => {
   if (data?.id) {
     const redirect = searchParams.get('redirect');
 
-    return <Navigate to={redirect ?? '/'} />;
+    return <Navigate to={redirect ?? '/'} replace />;
   }
 
   return (

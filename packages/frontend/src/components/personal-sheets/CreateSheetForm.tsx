@@ -29,7 +29,7 @@ export const CreateSheetForm = ({
       currencyCode,
     });
 
-    navigate(`/sheets/${id}`);
+    navigate(`/sheets/${id}`, { replace: true });
 
     await utils.sheet.myPersonalSheets.invalidate();
   };

@@ -89,7 +89,7 @@ export const CreatePersonalExpenseForm = ({
       spentAt: dateTimeLocalToISOString(spentAt),
     });
 
-    navigate(`/sheets/${personalSheet.id}/expenses`);
+    navigate(`/sheets/${personalSheet.id}/expenses`, { replace: true });
 
     await Promise.all([
       utils.expense.getAllUserExpenses.invalidate(),

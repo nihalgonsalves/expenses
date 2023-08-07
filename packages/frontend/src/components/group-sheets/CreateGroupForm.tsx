@@ -54,7 +54,7 @@ export const CreateGroupForm = ({
       additionalParticipantEmailAddresses: participantEmails,
     });
 
-    navigate(`/groups/${id}`);
+    navigate(`/groups/${id}`, { replace: true });
 
     await utils.sheet.myGroupSheets.invalidate();
   };
