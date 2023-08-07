@@ -1,6 +1,8 @@
 import { MdDelete } from 'react-icons/md';
 import { z } from 'zod';
 
+import { ZPushSubscription } from '@nihalgonsalves/expenses-shared/types/notification';
+
 import { trpc } from '../../api/trpc';
 import { useSubscriptionEndpoint } from '../../state/preferences';
 import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
@@ -12,15 +14,6 @@ const IS_IOS_AND_NOT_STANDALONE = z.boolean().optional().parse(
   // @ts-expect-error iOS only
   globalThis.navigator.standalone,
 );
-
-// TODO Move to shared
-const ZPushSubscription = z.object({
-  endpoint: z.string().url(),
-  keys: z.object({
-    auth: z.string().nonempty(),
-    p256dh: z.string().nonempty(),
-  }),
-});
 
 export const NotificationPreferenceForm = () => {
   const { permission, request } = useNotificationPermission();

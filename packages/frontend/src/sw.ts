@@ -8,7 +8,10 @@ import {
 } from 'workbox-precaching';
 import { NavigationRoute, registerRoute } from 'workbox-routing';
 
-import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
+import {
+  ZNotificationPayload,
+  type NotificationPayload,
+} from '@nihalgonsalves/expenses-shared/types/notification';
 
 import { formatCurrency } from './utils/money';
 import { getExpenseDescription } from './utils/utils';
@@ -63,11 +66,12 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
 };
 
 const handlePush = async (event: PushEvent) => {
-  // TODO: move ZNotificationPayload to shared util and use it here to safeParse
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const payload: NotificationPayload = event.data?.json();
+  const result = ZNotificationPayload.safeParse(event.data?.json());
 
-  const { title, body } = getNotificationPresentation(payload);
+  const { title, body } = result.success
+    ? getNotificationPresentation(result.data)
+    : { title: 'Unknown Notification', body: 'Open the app to see more' };
+
   await self.registration.showNotification(title, {
     body,
   });
