@@ -18,7 +18,6 @@ export const TroubleshootingForm = () => {
 
     await resetCache();
     await serviceWorker?.unregister();
-    localStorage.clear();
 
     await minTimer;
     setState('done');
