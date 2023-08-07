@@ -5,7 +5,7 @@
   "scripts": {
     "test": "playwright test",
     "prepare": "playwright install",
-    "prepare-ci": "playwright install --with-deps"
+    "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
     "@playwright/test": "^1.36.2"

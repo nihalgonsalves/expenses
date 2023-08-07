@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   traefik:
+    restart: unless-stopped
     image: 'traefik:v2.10'
     command:
       - '--providers.docker=true'
@@ -11,13 +12,16 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
   backend:
+    restart: unless-stopped
+    depends_on:
+      - postgres
     build:
       context: .
       dockerfile: ./infra/Dockerfile-backend
     init: true
     # must contain DATABASE_URL, JWT_SECRET, VAPID_EMAIL, VAPID_PRIVATE_KEY, VAPID_PUBLIC_KEY
-    # env_file:
-    #   - .env.backend
+    env_file:
+      - .env.backend
     environment:
       PORT: 5174
       FRANKFURTER_BASE_URL: https://api.frankfurter.app/
@@ -30,6 +34,7 @@ services:
       traefik.http.routers.backend.middlewares: backend-stripprefix
       traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes: /api
   frontend:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: ./infra/Dockerfile-frontend
@@ -37,13 +42,19 @@ services:
       traefik.enable: true
       traefik.http.routers.frontend.rule: Host(`localhost`)
       traefik.http.routers.frontend.entrypoints: web
-  postgresql:
+  postgres:
+    restart: unless-stopped
     image: postgres:15.3-alpine
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
     # must contain POSTGRES_PASSWORD
-    # env_file:
-    #   - .env.postgres
-    # volumes:
-    #   - postgresql:/var/lib/postgresql/data
+    env_file:
+      - .env.postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
 
 volumes:
-  postgresql:
+  postgres:

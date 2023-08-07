@@ -2,24 +2,8 @@ name: playwright
 on: [push]
 jobs:
   test:
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15.3-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
 
     steps:
       - uses: actions/checkout@v3
@@ -29,18 +13,23 @@ jobs:
           cache: yarn
 
       - run: yarn install --frozen-lockfile
+      - run: yarn be node bin/prepare-ci-e2e.mjs
+      - run: yarn e2e prepare-pw
 
-      - run: yarn e2e prepare-ci
-
-      # todo: run migrations and run prod, built app
-      - run: yarn be db:push
-      - run: yarn be dev &
-      - run: yarn fe dev &
+      - run: docker compose build --pull
+      - run: docker compose up postgres --wait --detach
+      - run: docker compose run --rm backend yarn prisma migrate deploy
+      - run: docker compose up --detach
 
       - run: yarn e2e test
+        env:
+          PW_BASE_URL: http://localhost:8080
 
-      - uses: actions/upload-artifact@v3
-        if: always()
+      - if: always()
+        run: docker compose down --volumes
+
+      - if: always()
+        uses: actions/upload-artifact@v3
         with:
           name: playwright-report
           path: playwright-report/
