@@ -5,9 +5,9 @@ import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expe
 
 import { ExpenseActions } from '.././ExpenseActions';
 import { trpc } from '../../api/trpc';
+import { collapse, scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
 import {
-  clsxtw,
   formatDateTimeRelative,
   getExpenseDescription,
   groupBySpentAt,
@@ -39,19 +39,10 @@ const ExpandedExpenseListItem = forwardRef<
     <motion.div
       ref={ref}
       key={expense.id}
-      layout
-      initial={{ scale: 0.8, opacity: 1 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.8, opacity: 0 }}
+      {...scaleOut}
       className="card card-bordered"
     >
-      <div
-        tabIndex={0}
-        className={clsxtw(
-          'card-body collapse p-4',
-          expanded ? 'collapse-open' : 'collapse-close',
-        )}
-      >
+      <div tabIndex={0} className="card-body p-4">
         <div className="flex gap-4">
           <CategoryAvatar category={expense.category} />
           <div className="flex-grow">
@@ -66,22 +57,23 @@ const ExpandedExpenseListItem = forwardRef<
           />
         </div>
 
-        <div className="collapse-content flex flex-col gap-4 p-0">
-          <div className="divider mb-0" />
+        <AnimatePresence initial={false}>
+          {expanded && (
+            <motion.div className="flex flex-col gap-4 p-0" {...collapse}>
+              <div className="divider mb-0" />
 
-          <ExpenseActions
-            sheetId={personalSheetId}
-            expense={expense}
-            onBeforeDelete={() => {
-              setExpanded(false);
-            }}
-            onDelete={async () => {
-              await utils.expense.getPersonalSheetExpenses.invalidate({
-                personalSheetId,
-              });
-            }}
-          />
-        </div>
+              <ExpenseActions
+                sheetId={personalSheetId}
+                expense={expense}
+                onDelete={async () => {
+                  await utils.expense.getPersonalSheetExpenses.invalidate({
+                    personalSheetId,
+                  });
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
@@ -102,14 +94,7 @@ export const PersonalSheetExpensesExpandedList = ({
       {expenses.length === 0 && <div className="alert">No expenses</div>}
       <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => [
-          <motion.div
-            key={date}
-            className="divider"
-            layout
-            initial={{ scale: 0.8, opacity: 1 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-          >
+          <motion.div key={date} className="divider" {...scaleOut}>
             {shortDateFormatter.format(date)}
           </motion.div>,
           groupedByDate

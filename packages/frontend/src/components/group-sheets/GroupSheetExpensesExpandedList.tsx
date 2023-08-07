@@ -4,9 +4,9 @@ import { forwardRef, useState } from 'react';
 import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
 
 import { trpc } from '../../api/trpc';
+import { collapse, scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
 import {
-  clsxtw,
   getExpenseDescription,
   getGroupSheetExpenseSummaryText,
   groupBySpentAt,
@@ -43,17 +43,9 @@ const ExpandedExpenseListItem = forwardRef<
       ref={ref}
       key={expense.id}
       className="card card-bordered"
-      layout
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.8, opacity: 0 }}
+      {...scaleOut}
     >
-      <div
-        tabIndex={0}
-        className={clsxtw(
-          'card-body collapse p-4',
-          expanded ? 'collapse-open' : 'collapse-close',
-        )}
-      >
+      <div tabIndex={0} className="card-body collapse p-4">
         <div className="flex gap-4">
           <CategoryAvatar category={expense.category} />
           <div className="flex-grow">
@@ -68,54 +60,62 @@ const ExpandedExpenseListItem = forwardRef<
           />
         </div>
 
-        <div className="collapse-content flex flex-col gap-4 p-0">
-          <div className="divider mb-0" />
+        <AnimatePresence initial={false}>
+          {expanded && (
+            <motion.div className="flex flex-col gap-4 p-0" {...collapse}>
+              <div className="divider mb-0" />
 
-          {expense.type !== 'TRANSFER' && (
-            <>
-              {expense.participants.map(({ id, name, balance }) => (
-                <ParticipantListItem key={id} avatar={<Avatar name={name} />}>
-                  <div>
-                    <span className="font-semibold">{name}</span>
-                    {balance.actual.amount !== 0 && (
-                      <>
-                        {expense.type === 'EXPENSE' ? ' paid ' : ' received '}
-                        <span className="badge badge-primary">
-                          {formatCurrency(balance.actual, {
+              {expense.type !== 'TRANSFER' && (
+                <>
+                  {expense.participants.map(({ id, name, balance }) => (
+                    <ParticipantListItem
+                      key={id}
+                      avatar={<Avatar name={name} />}
+                    >
+                      <div>
+                        <span className="font-semibold">{name}</span>
+                        {balance.actual.amount !== 0 && (
+                          <>
+                            {expense.type === 'EXPENSE'
+                              ? ' paid '
+                              : ' received '}
+                            <span className="badge badge-primary">
+                              {formatCurrency(balance.actual, {
+                                signDisplay: 'never',
+                              })}
+                            </span>
+                          </>
+                        )}
+                        <br />
+                        <span className="badge badge-neutral">
+                          {formatCurrency(balance.share, {
                             signDisplay: 'never',
                           })}
                         </span>
-                      </>
-                    )}
-                    <br />
-                    <span className="badge badge-neutral">
-                      {formatCurrency(balance.share, {
-                        signDisplay: 'never',
-                      })}
-                    </span>
-                  </div>
-                </ParticipantListItem>
-              ))}
+                      </div>
+                    </ParticipantListItem>
+                  ))}
 
-              <div className="divider m-0" />
-            </>
+                  <div className="divider m-0" />
+                </>
+              )}
+              <ExpenseActions
+                sheetId={groupSheetId}
+                expense={expense}
+                onDelete={async () => {
+                  await Promise.all([
+                    utils.expense.getGroupSheetExpenses.invalidate({
+                      groupSheetId,
+                    }),
+                    utils.expense.getParticipantSummaries.invalidate(
+                      groupSheetId,
+                    ),
+                  ]);
+                }}
+              />
+            </motion.div>
           )}
-          <ExpenseActions
-            sheetId={groupSheetId}
-            expense={expense}
-            onBeforeDelete={() => {
-              setExpanded(false);
-            }}
-            onDelete={async () => {
-              await Promise.all([
-                utils.expense.getGroupSheetExpenses.invalidate({
-                  groupSheetId,
-                }),
-                utils.expense.getParticipantSummaries.invalidate(groupSheetId),
-              ]);
-            }}
-          />
-        </div>
+        </AnimatePresence>
       </div>
     </motion.div>
   );
@@ -136,13 +136,7 @@ export const GroupSheetExpensesExpandedList = ({
       {expenses.length === 0 && <div className="alert">No expenses</div>}
       <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => [
-          <motion.div
-            key={date}
-            className="divider"
-            layout
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-          >
+          <motion.div key={date} className="divider" {...scaleOut}>
             {shortDateFormatter.format(date)}
           </motion.div>,
           groupedByDate

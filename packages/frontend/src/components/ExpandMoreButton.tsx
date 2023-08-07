@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { MdExpandMore } from 'react-icons/md';
 
 import { Button } from './form/Button';
@@ -7,15 +8,15 @@ type ExpandMoreProps = {
   onClick: () => void;
 };
 
-// TODO: Flip when open
-
 export const ExpandMoreButton = ({ expand, onClick }: ExpandMoreProps) => (
   <Button
     onClick={onClick}
     aria-expanded={expand}
     aria-label="show more"
-    className="btn-ghost"
+    className="btn-ghost text-xl"
   >
-    <MdExpandMore />
+    <motion.span animate={expand ? { rotate: 180 } : { rotate: 0 }}>
+      <MdExpandMore />
+    </motion.span>
   </Button>
 );
