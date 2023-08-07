@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 
 import { TrpcProvider } from './api/TrpcProvider';
@@ -6,9 +5,8 @@ import { useOffLineToaster } from './api/useOffLineToaster';
 import { usePrefetchQueries } from './api/usePrefetchQueries';
 import { registerSW } from './registerSW';
 import { RouterProvider, router } from './router';
+import { useThemeSync } from './state/theme';
 import { useHydrateState } from './state/useHydrateState';
-import { useMediaQuery } from './utils/hooks/useMediaQuery';
-import { syncThemeToHtml } from './utils/theme';
 
 void registerSW();
 
@@ -16,12 +14,7 @@ const GlobalHookContainer = () => {
   useOffLineToaster();
   usePrefetchQueries();
   useHydrateState();
-
-  const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-
-  useEffect(() => {
-    syncThemeToHtml();
-  }, [isDarkMode]);
+  useThemeSync();
 
   return null;
 };

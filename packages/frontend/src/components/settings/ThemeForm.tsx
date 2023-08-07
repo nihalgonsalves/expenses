@@ -1,20 +1,14 @@
-import { useCallback, useState } from 'react';
 import { CgDarkMode } from 'react-icons/cg';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { z } from 'zod';
 
 import {
-  getLightTheme,
-  setLightTheme,
-  getDarkTheme,
-  setDarkTheme,
-  syncThemeToHtml,
-  getThemePreference,
-  type ThemePreference,
   LIGHT_THEMES,
   DARK_THEMES,
-  setThemePreference,
-} from '../../utils/theme';
+  useThemePreference,
+  useDarkTheme,
+  useLightTheme,
+} from '../../state/theme';
 import { Select } from '../form/Select';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
@@ -29,29 +23,10 @@ const darkThemeOptions = DARK_THEMES.map((theme) => ({
 }));
 
 export const ThemeForm = () => {
-  const [themePreferenceState, setThemePreferenceState] = useState(
-    getThemePreference(),
-  );
-  const [lightThemeState, setLightThemeState] = useState(getLightTheme());
-  const [darkThemeState, setDarkThemeState] = useState(getDarkTheme());
+  const [themePreference, setThemePreference] = useThemePreference();
 
-  const changeThemePreference = useCallback((value: ThemePreference) => {
-    setThemePreference(value);
-    setThemePreferenceState(value);
-    syncThemeToHtml();
-  }, []);
-
-  const changeLightTheme = useCallback((value: string) => {
-    setLightTheme(value);
-    setLightThemeState(getLightTheme());
-    syncThemeToHtml();
-  }, []);
-
-  const changeDarkTheme = useCallback((value: string) => {
-    setDarkTheme(value);
-    setDarkThemeState(getDarkTheme());
-    syncThemeToHtml();
-  }, []);
+  const [lightTheme, setLightTheme] = useLightTheme();
+  const [darkTheme, setDarkTheme] = useDarkTheme();
 
   return (
     <div className="card-compact card card-bordered">
@@ -84,20 +59,20 @@ export const ThemeForm = () => {
               ),
             },
           ]}
-          value={themePreferenceState}
-          setValue={changeThemePreference}
+          value={themePreference}
+          setValue={setThemePreference}
         />
         <Select
           label="Light Theme"
-          value={lightThemeState}
-          setValue={changeLightTheme}
+          value={lightTheme}
+          setValue={setLightTheme}
           options={lightThemeOptions}
           schema={z.string()}
         />
         <Select
           label="Dark Theme"
-          value={darkThemeState}
-          setValue={changeDarkTheme}
+          value={darkTheme}
+          setValue={setDarkTheme}
           options={darkThemeOptions}
           schema={z.string()}
         />

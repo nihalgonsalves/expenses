@@ -1,4 +1,9 @@
+import { useEffect } from 'react';
 import { z } from 'zod';
+
+import { useMediaQuery } from '../utils/hooks/useMediaQuery';
+
+import { createPreferenceWithDefault } from './preferences';
 
 // https://github.com/saadeghi/daisyui/blob/ab748bf7340ca89467e1be70c61c9169e8f7e7f5/src/theming/themes.js
 
@@ -39,11 +44,6 @@ export const DARK_THEMES = [
   'coffee',
 ] as const;
 
-const THEME_PREFERENCE_KEY = 'themePreference';
-
-const LIGHT_THEME_KEY = 'lightTheme';
-const DARK_THEME_KEY = 'darkTheme';
-
 const LIGHT_THEME_DEFAULT = 'expenses-light';
 const DARK_THEME_DEFAULT = 'expenses-dark';
 
@@ -55,34 +55,38 @@ const ZThemePreference = z.union([
 
 export type ThemePreference = z.infer<typeof ZThemePreference>;
 
-export const getThemePreference = (): ThemePreference => {
-  const rawValue = localStorage.getItem(THEME_PREFERENCE_KEY);
-  const result = ZThemePreference.safeParse(rawValue);
+export const [useThemePreference, getThemePreference] =
+  createPreferenceWithDefault(
+    'theme_preference',
+    (v) => {
+      const result = ZThemePreference.safeParse(v);
+      return result.success ? result.data : 'system';
+    },
+    'system',
+  );
 
-  return result.success ? result.data : 'system';
-};
+const checkTheme = (themes: readonly unknown[], theme: string) =>
+  themes.includes(theme);
 
-export const setThemePreference = (preference: ThemePreference) => {
-  localStorage.setItem(THEME_PREFERENCE_KEY, preference);
-};
+export const [useLightTheme, getLightTheme] = createPreferenceWithDefault(
+  'light_theme',
+  (v) =>
+    typeof v === 'string' && checkTheme(LIGHT_THEMES, v)
+      ? v
+      : LIGHT_THEME_DEFAULT,
+  LIGHT_THEME_DEFAULT,
+);
 
-export const getLightTheme = () =>
-  localStorage.getItem(LIGHT_THEME_KEY) ?? LIGHT_THEME_DEFAULT;
+export const [useDarkTheme, getDarkTheme] = createPreferenceWithDefault(
+  'light_theme',
+  (v) =>
+    typeof v === 'string' && checkTheme(DARK_THEMES, v)
+      ? v
+      : DARK_THEME_DEFAULT,
+  DARK_THEME_DEFAULT,
+);
 
-export const getDarkTheme = () =>
-  localStorage.getItem(DARK_THEME_KEY) ?? DARK_THEME_DEFAULT;
-
-export const setLightTheme = (theme: string) => {
-  localStorage.setItem(LIGHT_THEME_KEY, theme);
-};
-
-export const setDarkTheme = (theme: string) => {
-  localStorage.setItem(DARK_THEME_KEY, theme);
-};
-
-const isDarkMode = () => {
-  const pref = getThemePreference();
-
+const isDarkMode = (pref: ThemePreference) => {
   if (pref === 'system') {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   }
@@ -124,14 +128,30 @@ const themePrimaryColors: Record<string, string> = {
   winter: '#047AFF',
 };
 
-export const syncThemeToHtml = () => {
-  const themeName = isDarkMode() ? getDarkTheme() : getLightTheme();
+const syncTheme = (
+  themePreference: ThemePreference,
+  darkTheme: string,
+  lightTheme: string,
+) => {
+  const theme = isDarkMode(themePreference) ? darkTheme : lightTheme;
 
-  document.documentElement.setAttribute('data-theme', themeName);
+  document.documentElement.setAttribute('data-theme', theme);
 
   const themeColorMeta = document.querySelector('meta[name="theme-color"]');
-  const themeColor = themePrimaryColors[themeName];
+  const themeColor = themePrimaryColors[theme];
   if (themeColorMeta && themeColor) {
     themeColorMeta.setAttribute('content', themeColor);
   }
+};
+
+export const useThemeSync = () => {
+  const [themePreference] = useThemePreference();
+  const [lightTheme] = useLightTheme();
+  const [darkTheme] = useDarkTheme();
+
+  const systemDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  useEffect(() => {
+    syncTheme(themePreference, darkTheme, lightTheme);
+  }, [themePreference, lightTheme, darkTheme, systemDarkMode]);
 };

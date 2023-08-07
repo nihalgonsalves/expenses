@@ -7,6 +7,7 @@ module.exports = {
     extend: {},
   },
   daisyui: {
+    darkTheme: 'expenses-dark',
     themes: [
       {
         'expenses-light': {
@@ -71,7 +72,6 @@ module.exports = {
       'coffee',
       'winter',
     ],
-    darkTheme: 'synthwave',
   },
   // eslint-disable-next-line import/no-extraneous-dependencies
   plugins: [require('daisyui')],
