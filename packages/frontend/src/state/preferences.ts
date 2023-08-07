@@ -21,19 +21,44 @@ class PreferencesDexie extends Dexie {
 
 const prefs = new PreferencesDexie();
 
-const CURRENCY_CODE_PREFERENCE_KEY = 'preferred_currency_code' as const;
+const createUsePreference = (key: string) => {
+  const getPreference = async () => prefs.preferences.get(key);
 
-const setPreferredCurrencyCode = async (currencyCode: string) => {
-  await prefs.preferences.put({
-    key: CURRENCY_CODE_PREFERENCE_KEY,
-    value: currencyCode,
-  });
+  const setPreference = async (value: string | undefined) => {
+    if (value) {
+      await prefs.preferences.put({ key, value });
+    } else {
+      await prefs.preferences.delete(key);
+    }
+  };
+
+  const usePreference = () => {
+    const item = useLiveQuery(getPreference);
+    return [item?.value, setPreference] as const;
+  };
+
+  return usePreference;
 };
 
-export const usePreferredCurrencyCode = () => {
-  const currencyCodeItem = useLiveQuery(async () =>
-    prefs.preferences.get(CURRENCY_CODE_PREFERENCE_KEY),
-  );
+export const createPreferenceWithDefault = (
+  key: string,
+  defaultValue: string,
+) => {
+  const usePreference = createUsePreference(key);
 
-  return [currencyCodeItem?.value ?? 'EUR', setPreferredCurrencyCode] as const;
+  const usePreferenceWithDefault = () => {
+    const [preference, setPreference] = usePreference();
+    return [preference ?? defaultValue, setPreference] as const;
+  };
+
+  return usePreferenceWithDefault;
 };
+
+export const usePreferredCurrencyCode = createPreferenceWithDefault(
+  'preferred_currency_code',
+  'EUR',
+);
+
+export const useSubscriptionEndpoint = createUsePreference(
+  'subscription_endpoint',
+);

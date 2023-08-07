@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import { MdDelete } from 'react-icons/md';
 import { z } from 'zod';
 
 import { trpc } from '../../api/trpc';
+import { useSubscriptionEndpoint } from '../../state/preferences';
 import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
 import { Button } from '../form/Button';
@@ -25,7 +25,7 @@ const ZPushSubscription = z.object({
 export const NotificationPreferenceForm = () => {
   const { permission, request } = useNotificationPermission();
   const serviceWorkerRegistration = useServiceWorkerRegistration();
-  const [endpoint, setEndpoint] = useState<string>();
+  const [endpoint, setEndpoint] = useSubscriptionEndpoint();
 
   const utils = trpc.useContext();
   const { data: applicationServerKey } =
@@ -36,13 +36,6 @@ export const NotificationPreferenceForm = () => {
     trpc.notification.upsertSubscription.useMutation();
   const { mutateAsync: deleteSubscription } =
     trpc.notification.deleteSubscription.useMutation();
-
-  useEffect(() => {
-    void (async () => {
-      const s = await serviceWorkerRegistration?.pushManager.getSubscription();
-      setEndpoint(s?.endpoint);
-    })();
-  });
 
   const thisDeviceSubscription = subscriptions?.find(
     (s) => s.endpoint === endpoint,
@@ -57,6 +50,9 @@ export const NotificationPreferenceForm = () => {
       if (!thisDeviceSubscription) return;
 
       await deleteSubscription(thisDeviceSubscription.id);
+
+      await setEndpoint(undefined);
+
       await utils.notification.getSubscriptions.invalidate();
       return;
     }
@@ -70,18 +66,22 @@ export const NotificationPreferenceForm = () => {
 
     const { pushManager } = serviceWorkerRegistration;
 
-    const subscription = await pushManager.subscribe({
+    const rawSubscription = await pushManager.subscribe({
       applicationServerKey,
       userVisibleOnly: true,
     });
 
+    const parsedSubscription = ZPushSubscription.parse(
+      JSON.parse(JSON.stringify(rawSubscription)),
+    );
+
     await upsertSubscription({
       // the subscription itself doesn't have the keys, and .toJSON() has only the endpoint.
       // stringify results in the correct object
-      pushSubscription: ZPushSubscription.parse(
-        JSON.parse(JSON.stringify(subscription)),
-      ),
+      pushSubscription: parsedSubscription,
     });
+
+    await setEndpoint(parsedSubscription.endpoint);
 
     await utils.notification.getSubscriptions.invalidate();
   };
