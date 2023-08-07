@@ -15,7 +15,7 @@ class PreferencesDexie extends Dexie {
   constructor() {
     super(PREFERENCES_DEXIE_TABLE);
     this.version(1).stores({
-      preferences: '++key, value',
+      preferences: 'key',
     });
   }
 }

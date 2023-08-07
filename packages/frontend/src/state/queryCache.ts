@@ -13,7 +13,7 @@ class CacheDexie extends Dexie {
   constructor() {
     super(REACT_QUERY_CACHE_DEXIE_TABLE);
     this.version(1).stores({
-      queryCache: '++key, value',
+      queryCache: 'key',
     });
   }
 }
