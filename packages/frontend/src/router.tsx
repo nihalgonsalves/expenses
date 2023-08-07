@@ -11,8 +11,8 @@ import { z, type ZodRawShape } from 'zod';
 
 import { useCurrentUser } from './api/useCurrentUser';
 import { AuthenticationPage } from './pages/AuthenticationPage';
-import { ErrorPage } from './pages/ErrorPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { Root } from './pages/Root';
 import { SettingsPage } from './pages/SettingsPage';
 import { ExpensesIndexPage } from './pages/expenses/ExpensesIndexPage';
 import { GroupDetailPage } from './pages/groups/GroupDetailPage';
@@ -36,8 +36,6 @@ export const RouterLink = forwardRef<
 ));
 RouterLink.displayName = 'RouterLink';
 
-const errorElement = <ErrorPage />;
-
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
@@ -57,7 +55,7 @@ const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
 export const router = createBrowserRouter([
   {
     path: '/',
-    errorElement,
+    errorElement: <Root title="Error">Something went wrong</Root>,
     children: [
       {
         path: '/',
@@ -66,7 +64,6 @@ export const router = createBrowserRouter([
             <ExpensesIndexPage />
           </AuthenticatedRoute>
         ),
-        errorElement,
       },
       {
         path: '/stats',
@@ -75,21 +72,17 @@ export const router = createBrowserRouter([
             <StatsIndexPage />
           </AuthenticatedRoute>
         ),
-        errorElement,
       },
       {
         path: '/auth/sign-in',
         element: <AuthenticationPage />,
-        errorElement,
       },
       {
         path: '/auth/sign-up',
         element: <AuthenticationPage />,
-        errorElement,
       },
       {
         path: '/groups',
-        errorElement,
         children: [
           {
             path: '/groups',
@@ -140,7 +133,6 @@ export const router = createBrowserRouter([
       },
       {
         path: '/sheets',
-        errorElement,
         children: [
           {
             path: '/sheets',
@@ -200,7 +192,6 @@ export const router = createBrowserRouter([
       {
         path: '/settings',
         element: <SettingsPage />,
-        errorElement,
       },
       {
         path: '*',

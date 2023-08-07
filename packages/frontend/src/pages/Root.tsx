@@ -15,6 +15,7 @@ import { RiRefreshLine } from 'react-icons/ri';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { usePullToRefresh } from '../api/usePullToRefresh';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { Button } from '../components/form/Button';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
@@ -169,20 +170,22 @@ export const RootLoader = <
       }
       {...rootProps}
     >
-      <AnimatePresence mode="wait">
-        {result.error != null && (
-          <div className="alert alert-error">{result.error.message}</div>
-        )}
-        {result.data != null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {render(result.data)}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ErrorBoundary>
+        <AnimatePresence mode="wait">
+          {result.error != null && (
+            <div className="alert alert-error">{result.error.message}</div>
+          )}
+          {result.data != null && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              {render(result.data)}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </ErrorBoundary>
     </Root>
   );
 };
