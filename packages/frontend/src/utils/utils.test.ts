@@ -4,10 +4,17 @@ import { Temporal } from '@js-temporal/polyfill';
 import { describe, it, expect } from 'vitest';
 
 import {
+  durationMilliseconds,
   formatDateTimeRelative,
   joinList,
   shortDateTimeFormatter,
 } from './utils';
+
+describe('durationMilliseconds', () => {
+  it('returns total milliseconds', () => {
+    expect(durationMilliseconds({ hours: 1 })).toBe(36_000_00);
+  });
+});
 
 describe('joinList', () => {
   it('returns an empty string for an empty list', () => {

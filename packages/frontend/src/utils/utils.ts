@@ -30,6 +30,9 @@ export const prevalidateEmail = (email: string) =>
 
 const CURRENT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+export const durationMilliseconds = (duration: Temporal.DurationLike) =>
+  Temporal.Duration.from(duration).total('milliseconds');
+
 export const dateTimeLocalToISOString = (val: string) =>
   Temporal.PlainDateTime.from(val).toZonedDateTime(CURRENT_TIMEZONE).toString();
 

@@ -2,7 +2,7 @@ import { CgDarkMode } from 'react-icons/cg';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
 import { z } from 'zod';
 
-import { trpc } from '../../api/trpc';
+import { useSupportedCurrencies } from '../../api/currencyConversion';
 import { usePreferredCurrencyCode } from '../../state/preferences';
 import {
   LIGHT_THEMES,
@@ -34,8 +34,7 @@ export const AppearanceForm = () => {
   const [preferredCurrencyCode, setPreferredCurrencyCode] =
     usePreferredCurrencyCode();
 
-  const { data: supportedCurrencies = [] } =
-    trpc.currencyConversion.getSupportedCurrencies.useQuery();
+  const { data: supportedCurrencies = [] } = useSupportedCurrencies();
 
   return (
     <section className="card card-bordered card-compact">

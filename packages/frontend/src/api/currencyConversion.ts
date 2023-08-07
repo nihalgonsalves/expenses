@@ -5,14 +5,19 @@ import type { Money } from '@nihalgonsalves/expenses-backend';
 
 import { usePreferredCurrencyCode } from '../state/preferences';
 import { convertCurrency } from '../utils/money';
+import { durationMilliseconds } from '../utils/utils';
 
 import { trpc } from './trpc';
+
+export const useSupportedCurrencies = () =>
+  trpc.currencyConversion.getSupportedCurrencies.useQuery(undefined, {
+    staleTime: durationMilliseconds({ hours: 1 }),
+  });
 
 export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
-  const { data: supportedCurrencies = [] } =
-    trpc.currencyConversion.getSupportedCurrencies.useQuery();
+  const { data: supportedCurrencies = [] } = useSupportedCurrencies();
 
   const rates = trpc.useQueries((t) =>
     [
@@ -22,11 +27,15 @@ export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
         ),
       ),
     ].map((sourceCode) =>
-      t.currencyConversion.getConversionRate({
-        date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
-        from: sourceCode,
-        to: preferredCurrencyCode,
-      }),
+      t.currencyConversion.getConversionRate(
+        {
+          date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
+          from: sourceCode,
+          to: preferredCurrencyCode,
+        },
+        // theoretically could be Infinity for anything over 3 days ago (to account for weekend rates not updating)
+        { staleTime: durationMilliseconds({ minutes: 5 }) },
+      ),
     ),
   );
 
@@ -68,8 +77,7 @@ export const useCurrencyConversion = (
   targetCode: string,
   sourceSnapshot: Money,
 ) => {
-  const { data: supportedCurrencies = [] } =
-    trpc.currencyConversion.getSupportedCurrencies.useQuery();
+  const { data: supportedCurrencies = [] } = useSupportedCurrencies();
 
   const { data: rate } = trpc.currencyConversion.getConversionRate.useQuery(
     {
@@ -77,7 +85,11 @@ export const useCurrencyConversion = (
       from: sourceCode,
       to: targetCode,
     },
-    { enabled: sourceCode !== targetCode },
+    {
+      enabled: sourceCode !== targetCode,
+      // theoretically could be Infinity for anything over 3 days ago (to account for weekend rates not updating)
+      staleTime: durationMilliseconds({ minutes: 5 }),
+    },
   );
 
   const targetSnapshot = useMemo(

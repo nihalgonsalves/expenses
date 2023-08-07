@@ -1,4 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -9,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
 import { queryCache } from '../state/queryCache';
+import { durationMilliseconds } from '../utils/utils';
 
 import { trpc } from './trpc';
 
@@ -34,8 +34,8 @@ const asyncStoragePersister = createAsyncStoragePersister({
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: Temporal.Duration.from({ days: 1 }).total('milliseconds'),
-      staleTime: Temporal.Duration.from({ minutes: 5 }).total('milliseconds'),
+      cacheTime: durationMilliseconds({ days: 1 }),
+      staleTime: 0,
       retry(failureCount, error) {
         if (error instanceof TRPCClientError) {
           const result = ZData.safeParse(error.data);
