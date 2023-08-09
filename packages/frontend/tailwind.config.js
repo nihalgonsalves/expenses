@@ -13,6 +13,7 @@ module.exports = {
         'expenses-light': {
           'color-scheme': 'light',
           primary: '#38bdf8',
+          'primary-content': '#d9f3fc',
           secondary: '#818CF8',
           accent: '#1ECEBC',
           'accent-content': '#07312D',
