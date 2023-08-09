@@ -51,7 +51,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const handleDelete = async () => {
     await deleteSheet(personalSheet.id);
     void utils.sheet.personalSheetById.invalidate(personalSheet.id);
-    void utils.sheet.myPersonalSheets.invalidate();
+    void utils.sheet.mySheets.invalidate();
     navigate('/sheets');
   };
 

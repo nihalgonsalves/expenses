@@ -31,7 +31,7 @@ export const CreateSheetForm = ({
 
     navigate(`/sheets/${id}`, { replace: true });
 
-    await utils.sheet.myPersonalSheets.invalidate();
+    await utils.sheet.mySheets.invalidate();
   };
 
   const valid = name !== '';
