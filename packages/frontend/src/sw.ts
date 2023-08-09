@@ -37,31 +37,35 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
     return { title: 'Test Notification', body: payload.message };
   }
 
-  const description = getExpenseDescription(payload.expense);
   const formattedMoney = formatCurrency(payload.expense.money, {
     signDisplay: 'never',
   });
 
+  const description = getExpenseDescription(payload.expense);
   const title = `💶 ${payload.groupSheet.name} – ${description} (${formattedMoney})`;
+
+  if (payload.type === 'TRANSFER') {
+    return {
+      title,
+      body: `You ${payload.expense.type} ${formattedMoney} for ${description}`,
+    };
+  }
+
+  const formattedShare = formatCurrency(payload.expense.yourShare, {
+    signDisplay: 'never',
+  });
 
   if (payload.type === 'EXPENSE') {
     return {
       title,
-      body: `New expense: ${description} – your share is ${formattedMoney}`,
+      body: `New expense: ${description} – your share is ${formattedShare}`,
     };
   }
 
-  if (payload.type === 'INCOME') {
-    return {
-      title,
-      body: `New income: ${description} – your share is ${formattedMoney}`,
-    };
-  }
-
-  // (payload.type === 'TRANSFER')
+  // (payload.type === 'INCOME')
   return {
     title,
-    body: `You ${payload.expense.type} ${formattedMoney} for ${description}`,
+    body: `New income: ${description} – your share is ${formattedShare}`,
   };
 };
 
