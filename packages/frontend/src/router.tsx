@@ -6,13 +6,14 @@ import {
   useParams as useParamsOriginal,
   Navigate,
   useLocation,
+  Outlet,
 } from 'react-router-dom';
 import { z, type ZodRawShape } from 'zod';
 
 import { useCurrentUser } from './api/useCurrentUser';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { AuthenticationPage } from './pages/AuthenticationPage';
 import { NotFoundPage } from './pages/NotFoundPage';
-import { Root } from './pages/Root';
 import { SettingsPage } from './pages/SettingsPage';
 import { SheetsIndexPage } from './pages/SheetsIndexPage';
 import { ExpensesIndexPage } from './pages/expenses/ExpensesIndexPage';
@@ -53,7 +54,11 @@ const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
 export const router = createBrowserRouter([
   {
     path: '/',
-    errorElement: <Root title="Error">Something went wrong</Root>,
+    element: (
+      <ErrorBoundary>
+        <Outlet />
+      </ErrorBoundary>
+    ),
     children: [
       {
         path: '/',
