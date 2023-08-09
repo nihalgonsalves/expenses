@@ -1,5 +1,11 @@
 import type { PrismaClient } from '@prisma/client';
-import { WebPushError } from 'web-push';
+import { Queue, Worker } from 'bullmq';
+import type IORedis from 'ioredis';
+import webPush, {
+  WebPushError,
+  type PushSubscription,
+  type RequestOptions,
+} from 'web-push';
 
 import {
   type NotificationSubscriptionUpsertInput,
@@ -8,21 +14,11 @@ import {
 } from '@nihalgonsalves/expenses-shared/types/notification';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
+import { NOTIFICATION_BULLMQ_QUEUE } from '../../config';
 import { generateId } from '../../utils/nanoid';
 
-import { type IWebPushService, WebPushService } from './WebPushService';
-
-type NotificationDispatchResult = { id: string; userId: string } & (
-  | { success: false; errorType: 'SERVER'; statusCode: number }
-  | { success: false; errorType: 'UNKNOWN'; error: unknown }
-  | { success: true }
-);
-
-export class NotificationService {
-  constructor(
-    private prismaClient: PrismaClient,
-    private webPushService: IWebPushService<NotificationPayload> = new WebPushService(),
-  ) {}
+export class NotificationSubscriptionService {
+  constructor(private prismaClient: PrismaClient) {}
 
   async getSubscriptions(user: User) {
     return this.prismaClient.notificationSubscription.findMany({
@@ -63,10 +59,59 @@ export class NotificationService {
       },
     });
   }
+}
+
+type WebPushQueueItem = {
+  userId: string;
+  subscriptionId: string;
+  pushSubscription: PushSubscription;
+  payload: NotificationPayload;
+};
+
+type NotificationDispatchResult = { id: string; userId: string } & (
+  | { success: false; errorType: 'SERVER'; statusCode: number }
+  | { success: false; errorType: 'UNKNOWN'; error: unknown }
+  | { success: true }
+);
+
+export type INotificationDispatchService = {
+  sendNotifications: (
+    messagesByUserId: Record<string, NotificationPayload>,
+  ) => Promise<void>;
+};
+
+export class NotificationDispatchService
+  implements INotificationDispatchService
+{
+  private queue: Queue<WebPushQueueItem, NotificationDispatchResult>;
+
+  private worker: Worker<WebPushQueueItem, NotificationDispatchResult>;
+
+  constructor(
+    private prismaClient: PrismaClient,
+    redis: IORedis,
+    private vapidDetails: NonNullable<RequestOptions['vapidDetails']>,
+  ) {
+    this.queue = new Queue(NOTIFICATION_BULLMQ_QUEUE, {
+      connection: redis,
+    });
+
+    this.worker = new Worker(
+      NOTIFICATION_BULLMQ_QUEUE,
+      async (job) => this.process(job.data),
+      {
+        connection: redis,
+      },
+    );
+
+    process.on('SIGINT', () => {
+      void this.worker.close();
+    });
+  }
 
   async sendNotifications(
     messagesByUserId: Record<string, NotificationPayload>,
-  ): Promise<NotificationDispatchResult[]> {
+  ) {
     const subscriptions =
       await this.prismaClient.notificationSubscription.findMany({
         where: {
@@ -76,66 +121,74 @@ export class NotificationService {
         },
       });
 
-    const results = await Promise.all(
-      subscriptions.map(
-        async ({
-          id,
+    await this.queue.addBulk(
+      subscriptions.map(({ id, userId, endpoint, keyAuth, keyP256dh }) => ({
+        name: 'push-message',
+        data: {
           userId,
-          endpoint,
-          keyAuth,
-          keyP256dh,
-        }): Promise<NotificationDispatchResult> => {
-          try {
-            await this.webPushService.sendNotification(
-              {
-                endpoint,
-                keys: {
-                  auth: keyAuth,
-                  p256dh: keyP256dh,
-                },
-              },
-              // parse with zod to ensure no extra field passthrough
-              ZNotificationPayload.parse(messagesByUserId[userId]),
-            );
-
-            return { id, userId, success: true };
-          } catch (error) {
-            if (error instanceof WebPushError) {
-              console.error(
-                `Error sending notification to user=${userId}, endpoint=${endpoint}, statusCode=${error.statusCode}`,
-              );
-              return {
-                id,
-                userId,
-                success: false,
-                errorType: 'SERVER',
-                statusCode: error.statusCode,
-              };
-            }
-
-            console.error(
-              `Error sending notification to user=${userId}, endpoint=${endpoint}`,
-              error,
-            );
-            return { id, userId, success: false, errorType: 'UNKNOWN', error };
-          }
+          subscriptionId: id,
+          pushSubscription: {
+            endpoint,
+            keys: {
+              auth: keyAuth,
+              p256dh: keyP256dh,
+            },
+          },
+          payload: ZNotificationPayload.parse(messagesByUserId[userId]),
         },
-      ),
+      })),
     );
+  }
 
-    const idsToUnsubscribe = results
-      .filter(
-        (r) =>
-          !r.success &&
-          r.errorType === 'SERVER' &&
-          [400, 404, 410].includes(r.statusCode),
-      )
-      .map(({ id }) => id);
+  private async process({
+    subscriptionId,
+    userId,
+    pushSubscription,
+    payload,
+  }: WebPushQueueItem): Promise<NotificationDispatchResult> {
+    const baseResult = { id: subscriptionId, userId };
 
-    await this.prismaClient.notificationSubscription.deleteMany({
-      where: { id: { in: idsToUnsubscribe } },
-    });
+    try {
+      await webPush.sendNotification(
+        pushSubscription,
+        JSON.stringify(payload),
+        {
+          vapidDetails: this.vapidDetails,
+        },
+      );
 
-    return results;
+      return { ...baseResult, success: true };
+    } catch (error) {
+      if (error instanceof WebPushError) {
+        console.error(
+          `Error sending notification to user=${userId}, endpoint=${pushSubscription.endpoint}, statusCode=${error.statusCode}`,
+        );
+
+        if ([400, 404, 410].includes(error.statusCode)) {
+          await this.prismaClient.notificationSubscription.deleteMany({
+            where: { id: subscriptionId },
+          });
+        }
+
+        return {
+          ...baseResult,
+          success: false,
+          errorType: 'SERVER',
+          statusCode: error.statusCode,
+        };
+      } else {
+        console.error(
+          `Error sending notification to user=${userId}, endpoint=${pushSubscription.endpoint}`,
+          error,
+        );
+
+        return {
+          ...baseResult,
+          success: false,
+          errorType: 'UNKNOWN',
+          error,
+        };
+      }
+    }
   }
 }

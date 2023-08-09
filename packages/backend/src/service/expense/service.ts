@@ -32,7 +32,7 @@ import type {
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { generateId } from '../../utils/nanoid';
-import type { NotificationService } from '../notification/service';
+import type { INotificationDispatchService } from '../notification/service';
 
 class ExpenseServiceError extends TRPCError {}
 
@@ -206,7 +206,7 @@ const verifyAmountIsAbsolute = (money: Money) => {
 export class ExpenseService {
   constructor(
     private prismaClient: PrismaClient,
-    private notificationService: NotificationService,
+    private notificationService: INotificationDispatchService,
   ) {}
 
   async getAllUserExpenses(

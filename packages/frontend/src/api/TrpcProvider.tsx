@@ -7,6 +7,7 @@ import React, { useMemo } from 'react';
 import { toast } from 'react-hot-toast';
 import { z } from 'zod';
 
+import { API_BASE_URL } from '../config';
 import { queryCache } from '../state/queryCache';
 import { durationMilliseconds } from '../utils/utils';
 
@@ -89,7 +90,7 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
       trpc.createClient({
         links: [
           httpBatchLink({
-            url: '/api',
+            url: API_BASE_URL,
           }),
         ],
       }),

@@ -1,6 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-import type { CreateHTTPContextOptions } from '@trpc/server/adapters/standalone';
+import type { PrismaClient } from '@prisma/client';
+import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 import cookie from 'cookie';
+import type IORedis from 'ioredis';
 import { UAParser } from 'ua-parser-js';
 
 import {
@@ -12,25 +13,20 @@ import {
 import { config } from './config';
 import { ExpenseService } from './service/expense/service';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
-import { NotificationService } from './service/notification/service';
+import {
+  NotificationSubscriptionService,
+  NotificationDispatchService,
+} from './service/notification/service';
 import { SheetService } from './service/sheet/service';
 import { UserService } from './service/user/service';
 import { UserServiceError } from './service/user/utils';
-
-const prisma = new PrismaClient();
-const userService = new UserService(prisma);
-const sheetService = new SheetService(prisma);
-const notificationService = new NotificationService(prisma);
-const expenseService = new ExpenseService(prisma, notificationService);
-
-const frankfurterService = new FrankfurterService(config.FRANKFURTER_BASE_URL);
 
 export const AUTH_COOKIE_NAME = 'auth';
 
 export const getMaybeUser = async (
   cookieHeader: string | undefined,
-  setJwtToken: (value: JWTToken | null) => void,
-  userServiceImpl: Pick<UserService, 'exchangeToken'> = userService,
+  setJwtToken: (value: JWTToken | null) => Promise<void>,
+  userServiceImpl: Pick<UserService, 'exchangeToken'>,
 ): Promise<User | undefined> => {
   if (!cookieHeader) {
     return undefined;
@@ -48,45 +44,70 @@ export const getMaybeUser = async (
     );
 
     if (newToken) {
-      setJwtToken(newToken);
+      await setJwtToken(newToken);
     }
 
     return user;
   } catch (e) {
     if (e instanceof UserServiceError && e.code === 'FORBIDDEN') {
-      setJwtToken(null);
+      await setJwtToken(null);
     }
     throw e;
   }
 };
 
-export const createContext = async ({ req, res }: CreateHTTPContextOptions) => {
-  const setJwtToken = (value: JWTToken | null) => {
-    res.setHeader(
-      'Set-Cookie',
-      cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
-        httpOnly: true,
-        secure: config.SECURE,
-        maxAge: config.JWT_EXPIRY_SECONDS,
-      }),
-    );
-  };
-
-  return {
+export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
+  const userService = new UserService(prisma);
+  const sheetService = new SheetService(prisma);
+  const notificationSubscriptionService = new NotificationSubscriptionService(
     prisma,
-    user: await getMaybeUser(req.headers.cookie, setJwtToken),
-    get userAgent() {
-      return new UAParser(req.headers['user-agent']).getResult();
+  );
+  const notificationDispatchService = new NotificationDispatchService(
+    prisma,
+    redis,
+    {
+      publicKey: config.VAPID_PUBLIC_KEY,
+      privateKey: config.VAPID_PRIVATE_KEY,
+      subject: `mailto:${config.VAPID_EMAIL}`,
     },
-    userService,
-    sheetService,
-    expenseService,
-    frankfurterService,
-    notificationService,
-    setJwtToken,
+  );
+  const expenseService = new ExpenseService(
+    prisma,
+    notificationDispatchService,
+  );
+
+  const frankfurterService = new FrankfurterService(
+    config.FRANKFURTER_BASE_URL,
+  );
+
+  return async ({ req, res }: CreateFastifyContextOptions) => {
+    const setJwtToken = async (value: JWTToken | null) => {
+      await res.header(
+        'Set-Cookie',
+        cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
+          httpOnly: true,
+          secure: config.SECURE,
+          maxAge: config.JWT_EXPIRY_SECONDS,
+        }),
+      );
+    };
+
+    return {
+      prisma,
+      user: await getMaybeUser(req.headers.cookie, setJwtToken, userService),
+      get userAgent() {
+        return new UAParser(req.headers['user-agent']).getResult();
+      },
+      userService,
+      sheetService,
+      expenseService,
+      frankfurterService,
+      notificationSubscriptionService,
+      setJwtToken,
+    };
   };
 };
 
-export type ContextFn = typeof createContext;
+export type ContextFn = ReturnType<typeof makeCreateContext>;
 
 export type ContextObj = Awaited<ReturnType<ContextFn>>;

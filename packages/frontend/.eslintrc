@@ -1,6 +1,7 @@
 {
   "extends": "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react",
   "rules": {
+    "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-misused-promises": [
       "error",
       {

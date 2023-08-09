@@ -15,12 +15,17 @@
     "db:generate": "prisma generate"
   },
   "dependencies": {
+    "@bull-board/api": "^5.8.0",
+    "@bull-board/fastify": "^5.8.0",
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
     "@trpc/server": "^10.36.0",
     "bcrypt": "*",
+    "bullmq": "^4.7.0",
     "cookie": "^0.5.0",
+    "fastify": "^4.21.0",
+    "ioredis": "^5.3.2",
     "jose": "^4.14.4",
     "nanoid": "^4.0.2",
     "ua-parser-js": "^1.0.35",
@@ -41,9 +46,10 @@
     "prisma": "*",
     "squawk-cli": "^0.24.0",
     "testcontainers": "^9.12.0",
-    "vitest": "^0.33.0"
+    "vitest": "~0.34.1"
   },
   "resolutions": {
+    "@bull-board/ui": "5.8.0",
     "@prisma/client": "5.0.0",
     "prisma": "5.0.0",
     "bcrypt": "5.1.0"

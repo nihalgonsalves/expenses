@@ -61,7 +61,7 @@ export const useNotificationPermission = (): {
   if (!PUSH_SUPPORTED || !serviceWorkerRegistration) {
     return {
       permission: 'not_supported',
-      request: async () => Promise.resolve('not_supported'),
+      request: async () => 'not_supported',
     };
   }
 
