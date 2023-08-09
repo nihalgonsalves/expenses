@@ -8,17 +8,17 @@ import {
   ZFullParticipant,
   ZGroupSheetByIdResponse,
   ZGroupSheetWithParticipants,
-  ZGroupSheetsResponse,
+  ZSheetsResponse,
   ZSheet,
 } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { protectedProcedure, router } from '../../trpc';
 
 export const sheetRouter = router({
-  myGroupSheets: protectedProcedure
-    .output(ZGroupSheetsResponse)
+  mySheets: protectedProcedure
+    .output(ZSheetsResponse)
     .query(async ({ ctx }) => {
-      const groupSheets = await ctx.sheetService.getGroupSheets(ctx.user);
+      const groupSheets = await ctx.sheetService.getSheets(ctx.user);
 
       return groupSheets.map((groupSheet) => ({
         ...groupSheet,
@@ -27,10 +27,6 @@ export const sheetRouter = router({
         ),
       }));
     }),
-
-  myPersonalSheets: protectedProcedure
-    .output(z.array(ZSheet))
-    .query(async ({ ctx }) => ctx.sheetService.getPersonalSheets(ctx.user)),
 
   groupSheetById: protectedProcedure
     .input(z.string().nonempty())

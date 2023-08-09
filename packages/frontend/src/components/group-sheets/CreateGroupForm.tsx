@@ -56,7 +56,7 @@ export const CreateGroupForm = ({
 
     navigate(`/groups/${id}`, { replace: true });
 
-    await utils.sheet.myGroupSheets.invalidate();
+    await utils.sheet.mySheets.invalidate();
   };
 
   const valid =

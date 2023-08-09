@@ -36,7 +36,7 @@ export const GroupSheet = ({
     await deleteGroupSheet(groupSheet.id);
 
     void utils.sheet.groupSheetById.invalidate(groupSheet.id);
-    void utils.sheet.myGroupSheets.invalidate();
+    void utils.sheet.mySheets.invalidate();
 
     navigate('/groups');
   };

@@ -14,16 +14,14 @@ import { AuthenticationPage } from './pages/AuthenticationPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { Root } from './pages/Root';
 import { SettingsPage } from './pages/SettingsPage';
+import { SheetsIndexPage } from './pages/SheetsIndexPage';
 import { ExpensesIndexPage } from './pages/expenses/ExpensesIndexPage';
 import { GroupDetailPage } from './pages/groups/GroupDetailPage';
-import { GroupsIndexPage } from './pages/groups/GroupsIndexPage';
-import { NewGroupPage } from './pages/groups/NewGroupPage';
 import { GroupExpensesIndexPage } from './pages/groups/expenses/GroupExpensesIndexPage';
 import { NewGroupSheetExpensePage } from './pages/groups/expenses/NewGroupSheetExpensePage';
 import { NewSheetPage } from './pages/sheets/NewSheetPage';
 import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
 import { SheetImportPage } from './pages/sheets/SheetImportPage';
-import { SheetsIndexPage } from './pages/sheets/SheetsIndexPage';
 import { NewPersonalSheetExpensePage } from './pages/sheets/expenses/NewExpensePage';
 import { PersonalExpensesIndexPage } from './pages/sheets/expenses/PersonalExpensesIndexPage';
 import { StatsIndexPage } from './pages/stats/StatsIndexPage';
@@ -86,19 +84,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: '/groups',
-            element: (
-              <AuthenticatedRoute>
-                <GroupsIndexPage />
-              </AuthenticatedRoute>
-            ),
-          },
-          {
-            path: '/groups/new',
-            element: (
-              <AuthenticatedRoute>
-                <NewGroupPage />
-              </AuthenticatedRoute>
-            ),
+            element: <Navigate to="/sheets" />,
           },
           {
             path: '/groups/:groupSheetId',

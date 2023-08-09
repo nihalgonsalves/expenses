@@ -6,12 +6,10 @@ import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import {
   MdArrowBack,
-  MdGroup,
   MdHome,
   MdPieChart,
   MdSettings,
   MdTableRows,
-  MdOutlineGroup,
   MdOutlineHome,
   MdOutlinePieChart,
   MdOutlineSettings,
@@ -68,7 +66,7 @@ export const Root = ({
 
       <main
         className={clsxtw(
-          'flex flex-grow flex-col overflow-y-auto p-5',
+          'flex flex-grow flex-col overflow-y-auto p-3 md:p-5',
           mainClassName,
         )}
       >
@@ -92,12 +90,6 @@ export const Root = ({
             text: 'Sheets',
             activeIcon: <MdTableRows />,
             icon: <MdOutlineTableRows />,
-          },
-          {
-            to: '/groups',
-            text: 'Groups',
-            activeIcon: <MdGroup />,
-            icon: <MdOutlineGroup />,
           },
           {
             to: '/stats',

@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
+export const ZSheetType = z.union([z.literal('PERSONAL'), z.literal('GROUP')]);
+export type SheetType = z.infer<typeof ZSheetType>;
+
 export const ZSheet = z.object({
   id: z.string().nonempty(),
+  type: ZSheetType,
   name: z.string(),
   currencyCode: z.string(),
 });
@@ -29,7 +33,6 @@ export const ZCreateGroupSheetInput = z.object({
   currencyCode: z.string(),
   additionalParticipantEmailAddresses: z.array(z.string()),
 });
-
 export type CreateGroupSheetInput = z.infer<typeof ZCreateGroupSheetInput>;
 
 export const ZGroupSheetByIdResponse = ZSheet.extend({
@@ -37,12 +40,12 @@ export const ZGroupSheetByIdResponse = ZSheet.extend({
 });
 export type GroupSheetByIdResponse = z.infer<typeof ZGroupSheetByIdResponse>;
 
-export const ZGroupSheetsResponse = z.array(
+export const ZSheetsResponse = z.array(
   ZSheet.extend({
     participants: z.array(ZParticipant),
   }),
 );
-export type GroupSheetsResponse = z.infer<typeof ZGroupSheetsResponse>;
+export type SheetsResponse = z.infer<typeof ZSheetsResponse>;
 
 export const ZCreatePersonalSheetInput = z.object({
   name: z.string(),

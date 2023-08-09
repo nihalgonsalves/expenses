@@ -156,7 +156,7 @@ export const AllUserExpensesList = ({
 
   return (
     <>
-      <div className="p-4">
+      <div className="p-3 md:p-5">
         <div className="stats w-full shadow">
           <ButtonStat
             title="Spent"

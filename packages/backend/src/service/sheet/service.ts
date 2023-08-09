@@ -134,12 +134,12 @@ export class SheetService {
     });
   }
 
-  async getPersonalSheets(user: User) {
+  async getSheets(user: User) {
     return this.prismaClient.sheet.findMany({
       where: {
-        type: SheetType.PERSONAL,
         participants: { some: { participantId: user.id } },
       },
+      include: { participants: { include: { participant: true } } },
     });
   }
 
@@ -147,16 +147,6 @@ export class SheetService {
     return this.prismaClient.sheet.findUnique({
       where: {
         id,
-        type: SheetType.GROUP,
-        participants: { some: { participantId: viewer.id } },
-      },
-      include: { participants: { include: { participant: true } } },
-    });
-  }
-
-  async getGroupSheets(viewer: User) {
-    return this.prismaClient.sheet.findMany({
-      where: {
         type: SheetType.GROUP,
         participants: { some: { participantId: viewer.id } },
       },

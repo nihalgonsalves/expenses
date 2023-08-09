@@ -188,7 +188,7 @@ describe('groupSheetById', () => {
   });
 });
 
-describe('myPersonalSheets', () => {
+describe('mySheets', () => {
   it('returns all personal sheets', async () => {
     const user = await userFactory(prisma);
 
@@ -202,12 +202,10 @@ describe('myPersonalSheets', () => {
     // otherGroupSheet
     await groupSheetFactory(prisma);
 
-    const myGroupSheets = await caller.sheet.myPersonalSheets();
-    expect(myGroupSheets).toMatchObject([{ id: groupWithOwner.id }]);
+    const mySheets = await caller.sheet.mySheets();
+    expect(mySheets).toMatchObject([{ id: groupWithOwner.id }]);
   });
-});
 
-describe('myGroupSheets', () => {
   it('returns all groups where the user is a participant', async () => {
     const user = await userFactory(prisma);
 
@@ -220,18 +218,16 @@ describe('myGroupSheets', () => {
     });
     const otherGroupSheet = await groupSheetFactory(prisma);
 
-    const myGroupSheets = await caller.sheet.myGroupSheets();
+    const mySheets = await caller.sheet.mySheets();
 
-    expect(myGroupSheets.length).toBe(2);
+    expect(mySheets.length).toBe(2);
 
+    expect(mySheets.find(({ id }) => id === ownedGroupSheet.id)).toBeDefined();
     expect(
-      myGroupSheets.find(({ id }) => id === ownedGroupSheet.id),
+      mySheets.find(({ id }) => id === participatingGroupSheet.id),
     ).toBeDefined();
     expect(
-      myGroupSheets.find(({ id }) => id === participatingGroupSheet.id),
-    ).toBeDefined();
-    expect(
-      myGroupSheets.find(({ id }) => id === otherGroupSheet.id),
+      mySheets.find(({ id }) => id === otherGroupSheet.id),
     ).toBeUndefined();
   });
 });
