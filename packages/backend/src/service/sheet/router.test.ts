@@ -25,6 +25,7 @@ describe('createPersonalSheet', () => {
 
     expect(personalSheet).toEqual({
       id: expect.any(String),
+      type: 'PERSONAL',
       name: 'Personal Expenses',
       currencyCode: 'EUR',
     });
@@ -46,6 +47,7 @@ describe('createGroupSheet', () => {
 
     expect(groupSheet).toEqual({
       id: expect.any(String),
+      type: 'GROUP',
       name: 'WG Expenses',
       currencyCode: 'EUR',
       participants: expect.arrayContaining([
@@ -93,6 +95,7 @@ describe('personalSheetById', () => {
 
     expect(sheetById).toEqual({
       id: personalSheet.id,
+      type: 'PERSONAL',
       name: personalSheet.name,
       currencyCode: personalSheet.currencyCode,
     });
@@ -143,6 +146,7 @@ describe('groupSheetById', () => {
 
     expect(groupSheetById).toEqual({
       id: groupSheet.id,
+      type: 'GROUP',
       name: groupSheet.name,
       currencyCode: groupSheet.currencyCode,
       participants: [
