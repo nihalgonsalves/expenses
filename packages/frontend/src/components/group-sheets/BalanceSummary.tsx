@@ -12,7 +12,6 @@ import { clsxtw } from '../../utils/utils';
 import { AvatarGroup } from '../Avatar';
 import { Button } from '../form/Button';
 
-import { AddMemberButton } from './AddMemberButton';
 import { ParticipantListItem } from './ParticipantListItem';
 
 export type ActorInfo = { id: string; isAdmin: boolean };
@@ -166,8 +165,6 @@ export const BalanceSummary = ({
           actorInfo={actorInfo}
         />
       ))}
-
-      {actorInfo.isAdmin && <AddMemberButton groupSheetId={groupSheetId} />}
     </div>
   );
 };

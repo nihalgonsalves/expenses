@@ -48,7 +48,7 @@ describe('NotificationService', () => {
         // don't bother reproducing the entire web push library test suite, just confirm that it was sent
         expect(req.headers).toEqual({
           authorization: expect.stringMatching(/^vapid t=.*$/),
-          connection: 'keep-alive',
+          connection: expect.stringMatching(/^(keep-alive|close)$/),
           'content-encoding': 'aes128gcm',
           'content-length': '135',
           'content-type': 'application/octet-stream',

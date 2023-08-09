@@ -2,9 +2,9 @@ import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
 import { moneyToString } from '../../utils/money';
-import { ExportExpensesButtonGroup } from '../ExportExpensesButtonGroup';
+import { ExportExpensesDropdown } from '../ExportExpensesDropdown';
 
-export const ExportPersonalExpensesButtonGroup = ({
+export const ExportPersonalExpensesDropdown = ({
   personalSheet,
 }: {
   personalSheet: Pick<Sheet, 'id' | 'name'>;
@@ -17,7 +17,7 @@ export const ExportPersonalExpensesButtonGroup = ({
   );
 
   return (
-    <ExportExpensesButtonGroup
+    <ExportExpensesDropdown
       id={personalSheet.id}
       name={personalSheet.name}
       fetch={async () => {

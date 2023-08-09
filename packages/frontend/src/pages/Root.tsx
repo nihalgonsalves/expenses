@@ -29,6 +29,7 @@ import { clsxtw } from '../utils/utils';
 type RootProps = {
   title: React.ReactNode;
   children?: React.ReactNode;
+  rightNavBarItems?: React.ReactNode;
   showBackButton?: boolean;
   mainClassName?: string;
   additionalChildren?: React.ReactNode;
@@ -37,6 +38,7 @@ type RootProps = {
 export const Root = ({
   title,
   children,
+  rightNavBarItems,
   showBackButton,
   mainClassName,
   additionalChildren,
@@ -60,6 +62,8 @@ export const Root = ({
         <div className="ms-2 flex-grow text-2xl font-semibold normal-case">
           {title}
         </div>
+
+        {rightNavBarItems}
 
         <NavBarAvatar />
       </header>
@@ -167,7 +171,7 @@ export const RootLoader = <
   };
 } & (
     | {
-        title?: React.ReactNode;
+        title?: undefined;
         getTitle: (data: TData) => React.ReactNode;
       }
     | { title: React.ReactNode; getTitle?: undefined }

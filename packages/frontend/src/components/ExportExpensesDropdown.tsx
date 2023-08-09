@@ -1,14 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill';
 import Papa from 'papaparse';
 import { toast } from 'react-hot-toast';
-import { MdCloudDownload } from 'react-icons/md';
-
-import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
+import { MdCancel, MdCloudDownload } from 'react-icons/md';
 
 import { Button } from './form/Button';
-const TOAST_ID = 'download-toast';
 
-export const ExportExpensesButtonGroup = <TData, TOutput>({
+export const ExportExpensesDropdown = <TData, TOutput>({
   id,
   name,
   fetch,
@@ -19,9 +16,9 @@ export const ExportExpensesButtonGroup = <TData, TOutput>({
   fetch: () => Promise<TData[]>;
   mapItem: (data: TData) => TOutput;
 }) => {
-  const onLine = useNavigatorOnLine();
-
   const handleRequestDownload = async (type: 'json' | 'csv') => {
+    const toastId = `${id}-${type}`;
+
     await toast.promise(
       fetch(),
       {
@@ -43,23 +40,33 @@ export const ExportExpensesButtonGroup = <TData, TOutput>({
             .toLowerCase()}-${Temporal.Now.instant().epochSeconds}.${type}`;
 
           return (
-            <a
-              className="btn btn-ghost text-success-content normal-case"
-              href={objectURL}
-              download={filename}
-              onClick={() => {
-                toast.dismiss(TOAST_ID);
-              }}
-            >
-              Click to download .{type} file
-            </a>
+            <>
+              <a
+                className="btn btn-ghost link text-success-content normal-case"
+                href={objectURL}
+                download={filename}
+                onClick={() => {
+                  toast.dismiss(toastId);
+                }}
+              >
+                Click to download .{type} file
+              </a>
+              <Button
+                className="btn-ghost"
+                onClick={() => {
+                  toast.dismiss(toastId);
+                }}
+              >
+                <MdCancel />
+              </Button>
+            </>
           );
         },
         error: (e: unknown) =>
           `Download failed: ${e instanceof Error ? e.message : 'Unknown'}`,
       },
       {
-        id: TOAST_ID,
+        id: toastId,
         success: {
           duration: Infinity,
         },
@@ -69,25 +76,25 @@ export const ExportExpensesButtonGroup = <TData, TOutput>({
   };
 
   return (
-    <div className="join join-vertical md:join-horizontal">
-      <Button
-        className="btn-primary btn-outline join-item flex-grow"
-        onClick={() => {
-          void handleRequestDownload('json');
-        }}
-        disabled={!onLine}
-      >
-        <MdCloudDownload /> Export Expenses (.json)
-      </Button>
-      <Button
-        className="btn-primary btn-outline join-item flex-grow"
-        onClick={() => {
-          void handleRequestDownload('csv');
-        }}
-        disabled={!onLine}
-      >
-        <MdCloudDownload /> Export Expenses (.csv)
-      </Button>
-    </div>
+    <>
+      <li>
+        <a
+          onClick={() => {
+            void handleRequestDownload('json');
+          }}
+        >
+          <MdCloudDownload /> Export .json
+        </a>
+      </li>
+      <li>
+        <a
+          onClick={() => {
+            void handleRequestDownload('csv');
+          }}
+        >
+          <MdCloudDownload /> Export .csv
+        </a>
+      </li>
+    </>
   );
 };

@@ -5,6 +5,8 @@ import { trpc } from '../api/trpc';
 import { useResetCache } from '../api/useCacheReset';
 import { useCurrentUser } from '../api/useCurrentUser';
 
+import { DropdownMenu } from './DropdownMenu';
+
 export const NavBarAvatar = () => {
   const resetCache = useResetCache();
 
@@ -18,24 +20,11 @@ export const NavBarAvatar = () => {
 
   if (status == 'success') {
     return (
-      <div className="dropdown dropdown-end">
-        <div
-          tabIndex={0}
-          className="btn btn-circle btn-ghost text-3xl"
-          aria-label="Account"
-        >
-          <MdAccountCircle />
-        </div>
-
-        <ul
-          tabIndex={0}
-          className="menu dropdown-content rounded-box z-[2] mt-3 w-52 bg-base-200 p-2 text-primary shadow"
-        >
-          <li>
-            <a onClick={handleSignOut}>Sign out</a>
-          </li>
-        </ul>
-      </div>
+      <DropdownMenu icon={<MdAccountCircle />} aria-label="Account">
+        <li>
+          <a onClick={handleSignOut}>Sign out</a>
+        </li>
+      </DropdownMenu>
     );
   }
 
