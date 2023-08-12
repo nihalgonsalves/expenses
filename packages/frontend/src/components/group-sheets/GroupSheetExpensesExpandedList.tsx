@@ -104,7 +104,7 @@ const ExpandedExpenseListItem = forwardRef<
                 expense={expense}
                 onDelete={async () => {
                   await Promise.all([
-                    utils.expense.getGroupSheetExpenses.invalidate({
+                    utils.expense.getGroupSheetTransactions.invalidate({
                       groupSheetId,
                     }),
                     utils.expense.getParticipantSummaries.invalidate(

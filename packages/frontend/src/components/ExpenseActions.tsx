@@ -16,7 +16,7 @@ export const ExpenseActions = ({
   onDelete: () => Promise<void> | void;
 }) => {
   const { mutateAsync: deleteExpense, isLoading } =
-    trpc.expense.deleteExpense.useMutation();
+    trpc.expense.deleteTransaction.useMutation();
 
   const handleDelete = async () => {
     await deleteExpense({

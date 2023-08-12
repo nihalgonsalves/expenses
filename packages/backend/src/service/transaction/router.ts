@@ -18,7 +18,7 @@ import {
 import { protectedProcedure, router } from '../../trpc';
 
 export const transactionRouter = router({
-  createPersonalSheetExpense: protectedProcedure
+  createPersonalSheetTransaction: protectedProcedure
     .input(ZCreatePersonalSheetTransactionInput)
     .output(ZCreateSheetTransactionResponse)
     .mutation(async ({ input, ctx }) => {
@@ -34,7 +34,7 @@ export const transactionRouter = router({
       );
     }),
 
-  batchCreatePersonalSheetExpenses: protectedProcedure
+  batchCreatePersonalSheetTransactions: protectedProcedure
     .input(ZBatchCreatePersonalSheetTransactionInput)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
@@ -50,7 +50,7 @@ export const transactionRouter = router({
       );
     }),
 
-  createGroupSheetExpenseOrIncome: protectedProcedure
+  createGroupSheetTransaction: protectedProcedure
     .input(ZCreateGroupSheetTransactionInput)
     .output(ZCreateSheetTransactionResponse)
     .mutation(async ({ input, ctx }) => {
@@ -103,7 +103,7 @@ export const transactionRouter = router({
       return ctx.transactionService.createSettlement(ctx.user, input, sheet);
     }),
 
-  deleteExpense: protectedProcedure
+  deleteTransaction: protectedProcedure
     .input(
       z.object({
         sheetId: z.string().nonempty(),
@@ -120,7 +120,7 @@ export const transactionRouter = router({
       await ctx.transactionService.deleteExpense(expenseId, sheet);
     }),
 
-  getAllUserExpenses: protectedProcedure
+  getAllUserTransactions: protectedProcedure
     .input(
       z.object({
         fromTimestamp: z.string().datetime(),
@@ -147,7 +147,7 @@ export const transactionRouter = router({
       };
     }),
 
-  getPersonalSheetExpenses: protectedProcedure
+  getPersonalSheetTransactions: protectedProcedure
     .input(
       z.object({
         personalSheetId: z.string().nonempty(),
@@ -179,7 +179,7 @@ export const transactionRouter = router({
       };
     }),
 
-  getGroupSheetExpenses: protectedProcedure
+  getGroupSheetTransactions: protectedProcedure
     .input(
       z.object({
         groupSheetId: z.string().nonempty(),

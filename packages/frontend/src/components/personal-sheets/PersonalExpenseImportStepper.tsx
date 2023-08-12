@@ -256,7 +256,7 @@ export const PersonalExpenseImportStepper = ({
 
   const utils = trpc.useContext();
   const { mutateAsync: batchCreatePersonalSheetExpenses } =
-    trpc.expense.batchCreatePersonalSheetExpenses.useMutation();
+    trpc.expense.batchCreatePersonalSheetTransactions.useMutation();
 
   const [headers, setHeaders] = useState<string[]>();
   const [data, setData] = useState<Record<string, string>[]>();
@@ -341,7 +341,7 @@ export const PersonalExpenseImportStepper = ({
       transactions: validRows,
     });
 
-    await utils.expense.getPersonalSheetExpenses.invalidate({
+    await utils.expense.getPersonalSheetTransactions.invalidate({
       personalSheetId: personalSheet.id,
     });
 

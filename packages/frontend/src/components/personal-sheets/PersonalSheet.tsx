@@ -33,7 +33,7 @@ const ExpenseListItemComponent = ({
 
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const { data: personalSheetExpensesResponse } =
-    trpc.expense.getPersonalSheetExpenses.useQuery({
+    trpc.expense.getPersonalSheetTransactions.useQuery({
       personalSheetId: personalSheet.id,
     });
 

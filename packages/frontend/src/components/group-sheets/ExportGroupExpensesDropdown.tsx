@@ -10,7 +10,7 @@ export const ExportGroupExpensesDropdown = ({
 }: {
   groupSheet: Pick<Sheet, 'id' | 'name'>;
 }) => {
-  const { refetch } = trpc.expense.getGroupSheetExpenses.useQuery(
+  const { refetch } = trpc.expense.getGroupSheetTransactions.useQuery(
     {
       groupSheetId: groupSheet.id,
     },

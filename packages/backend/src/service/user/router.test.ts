@@ -235,7 +235,7 @@ describe('anonymizeUser', () => {
 
     const caller = useProtectedCaller(user);
 
-    const expense = await caller.expense.createPersonalSheetExpense(
+    const expense = await caller.expense.createPersonalSheetTransaction(
       createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,

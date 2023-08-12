@@ -28,7 +28,7 @@ describe('createPersonalSheetExpense', () => {
       withOwnerId: user.id,
     });
 
-    const response = await caller.expense.createPersonalSheetExpense(
+    const response = await caller.expense.createPersonalSheetTransaction(
       createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
@@ -63,7 +63,7 @@ describe('createPersonalSheetExpense', () => {
       withOwnerId: user.id,
     });
 
-    const response = await caller.expense.createPersonalSheetExpense(
+    const response = await caller.expense.createPersonalSheetTransaction(
       createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
@@ -106,7 +106,7 @@ describe('createPersonalSheetExpense', () => {
     );
 
     await expect(
-      caller.expense.createPersonalSheetExpense(invalidInput),
+      caller.expense.createPersonalSheetTransaction(invalidInput),
     ).rejects.toThrow('Currencies do not match');
   });
 
@@ -115,7 +115,7 @@ describe('createPersonalSheetExpense', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.createPersonalSheetExpense(
+      caller.expense.createPersonalSheetTransaction(
         createPersonalSheetTransactionInput(
           generateId(),
           currencyCodeFactory(),
@@ -132,7 +132,7 @@ describe('createPersonalSheetExpense', () => {
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.createPersonalSheetExpense(
+      caller.expense.createPersonalSheetTransaction(
         createPersonalSheetTransactionInput(
           groupSheet.id,
           groupSheet.currencyCode,
@@ -152,7 +152,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
       withOwnerId: user.id,
     });
 
-    await caller.expense.batchCreatePersonalSheetExpenses({
+    await caller.expense.batchCreatePersonalSheetTransactions({
       personalSheetId: personalSheet.id,
       transactions: [
         createPersonalSheetTransactionInput(
@@ -192,7 +192,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
     );
 
     await expect(
-      caller.expense.batchCreatePersonalSheetExpenses({
+      caller.expense.batchCreatePersonalSheetTransactions({
         personalSheetId: personalSheet.id,
         transactions: [invalidInput],
       }),
@@ -215,7 +215,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
     );
 
     await expect(
-      caller.expense.batchCreatePersonalSheetExpenses({
+      caller.expense.batchCreatePersonalSheetTransactions({
         personalSheetId: personalSheet.id,
         transactions: [invalidInput],
       }),
@@ -241,7 +241,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
       withParticipantIds: [member.id],
     });
 
-    const response = await caller.expense.createGroupSheetExpenseOrIncome(
+    const response = await caller.expense.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
@@ -285,7 +285,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
       withParticipantIds: [member.id],
     });
 
-    const response = await caller.expense.createGroupSheetExpenseOrIncome(
+    const response = await caller.expense.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'INCOME',
         groupSheet.id,
@@ -340,7 +340,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     );
 
     await expect(
-      caller.expense.createGroupSheetExpenseOrIncome(invalidInput),
+      caller.expense.createGroupSheetTransaction(invalidInput),
     ).rejects.toThrow('Amount must be absolute');
   });
 
@@ -362,7 +362,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     );
 
     await expect(
-      caller.expense.createGroupSheetExpenseOrIncome(invalidInput),
+      caller.expense.createGroupSheetTransaction(invalidInput),
     ).rejects.toThrow('Currencies do not match');
   });
 
@@ -386,7 +386,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     input.splits[0]!.share.currencyCode = 'GBP';
 
     await expect(
-      caller.expense.createGroupSheetExpenseOrIncome(input),
+      caller.expense.createGroupSheetTransaction(input),
     ).rejects.toThrow('Currencies do not match');
   });
 
@@ -411,7 +411,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     );
 
     await expect(
-      caller.expense.createGroupSheetExpenseOrIncome(input),
+      caller.expense.createGroupSheetTransaction(input),
     ).rejects.toThrow('Invalid splits');
   });
 
@@ -433,7 +433,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     );
 
     await expect(
-      caller.expense.createGroupSheetExpenseOrIncome(input),
+      caller.expense.createGroupSheetTransaction(input),
     ).rejects.toThrow('Invalid participants');
   });
 
@@ -442,7 +442,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.createGroupSheetExpenseOrIncome(
+      caller.expense.createGroupSheetTransaction(
         createGroupSheetTransactionInput(
           'EXPENSE',
           generateId(),
@@ -461,7 +461,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.createGroupSheetExpenseOrIncome(
+      caller.expense.createGroupSheetTransaction(
         createGroupSheetTransactionInput(
           'EXPENSE',
           groupSheet.id,
@@ -632,7 +632,7 @@ describe('deleteExpense', () => {
       'personalSheet',
       personalSheetFactory,
       async (caller: Caller, personalSheet: Sheet) =>
-        caller.expense.createPersonalSheetExpense(
+        caller.expense.createPersonalSheetTransaction(
           createPersonalSheetTransactionInput(
             personalSheet.id,
             personalSheet.currencyCode,
@@ -644,7 +644,7 @@ describe('deleteExpense', () => {
       'groupSheet',
       groupSheetFactory,
       async (caller: Caller, groupSheet: Sheet, user: User) =>
-        caller.expense.createGroupSheetExpenseOrIncome(
+        caller.expense.createGroupSheetTransaction(
           createGroupSheetTransactionInput(
             'EXPENSE',
             groupSheet.id,
@@ -666,7 +666,7 @@ describe('deleteExpense', () => {
 
       const expense = await createExpense(caller, sheet, user);
 
-      await caller.expense.deleteExpense({
+      await caller.expense.deleteTransaction({
         sheetId: sheet.id,
         expenseId: expense.id,
       });
@@ -694,7 +694,7 @@ describe('deleteExpense', () => {
       );
 
       await expect(
-        caller.expense.deleteExpense({
+        caller.expense.deleteTransaction({
           sheetId: sheet.id,
           expenseId: expense.id,
         }),
@@ -712,7 +712,7 @@ describe('deleteExpense', () => {
       const expense = await createExpense(caller, sheet, user);
 
       await expect(
-        caller.expense.deleteExpense({
+        caller.expense.deleteTransaction({
           sheetId: generateId(),
           expenseId: expense.id,
         }),
@@ -728,7 +728,7 @@ describe('deleteExpense', () => {
       });
 
       await expect(
-        caller.expense.deleteExpense({
+        caller.expense.deleteTransaction({
           sheetId: sheet.id,
           expenseId: generateId(),
         }),
@@ -752,7 +752,7 @@ describe('getGroupSheetExpenses', () => {
       withParticipantIds: [member.id],
     });
 
-    const expense = await caller.expense.createGroupSheetExpenseOrIncome(
+    const expense = await caller.expense.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
@@ -763,7 +763,7 @@ describe('getGroupSheetExpenses', () => {
     );
 
     const { transactions: expenses, total } =
-      await caller.expense.getGroupSheetExpenses({
+      await caller.expense.getGroupSheetTransactions({
         groupSheetId: groupSheet.id,
       });
 
@@ -786,7 +786,7 @@ describe('getGroupSheetExpenses', () => {
     const caller = useProtectedCaller(user);
 
     await expect(
-      caller.expense.getGroupSheetExpenses({ groupSheetId: generateId() }),
+      caller.expense.getGroupSheetTransactions({ groupSheetId: generateId() }),
     ).rejects.toThrow('Sheet not found');
   });
 
@@ -797,7 +797,7 @@ describe('getGroupSheetExpenses', () => {
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
-      caller.expense.getGroupSheetExpenses({ groupSheetId: groupSheet.id }),
+      caller.expense.getGroupSheetTransactions({ groupSheetId: groupSheet.id }),
     ).rejects.toThrow('Sheet not found');
   });
 });
@@ -819,7 +819,7 @@ describe('getParticipantSummaries', () => {
     const paidById = user.id;
     const otherId = member.id;
 
-    await caller.expense.createGroupSheetExpenseOrIncome(
+    await caller.expense.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,

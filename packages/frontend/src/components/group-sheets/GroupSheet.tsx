@@ -17,7 +17,7 @@ export const GroupSheet = ({
   actorInfo: ActorInfo | undefined;
 }) => {
   const { data: groupSheetExpensesResponse } =
-    trpc.expense.getGroupSheetExpenses.useQuery({
+    trpc.expense.getGroupSheetTransactions.useQuery({
       groupSheetId: groupSheet.id,
     });
 

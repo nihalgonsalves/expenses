@@ -8,7 +8,7 @@ import { RootLoader } from '../../Root';
 
 export const GroupExpensesIndexPage = () => {
   const { groupSheetId } = useParams(GroupParams);
-  const result = trpc.expense.getGroupSheetExpenses.useQuery({
+  const result = trpc.expense.getGroupSheetTransactions.useQuery({
     groupSheetId,
   });
 

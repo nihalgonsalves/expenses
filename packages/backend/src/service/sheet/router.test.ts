@@ -255,7 +255,7 @@ describe('deleteSheet', () => {
       );
     });
 
-    it.todo(`deletes a ${sheetType} with expenses`);
+    it.todo(`deletes a ${sheetType} with transactions`);
 
     it('returns a 404 if the participant has no access', async () => {
       const user = await userFactory(prisma);
@@ -440,7 +440,7 @@ describe('deleteParticipant', () => {
     });
 
     // Paid for self, so settled de-facto
-    await caller.expense.createGroupSheetExpenseOrIncome(
+    await caller.expense.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
@@ -495,7 +495,7 @@ describe('deleteParticipant', () => {
       withParticipantIds: [member.id],
     });
 
-    await caller.expense.createGroupSheetExpenseOrIncome(
+    await caller.expense.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,

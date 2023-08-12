@@ -66,7 +66,7 @@ const ExpandedExpenseListItem = forwardRef<
                 sheetId={personalSheetId}
                 expense={expense}
                 onDelete={async () => {
-                  await utils.expense.getPersonalSheetExpenses.invalidate({
+                  await utils.expense.getPersonalSheetTransactions.invalidate({
                     personalSheetId,
                   });
                 }}
