@@ -3,7 +3,7 @@ import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
-import type { ExpenseSummaryResponse } from '@nihalgonsalves/expenses-shared/types/expense';
+import type { ExpenseSummaryResponse } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';

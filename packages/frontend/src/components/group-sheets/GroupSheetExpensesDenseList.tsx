@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
+import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { formatCurrency } from '../../utils/money';
 import {

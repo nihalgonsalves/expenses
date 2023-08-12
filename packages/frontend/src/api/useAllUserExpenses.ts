@@ -2,8 +2,8 @@ import type { Temporal } from '@js-temporal/polyfill';
 import { useMemo } from 'react';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useConvertToPreferredCurrency } from './currencyConversion';
 import { trpc } from './trpc';

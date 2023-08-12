@@ -17,18 +17,18 @@ import {
   negateMoney,
   equalMoney,
 } from '@nihalgonsalves/expenses-shared/money';
+import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
+import type {
+  GroupSheetWithParticipants,
+  Sheet,
+} from '@nihalgonsalves/expenses-shared/types/sheet';
 import type {
   ExpenseSummaryResponse,
   CreateGroupSheetExpenseOrIncomeInput,
   CreateGroupSheetSettlementInput,
   CreatePersonalSheetExpenseInput,
   GroupSheetParticipantItem,
-} from '@nihalgonsalves/expenses-shared/types/expense';
-import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
-import type {
-  GroupSheetWithParticipants,
-  Sheet,
-} from '@nihalgonsalves/expenses-shared/types/sheet';
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { generateId } from '../../utils/nanoid';

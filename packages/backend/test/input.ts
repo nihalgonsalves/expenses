@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import type {
   CreatePersonalSheetExpenseInput,
   CreateGroupSheetExpenseOrIncomeInput,
-} from '@nihalgonsalves/expenses-shared/types/expense';
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 
 export const createPersonalSheetExpenseInput = (
   personalSheetId: string,

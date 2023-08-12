@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { forwardRef, useState } from 'react';
 
-import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
+import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { collapse, scaleOut } from '../../utils/framer';

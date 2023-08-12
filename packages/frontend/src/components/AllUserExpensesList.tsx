@@ -2,8 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Fragment, useMemo, useState } from 'react';
 
 import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import type { AllConvertedUserExpenses } from '../api/useAllUserExpenses';
 import { usePreferredCurrencyCode } from '../state/preferences';

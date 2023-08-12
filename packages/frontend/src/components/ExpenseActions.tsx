@@ -1,6 +1,6 @@
 import { MdDeleteOutline } from 'react-icons/md';
 
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../api/trpc';
 

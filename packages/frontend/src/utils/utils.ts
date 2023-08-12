@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge';
 import type {
   GroupSheetExpenseListItem,
   ExpenseListItem,
-} from '@nihalgonsalves/expenses-shared/types/expense';
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { categoryById } from '../data/categories';
 

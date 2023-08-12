@@ -1,8 +1,8 @@
 import { MdListAlt } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';

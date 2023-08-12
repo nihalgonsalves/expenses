@@ -13,7 +13,7 @@ import {
   ZGetGroupSheetExpensesResponse,
   ZBatchCreatePersonalSheetExpenseInput,
   ZGetAllUserExpensesResponse,
-} from '@nihalgonsalves/expenses-shared/types/expense';
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { protectedProcedure, router } from '../../trpc';
 
