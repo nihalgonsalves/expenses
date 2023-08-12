@@ -19,7 +19,7 @@ model User {
   passwordHash String? @map("password_hash")
 
   sheets                    SheetMemberships[]
-  expenseTransactions       TransactionEntry[]
+  transactionEntries        TransactionEntry[]
   notificationSubscriptions NotificationSubscription[]
 
   @@map("users")
@@ -52,7 +52,7 @@ model Sheet {
   currencyCode String    @map("currency_code")
 
   participants SheetMemberships[]
-  expenses     Transaction[]
+  transactions Transaction[]
 
   @@map("sheets")
 }
@@ -90,7 +90,7 @@ enum TransactionType {
   INCOME
   TRANSFER
 
-  @@map("expense_type")
+  @@map("transaction_type")
 }
 
 model Transaction {
@@ -111,14 +111,14 @@ model Transaction {
 
   transactionEntries TransactionEntry[]
 
-  @@map("expenses")
+  @@map("transactions")
 }
 
 model TransactionEntry {
   id String @id
 
   transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
-  transactionId String      @map("expense_id")
+  transactionId String      @map("transaction_id")
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @map("user_id")
@@ -126,5 +126,5 @@ model TransactionEntry {
   amount Int
   scale  Int @db.SmallInt()
 
-  @@map("expense_transactions")
+  @@map("transaction_entries")
 }
