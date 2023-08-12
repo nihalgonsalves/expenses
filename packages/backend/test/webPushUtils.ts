@@ -22,10 +22,14 @@ export const getVapidDetails = () => {
   };
 };
 
+export type FakeNotificationItem = {
+  userId: string;
+  payload: NotificationPayload;
+};
 export class FakeNotificationDispatchService
   implements INotificationDispatchService
 {
-  public messages: { userId: string; payload: NotificationPayload }[] = [];
+  public messages: FakeNotificationItem[] = [];
 
   async sendNotifications(
     messagesByUserId: Record<string, NotificationPayload>,

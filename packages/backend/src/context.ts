@@ -11,13 +11,13 @@ import {
 } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { config } from './config';
-import { ExpenseService } from './service/expense/service';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
 import {
   NotificationSubscriptionService,
   NotificationDispatchService,
 } from './service/notification/service';
 import { SheetService } from './service/sheet/service';
+import { TransactionService } from './service/transaction/service';
 import { UserService } from './service/user/service';
 import { UserServiceError } from './service/user/utils';
 
@@ -70,7 +70,7 @@ export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
       subject: `mailto:${config.VAPID_EMAIL}`,
     },
   );
-  const expenseService = new ExpenseService(
+  const expenseService = new TransactionService(
     prisma,
     notificationDispatchService,
   );

@@ -7,9 +7,12 @@ import {
 } from '../../../test/factories';
 import { getPrisma } from '../../../test/getPrisma';
 import { createGroupSheetExpenseInput } from '../../../test/input';
-import { FakeNotificationDispatchService } from '../../../test/webPushUtils';
+import {
+  FakeNotificationDispatchService,
+  type FakeNotificationItem,
+} from '../../../test/webPushUtils';
 
-import { ExpenseService } from './service';
+import { TransactionService } from './service';
 
 const prisma = await getPrisma();
 
@@ -23,7 +26,7 @@ const subscribedUser = async () => {
 
 const useSetup = async () => {
   const notificationDispatchService = new FakeNotificationDispatchService();
-  const expenseService = new ExpenseService(
+  const expenseService = new TransactionService(
     prisma,
     notificationDispatchService,
   );
@@ -69,18 +72,18 @@ describe('ExpenseService', () => {
         otherParticipant.id,
       );
 
-      const { id } = await expenseService.createGroupSheetExpenseOrIncome(
+      const { id } = await expenseService.createGroupSheetTransaction(
         creator,
         input,
         groupSheet,
       );
 
-      expect(webPushService.messages).toEqual([
+      expect(webPushService.messages).toEqual<FakeNotificationItem[]>([
         {
           userId: otherParticipant.id,
           payload: {
             type: 'EXPENSE',
-            expense: {
+            transaction: {
               id,
               category: 'other',
               description: 'Test expense',
@@ -129,12 +132,14 @@ describe('ExpenseService', () => {
         groupSheet,
       );
 
-      expect(notificationDispatchService.messages).toEqual([
+      expect(notificationDispatchService.messages).toEqual<
+        FakeNotificationItem[]
+      >([
         {
           userId: toUser.id,
           payload: {
             type: 'TRANSFER',
-            expense: {
+            transaction: {
               id: id,
               type: 'received',
               category: 'transfer',
@@ -177,12 +182,12 @@ describe('ExpenseService', () => {
         groupSheet,
       );
 
-      expect(webPushService.messages).toEqual([
+      expect(webPushService.messages).toEqual<FakeNotificationItem[]>([
         {
           userId: fromUser.id,
           payload: {
             type: 'TRANSFER',
-            expense: {
+            transaction: {
               id: id,
               type: 'sent',
               category: 'transfer',
