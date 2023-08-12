@@ -19,8 +19,8 @@ import { generateId } from '../../utils/nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
-describe('createPersonalSheetExpense', () => {
-  it('creates an expense', async () => {
+describe('createPersonalSheetTransaction', () => {
+  it('creates an transaction', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -40,22 +40,21 @@ describe('createPersonalSheetExpense', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.transaction.findUnique({
+    const transaction = await prisma.transaction.findUnique({
       where: { id: response.id },
       include: { transactionEntries: true },
     });
 
-    expect(expense).toMatchObject({
+    expect(transaction).toMatchObject({
       type: TransactionType.EXPENSE,
     });
 
-    expect(expense?.transactionEntries).toMatchObject([
+    expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: -100_00, userId: user.id },
     ]);
   });
 
-  // naming is hard
-  it('creates an income "expense"', async () => {
+  it('creates an income transaction', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -76,21 +75,21 @@ describe('createPersonalSheetExpense', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.transaction.findUnique({
+    const transaction = await prisma.transaction.findUnique({
       where: { id: response.id },
       include: { transactionEntries: true },
     });
 
-    expect(expense).toMatchObject({
+    expect(transaction).toMatchObject({
       type: TransactionType.INCOME,
     });
 
-    expect(expense?.transactionEntries).toMatchObject([
+    expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: 100_00, userId: user.id },
     ]);
   });
 
-  it("returns 400 if the expense currency doesn't match", async () => {
+  it("returns 400 if the transaction currency doesn't match", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -143,8 +142,8 @@ describe('createPersonalSheetExpense', () => {
   });
 });
 
-describe('batchCreatePersonalSheetExpenses', () => {
-  it('creates expenses', async () => {
+describe('batchCreatePersonalSheetTransactions', () => {
+  it('creates transactions', async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -163,20 +162,20 @@ describe('batchCreatePersonalSheetExpenses', () => {
       ],
     });
 
-    const expense = await prisma.transaction.findFirst({
+    const transaction = await prisma.transaction.findFirst({
       include: { transactionEntries: true },
     });
 
-    expect(expense).toMatchObject({
+    expect(transaction).toMatchObject({
       type: TransactionType.EXPENSE,
     });
 
-    expect(expense?.transactionEntries).toMatchObject([
+    expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: -100_00, userId: user.id },
     ]);
   });
 
-  it("returns 400 if the expense currency doesn't match", async () => {
+  it("returns 400 if the transactions currency doesn't match", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -227,8 +226,8 @@ describe('batchCreatePersonalSheetExpenses', () => {
   it.todo('returns 404 if the user is not the personalSheet owner');
 });
 
-describe('createGroupSheetExpenseOrIncome', () => {
-  it('creates an expense', async () => {
+describe('createGroupSheetTransaction', () => {
+  it('creates an transaction', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -255,16 +254,16 @@ describe('createGroupSheetExpenseOrIncome', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.transaction.findUnique({
+    const transaction = await prisma.transaction.findUnique({
       where: { id: response.id },
       include: { transactionEntries: true },
     });
 
-    expect(expense).toMatchObject({
+    expect(transaction).toMatchObject({
       type: TransactionType.EXPENSE,
     });
 
-    expect(expense?.transactionEntries).toMatchObject([
+    expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: -75_00, userId: member.id },
       { scale: 2, amount: +75_00, userId: user.id },
       { scale: 2, amount: -25_00, userId: user.id },
@@ -272,7 +271,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     ]);
   });
 
-  it('creates an income "expense"', async () => {
+  it('creates an income transaction', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -302,16 +301,16 @@ describe('createGroupSheetExpenseOrIncome', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.transaction.findUnique({
+    const transaction = await prisma.transaction.findUnique({
       where: { id: response.id },
       include: { transactionEntries: true },
     });
 
-    expect(expense).toMatchObject({
+    expect(transaction).toMatchObject({
       type: TransactionType.INCOME,
     });
 
-    expect(expense?.transactionEntries).toMatchObject([
+    expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: +75_00, userId: member.id },
       { scale: 2, amount: -75_00, userId: user.id },
       { scale: 2, amount: +25_00, userId: user.id },
@@ -344,7 +343,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     ).rejects.toThrow('Amount must be absolute');
   });
 
-  it("returns 400 if the expense currency doesn't match", async () => {
+  it("returns 400 if the transaction currency doesn't match", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -503,22 +502,22 @@ describe('createGroupSheetSettlement', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.transaction.findUnique({
+    const transaction = await prisma.transaction.findUnique({
       where: { id: response.id },
       include: { transactionEntries: true },
     });
 
-    expect(expense).toMatchObject({
+    expect(transaction).toMatchObject({
       type: TransactionType.TRANSFER,
     });
 
-    expect(expense?.transactionEntries).toMatchObject([
+    expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: -100_00, userId: member.id },
       { scale: 2, amount: +100_00, userId: user.id },
     ]);
   });
 
-  it("returns 400 if the expense currency doesn't match", async () => {
+  it("returns 400 if the transaction currency doesn't match", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -626,7 +625,7 @@ describe('createGroupSheetSettlement', () => {
 
 type Caller = ReturnType<typeof useProtectedCaller>;
 
-describe('deleteExpense', () => {
+describe('deleteTransaction', () => {
   describe.each([
     [
       'personalSheet',
@@ -654,8 +653,8 @@ describe('deleteExpense', () => {
           ),
         ),
     ],
-  ])('%s', (_sheetType, factory, createExpense) => {
-    it('deletes an expense', async () => {
+  ])('%s', (_sheetType, factory, createTransaction) => {
+    it('deletes an transaction', async () => {
       const user = await userFactory(prisma);
 
       const caller = useProtectedCaller(user);
@@ -664,15 +663,15 @@ describe('deleteExpense', () => {
         withOwnerId: user.id,
       });
 
-      const expense = await createExpense(caller, sheet, user);
+      const transaction = await createTransaction(caller, sheet, user);
 
       await caller.transaction.deleteTransaction({
         sheetId: sheet.id,
-        expenseId: expense.id,
+        expenseId: transaction.id,
       });
 
       expect(
-        await prisma.transaction.findUnique({ where: { id: expense.id } }),
+        await prisma.transaction.findUnique({ where: { id: transaction.id } }),
       ).toBeNull();
     });
 
@@ -687,7 +686,7 @@ describe('deleteExpense', () => {
         withOwnerId: otherSheetUser.id,
       });
 
-      const expense = await createExpense(
+      const transaction = await createTransaction(
         otherSheetCaller,
         sheet,
         otherSheetUser,
@@ -696,12 +695,12 @@ describe('deleteExpense', () => {
       await expect(
         caller.transaction.deleteTransaction({
           sheetId: sheet.id,
-          expenseId: expense.id,
+          expenseId: transaction.id,
         }),
       ).rejects.toThrow('Sheet not found');
     });
 
-    it('returns 404 if the expense is from another sheet', async () => {
+    it('returns 404 if the transaction is from another sheet', async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
 
@@ -709,17 +708,17 @@ describe('deleteExpense', () => {
         withOwnerId: user.id,
       });
 
-      const expense = await createExpense(caller, sheet, user);
+      const transaction = await createTransaction(caller, sheet, user);
 
       await expect(
         caller.transaction.deleteTransaction({
           sheetId: generateId(),
-          expenseId: expense.id,
+          expenseId: transaction.id,
         }),
       ).rejects.toThrow('Sheet not found');
     });
 
-    it('returns 404 if the expense does not exist', async () => {
+    it('returns 404 if the transaction does not exist', async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
 
@@ -737,12 +736,12 @@ describe('deleteExpense', () => {
   });
 });
 
-describe('getAllUserExpenses', () => {
-  it.todo('returns expenses from all sheets');
+describe('getAllUserTransactions', () => {
+  it.todo('returns transactions from all sheets');
 });
 
-describe('getGroupSheetExpenses', () => {
-  it('returns all expenses for the groupSheet', async () => {
+describe('getGroupSheetTransactions', () => {
+  it('returns all transactions for the groupSheet', async () => {
     const user = await userFactory(prisma);
     const member = await userFactory(prisma);
     const caller = useProtectedCaller(user);
@@ -752,7 +751,7 @@ describe('getGroupSheetExpenses', () => {
       withParticipantIds: [member.id],
     });
 
-    const expense = await caller.transaction.createGroupSheetTransaction(
+    const transaction = await caller.transaction.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
@@ -762,15 +761,15 @@ describe('getGroupSheetExpenses', () => {
       ),
     );
 
-    const { transactions: expenses, total } =
+    const { transactions, total } =
       await caller.transaction.getGroupSheetTransactions({
         groupSheetId: groupSheet.id,
       });
 
-    expect(expenses).toMatchObject([
+    expect(transactions).toMatchObject([
       {
-        id: expense.id,
-        description: expense.description,
+        id: transaction.id,
+        description: transaction.description,
         participants: [
           { id: member.id, balance: { share: { amount: -75_00, scale: 2 } } },
           { id: user.id, balance: { share: { amount: -25_00, scale: 2 } } },
