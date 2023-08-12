@@ -11,26 +11,26 @@ import {
 import { AvatarGroup } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';
 
-const DenseExpenseListItem = forwardRef<
+const DenseTransactionListItem = forwardRef<
   HTMLDivElement,
   {
-    expense: GroupSheetTransactionListItem;
+    transaction: GroupSheetTransactionListItem;
   }
->(({ expense }, ref) => {
-  const descriptionText = getTransactionDescription(expense);
+>(({ transaction }, ref) => {
+  const descriptionText = getTransactionDescription(transaction);
 
   return (
     <motion.div
       ref={ref}
-      key={expense.id}
+      key={transaction.id}
       className="flex flex-row items-center gap-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <CategoryAvatar category={expense.category} />
+      <CategoryAvatar category={transaction.category} />
       <div>
-        <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
+        <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
         <span
           className="inline-block text-gray-500"
           style={{
@@ -44,29 +44,32 @@ const DenseExpenseListItem = forwardRef<
             WebkitBoxOrient: 'vertical',
           }}
         >
-          {getGroupSheetTransactionSummaryText(expense)}
+          {getGroupSheetTransactionSummaryText(transaction)}
         </span>
       </div>
       <div style={{ flexGrow: 1 }} />
       <AvatarGroup
         className="-space-x-6"
         max={5}
-        names={expense.participants.map(({ name }) => name)}
+        names={transaction.participants.map(({ name }) => name)}
       ></AvatarGroup>
     </motion.div>
   );
 });
-DenseExpenseListItem.displayName = 'DenseExpenseListItem';
+DenseTransactionListItem.displayName = 'DenseTransactionListItem';
 
-export const GroupSheetExpensesDenseList = ({
-  expenses,
+export const GroupSheetTransactionsDenseList = ({
+  transactions,
 }: {
-  expenses: GroupSheetTransactionListItem[];
+  transactions: GroupSheetTransactionListItem[];
 }) => (
   <div className="flex flex-col gap-4">
     <AnimatePresence mode="popLayout" initial={false}>
-      {expenses.map((expense) => (
-        <DenseExpenseListItem key={expense.id} expense={expense} />
+      {transactions.map((transaction) => (
+        <DenseTransactionListItem
+          key={transaction.id}
+          transaction={transaction}
+        />
       ))}
     </AnimatePresence>
   </div>

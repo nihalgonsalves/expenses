@@ -2,7 +2,7 @@ import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionButton';
-import { PersonalSheetExpensesExpandedList } from '../../../components/personal-sheets/PersonalSheetExpenseExpandedList';
+import { PersonalSheetTransactionsExpandedList } from '../../../components/personal-sheets/PersonalSheetTransactionsExpandedList';
 import { PersonalSheetParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';
 
@@ -15,19 +15,19 @@ export const PersonalExpensesIndexPage = () => {
   return (
     <RootLoader
       result={result}
-      title="Expenses"
+      title="Transactions"
       showBackButton
       additionalChildren={
         <FloatingActionButton
           to={`/sheets/${sheetId}/expenses/new`}
-          label="Add Expense"
+          label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />
       }
-      render={(personalSheetExpenses) => (
-        <PersonalSheetExpensesExpandedList
+      render={({ transactions }) => (
+        <PersonalSheetTransactionsExpandedList
           personalSheetId={sheetId}
-          expenses={personalSheetExpenses.transactions}
+          transactions={transactions}
         />
       )}
     />

@@ -12,46 +12,50 @@ import {
 } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
 
-const ExpenseListItemComponent = ({
-  expense,
+const TransactionListItemComponent = ({
+  transaction,
 }: {
-  expense: TransactionListItem;
+  transaction: TransactionListItem;
 }) => {
-  const descriptionText = getTransactionDescription(expense);
+  const descriptionText = getTransactionDescription(transaction);
   return (
     <div className="flex flex-row gap-4 text-sm">
-      <CategoryAvatar category={expense.category} />
+      <CategoryAvatar category={transaction.category} />
       <div className="flex flex-col">
         <span>
-          <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
+          <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
         </span>
-        <span>{formatDateTimeRelative(expense.spentAt)}</span>
+        <span>{formatDateTimeRelative(transaction.spentAt)}</span>
       </div>
     </div>
   );
 };
 
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
-  const { data: personalSheetExpensesResponse } =
+  const { data: getPersonalSheetTransactionsResponse } =
     trpc.transaction.getPersonalSheetTransactions.useQuery({
       personalSheetId: personalSheet.id,
     });
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-semibold">Latest Expenses</h2>
+      <h2 className="text-xl font-semibold">Latest Transactions</h2>
 
-      {personalSheetExpensesResponse?.transactions
+      {getPersonalSheetTransactionsResponse?.transactions
         .slice(0, 4)
-        .map((expense) => (
-          <ExpenseListItemComponent key={expense.id} expense={expense} />
+        .map((transaction) => (
+          <TransactionListItemComponent
+            key={transaction.id}
+            transaction={transaction}
+          />
         ))}
 
       <Link
         to={`/sheets/${personalSheet.id}/expenses`}
         className="btn btn-primary btn-outline "
       >
-        <MdListAlt /> All Expenses ({personalSheetExpensesResponse?.total})
+        <MdListAlt /> All Transactions (
+        {getPersonalSheetTransactionsResponse?.total})
       </Link>
     </div>
   );

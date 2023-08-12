@@ -70,17 +70,21 @@ export const ZCreateGroupSheetSettlementResponse = z.object({
   id: z.string().nonempty(),
 });
 
+export const ZTransactionType = z.union([
+  z.literal('EXPENSE'),
+  z.literal('INCOME'),
+  z.literal('TRANSFER'),
+]);
+
+export type TransactionType = z.infer<typeof ZTransactionType>;
+
 export const ZTransactionListItem = z.object({
   id: z.string().nonempty(),
   money: ZMoney,
   spentAt: z.string().nonempty(),
   description: z.string(),
   category: z.string().nonempty(),
-  type: z.union([
-    z.literal('EXPENSE'),
-    z.literal('INCOME'),
-    z.literal('TRANSFER'),
-  ]),
+  type: ZTransactionType,
 });
 
 export type TransactionListItem = z.infer<typeof ZTransactionListItem>;

@@ -5,7 +5,7 @@ import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
-import type { AllConvertedUserExpenses } from '../api/useAllUserExpenses';
+import type { AllConvertedUserTransactions } from '../api/useAllUserTransactions';
 import { usePreferredCurrencyCode } from '../state/preferences';
 import { formatCurrency } from '../utils/money';
 import {
@@ -18,30 +18,30 @@ import {
 
 import { CategoryAvatar } from './CategoryAvatar';
 
-const ExpenseRow = ({
-  expense,
+const TransactionRow = ({
+  transaction,
   sheet,
 }: {
-  expense: TransactionListItem & { convertedMoney: Money | undefined };
+  transaction: TransactionListItem & { convertedMoney: Money | undefined };
   sheet: Sheet;
 }) => {
-  const money = formatCurrency(expense.money, {
-    signDisplay: expense.type === 'TRANSFER' ? 'never' : 'always',
+  const money = formatCurrency(transaction.money, {
+    signDisplay: transaction.type === 'TRANSFER' ? 'never' : 'always',
   });
-  const convertedMoney = expense.convertedMoney
-    ? formatCurrency(expense.convertedMoney, {
-        signDisplay: expense.type === 'TRANSFER' ? 'never' : 'always',
+  const convertedMoney = transaction.convertedMoney
+    ? formatCurrency(transaction.convertedMoney, {
+        signDisplay: transaction.type === 'TRANSFER' ? 'never' : 'always',
       })
     : undefined;
 
-  const description = getTransactionDescription(expense);
-  const dateTime = formatDateTimeRelative(expense.spentAt);
+  const description = getTransactionDescription(transaction);
+  const dateTime = formatDateTimeRelative(transaction.spentAt);
 
   return (
-    <motion.tr key={expense.id} layout>
+    <motion.tr key={transaction.id} layout>
       <td>
         <div className="flex items-center gap-4">
-          <CategoryAvatar category={expense.category} />
+          <CategoryAvatar category={transaction.category} />
         </div>
       </td>
 
@@ -119,10 +119,10 @@ const ButtonStat = ({
   </button>
 );
 
-export const AllUserExpensesList = ({
+export const AllUserTransactionsList = ({
   data,
 }: {
-  data: AllConvertedUserExpenses;
+  data: AllConvertedUserTransactions;
 }) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
@@ -134,13 +134,14 @@ export const AllUserExpensesList = ({
 
   const totalSpent = sumMoney(
     data.expenses
-      .map(({ expense }) => expense.convertedMoney)
+      .map(({ transaction }) => transaction.convertedMoney)
       .filter((x): x is NonNullable<typeof x> => x != null),
     preferredCurrencyCode,
   );
+
   const totalEarned = sumMoney(
     data.earnings
-      .map(({ expense }) => expense.convertedMoney)
+      .map(({ transaction }) => transaction.convertedMoney)
       .filter((x): x is NonNullable<typeof x> => x != null),
     preferredCurrencyCode,
   );
@@ -149,7 +150,7 @@ export const AllUserExpensesList = ({
     () =>
       groupBySpentAt(
         selectedView === 'EXPENSES' ? data.expenses : data.earnings,
-        ({ expense }) => expense.spentAt,
+        ({ transaction }) => transaction.spentAt,
       ),
     [selectedView, data.expenses, data.earnings],
   );
@@ -219,10 +220,10 @@ export const AllUserExpensesList = ({
                 <tbody>
                   {groupedByDate
                     .get(date)
-                    ?.map(({ expense, sheet }) => (
-                      <ExpenseRow
-                        key={expense.id}
-                        expense={expense}
+                    ?.map(({ transaction, sheet }) => (
+                      <TransactionRow
+                        key={transaction.id}
+                        transaction={transaction}
                         sheet={sheet}
                       />
                     ))}

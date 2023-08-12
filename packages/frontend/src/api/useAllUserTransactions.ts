@@ -8,27 +8,27 @@ import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/
 import { useConvertToPreferredCurrency } from './currencyConversion';
 import { trpc } from './trpc';
 
-export type ConvertedExpenseWithSheet = {
-  expense: TransactionListItem & { convertedMoney: Money | undefined };
+export type ConvertedTransactionWithSheet = {
+  transaction: TransactionListItem & { convertedMoney: Money | undefined };
   sheet: Sheet;
 };
 
-export type AllConvertedUserExpenses = {
-  expenses: ConvertedExpenseWithSheet[];
-  earnings: ConvertedExpenseWithSheet[];
+export type AllConvertedUserTransactions = {
+  expenses: ConvertedTransactionWithSheet[];
+  earnings: ConvertedTransactionWithSheet[];
 };
 
-type AllConvertedUserExpensesQueryResult = Pick<
+type AllConvertedUserTransactionsQueryResult = Pick<
   ReturnType<typeof trpc.transaction.getAllUserTransactions.useQuery>,
   'error' | 'isLoading' | 'refetch'
 > & {
-  data: AllConvertedUserExpenses | undefined;
+  data: AllConvertedUserTransactions | undefined;
 };
 
-export const useAllUserExpenses = (
+export const useAllUserTransactions = (
   from: Temporal.ZonedDateTime,
   to: Temporal.ZonedDateTime,
-): AllConvertedUserExpensesQueryResult => {
+): AllConvertedUserTransactionsQueryResult => {
   const { data, isLoading, error, refetch } =
     trpc.transaction.getAllUserTransactions.useQuery(
       {
@@ -51,7 +51,7 @@ export const useAllUserExpenses = (
     () =>
       data?.expenses.map(({ sheet, transaction }) => ({
         sheet,
-        expense: {
+        transaction: {
           ...transaction,
           convertedMoney: convertCurrency(transaction.money),
         },
@@ -63,7 +63,7 @@ export const useAllUserExpenses = (
     () =>
       data?.earnings.map(({ sheet, transaction }) => ({
         sheet,
-        expense: {
+        transaction: {
           ...transaction,
           convertedMoney: convertCurrency(transaction.money),
         },

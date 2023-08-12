@@ -6,7 +6,7 @@ import { trpc } from '../../api/trpc';
 import { DropdownMenu } from '../../components/DropdownMenu';
 import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { ConfirmDialog } from '../../components/form/ConfirmDialog';
-import { ExportPersonalExpensesDropdown } from '../../components/personal-sheets/ExportPersonalExpensesDropdown';
+import { ExportPersonalTransactionsDropdown } from '../../components/personal-sheets/ExportPersonalTransactionsDropdown';
 import { PersonalSheet } from '../../components/personal-sheets/PersonalSheet';
 import { useParams, PersonalSheetParams } from '../../router';
 import { RootLoader } from '../Root';
@@ -34,7 +34,7 @@ export const SheetDetailPage = () => {
       additionalChildren={
         <FloatingActionButton
           to={`/sheets/${sheetId}/expenses/new`}
-          label="Add Expense"
+          label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />
       }
@@ -49,7 +49,7 @@ export const SheetDetailPage = () => {
           </li>
 
           {result.data && (
-            <ExportPersonalExpensesDropdown personalSheet={result.data} />
+            <ExportPersonalTransactionsDropdown personalSheet={result.data} />
           )}
 
           <ConfirmDialog

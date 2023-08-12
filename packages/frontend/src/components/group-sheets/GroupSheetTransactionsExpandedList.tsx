@@ -15,42 +15,42 @@ import {
 import { Avatar } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
-import { ExpenseActions } from '../ExpenseActions';
+import { TransactionActions } from '../TransactionActions';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
-const ExpandedExpenseListItem = forwardRef<
+const ExpandedTransactionListItem = forwardRef<
   HTMLDivElement,
   {
-    expense: GroupSheetTransactionListItem;
+    transaction: GroupSheetTransactionListItem;
     groupSheetId: string;
   }
->(({ expense, groupSheetId }, ref) => {
+>(({ transaction, groupSheetId }, ref) => {
   const utils = trpc.useContext();
 
   const [expanded, setExpanded] = useState(false);
 
-  const descriptionText = getTransactionDescription(expense);
+  const descriptionText = getTransactionDescription(transaction);
 
   const title = (
     <>
-      <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
+      <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
     </>
   );
 
   return (
     <motion.div
       ref={ref}
-      key={expense.id}
+      key={transaction.id}
       className="card card-bordered"
       {...scaleOut}
     >
       <div tabIndex={0} className="card-body collapse p-4">
         <div className="flex gap-4">
-          <CategoryAvatar category={expense.category} />
+          <CategoryAvatar category={transaction.category} />
           <div className="flex-grow">
             <h2>{title}</h2>
-            {getGroupSheetTransactionSummaryText(expense)}
+            {getGroupSheetTransactionSummaryText(transaction)}
           </div>
           <ExpandMoreButton
             expand={expanded}
@@ -65,9 +65,9 @@ const ExpandedExpenseListItem = forwardRef<
             <motion.div className="flex flex-col gap-4 p-0" {...collapse}>
               <div className="divider mb-0" />
 
-              {expense.type !== 'TRANSFER' && (
+              {transaction.type !== 'TRANSFER' && (
                 <>
-                  {expense.participants.map(({ id, name, balance }) => (
+                  {transaction.participants.map(({ id, name, balance }) => (
                     <ParticipantListItem
                       key={id}
                       avatar={<Avatar name={name} />}
@@ -76,7 +76,7 @@ const ExpandedExpenseListItem = forwardRef<
                         <span className="font-semibold">{name}</span>
                         {balance.actual.amount !== 0 && (
                           <>
-                            {expense.type === 'EXPENSE'
+                            {transaction.type === 'EXPENSE'
                               ? ' paid '
                               : ' received '}
                             <span className="badge badge-primary">
@@ -99,9 +99,9 @@ const ExpandedExpenseListItem = forwardRef<
                   <div className="divider m-0" />
                 </>
               )}
-              <ExpenseActions
+              <TransactionActions
                 sheetId={groupSheetId}
-                expense={expense}
+                transaction={transaction}
                 onDelete={async () => {
                   await Promise.all([
                     utils.transaction.getGroupSheetTransactions.invalidate({
@@ -120,20 +120,22 @@ const ExpandedExpenseListItem = forwardRef<
     </motion.div>
   );
 });
-ExpandedExpenseListItem.displayName = 'ExpandedExpenseListItem';
+ExpandedTransactionListItem.displayName = 'ExpandedTransactionListItem';
 
-export const GroupSheetExpensesExpandedList = ({
+export const GroupSheetTransactionsExpandedList = ({
   groupSheetId,
-  expenses,
+  transactions,
 }: {
   groupSheetId: string;
-  expenses: GroupSheetTransactionListItem[];
+  transactions: GroupSheetTransactionListItem[];
 }) => {
-  const groupedByDate = groupBySpentAt(expenses, ({ spentAt }) => spentAt);
+  const groupedByDate = groupBySpentAt(transactions, ({ spentAt }) => spentAt);
 
   return (
     <div className="flex flex-col gap-4">
-      {expenses.length === 0 && <div className="alert">No expenses</div>}
+      {transactions.length === 0 && (
+        <div className="alert">No transactions</div>
+      )}
       <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => [
           <motion.div key={date} className="divider" {...scaleOut}>
@@ -141,10 +143,10 @@ export const GroupSheetExpensesExpandedList = ({
           </motion.div>,
           groupedByDate
             .get(date)
-            ?.map((expense) => (
-              <ExpandedExpenseListItem
-                key={expense.id}
-                expense={expense}
+            ?.map((transaction) => (
+              <ExpandedTransactionListItem
+                key={transaction.id}
+                transaction={transaction}
                 groupSheetId={groupSheetId}
               />
             )),

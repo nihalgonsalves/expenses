@@ -247,7 +247,7 @@ const DataPreview = ({
   );
 };
 
-export const PersonalExpenseImportStepper = ({
+export const PersonalTransactionsImporter = ({
   personalSheet,
 }: {
   personalSheet: Sheet;
@@ -255,7 +255,7 @@ export const PersonalExpenseImportStepper = ({
   const navigate = useNavigate();
 
   const utils = trpc.useContext();
-  const { mutateAsync: batchCreatePersonalSheetExpenses } =
+  const { mutateAsync: batchCreatePersonalSheetTransactions } =
     trpc.transaction.batchCreatePersonalSheetTransactions.useMutation();
 
   const [headers, setHeaders] = useState<string[]>();
@@ -336,7 +336,7 @@ export const PersonalExpenseImportStepper = ({
       return;
     }
 
-    await batchCreatePersonalSheetExpenses({
+    await batchCreatePersonalSheetTransactions({
       personalSheetId: personalSheet.id,
       transactions: validRows,
     });
@@ -411,7 +411,7 @@ export const PersonalExpenseImportStepper = ({
         <div className="flex flex-col gap-4">
           <h2 className="semibold text-xl">Upload File</h2>
           {csvError && <div className="alert alert-warning">{csvError}</div>}
-          Select a CSV file to import expenses from
+          Select a CSV file to import transactions from
           <label className="btn btn-primary">
             Choose file
             <input type="file" onChange={handleFileChange} hidden />
@@ -421,7 +421,7 @@ export const PersonalExpenseImportStepper = ({
       {activeStep === ImportStep.CHOOSE_COLUMNS && (
         <div className="flex flex-col gap-4">
           <h2 className="semibold text-xl">Choose Columns</h2>
-          Map columns to expense fields
+          Map columns to transaction fields
           <div
             style={{
               display: 'grid',

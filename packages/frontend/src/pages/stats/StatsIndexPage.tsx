@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { useState } from 'react';
 
-import { useAllUserExpenses } from '../../api/useAllUserExpenses';
+import { useAllUserTransactions } from '../../api/useAllUserTransactions';
 import { CategoryStats } from '../../components/CategoryStats';
 import { RootLoader } from '../Root';
 
@@ -19,7 +19,7 @@ export const StatsIndexPage = () => {
       .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
   );
 
-  const result = useAllUserExpenses(from, to);
+  const result = useAllUserTransactions(from, to);
 
   return (
     <RootLoader

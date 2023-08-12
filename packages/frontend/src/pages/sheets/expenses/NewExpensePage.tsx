@@ -1,5 +1,5 @@
 import { trpc } from '../../../api/trpc';
-import { CreatePersonalExpenseForm } from '../../../components/personal-sheets/CreatePersonalExpenseForm';
+import { CreatePersonalTransactionForm } from '../../../components/personal-sheets/CreatePersonalTransactionForm';
 import { PersonalSheetParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
@@ -13,8 +13,8 @@ export const NewPersonalSheetExpensePage = () => {
   }
 
   return (
-    <Root title="Add Expense" showBackButton>
-      <CreatePersonalExpenseForm personalSheet={personalSheet} />
+    <Root title="Add Transaction" showBackButton>
+      <CreatePersonalTransactionForm personalSheet={personalSheet} />
     </Root>
   );
 };

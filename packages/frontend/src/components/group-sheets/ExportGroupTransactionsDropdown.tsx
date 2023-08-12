@@ -3,9 +3,9 @@ import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 import { trpc } from '../../api/trpc';
 import { moneyToString } from '../../utils/money';
 import { getShortName } from '../../utils/utils';
-import { ExportExpensesDropdown } from '../ExportExpensesDropdown';
+import { ExportTransactionsDropdown } from '../ExportTransactionsDropdown';
 
-export const ExportGroupExpensesDropdown = ({
+export const ExportGroupTransactionsDropdown = ({
   groupSheet,
 }: {
   groupSheet: Pick<Sheet, 'id' | 'name'>;
@@ -18,7 +18,7 @@ export const ExportGroupExpensesDropdown = ({
   );
 
   return (
-    <ExportExpensesDropdown
+    <ExportTransactionsDropdown
       id={groupSheet.id}
       name={groupSheet.name}
       fetch={async () => {

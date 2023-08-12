@@ -4,6 +4,7 @@ import { MdArrowCircleDown, MdArrowCircleUp } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { TransactionType } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
@@ -46,7 +47,7 @@ const TYPE_OPTIONS = [
   },
 ] as const;
 
-export const CreatePersonalExpenseForm = ({
+export const CreatePersonalTransactionForm = ({
   personalSheet,
 }: {
   personalSheet: Sheet;
@@ -54,7 +55,8 @@ export const CreatePersonalExpenseForm = ({
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
-  const [type, setType] = useState<'EXPENSE' | 'INCOME'>('EXPENSE');
+  const [type, setType] =
+    useState<Exclude<TransactionType, 'TRANSFER'>>('EXPENSE');
 
   const [amount, setAmount] = useState(0);
   const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
@@ -73,14 +75,14 @@ export const CreatePersonalExpenseForm = ({
     );
 
   const utils = trpc.useContext();
-  const { mutateAsync: createPersonalSheetExpense, isLoading } =
+  const { mutateAsync: createPersonalSheetTransaction, isLoading } =
     trpc.transaction.createPersonalSheetTransaction.useMutation();
 
   const valid = amount > 0;
 
-  const handleCreateExpense = async () => {
+  const handleCreateTransaction = async () => {
     const money = convertedMoneySnapshot ?? moneySnapshot;
-    await createPersonalSheetExpense({
+    await createPersonalSheetTransaction({
       type,
       personalSheetId: personalSheet.id,
       money,
@@ -107,7 +109,7 @@ export const CreatePersonalExpenseForm = ({
         e.preventDefault();
         if (disabled) return;
 
-        void handleCreateExpense();
+        void handleCreateTransaction();
       }}
     >
       <ToggleButtonGroup

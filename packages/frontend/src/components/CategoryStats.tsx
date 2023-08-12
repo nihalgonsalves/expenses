@@ -1,29 +1,33 @@
 import { addMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 
 import type {
-  AllConvertedUserExpenses,
-  ConvertedExpenseWithSheet,
-} from '../api/useAllUserExpenses';
+  AllConvertedUserTransactions,
+  ConvertedTransactionWithSheet,
+} from '../api/useAllUserTransactions';
 import { categoryById } from '../data/categories';
 import { formatCurrency } from '../utils/money';
 
-const getCategorySums = (data: ConvertedExpenseWithSheet[]) => {
+const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
   const categorySums: Record<string, Money> = {};
 
-  data.forEach(({ expense }) => {
-    if (!expense.convertedMoney) return;
+  data.forEach(({ transaction }) => {
+    if (!transaction.convertedMoney) return;
 
-    const currentSum = categorySums[expense.category];
+    const currentSum = categorySums[transaction.category];
 
-    categorySums[expense.category] = currentSum
-      ? addMoney(currentSum, expense.convertedMoney)
-      : expense.convertedMoney;
+    categorySums[transaction.category] = currentSum
+      ? addMoney(currentSum, transaction.convertedMoney)
+      : transaction.convertedMoney;
   });
 
   return categorySums;
 };
 
-export const CategoryStats = ({ data }: { data: AllConvertedUserExpenses }) => {
+export const CategoryStats = ({
+  data,
+}: {
+  data: AllConvertedUserTransactions;
+}) => {
   const categoryExpenseSums = getCategorySums(data.expenses);
   // const categoryIncomeSums = getCategorySums(data.earnings);
 

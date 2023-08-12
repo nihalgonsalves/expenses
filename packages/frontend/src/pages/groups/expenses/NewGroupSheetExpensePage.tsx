@@ -1,6 +1,6 @@
 import { trpc } from '../../../api/trpc';
 import { useCurrentUser } from '../../../api/useCurrentUser';
-import { CreateGroupSheetExpenseForm } from '../../../components/group-sheets/CreateGroupSheetExpenseForm';
+import { CreateGroupSheetTransactionForm } from '../../../components/group-sheets/CreateGroupSheetTransactionForm';
 import { GroupParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
@@ -15,8 +15,8 @@ export const NewGroupSheetExpensePage = () => {
   }
 
   return (
-    <Root title="Add Expense" showBackButton>
-      <CreateGroupSheetExpenseForm groupSheet={groupSheet} me={me} />
+    <Root title="Add Transaction" showBackButton>
+      <CreateGroupSheetTransactionForm groupSheet={groupSheet} me={me} />
     </Root>
   );
 };

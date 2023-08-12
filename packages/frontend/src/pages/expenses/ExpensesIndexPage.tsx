@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { useState } from 'react';
 
-import { useAllUserExpenses } from '../../api/useAllUserExpenses';
-import { AllUserExpensesList } from '../../components/AllUserExpensesList';
+import { useAllUserTransactions } from '../../api/useAllUserTransactions';
+import { AllUserTransactionsList } from '../../components/AllUserTransactionsList';
 import { RootLoader } from '../Root';
 
 export const ExpensesIndexPage = () => {
@@ -19,14 +19,14 @@ export const ExpensesIndexPage = () => {
       .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
   );
 
-  const result = useAllUserExpenses(from, to);
+  const result = useAllUserTransactions(from, to);
 
   return (
     <RootLoader
       result={result}
       title="Expenses"
       mainClassName="p-0"
-      render={(data) => <AllUserExpensesList data={data} />}
+      render={(data) => <AllUserTransactionsList data={data} />}
     />
   );
 };

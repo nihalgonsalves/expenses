@@ -6,22 +6,22 @@ import { trpc } from '../api/trpc';
 
 import { ConfirmButton } from './form/ConfirmButton';
 
-export const ExpenseActions = ({
+export const TransactionActions = ({
   sheetId,
-  expense,
+  transaction,
   onDelete,
 }: {
   sheetId: string;
-  expense: TransactionListItem;
+  transaction: TransactionListItem;
   onDelete: () => Promise<void> | void;
 }) => {
-  const { mutateAsync: deleteExpense, isLoading } =
+  const { mutateAsync: deleteTransaction, isLoading } =
     trpc.transaction.deleteTransaction.useMutation();
 
   const handleDelete = async () => {
-    await deleteExpense({
+    await deleteTransaction({
       sheetId,
-      transactionId: expense.id,
+      transactionId: transaction.id,
     });
 
     await onDelete();
@@ -32,7 +32,7 @@ export const ExpenseActions = ({
       isLoading={isLoading}
       label={
         <>
-          <MdDeleteOutline /> Delete Expense
+          <MdDeleteOutline /> Delete Transaction
         </>
       }
       confirmLabel="Confirm Delete (Irreversible)"

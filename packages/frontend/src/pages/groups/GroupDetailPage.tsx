@@ -8,7 +8,7 @@ import { DropdownMenu } from '../../components/DropdownMenu';
 import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { ConfirmDialog } from '../../components/form/ConfirmDialog';
 import type { ActorInfo } from '../../components/group-sheets/BalanceSummary';
-import { ExportGroupExpensesDropdown } from '../../components/group-sheets/ExportGroupExpensesDropdown';
+import { ExportGroupTransactionsDropdown } from '../../components/group-sheets/ExportGroupTransactionsDropdown';
 import { GroupSheet } from '../../components/group-sheets/GroupSheet';
 import { GroupParams, useParams } from '../../router';
 import { RootLoader } from '../Root';
@@ -54,14 +54,14 @@ export const GroupDetailPage = () => {
       additionalChildren={
         <FloatingActionButton
           to={`/groups/${groupSheetId}/expenses/new`}
-          label="Add Expense"
+          label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />
       }
       rightNavBarItems={
         <DropdownMenu icon={<MdMoreVert />} aria-label="Actions">
           {result.data && (
-            <ExportGroupExpensesDropdown groupSheet={result.data} />
+            <ExportGroupTransactionsDropdown groupSheet={result.data} />
           )}
           {actorInfo?.isAdmin && (
             <ConfirmDialog
