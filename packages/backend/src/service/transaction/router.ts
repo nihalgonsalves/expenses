@@ -117,7 +117,7 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      await ctx.expenseService.deleteTransaction(expenseId, sheet);
+      await ctx.expenseService.deleteExpense(expenseId, sheet);
     }),
 
   getAllUserExpenses: protectedProcedure

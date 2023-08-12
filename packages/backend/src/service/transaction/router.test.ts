@@ -1,4 +1,4 @@
-import { ExpenseType } from '@prisma/client';
+import { TransactionType } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -46,7 +46,7 @@ describe('createPersonalSheetExpense', () => {
     });
 
     expect(expense).toMatchObject({
-      type: ExpenseType.EXPENSE,
+      type: TransactionType.EXPENSE,
     });
 
     expect(expense?.transactionEntries).toMatchObject([
@@ -82,7 +82,7 @@ describe('createPersonalSheetExpense', () => {
     });
 
     expect(expense).toMatchObject({
-      type: ExpenseType.INCOME,
+      type: TransactionType.INCOME,
     });
 
     expect(expense?.transactionEntries).toMatchObject([
@@ -168,7 +168,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
     });
 
     expect(expense).toMatchObject({
-      type: ExpenseType.EXPENSE,
+      type: TransactionType.EXPENSE,
     });
 
     expect(expense?.transactionEntries).toMatchObject([
@@ -261,7 +261,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     });
 
     expect(expense).toMatchObject({
-      type: ExpenseType.EXPENSE,
+      type: TransactionType.EXPENSE,
     });
 
     expect(expense?.transactionEntries).toMatchObject([
@@ -308,7 +308,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     });
 
     expect(expense).toMatchObject({
-      type: ExpenseType.INCOME,
+      type: TransactionType.INCOME,
     });
 
     expect(expense?.transactionEntries).toMatchObject([
@@ -509,7 +509,7 @@ describe('createGroupSheetSettlement', () => {
     });
 
     expect(expense).toMatchObject({
-      type: ExpenseType.TRANSFER,
+      type: TransactionType.TRANSFER,
     });
 
     expect(expense?.transactionEntries).toMatchObject([

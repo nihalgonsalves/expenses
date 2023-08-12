@@ -2,7 +2,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import {
   type PrismaClient,
   type Prisma,
-  ExpenseType,
+  TransactionType,
   type Transaction,
   type TransactionEntry,
   type User as PrismaUser,
@@ -90,7 +90,7 @@ const sumTransactions = (
 
 const calculateBalances = (
   groupSheet: Sheet,
-  type: ExpenseType,
+  type: TransactionType,
   transactions: (TransactionEntry & { user: PrismaUser })[],
 ): GroupSheetParticipantItem[] => {
   const participants = new Map(
@@ -174,7 +174,7 @@ const mapInputToCreatePersonalTransaction = (
 const mapInputToCreatePersonalTransactionEntry = (
   input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,
   user: User,
-): Omit<Prisma.TransactionEntryUncheckedCreateInput, 'expenseId'> => ({
+): Omit<Prisma.TransactionEntryUncheckedCreateInput, 'transactionId'> => ({
   id: generateId(),
   userId: user.id,
   amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
@@ -384,7 +384,7 @@ export class TransactionService {
       this.prismaClient.transactionEntry.createMany({
         data: inputWithIds.map(({ id, item }) => ({
           ...mapInputToCreatePersonalTransactionEntry(item, user),
-          expenseId: id,
+          transactionId: id,
         })),
       }),
     ]);
@@ -443,8 +443,8 @@ export class TransactionService {
               (
                 split,
               ): [
-                Prisma.TransactionEntryCreateWithoutExpenseInput,
-                Prisma.TransactionEntryCreateWithoutExpenseInput,
+                Prisma.TransactionEntryCreateWithoutTransactionInput,
+                Prisma.TransactionEntryCreateWithoutTransactionInput,
               ] => [
                 {
                   id: generateId(),
@@ -513,7 +513,7 @@ export class TransactionService {
         sheet: { connect: { id: groupSheet.id } },
         amount: input.money.amount,
         scale: input.money.scale,
-        type: ExpenseType.TRANSFER,
+        type: TransactionType.TRANSFER,
         category: 'transfer',
         description: '',
         spentAt: new Date(Temporal.Now.instant().epochMilliseconds),
@@ -556,7 +556,7 @@ export class TransactionService {
     return transaction;
   }
 
-  async deleteTransaction(id: string, groupSheet: Sheet) {
+  async deleteExpense(id: string, groupSheet: Sheet) {
     try {
       await this.prismaClient.transaction.delete({
         where: { id, sheetId: groupSheet.id },
@@ -619,7 +619,7 @@ export class TransactionService {
         .groupBy({
           by: ['userId', 'scale'],
           where: {
-            expense: { sheetId: groupSheet.id },
+            transaction: { sheetId: groupSheet.id },
           },
           _sum: { amount: true },
         })
@@ -642,7 +642,7 @@ export class TransactionService {
     const transactionEntries =
       await this.prismaClient.transactionEntry.findMany({
         where: {
-          expense: { sheetId: groupSheet.id },
+          transaction: { sheetId: groupSheet.id },
           userId,
         },
       });

@@ -85,7 +85,7 @@ model SheetMemberships {
   @@map("sheet_memberships")
 }
 
-enum ExpenseType {
+enum TransactionType {
   EXPENSE
   INCOME
   TRANSFER
@@ -98,7 +98,7 @@ model Transaction {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
-  type ExpenseType
+  type TransactionType
 
   sheet   Sheet  @relation(fields: [sheetId], references: [id], onDelete: Cascade)
   sheetId String @map("sheet_id")
@@ -117,8 +117,8 @@ model Transaction {
 model TransactionEntry {
   id String @id
 
-  expense   Transaction @relation(fields: [expenseId], references: [id], onDelete: Cascade)
-  expenseId String      @map("expense_id")
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  transactionId String      @map("expense_id")
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @map("user_id")
