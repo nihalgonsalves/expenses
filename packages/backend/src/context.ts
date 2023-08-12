@@ -82,7 +82,8 @@ export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
 
   return async ({ req, res }: CreateFastifyContextOptions) => {
     const setJwtToken = async (value: JWTToken | null) => {
-      await res.header(
+      // await res.header() hangs for whatever reason
+      res.raw.setHeader(
         'Set-Cookie',
         cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
           httpOnly: true,
