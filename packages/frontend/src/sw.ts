@@ -14,7 +14,7 @@ import {
 } from '@nihalgonsalves/expenses-shared/types/notification';
 
 import { formatCurrency } from './utils/money';
-import { getExpenseDescription } from './utils/utils';
+import { getTransactionDescription } from './utils/utils';
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -41,7 +41,7 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
     signDisplay: 'never',
   });
 
-  const description = getExpenseDescription(payload.transaction);
+  const description = getTransactionDescription(payload.transaction);
   const title = `💶 ${payload.groupSheet.name} – ${description} (${formattedMoney})`;
 
   if (payload.type === 'TRANSFER') {

@@ -5,8 +5,8 @@ import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-sha
 
 import { formatCurrency } from '../../utils/money';
 import {
-  getExpenseDescription,
-  getGroupSheetExpenseSummaryText,
+  getTransactionDescription,
+  getGroupSheetTransactionSummaryText,
 } from '../../utils/utils';
 import { AvatarGroup } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';
@@ -17,7 +17,7 @@ const DenseExpenseListItem = forwardRef<
     expense: GroupSheetTransactionListItem;
   }
 >(({ expense }, ref) => {
-  const descriptionText = getExpenseDescription(expense);
+  const descriptionText = getTransactionDescription(expense);
 
   return (
     <motion.div
@@ -44,7 +44,7 @@ const DenseExpenseListItem = forwardRef<
             WebkitBoxOrient: 'vertical',
           }}
         >
-          {getGroupSheetExpenseSummaryText(expense)}
+          {getGroupSheetTransactionSummaryText(expense)}
         </span>
       </div>
       <div style={{ flexGrow: 1 }} />

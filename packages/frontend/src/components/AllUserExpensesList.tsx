@@ -11,7 +11,7 @@ import { formatCurrency } from '../utils/money';
 import {
   clsxtw,
   formatDateTimeRelative,
-  getExpenseDescription,
+  getTransactionDescription,
   groupBySpentAt,
   shortDateFormatter,
 } from '../utils/utils';
@@ -34,7 +34,7 @@ const ExpenseRow = ({
       })
     : undefined;
 
-  const description = getExpenseDescription(expense);
+  const description = getTransactionDescription(expense);
   const dateTime = formatDateTimeRelative(expense.spentAt);
 
   return (

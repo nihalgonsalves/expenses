@@ -8,7 +8,7 @@ import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';
 import {
   formatDateTimeRelative,
-  getExpenseDescription,
+  getTransactionDescription,
 } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
 
@@ -17,7 +17,7 @@ const ExpenseListItemComponent = ({
 }: {
   expense: TransactionListItem;
 }) => {
-  const descriptionText = getExpenseDescription(expense);
+  const descriptionText = getTransactionDescription(expense);
   return (
     <div className="flex flex-row gap-4 text-sm">
       <CategoryAvatar category={expense.category} />

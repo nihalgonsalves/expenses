@@ -118,52 +118,53 @@ export const joinList = (list: string[]): string => {
   return `${list.slice(0, -1).join(', ')} & ${list.at(-1)}`;
 };
 
-export const getExpenseDescription = (
-  expense: Pick<TransactionListItem, 'category' | 'description'>,
-): string =>
-  (expense.description || undefined) ??
-  categoryById[expense.category]?.name ??
-  expense.category;
+export const getTransactionDescription = ({
+  description,
+  category,
+}: Pick<TransactionListItem, 'category' | 'description'>): string =>
+  (description || undefined) ?? categoryById[category]?.name ?? category;
 
-export const getGroupSheetExpenseSummaryText = (
-  expense: GroupSheetTransactionListItem,
-): string => {
-  if (expense.type === 'TRANSFER') {
-    const to = expense.participants.find((p) => p.type === 'transfer_to');
-    const from = expense.participants.find((p) => p.type === 'transfer_from');
+export const getGroupSheetTransactionSummaryText = ({
+  type,
+  participants,
+  yourBalance,
+}: GroupSheetTransactionListItem): string => {
+  if (type === 'TRANSFER') {
+    const to = participants.find((p) => p.type === 'transfer_to');
+    const from = participants.find((p) => p.type === 'transfer_from');
 
     return `${getShortName(to?.name ?? '')} paid ${getShortName(
       from?.name ?? '',
     )}`;
   }
 
-  if (expense.yourBalance == null) {
+  if (yourBalance == null) {
     return 'Not involved';
   }
 
-  return `Your share: ${formatCurrency(expense.yourBalance.share, {
+  return `Your share: ${formatCurrency(yourBalance.share, {
     signDisplay: 'never',
   })}`;
 };
 
 export const groupBySpentAt = <T>(
-  expenses: T[],
-  getSpentAt: (expense: T) => string,
+  items: T[],
+  getSpentAt: (item: T) => string,
 ) => {
   const groupedByDate = new Map<number, T[]>();
 
   // TODO: proposal-array-grouping (TypeScript 5.3?)
-  for (const expense of expenses) {
-    const date = isoToTemporalZonedDateTime(getSpentAt(expense)).round(
+  for (const item of items) {
+    const date = isoToTemporalZonedDateTime(getSpentAt(item)).round(
       'day',
     ).epochMilliseconds;
 
     const existing = groupedByDate.get(date);
 
     if (existing) {
-      existing.push(expense);
+      existing.push(item);
     } else {
-      groupedByDate.set(date, [expense]);
+      groupedByDate.set(date, [item]);
     }
   }
 

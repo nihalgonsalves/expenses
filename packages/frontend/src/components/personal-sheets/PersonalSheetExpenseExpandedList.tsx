@@ -9,7 +9,7 @@ import { collapse, scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
 import {
   formatDateTimeRelative,
-  getExpenseDescription,
+  getTransactionDescription,
   groupBySpentAt,
   shortDateFormatter,
 } from '../../utils/utils';
@@ -27,7 +27,7 @@ const ExpandedExpenseListItem = forwardRef<
 
   const [expanded, setExpanded] = useState(false);
 
-  const descriptionText = getExpenseDescription(expense);
+  const descriptionText = getTransactionDescription(expense);
 
   const title = (
     <>
