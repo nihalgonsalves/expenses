@@ -19,7 +19,7 @@ export type AllConvertedUserExpenses = {
 };
 
 type AllConvertedUserExpensesQueryResult = Pick<
-  ReturnType<typeof trpc.expense.getAllUserTransactions.useQuery>,
+  ReturnType<typeof trpc.transaction.getAllUserTransactions.useQuery>,
   'error' | 'isLoading' | 'refetch'
 > & {
   data: AllConvertedUserExpenses | undefined;
@@ -30,7 +30,7 @@ export const useAllUserExpenses = (
   to: Temporal.ZonedDateTime,
 ): AllConvertedUserExpensesQueryResult => {
   const { data, isLoading, error, refetch } =
-    trpc.expense.getAllUserTransactions.useQuery(
+    trpc.transaction.getAllUserTransactions.useQuery(
       {
         fromTimestamp: from.toInstant().toString(),
         toTimestamp: to.toInstant().toString(),

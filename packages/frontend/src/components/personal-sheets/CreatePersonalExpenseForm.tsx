@@ -74,7 +74,7 @@ export const CreatePersonalExpenseForm = ({
 
   const utils = trpc.useContext();
   const { mutateAsync: createPersonalSheetExpense, isLoading } =
-    trpc.expense.createPersonalSheetTransaction.useMutation();
+    trpc.transaction.createPersonalSheetTransaction.useMutation();
 
   const valid = amount > 0;
 
@@ -92,8 +92,8 @@ export const CreatePersonalExpenseForm = ({
     navigate(`/sheets/${personalSheet.id}/expenses`, { replace: true });
 
     await Promise.all([
-      utils.expense.getAllUserTransactions.invalidate(),
-      utils.expense.getPersonalSheetTransactions.invalidate({
+      utils.transaction.getAllUserTransactions.invalidate(),
+      utils.transaction.getPersonalSheetTransactions.invalidate({
         personalSheetId: personalSheet.id,
       }),
     ]);

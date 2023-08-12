@@ -440,7 +440,7 @@ describe('deleteParticipant', () => {
     });
 
     // Paid for self, so settled de-facto
-    await caller.expense.createGroupSheetTransaction(
+    await caller.transaction.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
@@ -495,7 +495,7 @@ describe('deleteParticipant', () => {
       withParticipantIds: [member.id],
     });
 
-    await caller.expense.createGroupSheetTransaction(
+    await caller.transaction.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,

@@ -27,7 +27,7 @@ export const appRouter = router({
   health,
   user: userRouter,
   sheet: sheetRouter,
-  expense: transactionRouter,
+  transaction: transactionRouter,
   currencyConversion: currencyConversionRouter,
   notification: notificationRouter,
 });

@@ -8,7 +8,7 @@ import { RootLoader } from '../../Root';
 
 export const PersonalExpensesIndexPage = () => {
   const { sheetId } = useParams(PersonalSheetParams);
-  const result = trpc.expense.getPersonalSheetTransactions.useQuery({
+  const result = trpc.transaction.getPersonalSheetTransactions.useQuery({
     personalSheetId: sheetId,
   });
 

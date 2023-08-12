@@ -45,7 +45,7 @@ const PersonMenu = ({
 
       await Promise.all([
         utils.sheet.groupSheetById.invalidate(groupSheetId),
-        utils.expense.getParticipantSummaries.invalidate(groupSheetId),
+        utils.transaction.getParticipantSummaries.invalidate(groupSheetId),
       ]);
 
       if (actorInfo.id === participantId) {
@@ -153,7 +153,7 @@ export const BalanceSummary = ({
   actorInfo: ActorInfo;
 }) => {
   const { data: summaries } =
-    trpc.expense.getParticipantSummaries.useQuery(groupSheetId);
+    trpc.transaction.getParticipantSummaries.useQuery(groupSheetId);
 
   return (
     <div className="flex flex-col gap-4">

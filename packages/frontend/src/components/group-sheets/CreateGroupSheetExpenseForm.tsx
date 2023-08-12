@@ -453,7 +453,7 @@ export const ExpenseAndIncomeForm = ({
 }) => {
   const utils = trpc.useContext();
   const { mutateAsync: createGroupSheetExpenseOrIncome, isLoading } =
-    trpc.expense.createGroupSheetTransaction.useMutation();
+    trpc.transaction.createGroupSheetTransaction.useMutation();
 
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
@@ -524,11 +524,11 @@ export const ExpenseAndIncomeForm = ({
     navigate(`/groups/${groupSheet.id}`);
 
     await Promise.all([
-      utils.expense.getAllUserTransactions.invalidate(),
-      utils.expense.getGroupSheetTransactions.invalidate({
+      utils.transaction.getAllUserTransactions.invalidate(),
+      utils.transaction.getGroupSheetTransactions.invalidate({
         groupSheetId: groupSheet.id,
       }),
-      utils.expense.getParticipantSummaries.invalidate(groupSheet.id),
+      utils.transaction.getParticipantSummaries.invalidate(groupSheet.id),
     ]);
   };
 
@@ -643,7 +643,7 @@ export const SettlementForm = ({
 
   const utils = trpc.useContext();
   const { mutateAsync: createGroupSheetSettlement, isLoading } =
-    trpc.expense.createGroupSheetSettlement.useMutation();
+    trpc.transaction.createGroupSheetSettlement.useMutation();
 
   const valid =
     fromId != null &&
@@ -666,11 +666,11 @@ export const SettlementForm = ({
     });
 
     await Promise.all([
-      utils.expense.getAllUserTransactions.invalidate(),
-      utils.expense.getGroupSheetTransactions.invalidate({
+      utils.transaction.getAllUserTransactions.invalidate(),
+      utils.transaction.getGroupSheetTransactions.invalidate({
         groupSheetId: groupSheet.id,
       }),
-      utils.expense.getParticipantSummaries.invalidate(groupSheet.id),
+      utils.transaction.getParticipantSummaries.invalidate(groupSheet.id),
     ]);
 
     navigate(`/groups/${groupSheet.id}`, { replace: true });

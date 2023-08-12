@@ -9,7 +9,7 @@ export const ExportPersonalExpensesDropdown = ({
 }: {
   personalSheet: Pick<Sheet, 'id' | 'name'>;
 }) => {
-  const { refetch } = trpc.expense.getPersonalSheetTransactions.useQuery(
+  const { refetch } = trpc.transaction.getPersonalSheetTransactions.useQuery(
     {
       personalSheetId: personalSheet.id,
     },

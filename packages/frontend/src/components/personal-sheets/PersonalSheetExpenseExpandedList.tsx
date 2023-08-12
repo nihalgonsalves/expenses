@@ -66,9 +66,11 @@ const ExpandedExpenseListItem = forwardRef<
                 sheetId={personalSheetId}
                 expense={expense}
                 onDelete={async () => {
-                  await utils.expense.getPersonalSheetTransactions.invalidate({
-                    personalSheetId,
-                  });
+                  await utils.transaction.getPersonalSheetTransactions.invalidate(
+                    {
+                      personalSheetId,
+                    },
+                  );
                 }}
               />
             </motion.div>
