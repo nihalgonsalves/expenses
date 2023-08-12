@@ -37,18 +37,18 @@ import type { INotificationDispatchService } from '../notification/service';
 class ExpenseServiceError extends TRPCError {}
 
 const expenseOrIncomeToNotificationPayload = (
-  expense: Omit<Transaction, 'type'> & { type: 'INCOME' | 'EXPENSE' },
+  transaction: Omit<Transaction, 'type'> & { type: 'INCOME' | 'EXPENSE' },
   groupSheet: Sheet,
   yourShare: Omit<Money, 'currencyCode'>,
 ): NotificationPayload => ({
-  type: expense.type,
+  type: transaction.type,
   groupSheet,
-  expense: {
-    ...expense,
+  transaction: {
+    ...transaction,
     money: {
       currencyCode: groupSheet.currencyCode,
-      amount: expense.amount,
-      scale: expense.scale,
+      amount: transaction.amount,
+      scale: transaction.scale,
     },
     yourShare: {
       ...yourShare,
@@ -58,19 +58,19 @@ const expenseOrIncomeToNotificationPayload = (
 });
 
 const transferToNotificationPayload = (
-  expense: Omit<Transaction, 'type'> & { type: 'TRANSFER' },
+  transaction: Omit<Transaction, 'type'> & { type: 'TRANSFER' },
   groupSheet: Sheet,
   transferType: 'sent' | 'received',
 ): NotificationPayload => ({
-  type: expense.type,
+  type: transaction.type,
   groupSheet,
-  expense: {
-    ...expense,
+  transaction: {
+    ...transaction,
     type: transferType,
     money: {
       currencyCode: groupSheet.currencyCode,
-      amount: expense.amount,
-      scale: expense.scale,
+      amount: transaction.amount,
+      scale: transaction.scale,
     },
   },
 });
