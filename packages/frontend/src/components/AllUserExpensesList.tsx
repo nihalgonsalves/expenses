@@ -3,7 +3,7 @@ import { Fragment, useMemo, useState } from 'react';
 
 import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import type { AllConvertedUserExpenses } from '../api/useAllUserExpenses';
 import { usePreferredCurrencyCode } from '../state/preferences';
@@ -22,7 +22,7 @@ const ExpenseRow = ({
   expense,
   sheet,
 }: {
-  expense: ExpenseListItem & { convertedMoney: Money | undefined };
+  expense: TransactionListItem & { convertedMoney: Money | undefined };
   sheet: Sheet;
 }) => {
   const money = formatCurrency(expense.money, {

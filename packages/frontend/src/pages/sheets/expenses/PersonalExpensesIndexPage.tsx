@@ -27,7 +27,7 @@ export const PersonalExpensesIndexPage = () => {
       render={(personalSheetExpenses) => (
         <PersonalSheetExpensesExpandedList
           personalSheetId={sheetId}
-          expenses={personalSheetExpenses.expenses}
+          expenses={personalSheetExpenses.transactions}
         />
       )}
     />

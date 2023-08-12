@@ -3,24 +3,24 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 import {
-  ZCreateGroupSheetExpenseOrIncomeInput,
-  ZCreateSheetExpenseResponse,
+  ZCreateGroupSheetTransactionInput,
+  ZCreateSheetTransactionResponse,
   ZCreateGroupSheetSettlementInput,
   ZCreateGroupSheetSettlementResponse,
-  ZCreatePersonalSheetExpenseInput,
-  ZExpenseSummaryResponse,
-  ZGetPersonalSheetExpensesResponse,
-  ZGetGroupSheetExpensesResponse,
-  ZBatchCreatePersonalSheetExpenseInput,
-  ZGetAllUserExpensesResponse,
+  ZCreatePersonalSheetTransactionInput,
+  ZTransactionSummaryResponse,
+  ZGetPersonalSheetTransactionsResponse,
+  ZGetGroupSheetTransactionsResponse,
+  ZBatchCreatePersonalSheetTransactionInput,
+  ZGetAllUserTransactionsResponse,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { protectedProcedure, router } from '../../trpc';
 
 export const expenseRouter = router({
   createPersonalSheetExpense: protectedProcedure
-    .input(ZCreatePersonalSheetExpenseInput)
-    .output(ZCreateSheetExpenseResponse)
+    .input(ZCreatePersonalSheetTransactionInput)
+    .output(ZCreateSheetTransactionResponse)
     .mutation(async ({ input, ctx }) => {
       const { sheet } = await ctx.sheetService.ensurePersonalSheetMembership(
         input.personalSheetId,
@@ -35,7 +35,7 @@ export const expenseRouter = router({
     }),
 
   batchCreatePersonalSheetExpenses: protectedProcedure
-    .input(ZBatchCreatePersonalSheetExpenseInput)
+    .input(ZBatchCreatePersonalSheetTransactionInput)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { sheet } = await ctx.sheetService.ensurePersonalSheetMembership(
@@ -45,14 +45,14 @@ export const expenseRouter = router({
 
       await ctx.expenseService.batchCreatePersonalSheetExpenses(
         ctx.user,
-        input.expenses,
+        input.transactions,
         sheet,
       );
     }),
 
   createGroupSheetExpenseOrIncome: protectedProcedure
-    .input(ZCreateGroupSheetExpenseOrIncomeInput)
-    .output(ZCreateSheetExpenseResponse)
+    .input(ZCreateGroupSheetTransactionInput)
+    .output(ZCreateSheetTransactionResponse)
     .mutation(async ({ input, ctx }) => {
       const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(
         input.groupSheetId,
@@ -127,7 +127,7 @@ export const expenseRouter = router({
         toTimestamp: z.string().datetime(),
       }),
     )
-    .output(ZGetAllUserExpensesResponse)
+    .output(ZGetAllUserTransactionsResponse)
     .query(async ({ ctx, input }) => {
       const { expenses, earnings } =
         await ctx.expenseService.getAllUserExpenses(ctx.user, {
@@ -136,12 +136,12 @@ export const expenseRouter = router({
         });
 
       return {
-        expenses: expenses.map(({ spentAt, sheet, ...expense }) => ({
-          expense: { ...expense, spentAt: spentAt.toISOString() },
+        transactions: expenses.map(({ spentAt, sheet, ...expense }) => ({
+          transaction: { ...expense, spentAt: spentAt.toISOString() },
           sheet,
         })),
         earnings: earnings.map(({ spentAt, sheet, ...expense }) => ({
-          expense: { ...expense, spentAt: spentAt.toISOString() },
+          transaction: { ...expense, spentAt: spentAt.toISOString() },
           sheet,
         })),
       };
@@ -154,7 +154,7 @@ export const expenseRouter = router({
         limit: z.number().positive().optional(),
       }),
     )
-    .output(ZGetPersonalSheetExpensesResponse)
+    .output(ZGetPersonalSheetTransactionsResponse)
     .query(async ({ input: { personalSheetId, limit }, ctx }) => {
       const { sheet } = await ctx.sheetService.ensurePersonalSheetMembership(
         personalSheetId,
@@ -168,11 +168,13 @@ export const expenseRouter = router({
         });
 
       return {
-        expenses: expenses.map(({ amount, scale, spentAt, ...expense }) => ({
-          ...expense,
-          spentAt: spentAt.toISOString(),
-          money: { amount, scale, currencyCode: sheet.currencyCode },
-        })),
+        transactions: expenses.map(
+          ({ amount, scale, spentAt, ...expense }) => ({
+            ...expense,
+            spentAt: spentAt.toISOString(),
+            money: { amount, scale, currencyCode: sheet.currencyCode },
+          }),
+        ),
         total,
       };
     }),
@@ -184,7 +186,7 @@ export const expenseRouter = router({
         limit: z.number().positive().optional(),
       }),
     )
-    .output(ZGetGroupSheetExpensesResponse)
+    .output(ZGetGroupSheetTransactionsResponse)
     .query(async ({ input: { groupSheetId, limit }, ctx }) => {
       const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(
         groupSheetId,
@@ -198,7 +200,7 @@ export const expenseRouter = router({
         });
 
       return {
-        expenses: expenses.map(
+        transactions: expenses.map(
           ({ participantBalances, amount, scale, spentAt, ...expense }) => ({
             ...expense,
             participants: participantBalances,
@@ -215,7 +217,7 @@ export const expenseRouter = router({
 
   getParticipantSummaries: protectedProcedure
     .input(z.string().nonempty())
-    .output(ZExpenseSummaryResponse)
+    .output(ZTransactionSummaryResponse)
     .query(async ({ input, ctx }) => {
       const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(
         input,

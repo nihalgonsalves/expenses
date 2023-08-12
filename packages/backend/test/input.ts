@@ -1,8 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
 
 import type {
-  CreatePersonalSheetExpenseInput,
-  CreateGroupSheetExpenseOrIncomeInput,
+  CreatePersonalSheetTransactionInput,
+  CreateGroupSheetTransactionInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 export const createPersonalSheetExpenseInput = (
@@ -10,7 +10,7 @@ export const createPersonalSheetExpenseInput = (
   currencyCode: string,
   type: 'EXPENSE' | 'INCOME',
   amount = 100_00,
-): CreatePersonalSheetExpenseInput => ({
+): CreatePersonalSheetTransactionInput => ({
   personalSheetId,
   type,
   description: 'Test expense',
@@ -28,7 +28,7 @@ export const createGroupSheetExpenseInput = (
   amount = 100_00,
   split1 = 25_00,
   split2 = 75_00,
-): CreateGroupSheetExpenseOrIncomeInput => ({
+): CreateGroupSheetTransactionInput => ({
   type,
   groupSheetId,
   description: 'Test expense',

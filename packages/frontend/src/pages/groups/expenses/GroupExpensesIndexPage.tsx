@@ -27,7 +27,7 @@ export const GroupExpensesIndexPage = () => {
       render={(groupSheetExpenses) => (
         <GroupSheetExpensesExpandedList
           groupSheetId={groupSheetId}
-          expenses={groupSheetExpenses.expenses}
+          expenses={groupSheetExpenses.transactions}
         />
       )}
     />

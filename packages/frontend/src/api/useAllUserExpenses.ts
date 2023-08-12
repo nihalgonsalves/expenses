@@ -3,13 +3,13 @@ import { useMemo } from 'react';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useConvertToPreferredCurrency } from './currencyConversion';
 import { trpc } from './trpc';
 
 export type ConvertedExpenseWithSheet = {
-  expense: ExpenseListItem & { convertedMoney: Money | undefined };
+  expense: TransactionListItem & { convertedMoney: Money | undefined };
   sheet: Sheet;
 };
 
@@ -39,29 +39,33 @@ export const useAllUserExpenses = (
     );
 
   const [convertCurrency] = useConvertToPreferredCurrency([
-    ...(data?.expenses.map(({ expense }) => expense.money.currencyCode) ?? []),
-    ...(data?.earnings.map(({ expense }) => expense.money.currencyCode) ?? []),
+    ...(data?.transactions.map(
+      ({ transaction }) => transaction.money.currencyCode,
+    ) ?? []),
+    ...(data?.earnings.map(
+      ({ transaction }) => transaction.money.currencyCode,
+    ) ?? []),
   ]);
 
   const convertedExpenses = useMemo(
     () =>
-      data?.expenses.map(({ sheet, expense }) => ({
+      data?.transactions.map(({ sheet, transaction }) => ({
         sheet,
         expense: {
-          ...expense,
-          convertedMoney: convertCurrency(expense.money),
+          ...transaction,
+          convertedMoney: convertCurrency(transaction.money),
         },
       })),
-    [data?.expenses, convertCurrency],
+    [data?.transactions, convertCurrency],
   );
 
   const convertedEarnings = useMemo(
     () =>
-      data?.earnings.map(({ sheet, expense }) => ({
+      data?.earnings.map(({ sheet, transaction }) => ({
         sheet,
         expense: {
-          ...expense,
-          convertedMoney: convertCurrency(expense.money),
+          ...transaction,
+          convertedMoney: convertCurrency(transaction.money),
         },
       })),
     [data?.earnings, convertCurrency],

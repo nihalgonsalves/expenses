@@ -23,10 +23,10 @@ import type {
   Sheet,
 } from '@nihalgonsalves/expenses-shared/types/sheet';
 import type {
-  ExpenseSummaryResponse,
-  CreateGroupSheetExpenseOrIncomeInput,
+  TransactionSummaryResponse,
+  CreateGroupSheetTransactionInput,
   CreateGroupSheetSettlementInput,
-  CreatePersonalSheetExpenseInput,
+  CreatePersonalSheetTransactionInput,
   GroupSheetParticipantItem,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
@@ -155,7 +155,7 @@ const calculateBalances = (
 };
 
 const mapInputToCreatePersonalExpense = (
-  input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>,
+  input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,
   personalSheet: Sheet,
   id = generateId(),
 ): Prisma.TransactionUncheckedCreateInput => ({
@@ -172,7 +172,7 @@ const mapInputToCreatePersonalExpense = (
 });
 
 const mapInputToCreatePersonalExpenseTransaction = (
-  input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>,
+  input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,
   user: User,
 ): Omit<Prisma.TransactionEntryUncheckedCreateInput, 'expenseId'> => ({
   id: generateId(),
@@ -334,7 +334,7 @@ export class ExpenseService {
 
   async createPersonalSheetExpense(
     user: User,
-    input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>,
+    input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,
     personalSheet: Sheet,
   ) {
     verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
@@ -359,7 +359,7 @@ export class ExpenseService {
 
   async batchCreatePersonalSheetExpenses(
     user: User,
-    input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>[],
+    input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>[],
     personalSheet: Sheet,
   ) {
     verifyCurrencies(
@@ -390,7 +390,7 @@ export class ExpenseService {
 
   async createGroupSheetExpenseOrIncome(
     user: User,
-    input: Omit<CreateGroupSheetExpenseOrIncomeInput, 'groupSheetId'>,
+    input: Omit<CreateGroupSheetTransactionInput, 'groupSheetId'>,
     groupSheet: Sheet,
   ) {
     verifyCurrencies(
@@ -576,7 +576,7 @@ export class ExpenseService {
 
   async getParticipantSummaries(
     groupSheet: GroupSheetWithParticipants,
-  ): Promise<ExpenseSummaryResponse> {
+  ): Promise<TransactionSummaryResponse> {
     const mapSummary = (
       summary: {
         userId: string;

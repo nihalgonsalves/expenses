@@ -45,10 +45,10 @@ export const GroupSheet = ({
           <h2 className="card-title">Latest Expenses</h2>
 
           {groupSheetExpensesResponse &&
-          groupSheetExpensesResponse.expenses.length > 0 ? (
+          groupSheetExpensesResponse.transactions.length > 0 ? (
             <>
               <GroupSheetExpensesDenseList
-                expenses={groupSheetExpensesResponse.expenses.slice(0, 4)}
+                expenses={groupSheetExpensesResponse.transactions.slice(0, 4)}
               />
               <Link
                 to={`/groups/${groupSheet.id}/expenses`}

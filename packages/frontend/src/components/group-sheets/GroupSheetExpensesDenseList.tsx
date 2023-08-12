@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { formatCurrency } from '../../utils/money';
 import {
@@ -14,7 +14,7 @@ import { CategoryAvatar } from '../CategoryAvatar';
 const DenseExpenseListItem = forwardRef<
   HTMLDivElement,
   {
-    expense: GroupSheetExpenseListItem;
+    expense: GroupSheetTransactionListItem;
   }
 >(({ expense }, ref) => {
   const descriptionText = getExpenseDescription(expense);
@@ -61,7 +61,7 @@ DenseExpenseListItem.displayName = 'DenseExpenseListItem';
 export const GroupSheetExpensesDenseList = ({
   expenses,
 }: {
-  expenses: GroupSheetExpenseListItem[];
+  expenses: GroupSheetTransactionListItem[];
 }) => (
   <div className="flex flex-col gap-4">
     <AnimatePresence mode="popLayout" initial={false}>

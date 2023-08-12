@@ -154,7 +154,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
 
     await caller.expense.batchCreatePersonalSheetExpenses({
       personalSheetId: personalSheet.id,
-      expenses: [
+      transactions: [
         createPersonalSheetExpenseInput(
           personalSheet.id,
           personalSheet.currencyCode,
@@ -194,7 +194,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
     await expect(
       caller.expense.batchCreatePersonalSheetExpenses({
         personalSheetId: personalSheet.id,
-        expenses: [invalidInput],
+        transactions: [invalidInput],
       }),
     ).rejects.toThrow('Currencies do not match');
   });
@@ -217,7 +217,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
     await expect(
       caller.expense.batchCreatePersonalSheetExpenses({
         personalSheetId: personalSheet.id,
-        expenses: [invalidInput],
+        transactions: [invalidInput],
       }),
     ).rejects.toThrow('Amount must be absolute');
   });
@@ -762,9 +762,10 @@ describe('getGroupSheetExpenses', () => {
       ),
     );
 
-    const { expenses, total } = await caller.expense.getGroupSheetExpenses({
-      groupSheetId: groupSheet.id,
-    });
+    const { transactions: expenses, total } =
+      await caller.expense.getGroupSheetExpenses({
+        groupSheetId: groupSheet.id,
+      });
 
     expect(expenses).toMatchObject([
       {

@@ -27,7 +27,7 @@ export const ExportGroupExpensesDropdown = ({
         // should not be possible with throwOnError: true
         if (!data) throw new Error('Unknown Error');
 
-        return data.expenses;
+        return data.transactions;
       }}
       mapItem={({
         id,

@@ -1,6 +1,6 @@
 import { MdDeleteOutline } from 'react-icons/md';
 
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../api/trpc';
 
@@ -12,7 +12,7 @@ export const ExpenseActions = ({
   onDelete,
 }: {
   sheetId: string;
-  expense: ExpenseListItem;
+  expense: TransactionListItem;
   onDelete: () => Promise<void> | void;
 }) => {
   const { mutateAsync: deleteExpense, isLoading } =

@@ -3,7 +3,7 @@ import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
-import type { ExpenseSummaryResponse } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { TransactionSummaryResponse } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
@@ -22,7 +22,7 @@ const PersonMenu = ({
   balance,
   setIsInvalidating,
   actorInfo,
-}: ExpenseSummaryResponse[number] & {
+}: TransactionSummaryResponse[number] & {
   groupSheetId: string;
   setIsInvalidating: (val: boolean) => void;
   actorInfo: ActorInfo;
@@ -114,7 +114,7 @@ const SummaryCard = ({
   groupSheetId,
   actorInfo,
 }: {
-  summary: ExpenseSummaryResponse[number];
+  summary: TransactionSummaryResponse[number];
   groupSheetId: string;
   actorInfo: ActorInfo;
 }) => {

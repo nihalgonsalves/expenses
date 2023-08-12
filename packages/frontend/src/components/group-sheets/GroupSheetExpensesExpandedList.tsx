@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { forwardRef, useState } from 'react';
 
-import type { GroupSheetExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { collapse, scaleOut } from '../../utils/framer';
@@ -22,7 +22,7 @@ import { ParticipantListItem } from './ParticipantListItem';
 const ExpandedExpenseListItem = forwardRef<
   HTMLDivElement,
   {
-    expense: GroupSheetExpenseListItem;
+    expense: GroupSheetTransactionListItem;
     groupSheetId: string;
   }
 >(({ expense, groupSheetId }, ref) => {
@@ -127,7 +127,7 @@ export const GroupSheetExpensesExpandedList = ({
   expenses,
 }: {
   groupSheetId: string;
-  expenses: GroupSheetExpenseListItem[];
+  expenses: GroupSheetTransactionListItem[];
 }) => {
   const groupedByDate = groupBySpentAt(expenses, ({ spentAt }) => spentAt);
 

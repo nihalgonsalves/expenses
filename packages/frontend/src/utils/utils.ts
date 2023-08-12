@@ -3,8 +3,8 @@ import clsx, { type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 import type {
-  GroupSheetExpenseListItem,
-  ExpenseListItem,
+  GroupSheetTransactionListItem,
+  TransactionListItem,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { categoryById } from '../data/categories';
@@ -119,14 +119,14 @@ export const joinList = (list: string[]): string => {
 };
 
 export const getExpenseDescription = (
-  expense: Pick<ExpenseListItem, 'category' | 'description'>,
+  expense: Pick<TransactionListItem, 'category' | 'description'>,
 ): string =>
   (expense.description || undefined) ??
   categoryById[expense.category]?.name ??
   expense.category;
 
 export const getGroupSheetExpenseSummaryText = (
-  expense: GroupSheetExpenseListItem,
+  expense: GroupSheetTransactionListItem,
 ): string => {
   if (expense.type === 'TRANSFER') {
     const to = expense.participants.find((p) => p.type === 'transfer_to');

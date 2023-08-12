@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { CreateSheetExpenseInput } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { CreateSheetTransactionInput } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { CategoryId } from '../../data/categories';
@@ -284,7 +284,7 @@ export const PersonalExpenseImportStepper = ({
   const validRows = useMemo(
     () =>
       data && amountField
-        ? data.flatMap((row): CreateSheetExpenseInput | [] => {
+        ? data.flatMap((row): CreateSheetTransactionInput | [] => {
             try {
               const amountValue = row[amountField];
               const dateValue = dateField ? row[dateField] : undefined;
@@ -338,7 +338,7 @@ export const PersonalExpenseImportStepper = ({
 
     await batchCreatePersonalSheetExpenses({
       personalSheetId: personalSheet.id,
-      expenses: validRows,
+      transactions: validRows,
     });
 
     await utils.expense.getPersonalSheetExpenses.invalidate({

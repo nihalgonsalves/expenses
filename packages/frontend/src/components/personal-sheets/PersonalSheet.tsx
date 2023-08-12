@@ -2,7 +2,7 @@ import { MdListAlt } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';
@@ -15,7 +15,7 @@ import { CategoryAvatar } from '../CategoryAvatar';
 const ExpenseListItemComponent = ({
   expense,
 }: {
-  expense: ExpenseListItem;
+  expense: TransactionListItem;
 }) => {
   const descriptionText = getExpenseDescription(expense);
   return (
@@ -41,7 +41,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     <div className="flex flex-col gap-4">
       <h2 className="text-xl font-semibold">Latest Expenses</h2>
 
-      {personalSheetExpensesResponse?.expenses
+      {personalSheetExpensesResponse?.transactions
         .slice(0, 4)
         .map((expense) => (
           <ExpenseListItemComponent key={expense.id} expense={expense} />
