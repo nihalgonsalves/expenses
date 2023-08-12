@@ -9,9 +9,9 @@ export const AuthenticationPage = () => {
   const [searchParams] = useSearchParams();
   const isSignUp = useMatch('/auth/sign-up');
 
-  const { error } = useCurrentUser();
+  const { data, error } = useCurrentUser();
 
-  if (!error) {
+  if (data?.id && !error) {
     const redirect = searchParams.get('redirect');
 
     return <Navigate to={redirect ?? '/'} replace />;
