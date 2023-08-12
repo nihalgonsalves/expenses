@@ -731,7 +731,7 @@ describe('deleteTransaction', () => {
           sheetId: sheet.id,
           transactionId: generateId(),
         }),
-      ).rejects.toThrow('Expense not found');
+      ).rejects.toThrow('Transaction not found');
     });
   });
 });

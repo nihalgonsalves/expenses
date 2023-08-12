@@ -568,7 +568,7 @@ export class TransactionService {
       ) {
         throw new TransactionServiceError({
           code: 'NOT_FOUND',
-          message: 'Expense not found',
+          message: 'Transaction not found',
         });
       }
 

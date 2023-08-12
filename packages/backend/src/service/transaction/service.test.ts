@@ -54,7 +54,7 @@ const useSetup = async () => {
 
 describe('TransactionService', () => {
   describe('createGroupSheetExpense', () => {
-    it('sends a notification to all expense participants except the creator', async () => {
+    it('sends a notification to all transaction participants except the creator', async () => {
       const {
         notificationDispatchService: webPushService,
         transactionService,
