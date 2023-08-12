@@ -39,7 +39,7 @@ const PersonMenu = ({
 
     try {
       await deleteGroupSheetMember({
-        groupSheetId: groupSheetId,
+        groupSheetId,
         participantId,
       });
 

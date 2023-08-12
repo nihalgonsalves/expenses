@@ -26,7 +26,7 @@
     "validate": "run-p build 'lint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.6.0",
+    "@nihalgonsalves/esconfig": "^0.6.1",
     "@types/node": "20",
     "@vitest/ui": "^0.33.0",
     "eslint": "^8.46.0",

@@ -51,7 +51,7 @@ export const groupSheetFactory = async (
   if (opts.withParticipantIds) {
     createOptions.push(
       ...opts.withParticipantIds.map((participantId) => ({
-        participantId: participantId,
+        participantId,
         role: SheetParticipantRole.MEMBER,
       })),
     );

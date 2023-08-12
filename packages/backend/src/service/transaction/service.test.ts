@@ -140,7 +140,7 @@ describe('TransactionService', () => {
           payload: {
             type: 'TRANSFER',
             transaction: {
-              id: id,
+              id,
               type: 'received',
               category: 'transfer',
               description: '',
@@ -188,7 +188,7 @@ describe('TransactionService', () => {
           payload: {
             type: 'TRANSFER',
             transaction: {
-              id: id,
+              id,
               type: 'sent',
               category: 'transfer',
               description: '',
