@@ -224,7 +224,8 @@ describe('anonymizeUser', () => {
 
     expect(setJWTToken.mock.calls).toEqual([[null]]);
   });
-  it('deletes personal sheets and expenses', async () => {
+
+  it('deletes personal sheets and transactions', async () => {
     const user = await userFactory(prisma, {
       passwordHash: await hashPassword('password'),
     });
@@ -235,7 +236,7 @@ describe('anonymizeUser', () => {
 
     const caller = useProtectedCaller(user);
 
-    const expense = await caller.transaction.createPersonalSheetTransaction(
+    const transaction = await caller.transaction.createPersonalSheetTransaction(
       createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
@@ -255,7 +256,7 @@ describe('anonymizeUser', () => {
     ).toBeNull();
 
     expect(
-      await prisma.transaction.findFirst({ where: { id: expense.id } }),
+      await prisma.transaction.findFirst({ where: { id: transaction.id } }),
     ).toBeNull();
   });
 

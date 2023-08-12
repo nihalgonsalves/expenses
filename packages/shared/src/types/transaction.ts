@@ -91,7 +91,7 @@ export const ZTransactionWithSheet = z.object({
 });
 
 export const ZGetAllUserTransactionsResponse = z.object({
-  transactions: z.array(ZTransactionWithSheet),
+  expenses: z.array(ZTransactionWithSheet),
   earnings: z.array(ZTransactionWithSheet),
 });
 

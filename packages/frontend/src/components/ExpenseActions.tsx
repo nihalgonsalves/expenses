@@ -21,7 +21,7 @@ export const ExpenseActions = ({
   const handleDelete = async () => {
     await deleteExpense({
       sheetId,
-      expenseId: expense.id,
+      transactionId: expense.id,
     });
 
     await onDelete();

@@ -60,12 +60,12 @@ export const transactionRouter = router({
       );
 
       const groupParticipants = new Set(sheet.participants.map(({ id }) => id));
-      const expenseParticipants = [
+      const transactionParticipants = [
         input.paidOrReceivedById,
         ...input.splits.map(({ participantId }) => participantId),
       ];
 
-      if (expenseParticipants.some((id) => !groupParticipants.has(id))) {
+      if (transactionParticipants.some((id) => !groupParticipants.has(id))) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           message: 'Invalid participants',
@@ -107,17 +107,17 @@ export const transactionRouter = router({
     .input(
       z.object({
         sheetId: z.string().nonempty(),
-        expenseId: z.string().nonempty(),
+        transactionId: z.string().nonempty(),
       }),
     )
     .output(z.void())
-    .mutation(async ({ input: { sheetId, expenseId }, ctx }) => {
+    .mutation(async ({ input: { sheetId, transactionId }, ctx }) => {
       const { sheet } = await ctx.sheetService.ensureSheetMembership(
         sheetId,
         ctx.user.id,
       );
 
-      await ctx.transactionService.deleteExpense(expenseId, sheet);
+      await ctx.transactionService.deleteExpense(transactionId, sheet);
     }),
 
   getAllUserTransactions: protectedProcedure
@@ -136,12 +136,12 @@ export const transactionRouter = router({
         });
 
       return {
-        transactions: expenses.map(({ spentAt, sheet, ...expense }) => ({
-          transaction: { ...expense, spentAt: spentAt.toISOString() },
+        expenses: expenses.map(({ spentAt, sheet, ...transaction }) => ({
+          transaction: { ...transaction, spentAt: spentAt.toISOString() },
           sheet,
         })),
-        earnings: earnings.map(({ spentAt, sheet, ...expense }) => ({
-          transaction: { ...expense, spentAt: spentAt.toISOString() },
+        earnings: earnings.map(({ spentAt, sheet, ...transaction }) => ({
+          transaction: { ...transaction, spentAt: spentAt.toISOString() },
           sheet,
         })),
       };
@@ -161,16 +161,16 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      const { transactions: expenses, total } =
+      const { transactions, total } =
         await ctx.transactionService.getPersonalSheetTransactions({
           personalSheet: sheet,
           limit,
         });
 
       return {
-        transactions: expenses.map(
-          ({ amount, scale, spentAt, ...expense }) => ({
-            ...expense,
+        transactions: transactions.map(
+          ({ amount, scale, spentAt, ...transaction }) => ({
+            ...transaction,
             spentAt: spentAt.toISOString(),
             money: { amount, scale, currencyCode: sheet.currencyCode },
           }),
@@ -193,16 +193,22 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      const { transactions: expenses, total } =
+      const { transactions, total } =
         await ctx.transactionService.getGroupSheetTransaction({
           groupSheet: sheet,
           limit,
         });
 
       return {
-        transactions: expenses.map(
-          ({ participantBalances, amount, scale, spentAt, ...expense }) => ({
-            ...expense,
+        transactions: transactions.map(
+          ({
+            participantBalances,
+            amount,
+            scale,
+            spentAt,
+            ...transaction
+          }) => ({
+            ...transaction,
             participants: participantBalances,
             spentAt: spentAt.toISOString(),
             money: { amount, scale, currencyCode: sheet.currencyCode },

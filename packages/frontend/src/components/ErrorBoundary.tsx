@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 
@@ -7,15 +8,36 @@ type ErrorBoundaryState = {
   componentStack: string;
   displayError: boolean;
 };
+
+const RetryErrorButton = ({ reset }: { reset: () => void }) => {
+  const queryClient = useQueryClient();
+
+  return (
+    <button
+      type="button"
+      className="btn btn-ghost btn-sm"
+      onClick={async () => {
+        queryClient.clear();
+        await queryClient.invalidateQueries();
+        reset();
+      }}
+    >
+      Reset cache and retry
+    </button>
+  );
+};
+
+const initialState: ErrorBoundaryState = {
+  hasError: false,
+  error: undefined,
+  componentStack: '',
+  displayError: false,
+};
+
 export class ErrorBoundary extends React.Component<{
   children: React.ReactNode;
 }> {
-  override state: ErrorBoundaryState = {
-    hasError: false,
-    error: undefined,
-    componentStack: '',
-    displayError: false,
-  };
+  override state = initialState;
 
   static getDerivedStateFromError(_error: unknown) {
     return { hasError: true };
@@ -43,6 +65,12 @@ export class ErrorBoundary extends React.Component<{
             <h3 className="font-bold">Something went wrong</h3>
 
             <div className="flex-grow" />
+            <RetryErrorButton
+              reset={() => {
+                this.setState(initialState);
+              }}
+            />
+
             <button
               type="button"
               className="btn btn-ghost btn-sm"

@@ -39,7 +39,7 @@ export const useAllUserExpenses = (
     );
 
   const [convertCurrency] = useConvertToPreferredCurrency([
-    ...(data?.transactions.map(
+    ...(data?.expenses.map(
       ({ transaction }) => transaction.money.currencyCode,
     ) ?? []),
     ...(data?.earnings.map(
@@ -49,14 +49,14 @@ export const useAllUserExpenses = (
 
   const convertedExpenses = useMemo(
     () =>
-      data?.transactions.map(({ sheet, transaction }) => ({
+      data?.expenses.map(({ sheet, transaction }) => ({
         sheet,
         expense: {
           ...transaction,
           convertedMoney: convertCurrency(transaction.money),
         },
       })),
-    [data?.transactions, convertCurrency],
+    [data?.expenses, convertCurrency],
   );
 
   const convertedEarnings = useMemo(

@@ -667,7 +667,7 @@ describe('deleteTransaction', () => {
 
       await caller.transaction.deleteTransaction({
         sheetId: sheet.id,
-        expenseId: transaction.id,
+        transactionId: transaction.id,
       });
 
       expect(
@@ -695,7 +695,7 @@ describe('deleteTransaction', () => {
       await expect(
         caller.transaction.deleteTransaction({
           sheetId: sheet.id,
-          expenseId: transaction.id,
+          transactionId: transaction.id,
         }),
       ).rejects.toThrow('Sheet not found');
     });
@@ -713,7 +713,7 @@ describe('deleteTransaction', () => {
       await expect(
         caller.transaction.deleteTransaction({
           sheetId: generateId(),
-          expenseId: transaction.id,
+          transactionId: transaction.id,
         }),
       ).rejects.toThrow('Sheet not found');
     });
@@ -729,7 +729,7 @@ describe('deleteTransaction', () => {
       await expect(
         caller.transaction.deleteTransaction({
           sheetId: sheet.id,
-          expenseId: generateId(),
+          transactionId: generateId(),
         }),
       ).rejects.toThrow('Expense not found');
     });
