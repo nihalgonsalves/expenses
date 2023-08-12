@@ -40,16 +40,16 @@ describe('createPersonalSheetExpense', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.expense.findUnique({
+    const expense = await prisma.transaction.findUnique({
       where: { id: response.id },
-      include: { transactions: true },
+      include: { transactionEntries: true },
     });
 
     expect(expense).toMatchObject({
       type: ExpenseType.EXPENSE,
     });
 
-    expect(expense?.transactions).toMatchObject([
+    expect(expense?.transactionEntries).toMatchObject([
       { scale: 2, amount: -100_00, userId: user.id },
     ]);
   });
@@ -76,16 +76,16 @@ describe('createPersonalSheetExpense', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.expense.findUnique({
+    const expense = await prisma.transaction.findUnique({
       where: { id: response.id },
-      include: { transactions: true },
+      include: { transactionEntries: true },
     });
 
     expect(expense).toMatchObject({
       type: ExpenseType.INCOME,
     });
 
-    expect(expense?.transactions).toMatchObject([
+    expect(expense?.transactionEntries).toMatchObject([
       { scale: 2, amount: 100_00, userId: user.id },
     ]);
   });
@@ -163,15 +163,15 @@ describe('batchCreatePersonalSheetExpenses', () => {
       ],
     });
 
-    const expense = await prisma.expense.findFirst({
-      include: { transactions: true },
+    const expense = await prisma.transaction.findFirst({
+      include: { transactionEntries: true },
     });
 
     expect(expense).toMatchObject({
       type: ExpenseType.EXPENSE,
     });
 
-    expect(expense?.transactions).toMatchObject([
+    expect(expense?.transactionEntries).toMatchObject([
       { scale: 2, amount: -100_00, userId: user.id },
     ]);
   });
@@ -255,16 +255,16 @@ describe('createGroupSheetExpenseOrIncome', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.expense.findUnique({
+    const expense = await prisma.transaction.findUnique({
       where: { id: response.id },
-      include: { transactions: true },
+      include: { transactionEntries: true },
     });
 
     expect(expense).toMatchObject({
       type: ExpenseType.EXPENSE,
     });
 
-    expect(expense?.transactions).toMatchObject([
+    expect(expense?.transactionEntries).toMatchObject([
       { scale: 2, amount: -75_00, userId: member.id },
       { scale: 2, amount: +75_00, userId: user.id },
       { scale: 2, amount: -25_00, userId: user.id },
@@ -302,16 +302,16 @@ describe('createGroupSheetExpenseOrIncome', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.expense.findUnique({
+    const expense = await prisma.transaction.findUnique({
       where: { id: response.id },
-      include: { transactions: true },
+      include: { transactionEntries: true },
     });
 
     expect(expense).toMatchObject({
       type: ExpenseType.INCOME,
     });
 
-    expect(expense?.transactions).toMatchObject([
+    expect(expense?.transactionEntries).toMatchObject([
       { scale: 2, amount: +75_00, userId: member.id },
       { scale: 2, amount: -75_00, userId: user.id },
       { scale: 2, amount: +25_00, userId: user.id },
@@ -503,16 +503,16 @@ describe('createGroupSheetSettlement', () => {
       id: expect.any(String),
     });
 
-    const expense = await prisma.expense.findUnique({
+    const expense = await prisma.transaction.findUnique({
       where: { id: response.id },
-      include: { transactions: true },
+      include: { transactionEntries: true },
     });
 
     expect(expense).toMatchObject({
       type: ExpenseType.TRANSFER,
     });
 
-    expect(expense?.transactions).toMatchObject([
+    expect(expense?.transactionEntries).toMatchObject([
       { scale: 2, amount: -100_00, userId: member.id },
       { scale: 2, amount: +100_00, userId: user.id },
     ]);
@@ -672,7 +672,7 @@ describe('deleteExpense', () => {
       });
 
       expect(
-        await prisma.expense.findUnique({ where: { id: expense.id } }),
+        await prisma.transaction.findUnique({ where: { id: expense.id } }),
       ).toBeNull();
     });
 

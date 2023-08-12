@@ -255,7 +255,7 @@ describe('anonymizeUser', () => {
     ).toBeNull();
 
     expect(
-      await prisma.expense.findFirst({ where: { id: expense.id } }),
+      await prisma.transaction.findFirst({ where: { id: expense.id } }),
     ).toBeNull();
   });
 

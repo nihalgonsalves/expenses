@@ -3,8 +3,8 @@ import {
   type PrismaClient,
   type Prisma,
   ExpenseType,
-  type Expense,
-  type ExpenseTransactions,
+  type Transaction,
+  type TransactionEntry,
   type User as PrismaUser,
 } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
@@ -37,7 +37,7 @@ import type { INotificationDispatchService } from '../notification/service';
 class ExpenseServiceError extends TRPCError {}
 
 const expenseOrIncomeToNotificationPayload = (
-  expense: Omit<Expense, 'type'> & { type: 'INCOME' | 'EXPENSE' },
+  expense: Omit<Transaction, 'type'> & { type: 'INCOME' | 'EXPENSE' },
   groupSheet: Sheet,
   yourShare: Omit<Money, 'currencyCode'>,
 ): NotificationPayload => ({
@@ -58,7 +58,7 @@ const expenseOrIncomeToNotificationPayload = (
 });
 
 const transferToNotificationPayload = (
-  expense: Omit<Expense, 'type'> & { type: 'TRANSFER' },
+  expense: Omit<Transaction, 'type'> & { type: 'TRANSFER' },
   groupSheet: Sheet,
   transferType: 'sent' | 'received',
 ): NotificationPayload => ({
@@ -77,7 +77,7 @@ const transferToNotificationPayload = (
 
 const sumTransactions = (
   currencyCode: string,
-  transactions: ExpenseTransactions[],
+  transactions: TransactionEntry[],
 ): Money =>
   sumMoney(
     transactions.map((txn) => ({
@@ -91,7 +91,7 @@ const sumTransactions = (
 const calculateBalances = (
   groupSheet: Sheet,
   type: ExpenseType,
-  transactions: (ExpenseTransactions & { user: PrismaUser })[],
+  transactions: (TransactionEntry & { user: PrismaUser })[],
 ): GroupSheetParticipantItem[] => {
   const participants = new Map(
     transactions.map(({ userId, user: { name } }) => [
@@ -158,7 +158,7 @@ const mapInputToCreatePersonalExpense = (
   input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>,
   personalSheet: Sheet,
   id = generateId(),
-): Prisma.ExpenseUncheckedCreateInput => ({
+): Prisma.TransactionUncheckedCreateInput => ({
   id,
   sheetId: personalSheet.id,
   amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
@@ -174,7 +174,7 @@ const mapInputToCreatePersonalExpense = (
 const mapInputToCreatePersonalExpenseTransaction = (
   input: Omit<CreatePersonalSheetExpenseInput, 'personalSheetId'>,
   user: User,
-): Omit<Prisma.ExpenseTransactionsUncheckedCreateInput, 'expenseId'> => ({
+): Omit<Prisma.TransactionEntryUncheckedCreateInput, 'expenseId'> => ({
   id: generateId(),
   userId: user.id,
   amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
@@ -207,7 +207,7 @@ export class ExpenseService {
   constructor(
     private prismaClient: Pick<
       PrismaClient,
-      '$transaction' | 'expense' | 'expenseTransactions' | 'sheetMemberships'
+      '$transaction' | 'transaction' | 'transactionEntry' | 'sheetMemberships'
     >,
     private notificationService: INotificationDispatchService,
   ) {}
@@ -216,10 +216,10 @@ export class ExpenseService {
     user: User,
     { from, to }: { from: Temporal.Instant; to: Temporal.Instant },
   ) {
-    const data = await this.prismaClient.expense.findMany({
+    const data = await this.prismaClient.transaction.findMany({
       where: {
         type: { in: ['EXPENSE', 'INCOME'] },
-        transactions: { some: { userId: user.id } },
+        transactionEntries: { some: { userId: user.id } },
         spentAt: {
           gte: new Date(from.epochMilliseconds),
           lte: new Date(to.epochMilliseconds),
@@ -227,7 +227,7 @@ export class ExpenseService {
       },
       include: {
         sheet: true,
-        transactions: {
+        transactionEntries: {
           include: {
             user: true,
           },
@@ -237,11 +237,11 @@ export class ExpenseService {
     });
 
     const expenses = data
-      .map(({ transactions, ...expense }) => ({
+      .map(({ transactionEntries, ...expense }) => ({
         ...expense,
         money: sumTransactions(
           expense.sheet.currencyCode,
-          transactions.filter(
+          transactionEntries.filter(
             ({ amount, userId }) =>
               expense.type === 'EXPENSE' && amount < 0 && userId === user.id,
           ),
@@ -250,11 +250,11 @@ export class ExpenseService {
       .filter(({ money }) => money.amount !== 0);
 
     const earnings = data
-      .map(({ transactions, ...expense }) => ({
+      .map(({ transactionEntries, ...expense }) => ({
         ...expense,
         money: sumTransactions(
           expense.sheet.currencyCode,
-          transactions.filter(
+          transactionEntries.filter(
             ({ amount, userId }) =>
               expense.type === 'INCOME' && amount > 0 && userId === user.id,
           ),
@@ -275,7 +275,7 @@ export class ExpenseService {
     personalSheet: Sheet;
     limit?: number | undefined;
   }) {
-    return this.getExpenses({ sheetId: personalSheet.id, limit });
+    return this.getTransactions({ sheetId: personalSheet.id, limit });
   }
 
   async getGroupSheetExpenses({
@@ -285,7 +285,7 @@ export class ExpenseService {
     groupSheet: Sheet;
     limit?: number | undefined;
   }) {
-    const { expenses, total } = await this.getExpenses({
+    const { expenses, total } = await this.getTransactions({
       sheetId: groupSheet.id,
       limit,
     });
@@ -296,14 +296,14 @@ export class ExpenseService {
         participantBalances: calculateBalances(
           groupSheet,
           expense.type,
-          expense.transactions,
+          expense.transactionEntries,
         ),
       })),
       total,
     };
   }
 
-  private async getExpenses({
+  private async getTransactions({
     sheetId,
     limit,
   }: {
@@ -311,10 +311,10 @@ export class ExpenseService {
     limit?: number | undefined;
   }) {
     const [expenses, total] = await this.prismaClient.$transaction([
-      this.prismaClient.expense.findMany({
+      this.prismaClient.transaction.findMany({
         where: { sheetId },
         include: {
-          transactions: {
+          transactionEntries: {
             include: {
               user: true,
             },
@@ -323,7 +323,7 @@ export class ExpenseService {
         orderBy: { spentAt: 'desc' },
         ...(limit != null ? { take: limit } : {}),
       }),
-      this.prismaClient.expense.count({ where: { sheetId } }),
+      this.prismaClient.transaction.count({ where: { sheetId } }),
     ]);
 
     return {
@@ -340,9 +340,9 @@ export class ExpenseService {
     verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
     verifyAmountIsAbsolute(input.money);
 
-    return this.prismaClient.expense.create({
+    return this.prismaClient.transaction.create({
       include: {
-        transactions: {
+        transactionEntries: {
           include: {
             user: true,
           },
@@ -350,7 +350,7 @@ export class ExpenseService {
       },
       data: {
         ...mapInputToCreatePersonalExpense(input, personalSheet),
-        transactions: {
+        transactionEntries: {
           create: [mapInputToCreatePersonalExpenseTransaction(input, user)],
         },
       },
@@ -374,12 +374,12 @@ export class ExpenseService {
     const inputWithIds = input.map((item) => ({ id: generateId(), item }));
 
     return this.prismaClient.$transaction([
-      this.prismaClient.expense.createMany({
+      this.prismaClient.transaction.createMany({
         data: inputWithIds.map(({ id, item }) =>
           mapInputToCreatePersonalExpense(item, personalSheet, id),
         ),
       }),
-      this.prismaClient.expenseTransactions.createMany({
+      this.prismaClient.transactionEntry.createMany({
         data: inputWithIds.map(({ id, item }) => ({
           ...mapInputToCreatePersonalExpenseTransaction(item, user),
           expenseId: id,
@@ -413,9 +413,9 @@ export class ExpenseService {
       });
     }
 
-    const expense = await this.prismaClient.expense.create({
+    const expense = await this.prismaClient.transaction.create({
       include: {
-        transactions: {
+        transactionEntries: {
           include: {
             user: true,
           },
@@ -434,15 +434,15 @@ export class ExpenseService {
             input.spentAt,
           ).toInstant().epochMilliseconds,
         ),
-        transactions: {
+        transactionEntries: {
           create: input.splits
             .filter(({ share }) => share.amount !== 0)
             .flatMap(
               (
                 split,
               ): [
-                Prisma.ExpenseTransactionsCreateWithoutExpenseInput,
-                Prisma.ExpenseTransactionsCreateWithoutExpenseInput,
+                Prisma.TransactionEntryCreateWithoutExpenseInput,
+                Prisma.TransactionEntryCreateWithoutExpenseInput,
               ] => [
                 {
                   id: generateId(),
@@ -475,7 +475,7 @@ export class ExpenseService {
     const balances = calculateBalances(
       groupSheet,
       expense.type,
-      expense.transactions,
+      expense.transactionEntries,
     );
 
     // TODO: Background task
@@ -505,7 +505,7 @@ export class ExpenseService {
     verifyCurrencies(groupSheet.currencyCode, input.money.currencyCode);
     verifyAmountIsAbsolute(input.money);
 
-    const expense = await this.prismaClient.expense.create({
+    const expense = await this.prismaClient.transaction.create({
       data: {
         id: generateId(),
         sheet: { connect: { id: groupSheet.id } },
@@ -515,7 +515,7 @@ export class ExpenseService {
         category: 'transfer',
         description: '',
         spentAt: new Date(Temporal.Now.instant().epochMilliseconds),
-        transactions: {
+        transactionEntries: {
           create: [
             {
               id: generateId(),
@@ -556,7 +556,7 @@ export class ExpenseService {
 
   async deleteExpense(id: string, groupSheet: Sheet) {
     try {
-      await this.prismaClient.expense.delete({
+      await this.prismaClient.transaction.delete({
         where: { id, sheetId: groupSheet.id },
       });
     } catch (error) {
@@ -613,7 +613,7 @@ export class ExpenseService {
       );
 
     const [balanceMap, participants] = await Promise.all([
-      this.prismaClient.expenseTransactions
+      this.prismaClient.transactionEntry
         .groupBy({
           by: ['userId', 'scale'],
           where: {
@@ -637,8 +637,8 @@ export class ExpenseService {
   }
 
   async getParticipantBalance(groupSheet: Sheet, userId: string) {
-    const expenseTransactions =
-      await this.prismaClient.expenseTransactions.findMany({
+    const transactionEntries =
+      await this.prismaClient.transactionEntry.findMany({
         where: {
           expense: { sheetId: groupSheet.id },
           userId,
@@ -646,7 +646,7 @@ export class ExpenseService {
       });
 
     const balance = sumMoney(
-      expenseTransactions.map(({ amount, scale }) => ({
+      transactionEntries.map(({ amount, scale }) => ({
         amount,
         scale,
         currencyCode: groupSheet.currencyCode,

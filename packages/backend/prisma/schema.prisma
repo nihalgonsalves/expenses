@@ -19,7 +19,7 @@ model User {
   passwordHash String? @map("password_hash")
 
   sheets                    SheetMemberships[]
-  expenseTransactions       ExpenseTransactions[]
+  expenseTransactions       TransactionEntry[]
   notificationSubscriptions NotificationSubscription[]
 
   @@map("users")
@@ -52,7 +52,7 @@ model Sheet {
   currencyCode String    @map("currency_code")
 
   participants SheetMemberships[]
-  expenses     Expense[]
+  expenses     Transaction[]
 
   @@map("sheets")
 }
@@ -93,7 +93,7 @@ enum ExpenseType {
   @@map("expense_type")
 }
 
-model Expense {
+model Transaction {
   id        String   @id
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
@@ -109,16 +109,16 @@ model Expense {
   scale       Int      @db.SmallInt()
   spentAt     DateTime @map("spent_at")
 
-  transactions ExpenseTransactions[]
+  transactionEntries TransactionEntry[]
 
   @@map("expenses")
 }
 
-model ExpenseTransactions {
+model TransactionEntry {
   id String @id
 
-  expense   Expense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
-  expenseId String  @map("expense_id")
+  expense   Transaction @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseId String      @map("expense_id")
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @map("user_id")
