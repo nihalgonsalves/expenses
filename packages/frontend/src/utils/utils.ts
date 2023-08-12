@@ -155,9 +155,10 @@ export const groupBySpentAt = <T>(
 
   // TODO: proposal-array-grouping (TypeScript 5.3?)
   for (const item of items) {
-    const date = isoToTemporalZonedDateTime(getSpentAt(item)).round(
-      'day',
-    ).epochMilliseconds;
+    const date = isoToTemporalZonedDateTime(getSpentAt(item)).round({
+      smallestUnit: 'day',
+      roundingMode: 'trunc',
+    }).epochMilliseconds;
 
     const existing = groupedByDate.get(date);
 
