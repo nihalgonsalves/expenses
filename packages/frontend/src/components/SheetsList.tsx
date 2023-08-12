@@ -7,7 +7,7 @@ import { Avatar } from './Avatar';
 
 export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => (
   <div className="flex flex-col gap-4">
-    {sheets.length === 0 && <div className="alert">No groups</div>}
+    {sheets.length === 0 && <div className="alert">No sheets</div>}
     {sheets.map((sheet) => (
       <div key={sheet.id} className="flex items-center gap-4 h-14">
         <Link
