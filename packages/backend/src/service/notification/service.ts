@@ -18,7 +18,9 @@ import { NOTIFICATION_BULLMQ_QUEUE } from '../../config';
 import { generateId } from '../../utils/nanoid';
 
 export class NotificationSubscriptionService {
-  constructor(private prismaClient: PrismaClient) {}
+  constructor(
+    private prismaClient: Pick<PrismaClient, 'notificationSubscription'>,
+  ) {}
 
   async getSubscriptions(user: User) {
     return this.prismaClient.notificationSubscription.findMany({

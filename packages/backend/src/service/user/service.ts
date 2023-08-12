@@ -20,7 +20,9 @@ import {
 } from './utils';
 
 export class UserService {
-  constructor(private prismaClient: PrismaClient) {}
+  constructor(
+    private prismaClient: Pick<PrismaClient, '$transaction' | 'user' | 'sheet'>,
+  ) {}
 
   async exchangeToken(
     token: JWTToken,
@@ -152,6 +154,7 @@ export class UserService {
           passwordHash: null,
         },
       }),
+      // TODO: access via sheetService
       this.prismaClient.sheet.deleteMany({
         where: {
           type: 'PERSONAL',

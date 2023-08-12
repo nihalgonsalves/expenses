@@ -205,7 +205,10 @@ const verifyAmountIsAbsolute = (money: Money) => {
 
 export class ExpenseService {
   constructor(
-    private prismaClient: PrismaClient,
+    private prismaClient: Pick<
+      PrismaClient,
+      '$transaction' | 'expense' | 'expenseTransactions' | 'sheetMemberships'
+    >,
     private notificationService: INotificationDispatchService,
   ) {}
 
@@ -619,6 +622,7 @@ export class ExpenseService {
           _sum: { amount: true },
         })
         .then(mapSummary),
+      // TODO: access via sheetService
       this.prismaClient.sheetMemberships.findMany({
         where: { sheetId: groupSheet.id },
         include: { participant: true },
@@ -630,5 +634,26 @@ export class ExpenseService {
       participantId: id,
       balance: balanceMap[id] ?? zeroMoney(groupSheet.currencyCode),
     }));
+  }
+
+  async getParticipantBalance(groupSheet: Sheet, userId: string) {
+    const expenseTransactions =
+      await this.prismaClient.expenseTransactions.findMany({
+        where: {
+          expense: { sheetId: groupSheet.id },
+          userId,
+        },
+      });
+
+    const balance = sumMoney(
+      expenseTransactions.map(({ amount, scale }) => ({
+        amount,
+        scale,
+        currencyCode: groupSheet.currencyCode,
+      })),
+      groupSheet.currencyCode,
+    );
+
+    return balance;
   }
 }

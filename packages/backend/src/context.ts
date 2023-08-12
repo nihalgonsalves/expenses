@@ -58,7 +58,6 @@ export const getMaybeUser = async (
 
 export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
   const userService = new UserService(prisma);
-  const sheetService = new SheetService(prisma);
   const notificationSubscriptionService = new NotificationSubscriptionService(
     prisma,
   );
@@ -75,6 +74,7 @@ export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
     prisma,
     notificationDispatchService,
   );
+  const sheetService = new SheetService(prisma, expenseService);
 
   const frankfurterService = new FrankfurterService(
     config.FRANKFURTER_BASE_URL,

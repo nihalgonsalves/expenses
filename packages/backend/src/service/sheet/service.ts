@@ -9,7 +9,6 @@ import {
 } from '@prisma/client/runtime/library';
 import { TRPCError } from '@trpc/server';
 
-import { sumMoney } from '@nihalgonsalves/expenses-shared/money';
 import type {
   Sheet,
   CreateGroupSheetInput,
@@ -20,6 +19,7 @@ import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { generateId } from '../../utils/nanoid';
 import { getTRPCError } from '../../utils/trpcUtils';
+import type { ExpenseService } from '../expense/service';
 
 class SheetServiceError extends TRPCError {}
 
@@ -47,7 +47,10 @@ const participantConnectOrCreate = (email: string) => ({
 });
 
 export class SheetService {
-  constructor(private prismaClient: PrismaClient) {}
+  constructor(
+    private prismaClient: Pick<PrismaClient, 'sheet' | 'sheetMemberships'>,
+    private expenseService: ExpenseService,
+  ) {}
 
   async createPersonalSheet(input: CreatePersonalSheetInput, owner: User) {
     try {
@@ -192,21 +195,9 @@ export class SheetService {
   }
 
   async deleteGroupSheetMember(groupSheet: Sheet, participantId: string) {
-    const expenseTransactions =
-      await this.prismaClient.expenseTransactions.findMany({
-        where: {
-          expense: { sheetId: groupSheet.id },
-          userId: participantId,
-        },
-      });
-
-    const balance = sumMoney(
-      expenseTransactions.map(({ amount, scale }) => ({
-        amount,
-        scale,
-        currencyCode: groupSheet.currencyCode,
-      })),
-      groupSheet.currencyCode,
+    const balance = await this.expenseService.getParticipantBalance(
+      groupSheet,
+      participantId,
     );
 
     if (balance.amount !== 0) {
