@@ -49,7 +49,7 @@ const participantConnectOrCreate = (email: string) => ({
 export class SheetService {
   constructor(
     private prismaClient: Pick<PrismaClient, 'sheet' | 'sheetMemberships'>,
-    private expenseService: TransactionService,
+    private transactionService: TransactionService,
   ) {}
 
   async createPersonalSheet(input: CreatePersonalSheetInput, owner: User) {
@@ -195,7 +195,7 @@ export class SheetService {
   }
 
   async deleteGroupSheetMember(groupSheet: Sheet, participantId: string) {
-    const balance = await this.expenseService.getParticipantBalance(
+    const balance = await this.transactionService.getParticipantBalance(
       groupSheet,
       participantId,
     );

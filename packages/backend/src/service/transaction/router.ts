@@ -27,7 +27,7 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      return ctx.expenseService.createPersonalSheetTransaction(
+      return ctx.transactionService.createPersonalSheetTransaction(
         ctx.user,
         input,
         sheet,
@@ -43,7 +43,7 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      await ctx.expenseService.batchCreatePersonalSheetTransactions(
+      await ctx.transactionService.batchCreatePersonalSheetTransactions(
         ctx.user,
         input.transactions,
         sheet,
@@ -72,7 +72,7 @@ export const transactionRouter = router({
         });
       }
 
-      return ctx.expenseService.createGroupSheetTransaction(
+      return ctx.transactionService.createGroupSheetTransaction(
         ctx.user,
         input,
         sheet,
@@ -100,7 +100,7 @@ export const transactionRouter = router({
         });
       }
 
-      return ctx.expenseService.createSettlement(ctx.user, input, sheet);
+      return ctx.transactionService.createSettlement(ctx.user, input, sheet);
     }),
 
   deleteExpense: protectedProcedure
@@ -117,7 +117,7 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      await ctx.expenseService.deleteExpense(expenseId, sheet);
+      await ctx.transactionService.deleteExpense(expenseId, sheet);
     }),
 
   getAllUserExpenses: protectedProcedure
@@ -130,7 +130,7 @@ export const transactionRouter = router({
     .output(ZGetAllUserTransactionsResponse)
     .query(async ({ ctx, input }) => {
       const { expenses, earnings } =
-        await ctx.expenseService.getAllUserTransactions(ctx.user, {
+        await ctx.transactionService.getAllUserTransactions(ctx.user, {
           from: Temporal.Instant.from(input.fromTimestamp),
           to: Temporal.Instant.from(input.toTimestamp),
         });
@@ -162,7 +162,7 @@ export const transactionRouter = router({
       );
 
       const { transactions: expenses, total } =
-        await ctx.expenseService.getPersonalSheetTransactions({
+        await ctx.transactionService.getPersonalSheetTransactions({
           personalSheet: sheet,
           limit,
         });
@@ -194,7 +194,7 @@ export const transactionRouter = router({
       );
 
       const { transactions: expenses, total } =
-        await ctx.expenseService.getGroupSheetTransaction({
+        await ctx.transactionService.getGroupSheetTransaction({
           groupSheet: sheet,
           limit,
         });
@@ -224,7 +224,9 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      const summaries = await ctx.expenseService.getParticipantSummaries(sheet);
+      const summaries = await ctx.transactionService.getParticipantSummaries(
+        sheet,
+      );
 
       return summaries.sort(({ participantId }) =>
         participantId === ctx.user.id ? -1 : 1,

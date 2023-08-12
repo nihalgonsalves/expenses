@@ -70,11 +70,11 @@ export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
       subject: `mailto:${config.VAPID_EMAIL}`,
     },
   );
-  const expenseService = new TransactionService(
+  const transactionService = new TransactionService(
     prisma,
     notificationDispatchService,
   );
-  const sheetService = new SheetService(prisma, expenseService);
+  const sheetService = new SheetService(prisma, transactionService);
 
   const frankfurterService = new FrankfurterService(
     config.FRANKFURTER_BASE_URL,
@@ -101,7 +101,7 @@ export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
       },
       userService,
       sheetService,
-      expenseService,
+      transactionService,
       frankfurterService,
       notificationSubscriptionService,
       setJwtToken,

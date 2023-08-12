@@ -30,11 +30,11 @@ export const getTRPCCaller = async () => {
     const notificationSubscriptionService = new NotificationSubscriptionService(
       prisma,
     );
-    const expenseService = new TransactionService(
+    const transactionService = new TransactionService(
       prisma,
       notificationDispatchService,
     );
-    const sheetService = new SheetService(prisma, expenseService);
+    const sheetService = new SheetService(prisma, transactionService);
     const frankfurterService = new FrankfurterService(
       config.FRANKFURTER_BASE_URL,
     );
@@ -43,7 +43,7 @@ export const getTRPCCaller = async () => {
       prisma,
       userService,
       sheetService,
-      expenseService,
+      transactionService,
       notificationSubscriptionService,
       frankfurterService,
       user,

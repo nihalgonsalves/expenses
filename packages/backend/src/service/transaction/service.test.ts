@@ -26,7 +26,7 @@ const subscribedUser = async () => {
 
 const useSetup = async () => {
   const notificationDispatchService = new FakeNotificationDispatchService();
-  const expenseService = new TransactionService(
+  const transactionService = new TransactionService(
     prisma,
     notificationDispatchService,
   );
@@ -44,7 +44,7 @@ const useSetup = async () => {
 
   return {
     notificationDispatchService,
-    expenseService,
+    transactionService,
     user1,
     user2,
     user3,
@@ -52,12 +52,12 @@ const useSetup = async () => {
   };
 };
 
-describe('ExpenseService', () => {
+describe('TransactionService', () => {
   describe('createGroupSheetExpense', () => {
     it('sends a notification to all expense participants except the creator', async () => {
       const {
         notificationDispatchService: webPushService,
-        expenseService,
+        transactionService,
         groupSheet,
         user1: creator,
         user2: otherParticipant,
@@ -72,7 +72,7 @@ describe('ExpenseService', () => {
         otherParticipant.id,
       );
 
-      const { id } = await expenseService.createGroupSheetTransaction(
+      const { id } = await transactionService.createGroupSheetTransaction(
         creator,
         input,
         groupSheet,
@@ -112,13 +112,13 @@ describe('ExpenseService', () => {
     it('sends a notification to the receiver when created by the sender', async () => {
       const {
         notificationDispatchService,
-        expenseService,
+        transactionService,
         groupSheet,
         user1: fromUser,
         user2: toUser,
       } = await useSetup();
 
-      const { id } = await expenseService.createSettlement(
+      const { id } = await transactionService.createSettlement(
         fromUser,
         {
           money: {
@@ -162,13 +162,13 @@ describe('ExpenseService', () => {
     it('sends a notification to the sender when created by the receiver', async () => {
       const {
         notificationDispatchService: webPushService,
-        expenseService,
+        transactionService,
         groupSheet,
         user1: fromUser,
         user2: toUser,
       } = await useSetup();
 
-      const { id } = await expenseService.createSettlement(
+      const { id } = await transactionService.createSettlement(
         toUser,
         {
           money: {
