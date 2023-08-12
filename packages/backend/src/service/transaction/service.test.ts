@@ -6,7 +6,7 @@ import {
   userFactory,
 } from '../../../test/factories';
 import { getPrisma } from '../../../test/getPrisma';
-import { createGroupSheetExpenseInput } from '../../../test/input';
+import { createGroupSheetTransactionInput } from '../../../test/input';
 import {
   FakeNotificationDispatchService,
   type FakeNotificationItem,
@@ -64,7 +64,7 @@ describe('TransactionService', () => {
         // user3 ignored, but important because it tests that the notification is not sent to them
       } = await useSetup();
 
-      const input = createGroupSheetExpenseInput(
+      const input = createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         currencyCode,
@@ -86,7 +86,7 @@ describe('TransactionService', () => {
             transaction: {
               id,
               category: 'other',
-              description: 'Test expense',
+              description: 'test group expense',
               money: {
                 currencyCode: groupSheet.currencyCode,
                 amount: 100_00,

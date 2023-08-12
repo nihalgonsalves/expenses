@@ -12,8 +12,8 @@ import {
 } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
 import {
-  createGroupSheetExpenseInput,
-  createPersonalSheetExpenseInput,
+  createGroupSheetTransactionInput,
+  createPersonalSheetTransactionInput,
 } from '../../../test/input';
 import { generateId } from '../../utils/nanoid';
 
@@ -29,7 +29,7 @@ describe('createPersonalSheetExpense', () => {
     });
 
     const response = await caller.expense.createPersonalSheetExpense(
-      createPersonalSheetExpenseInput(
+      createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
         'EXPENSE',
@@ -64,7 +64,7 @@ describe('createPersonalSheetExpense', () => {
     });
 
     const response = await caller.expense.createPersonalSheetExpense(
-      createPersonalSheetExpenseInput(
+      createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
         'INCOME',
@@ -99,7 +99,7 @@ describe('createPersonalSheetExpense', () => {
       currencyCode: 'EUR',
     });
 
-    const invalidInput = createPersonalSheetExpenseInput(
+    const invalidInput = createPersonalSheetTransactionInput(
       personalSheet.id,
       'GBP',
       'EXPENSE',
@@ -116,7 +116,7 @@ describe('createPersonalSheetExpense', () => {
 
     await expect(
       caller.expense.createPersonalSheetExpense(
-        createPersonalSheetExpenseInput(
+        createPersonalSheetTransactionInput(
           generateId(),
           currencyCodeFactory(),
           'EXPENSE',
@@ -133,7 +133,7 @@ describe('createPersonalSheetExpense', () => {
 
     await expect(
       caller.expense.createPersonalSheetExpense(
-        createPersonalSheetExpenseInput(
+        createPersonalSheetTransactionInput(
           groupSheet.id,
           groupSheet.currencyCode,
           'EXPENSE',
@@ -155,7 +155,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
     await caller.expense.batchCreatePersonalSheetExpenses({
       personalSheetId: personalSheet.id,
       transactions: [
-        createPersonalSheetExpenseInput(
+        createPersonalSheetTransactionInput(
           personalSheet.id,
           personalSheet.currencyCode,
           'EXPENSE',
@@ -185,7 +185,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
       currencyCode: 'EUR',
     });
 
-    const invalidInput = createPersonalSheetExpenseInput(
+    const invalidInput = createPersonalSheetTransactionInput(
       personalSheet.id,
       'GBP',
       'EXPENSE',
@@ -207,7 +207,7 @@ describe('batchCreatePersonalSheetExpenses', () => {
       withOwnerId: user.id,
     });
 
-    const invalidInput = createPersonalSheetExpenseInput(
+    const invalidInput = createPersonalSheetTransactionInput(
       personalSheet.id,
       personalSheet.currencyCode,
       'EXPENSE',
@@ -242,7 +242,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     });
 
     const response = await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+      createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
@@ -286,7 +286,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
     });
 
     const response = await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+      createGroupSheetTransactionInput(
         'INCOME',
         groupSheet.id,
         groupSheet.currencyCode,
@@ -328,7 +328,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
       currencyCode: 'EUR',
     });
 
-    const invalidInput = createGroupSheetExpenseInput(
+    const invalidInput = createGroupSheetTransactionInput(
       'EXPENSE',
       groupSheet.id,
       groupSheet.currencyCode,
@@ -353,7 +353,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
       currencyCode: 'EUR',
     });
 
-    const invalidInput = createGroupSheetExpenseInput(
+    const invalidInput = createGroupSheetTransactionInput(
       'EXPENSE',
       groupSheet.id,
       'GBP',
@@ -375,7 +375,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
       currencyCode: 'EUR',
     });
 
-    const input = createGroupSheetExpenseInput(
+    const input = createGroupSheetTransactionInput(
       'EXPENSE',
       groupSheet.id,
       groupSheet.currencyCode,
@@ -398,7 +398,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
       withOwnerId: user.id,
     });
 
-    const input = createGroupSheetExpenseInput(
+    const input = createGroupSheetTransactionInput(
       'EXPENSE',
       groupSheet.id,
       groupSheet.currencyCode,
@@ -424,7 +424,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
       withOwnerId: user.id,
     });
 
-    const input = createGroupSheetExpenseInput(
+    const input = createGroupSheetTransactionInput(
       'EXPENSE',
       groupSheet.id,
       groupSheet.currencyCode,
@@ -443,7 +443,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
 
     await expect(
       caller.expense.createGroupSheetExpenseOrIncome(
-        createGroupSheetExpenseInput(
+        createGroupSheetTransactionInput(
           'EXPENSE',
           generateId(),
           currencyCodeFactory(),
@@ -462,7 +462,7 @@ describe('createGroupSheetExpenseOrIncome', () => {
 
     await expect(
       caller.expense.createGroupSheetExpenseOrIncome(
-        createGroupSheetExpenseInput(
+        createGroupSheetTransactionInput(
           'EXPENSE',
           groupSheet.id,
           groupSheet.currencyCode,
@@ -633,7 +633,7 @@ describe('deleteExpense', () => {
       personalSheetFactory,
       async (caller: Caller, personalSheet: Sheet) =>
         caller.expense.createPersonalSheetExpense(
-          createPersonalSheetExpenseInput(
+          createPersonalSheetTransactionInput(
             personalSheet.id,
             personalSheet.currencyCode,
             'EXPENSE',
@@ -645,7 +645,7 @@ describe('deleteExpense', () => {
       groupSheetFactory,
       async (caller: Caller, groupSheet: Sheet, user: User) =>
         caller.expense.createGroupSheetExpenseOrIncome(
-          createGroupSheetExpenseInput(
+          createGroupSheetTransactionInput(
             'EXPENSE',
             groupSheet.id,
             groupSheet.currencyCode,
@@ -753,7 +753,7 @@ describe('getGroupSheetExpenses', () => {
     });
 
     const expense = await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+      createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
@@ -820,7 +820,7 @@ describe('getParticipantSummaries', () => {
     const otherId = member.id;
 
     await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+      createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,

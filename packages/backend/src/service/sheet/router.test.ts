@@ -8,7 +8,7 @@ import {
   userFactory,
 } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
-import { createGroupSheetExpenseInput } from '../../../test/input';
+import { createGroupSheetTransactionInput } from '../../../test/input';
 import { generateId } from '../../utils/nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
@@ -441,7 +441,7 @@ describe('deleteParticipant', () => {
 
     // Paid for self, so settled de-facto
     await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+      createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
@@ -496,7 +496,7 @@ describe('deleteParticipant', () => {
     });
 
     await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+      createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,

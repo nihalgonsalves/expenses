@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { personalSheetFactory, userFactory } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
-import { createPersonalSheetExpenseInput } from '../../../test/input';
+import { createPersonalSheetTransactionInput } from '../../../test/input';
 
 import { comparePassword, hashPassword } from './utils';
 
@@ -236,7 +236,7 @@ describe('anonymizeUser', () => {
     const caller = useProtectedCaller(user);
 
     const expense = await caller.expense.createPersonalSheetExpense(
-      createPersonalSheetExpenseInput(
+      createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
         'EXPENSE',

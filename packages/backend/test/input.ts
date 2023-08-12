@@ -5,7 +5,7 @@ import type {
   CreateGroupSheetTransactionInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
-export const createPersonalSheetExpenseInput = (
+export const createPersonalSheetTransactionInput = (
   personalSheetId: string,
   currencyCode: string,
   type: 'EXPENSE' | 'INCOME',
@@ -13,13 +13,13 @@ export const createPersonalSheetExpenseInput = (
 ): CreatePersonalSheetTransactionInput => ({
   personalSheetId,
   type,
-  description: 'Test expense',
+  description: `test personal ${type.toLowerCase()}`,
   category: 'other',
   money: { amount, scale: 2, currencyCode },
   spentAt: Temporal.Now.zonedDateTimeISO().toString(),
 });
 
-export const createGroupSheetExpenseInput = (
+export const createGroupSheetTransactionInput = (
   type: 'EXPENSE' | 'INCOME',
   groupSheetId: string,
   currencyCode: string,
@@ -31,7 +31,7 @@ export const createGroupSheetExpenseInput = (
 ): CreateGroupSheetTransactionInput => ({
   type,
   groupSheetId,
-  description: 'Test expense',
+  description: `test group ${type.toLowerCase()}`,
   category: 'other',
   money: { amount, scale: 2, currencyCode },
   paidOrReceivedById,
