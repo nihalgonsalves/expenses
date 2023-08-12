@@ -65,24 +65,17 @@ export const [useThemePreference, getThemePreference] =
     'system',
   );
 
-const checkTheme = (themes: readonly unknown[], theme: string) =>
-  themes.includes(theme);
-
 export const [useLightTheme, getLightTheme] = createPreferenceWithDefault(
   'light_theme',
   (v) =>
-    typeof v === 'string' && checkTheme(LIGHT_THEMES, v)
-      ? v
-      : LIGHT_THEME_DEFAULT,
+    typeof v === 'string' && LIGHT_THEMES.includes(v) ? v : LIGHT_THEME_DEFAULT,
   LIGHT_THEME_DEFAULT,
 );
 
 export const [useDarkTheme, getDarkTheme] = createPreferenceWithDefault(
   'light_theme',
   (v) =>
-    typeof v === 'string' && checkTheme(DARK_THEMES, v)
-      ? v
-      : DARK_THEME_DEFAULT,
+    typeof v === 'string' && DARK_THEMES.includes(v) ? v : DARK_THEME_DEFAULT,
   DARK_THEME_DEFAULT,
 );
 
