@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
-
 import {
   groupSheetFactory,
   notificationSubscriptionFactory,
@@ -9,8 +7,7 @@ import {
 } from '../../../test/factories';
 import { getPrisma } from '../../../test/getPrisma';
 import { createGroupSheetExpenseInput } from '../../../test/input';
-import { FakeWebPushService } from '../../../test/webPushUtils';
-import { NotificationService } from '../notification/service';
+import { FakeNotificationDispatchService } from '../../../test/webPushUtils';
 
 import { ExpenseService } from './service';
 
@@ -25,10 +22,10 @@ const subscribedUser = async () => {
 };
 
 const useSetup = async () => {
-  const webPushService = new FakeWebPushService<NotificationPayload>();
+  const notificationDispatchService = new FakeNotificationDispatchService();
   const expenseService = new ExpenseService(
     prisma,
-    new NotificationService(prisma, webPushService),
+    notificationDispatchService,
   );
 
   const [user1, user2, user3] = await Promise.all([
@@ -42,14 +39,21 @@ const useSetup = async () => {
     currencyCode,
   });
 
-  return { webPushService, expenseService, user1, user2, user3, groupSheet };
+  return {
+    notificationDispatchService,
+    expenseService,
+    user1,
+    user2,
+    user3,
+    groupSheet,
+  };
 };
 
 describe('ExpenseService', () => {
   describe('createGroupSheetExpense', () => {
     it('sends a notification to all expense participants except the creator', async () => {
       const {
-        webPushService,
+        notificationDispatchService: webPushService,
         expenseService,
         groupSheet,
         user1: creator,
@@ -73,7 +77,7 @@ describe('ExpenseService', () => {
 
       expect(webPushService.messages).toEqual([
         {
-          endpoint: `https://push.example.com/user/${otherParticipant.id}`,
+          userId: otherParticipant.id,
           payload: {
             type: 'EXPENSE',
             expense: {
@@ -104,7 +108,7 @@ describe('ExpenseService', () => {
   describe('createSettlement', () => {
     it('sends a notification to the receiver when created by the sender', async () => {
       const {
-        webPushService,
+        notificationDispatchService,
         expenseService,
         groupSheet,
         user1: fromUser,
@@ -125,9 +129,9 @@ describe('ExpenseService', () => {
         groupSheet,
       );
 
-      expect(webPushService.messages).toEqual([
+      expect(notificationDispatchService.messages).toEqual([
         {
-          endpoint: `https://push.example.com/user/${toUser.id}`,
+          userId: toUser.id,
           payload: {
             type: 'TRANSFER',
             expense: {
@@ -152,7 +156,7 @@ describe('ExpenseService', () => {
 
     it('sends a notification to the sender when created by the receiver', async () => {
       const {
-        webPushService,
+        notificationDispatchService: webPushService,
         expenseService,
         groupSheet,
         user1: fromUser,
@@ -175,7 +179,7 @@ describe('ExpenseService', () => {
 
       expect(webPushService.messages).toEqual([
         {
-          endpoint: `https://push.example.com/user/${fromUser.id}`,
+          userId: fromUser.id,
           payload: {
             type: 'TRANSFER',
             expense: {

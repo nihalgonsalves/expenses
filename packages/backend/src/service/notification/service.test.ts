@@ -1,3 +1,4 @@
+import { QueueEvents } from 'bullmq';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
@@ -5,17 +6,18 @@ import {
   userFactory,
 } from '../../../test/factories';
 import { getPrisma } from '../../../test/getPrisma';
-import {
-  createPushService,
-  getWebPushService,
-} from '../../../test/webPushUtils';
+import { getRedis } from '../../../test/getRedis';
+import { createPushService, getVapidDetails } from '../../../test/webPushUtils';
+import { NOTIFICATION_BULLMQ_QUEUE } from '../../config';
 
-import { NotificationService } from './service';
+import { NotificationDispatchService } from './service';
 
 const prisma = await getPrisma();
-const notificationService = new NotificationService(
+const redis = await getRedis();
+const notificationDispatchService = new NotificationDispatchService(
   prisma,
-  getWebPushService(),
+  redis,
+  getVapidDetails(),
 );
 
 beforeAll(() => {
@@ -29,12 +31,26 @@ afterAll(() => {
 });
 
 const sendTestNotification = async (userId: string) =>
-  notificationService.sendNotifications({
+  notificationDispatchService.sendNotifications({
     [userId]: {
       type: 'TEST',
       message: 'test',
     },
   });
+
+const waitForQueueSuccess = async (exec: () => Promise<void>) => {
+  const queueEvents = new QueueEvents(NOTIFICATION_BULLMQ_QUEUE, {
+    connection: redis,
+  });
+
+  await exec();
+
+  return new Promise<{
+    jobId: string;
+    returnvalue: unknown;
+    prev?: string;
+  }>((resolve) => queueEvents.on('completed', resolve));
+};
 
 describe('NotificationService', () => {
   describe('sendNotifications', () => {
@@ -66,11 +82,16 @@ describe('NotificationService', () => {
         user,
         address,
       );
-      const notificationSendResult = await sendTestNotification(user.id);
 
-      expect(notificationSendResult).toEqual([
-        { id, userId: user.id, success: true },
-      ]);
+      const { returnvalue } = await waitForQueueSuccess(async () => {
+        await sendTestNotification(user.id);
+      });
+
+      expect(returnvalue).toMatchObject({
+        id,
+        userId: user.id,
+        success: true,
+      });
     });
 
     it('unsubscribes on failure (e.g. 410 Gone)', async () => {
@@ -86,17 +107,18 @@ describe('NotificationService', () => {
         user,
         address,
       );
-      const notificationSendResult = await sendTestNotification(user.id);
 
-      expect(notificationSendResult).toEqual([
-        {
-          id,
-          userId: user.id,
-          success: false,
-          errorType: 'SERVER',
-          statusCode: 410,
-        },
-      ]);
+      const { returnvalue } = await waitForQueueSuccess(async () => {
+        await sendTestNotification(user.id);
+      });
+
+      expect(returnvalue).toEqual({
+        id,
+        userId: user.id,
+        success: false,
+        errorType: 'SERVER',
+        statusCode: 410,
+      });
 
       expect(
         await prisma.notificationSubscription.count({ where: { id } }),

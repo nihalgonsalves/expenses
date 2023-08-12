@@ -3,27 +3,39 @@ import type { ServerResponse, IncomingMessage } from 'http';
 import { createServer } from 'https';
 
 import { type CertificateCreationResult, createCertificate } from 'pem';
-import { type PushSubscription, generateVAPIDKeys } from 'web-push';
+import { generateVAPIDKeys } from 'web-push';
 
 import {
-  type IWebPushService,
-  WebPushService,
-} from '../src/service/notification/WebPushService';
+  ZNotificationPayload,
+  type NotificationPayload,
+} from '@nihalgonsalves/expenses-shared/types/notification';
 
-export const getWebPushService = () => {
+import type { INotificationDispatchService } from '../src/service/notification/service';
+
+export const getVapidDetails = () => {
   const { publicKey, privateKey } = generateVAPIDKeys();
 
-  return new WebPushService(publicKey, privateKey);
+  return {
+    publicKey,
+    privateKey,
+    subject: `mailto:nobody@example.com`,
+  };
 };
 
-export class FakeWebPushService<T extends Record<string, unknown>>
-  implements IWebPushService<T>
+export class FakeNotificationDispatchService
+  implements INotificationDispatchService
 {
-  public messages: { endpoint: string; payload: T }[] = [];
+  public messages: { userId: string; payload: NotificationPayload }[] = [];
 
-  async sendNotification(pushSubscription: PushSubscription, payload: T) {
-    this.messages.push({ endpoint: pushSubscription.endpoint, payload });
-    return Promise.resolve();
+  async sendNotifications(
+    messagesByUserId: Record<string, NotificationPayload>,
+  ) {
+    this.messages.push(
+      ...Object.entries(messagesByUserId).map(([userId, payload]) => ({
+        userId,
+        payload: ZNotificationPayload.parse(payload),
+      })),
+    );
   }
 }
 

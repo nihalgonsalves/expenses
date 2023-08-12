@@ -10,23 +10,31 @@ import type { ContextObj } from '../src/context';
 import { appRouter } from '../src/router';
 import { ExpenseService } from '../src/service/expense/service';
 import { FrankfurterService } from '../src/service/frankfurter/FrankfurterService';
-import { NotificationService } from '../src/service/notification/service';
+import { NotificationSubscriptionService } from '../src/service/notification/service';
 import { SheetService } from '../src/service/sheet/service';
 import { UserService } from '../src/service/user/service';
 
 import { getPrisma } from './getPrisma';
+import { FakeNotificationDispatchService } from './webPushUtils';
 
 export const getTRPCCaller = async () => {
   const prisma = await getPrisma();
 
   const useCaller = (
     user: User | undefined,
-    setJwtToken: (_token: JWTToken | null) => void,
+    setJwtToken: (_token: JWTToken | null) => Promise<void>,
   ) => {
+    const notificationDispatchService = new FakeNotificationDispatchService();
+
     const userService = new UserService(prisma);
     const sheetService = new SheetService(prisma);
-    const notificationService = new NotificationService(prisma);
-    const expenseService = new ExpenseService(prisma, notificationService);
+    const notificationSubscriptionService = new NotificationSubscriptionService(
+      prisma,
+    );
+    const expenseService = new ExpenseService(
+      prisma,
+      notificationDispatchService,
+    );
     const frankfurterService = new FrankfurterService(
       config.FRANKFURTER_BASE_URL,
     );
@@ -36,7 +44,7 @@ export const getTRPCCaller = async () => {
       userService,
       sheetService,
       expenseService,
-      notificationService,
+      notificationSubscriptionService,
       frankfurterService,
       user,
       get userAgent() {
@@ -52,11 +60,11 @@ export const getTRPCCaller = async () => {
 
   return {
     prisma,
-    usePublicCaller: (setJwtToken = (_token: JWTToken | null) => {}) =>
+    usePublicCaller: (setJwtToken = async (_token: JWTToken | null) => {}) =>
       useCaller(undefined, setJwtToken),
     useProtectedCaller: (
       user: User,
-      setJwtToken = (_token: JWTToken | null) => {},
+      setJwtToken = async (_token: JWTToken | null) => {},
     ) => useCaller(user, setJwtToken),
   };
 };

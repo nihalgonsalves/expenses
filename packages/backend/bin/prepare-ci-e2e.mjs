@@ -28,4 +28,5 @@ await Promise.all([
     'POSTGRES_PASSWORD=postgres',
     'utf8',
   ),
+  writeFile(new URL('../../../.env.htpasswd', import.meta.url), '', 'utf8'),
 ]);

@@ -15,7 +15,7 @@ export const userRouter = router({
     .output(ZUser)
     .mutation(async ({ input, ctx }) => {
       const { user, token } = await ctx.userService.createUser(input);
-      ctx.setJwtToken(token);
+      await ctx.setJwtToken(token);
       return user;
     }),
 
@@ -24,7 +24,7 @@ export const userRouter = router({
     .output(ZUser)
     .mutation(async ({ input, ctx }) => {
       const { user, token } = await ctx.userService.authorize(input);
-      ctx.setJwtToken(token);
+      await ctx.setJwtToken(token);
       return user;
     }),
 
@@ -40,12 +40,12 @@ export const userRouter = router({
     .output(z.string())
     .mutation(async ({ input, ctx }) => {
       const deletedId = await ctx.userService.anonymizeUser(ctx.user.id, input);
-      ctx.setJwtToken(null);
+      await ctx.setJwtToken(null);
       return deletedId;
     }),
 
-  signOut: publicProcedure.mutation(({ ctx }) => {
-    ctx.setJwtToken(null);
+  signOut: publicProcedure.mutation(async ({ ctx }) => {
+    await ctx.setJwtToken(null);
   }),
 
   me: protectedProcedure.output(ZUser).query(({ ctx }) => ctx.user),

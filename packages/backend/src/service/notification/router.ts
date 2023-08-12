@@ -20,7 +20,7 @@ export const notificationRouter = router({
     .mutation(async ({ ctx, input }) => {
       const description = `${ctx.userAgent.device.model} (${ctx.userAgent.browser.name})`;
 
-      return ctx.notificationService.upsertSubscription(
+      return ctx.notificationSubscriptionService.upsertSubscription(
         ctx.user,
         input,
         description,
@@ -31,12 +31,15 @@ export const notificationRouter = router({
     .input(z.string())
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
-      await ctx.notificationService.deleteSubscription(ctx.user, input);
+      await ctx.notificationSubscriptionService.deleteSubscription(
+        ctx.user,
+        input,
+      );
     }),
 
   getSubscriptions: protectedProcedure
     .output(ZNotificationSubscriptionsResponse)
     .query(async ({ ctx }) =>
-      ctx.notificationService.getSubscriptions(ctx.user),
+      ctx.notificationSubscriptionService.getSubscriptions(ctx.user),
     ),
 });

@@ -1,20 +1,28 @@
 version: '3.8'
 services:
   traefik:
+    depends_on:
+      - backend
+      - frontend
     restart: unless-stopped
     image: 'traefik:v2.10'
     command:
-      - '--providers.docker=true'
-      - '--providers.docker.exposedbydefault=false'
-      - '--entrypoints.web.address=:8080'
+      - --log.level=DEBUG
+      - --accesslog=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:8080
     ports:
       - '8080:8080'
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - '.env.htpasswd:/etc/traefik/.htpasswd'
+
   backend:
     restart: unless-stopped
     depends_on:
       - postgres
+      - redis
     build:
       context: .
       dockerfile: ./infra/Dockerfile-backend
@@ -25,14 +33,24 @@ services:
     environment:
       PORT: 5174
       FRANKFURTER_BASE_URL: https://api.frankfurter.app/
+      REDIS_URL: redis://redis:6379/
     expose:
       - 5174
+    ports:
+      - 5174:5174
     labels:
       traefik.enable: true
-      traefik.http.routers.backend.rule: PathPrefix(`/api`)
+
+      traefik.http.routers.backend.rule: Host(`localhost`) && PathPrefix(`/api`)
       traefik.http.routers.backend.entrypoints: web
       traefik.http.routers.backend.middlewares: backend-stripprefix
       traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes: /api
+
+      traefik.http.routers.admin.rule: Host(`localhost`) && PathPrefix(`/admin`)
+      traefik.http.routers.admin.entrypoints: web
+      traefik.http.routers.admin.middlewares: admin-auth
+      traefik.http.middlewares.admin-auth.basicauth.usersfile: /etc/traefik/.htpasswd
+
   frontend:
     restart: unless-stopped
     build:
@@ -42,6 +60,7 @@ services:
       traefik.enable: true
       traefik.http.routers.frontend.rule: Host(`localhost`)
       traefik.http.routers.frontend.entrypoints: web
+
   postgres:
     restart: unless-stopped
     image: postgres:15.3-alpine
@@ -55,6 +74,13 @@ services:
       - .env.postgres
     volumes:
       - postgres:/var/lib/postgresql/data
-
+  redis:
+    restart: unless-stopped
+    image: redis:7-alpine
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
 volumes:
   postgres:

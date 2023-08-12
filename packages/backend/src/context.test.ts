@@ -6,13 +6,12 @@ import { UserServiceError } from './service/user/utils';
 
 describe('getMaybeUser', () => {
   it('exchanges a cookie header token for a user', async () => {
-    const setJwtToken = vi.fn<[string | null], undefined>();
+    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     const result = await getMaybeUser(
       cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
       setJwtToken,
       {
-        // eslint-disable-next-line @typescript-eslint/require-await
         exchangeToken: async (token) => ({
           user: {
             id: 'id',
@@ -32,7 +31,7 @@ describe('getMaybeUser', () => {
   });
 
   it('clears token on auth error', async () => {
-    const setJwtToken = vi.fn<[string | null], undefined>();
+    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     await expect(
       getMaybeUser(
@@ -53,7 +52,7 @@ describe('getMaybeUser', () => {
   });
 
   it('rethrows without clearing token on generic error', async () => {
-    const setJwtToken = vi.fn<[string | null], undefined>();
+    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     await expect(
       getMaybeUser(
@@ -69,7 +68,7 @@ describe('getMaybeUser', () => {
   });
 
   it('sets a reissued token', async () => {
-    const setJwtToken = vi.fn<[string | null], undefined>();
+    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     await getMaybeUser(
       cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
@@ -77,7 +76,7 @@ describe('getMaybeUser', () => {
       {
         exchangeToken: async (token) =>
           // @ts-expect-error mock
-          Promise.resolve({
+          ({
             user: {
               id: 'id',
               name: `name (${token})`,
