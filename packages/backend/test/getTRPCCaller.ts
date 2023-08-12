@@ -8,10 +8,10 @@ import type {
 import { config } from '../src/config';
 import type { ContextObj } from '../src/context';
 import { appRouter } from '../src/router';
-import { ExpenseService } from '../src/service/expense/service';
 import { FrankfurterService } from '../src/service/frankfurter/FrankfurterService';
 import { NotificationSubscriptionService } from '../src/service/notification/service';
 import { SheetService } from '../src/service/sheet/service';
+import { TransactionService } from '../src/service/transaction/service';
 import { UserService } from '../src/service/user/service';
 
 import { getPrisma } from './getPrisma';
@@ -30,11 +30,11 @@ export const getTRPCCaller = async () => {
     const notificationSubscriptionService = new NotificationSubscriptionService(
       prisma,
     );
-    const expenseService = new ExpenseService(
+    const transactionService = new TransactionService(
       prisma,
       notificationDispatchService,
     );
-    const sheetService = new SheetService(prisma, expenseService);
+    const sheetService = new SheetService(prisma, transactionService);
     const frankfurterService = new FrankfurterService(
       config.FRANKFURTER_BASE_URL,
     );
@@ -43,7 +43,7 @@ export const getTRPCCaller = async () => {
       prisma,
       userService,
       sheetService,
-      expenseService,
+      transactionService,
       notificationSubscriptionService,
       frankfurterService,
       user,

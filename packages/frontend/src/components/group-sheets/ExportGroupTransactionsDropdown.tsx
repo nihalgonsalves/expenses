@@ -3,14 +3,14 @@ import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 import { trpc } from '../../api/trpc';
 import { moneyToString } from '../../utils/money';
 import { getShortName } from '../../utils/utils';
-import { ExportExpensesDropdown } from '../ExportExpensesDropdown';
+import { ExportTransactionsDropdown } from '../ExportTransactionsDropdown';
 
-export const ExportGroupExpensesDropdown = ({
+export const ExportGroupTransactionsDropdown = ({
   groupSheet,
 }: {
   groupSheet: Pick<Sheet, 'id' | 'name'>;
 }) => {
-  const { refetch } = trpc.expense.getGroupSheetExpenses.useQuery(
+  const { refetch } = trpc.transaction.getGroupSheetTransactions.useQuery(
     {
       groupSheetId: groupSheet.id,
     },
@@ -18,7 +18,7 @@ export const ExportGroupExpensesDropdown = ({
   );
 
   return (
-    <ExportExpensesDropdown
+    <ExportTransactionsDropdown
       id={groupSheet.id}
       name={groupSheet.name}
       fetch={async () => {
@@ -27,7 +27,7 @@ export const ExportGroupExpensesDropdown = ({
         // should not be possible with throwOnError: true
         if (!data) throw new Error('Unknown Error');
 
-        return data.expenses;
+        return data.transactions;
       }}
       mapItem={({
         id,

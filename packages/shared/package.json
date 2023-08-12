@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "exports": {
     "./money": "./src/money.ts",
-    "./types/expense": "./src/types/expense.ts",
+    "./types/transaction": "./src/types/transaction.ts",
     "./types/notification": "./src/types/notification.ts",
     "./types/sheet": "./src/types/sheet.ts",
     "./types/user": "./src/types/user.ts"

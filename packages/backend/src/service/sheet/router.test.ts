@@ -8,7 +8,7 @@ import {
   userFactory,
 } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
-import { createGroupSheetExpenseInput } from '../../../test/input';
+import { createGroupSheetTransactionInput } from '../../../test/input';
 import { generateId } from '../../utils/nanoid';
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
@@ -255,7 +255,7 @@ describe('deleteSheet', () => {
       );
     });
 
-    it.todo(`deletes a ${sheetType} with expenses`);
+    it.todo(`deletes a ${sheetType} with transactions`);
 
     it('returns a 404 if the participant has no access', async () => {
       const user = await userFactory(prisma);
@@ -440,8 +440,8 @@ describe('deleteParticipant', () => {
     });
 
     // Paid for self, so settled de-facto
-    await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+    await caller.transaction.createGroupSheetTransaction(
+      createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,
@@ -495,8 +495,8 @@ describe('deleteParticipant', () => {
       withParticipantIds: [member.id],
     });
 
-    await caller.expense.createGroupSheetExpenseOrIncome(
-      createGroupSheetExpenseInput(
+    await caller.transaction.createGroupSheetTransaction(
+      createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         groupSheet.currencyCode,

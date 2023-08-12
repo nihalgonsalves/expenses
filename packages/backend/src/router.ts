@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-import { expenseRouter } from './service/expense/router';
 import { currencyConversionRouter } from './service/frankfurter/currencyConversionRouter';
 import { notificationRouter } from './service/notification/router';
 import { sheetRouter } from './service/sheet/router';
+import { transactionRouter } from './service/transaction/router';
 import { userRouter } from './service/user/router';
 import { publicProcedure, router } from './trpc';
 import { getErrorMessage } from './utils/trpcUtils';
@@ -27,7 +27,7 @@ export const appRouter = router({
   health,
   user: userRouter,
   sheet: sheetRouter,
-  expense: expenseRouter,
+  transaction: transactionRouter,
   currencyConversion: currencyConversionRouter,
   notification: notificationRouter,
 });

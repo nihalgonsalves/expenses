@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { ZMoney } from './expense';
+import { ZMoney } from './transaction';
 
-const ZNotificationExpense = z.object({
+const ZNotificationTransaction = z.object({
   id: z.string().nonempty(),
   category: z.string().nonempty(),
   description: z.string(),
@@ -15,7 +15,7 @@ const ZExpenseNotificationPayload = z.object({
     id: z.string().nonempty(),
     name: z.string().nonempty(),
   }),
-  expense: ZNotificationExpense.extend({
+  transaction: ZNotificationTransaction.extend({
     yourShare: ZMoney,
   }),
 });
@@ -26,7 +26,7 @@ const ZIncomeNotificationPayload = z.object({
     id: z.string().nonempty(),
     name: z.string().nonempty(),
   }),
-  expense: ZNotificationExpense.extend({
+  transaction: ZNotificationTransaction.extend({
     yourShare: ZMoney,
   }),
 });
@@ -37,7 +37,7 @@ const ZTransferNotificationPayload = z.object({
     id: z.string().nonempty(),
     name: z.string().nonempty(),
   }),
-  expense: ZNotificationExpense.extend({
+  transaction: ZNotificationTransaction.extend({
     type: z.union([z.literal('sent'), z.literal('received')]),
   }),
 });

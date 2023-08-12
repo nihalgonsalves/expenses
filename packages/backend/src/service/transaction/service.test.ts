@@ -6,10 +6,13 @@ import {
   userFactory,
 } from '../../../test/factories';
 import { getPrisma } from '../../../test/getPrisma';
-import { createGroupSheetExpenseInput } from '../../../test/input';
-import { FakeNotificationDispatchService } from '../../../test/webPushUtils';
+import { createGroupSheetTransactionInput } from '../../../test/input';
+import {
+  FakeNotificationDispatchService,
+  type FakeNotificationItem,
+} from '../../../test/webPushUtils';
 
-import { ExpenseService } from './service';
+import { TransactionService } from './service';
 
 const prisma = await getPrisma();
 
@@ -23,7 +26,7 @@ const subscribedUser = async () => {
 
 const useSetup = async () => {
   const notificationDispatchService = new FakeNotificationDispatchService();
-  const expenseService = new ExpenseService(
+  const transactionService = new TransactionService(
     prisma,
     notificationDispatchService,
   );
@@ -41,7 +44,7 @@ const useSetup = async () => {
 
   return {
     notificationDispatchService,
-    expenseService,
+    transactionService,
     user1,
     user2,
     user3,
@@ -49,19 +52,19 @@ const useSetup = async () => {
   };
 };
 
-describe('ExpenseService', () => {
+describe('TransactionService', () => {
   describe('createGroupSheetExpense', () => {
-    it('sends a notification to all expense participants except the creator', async () => {
+    it('sends a notification to all transaction participants except the creator', async () => {
       const {
         notificationDispatchService: webPushService,
-        expenseService,
+        transactionService,
         groupSheet,
         user1: creator,
         user2: otherParticipant,
         // user3 ignored, but important because it tests that the notification is not sent to them
       } = await useSetup();
 
-      const input = createGroupSheetExpenseInput(
+      const input = createGroupSheetTransactionInput(
         'EXPENSE',
         groupSheet.id,
         currencyCode,
@@ -69,21 +72,21 @@ describe('ExpenseService', () => {
         otherParticipant.id,
       );
 
-      const { id } = await expenseService.createGroupSheetExpenseOrIncome(
+      const { id } = await transactionService.createGroupSheetTransaction(
         creator,
         input,
         groupSheet,
       );
 
-      expect(webPushService.messages).toEqual([
+      expect(webPushService.messages).toEqual<FakeNotificationItem[]>([
         {
           userId: otherParticipant.id,
           payload: {
             type: 'EXPENSE',
-            expense: {
+            transaction: {
               id,
               category: 'other',
-              description: 'Test expense',
+              description: 'test group expense',
               money: {
                 currencyCode: groupSheet.currencyCode,
                 amount: 100_00,
@@ -109,13 +112,13 @@ describe('ExpenseService', () => {
     it('sends a notification to the receiver when created by the sender', async () => {
       const {
         notificationDispatchService,
-        expenseService,
+        transactionService,
         groupSheet,
         user1: fromUser,
         user2: toUser,
       } = await useSetup();
 
-      const { id } = await expenseService.createSettlement(
+      const { id } = await transactionService.createSettlement(
         fromUser,
         {
           money: {
@@ -129,12 +132,14 @@ describe('ExpenseService', () => {
         groupSheet,
       );
 
-      expect(notificationDispatchService.messages).toEqual([
+      expect(notificationDispatchService.messages).toEqual<
+        FakeNotificationItem[]
+      >([
         {
           userId: toUser.id,
           payload: {
             type: 'TRANSFER',
-            expense: {
+            transaction: {
               id: id,
               type: 'received',
               category: 'transfer',
@@ -157,13 +162,13 @@ describe('ExpenseService', () => {
     it('sends a notification to the sender when created by the receiver', async () => {
       const {
         notificationDispatchService: webPushService,
-        expenseService,
+        transactionService,
         groupSheet,
         user1: fromUser,
         user2: toUser,
       } = await useSetup();
 
-      const { id } = await expenseService.createSettlement(
+      const { id } = await transactionService.createSettlement(
         toUser,
         {
           money: {
@@ -177,12 +182,12 @@ describe('ExpenseService', () => {
         groupSheet,
       );
 
-      expect(webPushService.messages).toEqual([
+      expect(webPushService.messages).toEqual<FakeNotificationItem[]>([
         {
           userId: fromUser.id,
           payload: {
             type: 'TRANSFER',
-            expense: {
+            transaction: {
               id: id,
               type: 'sent',
               category: 'transfer',

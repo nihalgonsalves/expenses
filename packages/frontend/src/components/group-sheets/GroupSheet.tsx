@@ -7,7 +7,7 @@ import { trpc } from '../../api/trpc';
 
 import { AddMemberButton } from './AddMemberButton';
 import { type ActorInfo, BalanceSummary } from './BalanceSummary';
-import { GroupSheetExpensesDenseList } from './GroupSheetExpensesDenseList';
+import { GroupSheetTransactionsDenseList } from './GroupSheetTransactionsDenseList';
 
 export const GroupSheet = ({
   groupSheet,
@@ -16,8 +16,8 @@ export const GroupSheet = ({
   groupSheet: GroupSheetByIdResponse;
   actorInfo: ActorInfo | undefined;
 }) => {
-  const { data: groupSheetExpensesResponse } =
-    trpc.expense.getGroupSheetExpenses.useQuery({
+  const { data: groupSheetTransactionsResponse } =
+    trpc.transaction.getGroupSheetTransactions.useQuery({
       groupSheetId: groupSheet.id,
     });
 
@@ -42,23 +42,27 @@ export const GroupSheet = ({
 
       <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
         <div className="card-body">
-          <h2 className="card-title">Latest Expenses</h2>
+          <h2 className="card-title">Latest Transactions</h2>
 
-          {groupSheetExpensesResponse &&
-          groupSheetExpensesResponse.expenses.length > 0 ? (
+          {groupSheetTransactionsResponse &&
+          groupSheetTransactionsResponse.transactions.length > 0 ? (
             <>
-              <GroupSheetExpensesDenseList
-                expenses={groupSheetExpensesResponse.expenses.slice(0, 4)}
+              <GroupSheetTransactionsDenseList
+                transactions={groupSheetTransactionsResponse.transactions.slice(
+                  0,
+                  4,
+                )}
               />
               <Link
                 to={`/groups/${groupSheet.id}/expenses`}
                 className="btn btn-primary btn-outline"
               >
-                <MdListAlt /> All Expenses ({groupSheetExpensesResponse.total})
+                <MdListAlt /> All Transactions (
+                {groupSheetTransactionsResponse.total})
               </Link>
             </>
           ) : (
-            <div className="alert">No expenses yet</div>
+            <div className="alert">No transactions yet</div>
           )}
         </div>
       </div>

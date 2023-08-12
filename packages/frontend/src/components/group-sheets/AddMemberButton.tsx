@@ -35,7 +35,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
 
     await Promise.all([
       utils.sheet.groupSheetById.invalidate(groupSheetId),
-      utils.expense.getParticipantSummaries.invalidate(groupSheetId),
+      utils.transaction.getParticipantSummaries.invalidate(groupSheetId),
     ]);
 
     handleClose();

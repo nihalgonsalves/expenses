@@ -19,7 +19,7 @@ import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { generateId } from '../../utils/nanoid';
 import { getTRPCError } from '../../utils/trpcUtils';
-import type { ExpenseService } from '../expense/service';
+import type { TransactionService } from '../transaction/service';
 
 class SheetServiceError extends TRPCError {}
 
@@ -49,7 +49,7 @@ const participantConnectOrCreate = (email: string) => ({
 export class SheetService {
   constructor(
     private prismaClient: Pick<PrismaClient, 'sheet' | 'sheetMemberships'>,
-    private expenseService: ExpenseService,
+    private transactionService: TransactionService,
   ) {}
 
   async createPersonalSheet(input: CreatePersonalSheetInput, owner: User) {
@@ -195,7 +195,7 @@ export class SheetService {
   }
 
   async deleteGroupSheetMember(groupSheet: Sheet, participantId: string) {
-    const balance = await this.expenseService.getParticipantBalance(
+    const balance = await this.transactionService.getParticipantBalance(
       groupSheet,
       participantId,
     );

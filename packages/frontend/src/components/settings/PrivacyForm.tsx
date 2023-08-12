@@ -45,7 +45,7 @@ export const PrivacyForm = () => {
         <h2 className="card-title">Privacy and Data</h2>
         <p>
           Enter your current email and password to delete all personal sheets
-          and expenses, as well as anonymize your name and email address.
+          and transactions, as well as anonymize your name and email address.
         </p>
         <p>
           If you would like to delete or leave any groups, please do this{' '}

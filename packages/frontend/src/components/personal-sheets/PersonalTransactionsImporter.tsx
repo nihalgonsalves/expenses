@@ -5,8 +5,8 @@ import { MdWarning } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
-import type { CreateSheetExpenseInput } from '@nihalgonsalves/expenses-shared/types/expense';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { CreateSheetTransactionInput } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { CategoryId } from '../../data/categories';
@@ -247,7 +247,7 @@ const DataPreview = ({
   );
 };
 
-export const PersonalExpenseImportStepper = ({
+export const PersonalTransactionsImporter = ({
   personalSheet,
 }: {
   personalSheet: Sheet;
@@ -255,8 +255,8 @@ export const PersonalExpenseImportStepper = ({
   const navigate = useNavigate();
 
   const utils = trpc.useContext();
-  const { mutateAsync: batchCreatePersonalSheetExpenses } =
-    trpc.expense.batchCreatePersonalSheetExpenses.useMutation();
+  const { mutateAsync: batchCreatePersonalSheetTransactions } =
+    trpc.transaction.batchCreatePersonalSheetTransactions.useMutation();
 
   const [headers, setHeaders] = useState<string[]>();
   const [data, setData] = useState<Record<string, string>[]>();
@@ -284,7 +284,7 @@ export const PersonalExpenseImportStepper = ({
   const validRows = useMemo(
     () =>
       data && amountField
-        ? data.flatMap((row): CreateSheetExpenseInput | [] => {
+        ? data.flatMap((row): CreateSheetTransactionInput | [] => {
             try {
               const amountValue = row[amountField];
               const dateValue = dateField ? row[dateField] : undefined;
@@ -336,12 +336,12 @@ export const PersonalExpenseImportStepper = ({
       return;
     }
 
-    await batchCreatePersonalSheetExpenses({
+    await batchCreatePersonalSheetTransactions({
       personalSheetId: personalSheet.id,
-      expenses: validRows,
+      transactions: validRows,
     });
 
-    await utils.expense.getPersonalSheetExpenses.invalidate({
+    await utils.transaction.getPersonalSheetTransactions.invalidate({
       personalSheetId: personalSheet.id,
     });
 
@@ -411,7 +411,7 @@ export const PersonalExpenseImportStepper = ({
         <div className="flex flex-col gap-4">
           <h2 className="semibold text-xl">Upload File</h2>
           {csvError && <div className="alert alert-warning">{csvError}</div>}
-          Select a CSV file to import expenses from
+          Select a CSV file to import transactions from
           <label className="btn btn-primary">
             Choose file
             <input type="file" onChange={handleFileChange} hidden />
@@ -421,7 +421,7 @@ export const PersonalExpenseImportStepper = ({
       {activeStep === ImportStep.CHOOSE_COLUMNS && (
         <div className="flex flex-col gap-4">
           <h2 className="semibold text-xl">Choose Columns</h2>
-          Map columns to expense fields
+          Map columns to transaction fields
           <div
             style={{
               display: 'grid',

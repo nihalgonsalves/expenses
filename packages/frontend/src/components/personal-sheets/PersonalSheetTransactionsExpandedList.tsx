@@ -1,53 +1,53 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef, useState } from 'react';
 
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
+import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
-import { ExpenseActions } from '.././ExpenseActions';
 import { trpc } from '../../api/trpc';
 import { collapse, scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
 import {
   formatDateTimeRelative,
-  getExpenseDescription,
+  getTransactionDescription,
   groupBySpentAt,
   shortDateFormatter,
 } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
+import { TransactionActions } from '../TransactionActions';
 
-const ExpandedExpenseListItem = forwardRef<
+const ExpandedTransactionListItem = forwardRef<
   HTMLDivElement,
   {
-    expense: ExpenseListItem;
+    transaction: TransactionListItem;
     personalSheetId: string;
   }
->(({ expense, personalSheetId }, ref) => {
+>(({ transaction, personalSheetId }, ref) => {
   const utils = trpc.useContext();
 
   const [expanded, setExpanded] = useState(false);
 
-  const descriptionText = getExpenseDescription(expense);
+  const descriptionText = getTransactionDescription(transaction);
 
   const title = (
     <>
-      <strong>{descriptionText}</strong> {formatCurrency(expense.money)}
+      <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
     </>
   );
 
   return (
     <motion.div
       ref={ref}
-      key={expense.id}
+      key={transaction.id}
       {...scaleOut}
       className="card card-bordered"
     >
       <div tabIndex={0} className="card-body p-4">
         <div className="flex gap-4">
-          <CategoryAvatar category={expense.category} />
+          <CategoryAvatar category={transaction.category} />
           <div className="flex-grow">
             <h2>{title}</h2>
-            {formatDateTimeRelative(expense.spentAt)}
+            {formatDateTimeRelative(transaction.spentAt)}
           </div>
           <ExpandMoreButton
             expand={expanded}
@@ -62,13 +62,15 @@ const ExpandedExpenseListItem = forwardRef<
             <motion.div className="flex flex-col gap-4 p-0" {...collapse}>
               <div className="divider mb-0" />
 
-              <ExpenseActions
+              <TransactionActions
                 sheetId={personalSheetId}
-                expense={expense}
+                transaction={transaction}
                 onDelete={async () => {
-                  await utils.expense.getPersonalSheetExpenses.invalidate({
-                    personalSheetId,
-                  });
+                  await utils.transaction.getPersonalSheetTransactions.invalidate(
+                    {
+                      personalSheetId,
+                    },
+                  );
                 }}
               />
             </motion.div>
@@ -78,20 +80,22 @@ const ExpandedExpenseListItem = forwardRef<
     </motion.div>
   );
 });
-ExpandedExpenseListItem.displayName = 'ExpandedExpenseListItem';
+ExpandedTransactionListItem.displayName = 'ExpandedTransactionListItem';
 
-export const PersonalSheetExpensesExpandedList = ({
+export const PersonalSheetTransactionsExpandedList = ({
   personalSheetId,
-  expenses,
+  transactions,
 }: {
   personalSheetId: string;
-  expenses: ExpenseListItem[];
+  transactions: TransactionListItem[];
 }) => {
-  const groupedByDate = groupBySpentAt(expenses, ({ spentAt }) => spentAt);
+  const groupedByDate = groupBySpentAt(transactions, ({ spentAt }) => spentAt);
 
   return (
     <div className="flex flex-col gap-4">
-      {expenses.length === 0 && <div className="alert">No expenses</div>}
+      {transactions.length === 0 && (
+        <div className="alert">No transactions</div>
+      )}
       <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => [
           <motion.div key={date} className="divider" {...scaleOut}>
@@ -99,10 +103,10 @@ export const PersonalSheetExpensesExpandedList = ({
           </motion.div>,
           groupedByDate
             .get(date)
-            ?.map((expense) => (
-              <ExpandedExpenseListItem
-                key={expense.id}
-                expense={expense}
+            ?.map((transaction) => (
+              <ExpandedTransactionListItem
+                key={transaction.id}
+                transaction={transaction}
                 personalSheetId={personalSheetId}
               />
             )),

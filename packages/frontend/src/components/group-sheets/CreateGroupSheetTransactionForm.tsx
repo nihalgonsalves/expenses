@@ -24,6 +24,7 @@ import {
   zeroMoney,
 } from '@nihalgonsalves/expenses-shared/money';
 import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { TransactionType } from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
@@ -53,13 +54,13 @@ import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
-type SplitGroupExpenseSplit = {
+type GroupTransactionShare = {
   participantId: string;
   participantName: string;
   share: Money;
 };
 
-enum SplitGroupExpenseSplitType {
+enum GroupTransactionSplitType {
   Evenly = 'evenly',
   Selected = 'selected',
   Shares = 'shares',
@@ -72,7 +73,7 @@ const calcSplits = (
   currencyCode: string,
   money: Dinero<number>,
   ratios: Record<string, number>,
-): SplitGroupExpenseSplit[] => {
+): GroupTransactionShare[] => {
   const indexedRatios = groupSheet.participants.map(
     ({ id }) => ratios[id] ?? 0,
   );
@@ -113,35 +114,35 @@ type SplitConfig = (
     | { expectedSum: undefined }
   );
 
-const SPLIT_OPTIONS: { value: SplitGroupExpenseSplitType; label: string }[] = [
-  { value: SplitGroupExpenseSplitType.Evenly, label: 'Evenly' },
+const SPLIT_OPTIONS: { value: GroupTransactionSplitType; label: string }[] = [
+  { value: GroupTransactionSplitType.Evenly, label: 'Evenly' },
 
-  { value: SplitGroupExpenseSplitType.Selected, label: 'Select participants' },
+  { value: GroupTransactionSplitType.Selected, label: 'Select participants' },
 
-  { value: SplitGroupExpenseSplitType.Shares, label: 'Shares' },
+  { value: GroupTransactionSplitType.Shares, label: 'Shares' },
 
-  { value: SplitGroupExpenseSplitType.Percentage, label: 'Percentage' },
+  { value: GroupTransactionSplitType.Percentage, label: 'Percentage' },
 
-  { value: SplitGroupExpenseSplitType.Amounts, label: 'Enter amounts' },
+  { value: GroupTransactionSplitType.Amounts, label: 'Enter amounts' },
 ];
 
-const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
-  [SplitGroupExpenseSplitType.Evenly]: {
+const SPLIT_CONFIG: Record<GroupTransactionSplitType, SplitConfig> = {
+  [GroupTransactionSplitType.Evenly]: {
     expectedSum: undefined,
     hasInput: false,
   },
-  [SplitGroupExpenseSplitType.Selected]: {
+  [GroupTransactionSplitType.Selected]: {
     expectedSum: undefined,
     hasInput: false,
   },
-  [SplitGroupExpenseSplitType.Shares]: {
+  [GroupTransactionSplitType.Shares]: {
     expectedSum: undefined,
     hasInput: true,
     inputMode: 'numeric',
     unit: ['share', 'shares'],
     ariaInputLabel: 'Ratio',
   },
-  [SplitGroupExpenseSplitType.Percentage]: {
+  [GroupTransactionSplitType.Percentage]: {
     expectedSum: () => 100,
     formatErrorTooHigh: (diff: number) =>
       `The percentages must add up to 100%. You need to add ${diff} percent.`,
@@ -152,7 +153,7 @@ const SPLIT_CONFIG: Record<SplitGroupExpenseSplitType, SplitConfig> = {
     unit: ['%', '%'],
     ariaInputLabel: 'Percentage',
   },
-  [SplitGroupExpenseSplitType.Amounts]: {
+  [GroupTransactionSplitType.Amounts]: {
     expectedSum: (amount) => amount,
     formatErrorTooHigh: (diff: number, currencyCode: string) =>
       `The amounts must add up to the total. You need to account for ${formatDecimalCurrency(
@@ -172,7 +173,7 @@ const sumValues = (obj: Record<string, number>) =>
   Object.values(obj).reduce((sum, ratio) => sum + ratio, 0);
 
 const validateSplit = (
-  splitType: SplitGroupExpenseSplitType,
+  splitType: GroupTransactionSplitType,
   ratios: Record<string, number>,
   amount: number,
 ) => {
@@ -230,9 +231,9 @@ const SplitsFormSection = ({
   groupSheet: GroupSheetByIdResponse;
   amount: number;
   currencyCode: string;
-  splits: SplitGroupExpenseSplit[];
-  splitType: SplitGroupExpenseSplitType;
-  setSplitType: (val: SplitGroupExpenseSplitType) => void;
+  splits: GroupTransactionShare[];
+  splitType: GroupTransactionSplitType;
+  setSplitType: (val: GroupTransactionSplitType) => void;
   ratios: Record<string, number>;
   setRatios: Dispatch<SetStateAction<Record<string, number>>>;
   rate: { amount: number; scale: number } | undefined;
@@ -265,17 +266,17 @@ const SplitsFormSection = ({
   );
 
   const handleChangeSplitType = useCallback(
-    (value: SplitGroupExpenseSplitType) => {
-      const newType = z.nativeEnum(SplitGroupExpenseSplitType).parse(value);
+    (value: GroupTransactionSplitType) => {
+      const newType = z.nativeEnum(GroupTransactionSplitType).parse(value);
 
       switch (newType) {
-        case SplitGroupExpenseSplitType.Evenly:
-        case SplitGroupExpenseSplitType.Shares:
-        case SplitGroupExpenseSplitType.Selected:
+        case GroupTransactionSplitType.Evenly:
+        case GroupTransactionSplitType.Shares:
+        case GroupTransactionSplitType.Selected:
           setRatios(getDefaultRatios(groupSheet));
           break;
 
-        case SplitGroupExpenseSplitType.Percentage:
+        case GroupTransactionSplitType.Percentage:
           setRatios(
             100 % groupSheet.participants.length === 0
               ? Object.fromEntries(
@@ -288,7 +289,7 @@ const SplitsFormSection = ({
           );
           break;
 
-        case SplitGroupExpenseSplitType.Amounts:
+        case GroupTransactionSplitType.Amounts:
           setRatios(
             Object.fromEntries(
               (splitValid
@@ -325,7 +326,7 @@ const SplitsFormSection = ({
 
   return (
     <>
-      <ToggleButtonGroup<SplitGroupExpenseSplitType>
+      <ToggleButtonGroup<GroupTransactionSplitType>
         className="join-vertical w-full md:join-horizontal"
         value={splitType}
         setValue={handleChangeSplitType}
@@ -384,7 +385,7 @@ const SplitsFormSection = ({
                   </div>
                 </div>
               )}
-              {splitType === SplitGroupExpenseSplitType.Amounts && (
+              {splitType === GroupTransactionSplitType.Amounts && (
                 <MoneyField
                   inputClassName="w-full"
                   currencyCode={currencyCode}
@@ -396,7 +397,7 @@ const SplitsFormSection = ({
                   aria-label={`Amount for ${participantName}`}
                 />
               )}
-              {splitType === SplitGroupExpenseSplitType.Selected && (
+              {splitType === GroupTransactionSplitType.Selected && (
                 <input
                   type="checkbox"
                   className="checkbox"
@@ -442,18 +443,18 @@ const ParticipantSelect = ({
   );
 };
 
-export const ExpenseAndIncomeForm = ({
+export const TransactionForm = ({
   groupSheet,
   me,
   type,
 }: {
   groupSheet: GroupSheetByIdResponse;
   me: User;
-  type: 'EXPENSE' | 'INCOME';
+  type: Exclude<TransactionType, 'TRANSFER'>;
 }) => {
   const utils = trpc.useContext();
-  const { mutateAsync: createGroupSheetExpenseOrIncome, isLoading } =
-    trpc.expense.createGroupSheetExpenseOrIncome.useMutation();
+  const { mutateAsync: createGroupSheetTransaction, isLoading } =
+    trpc.transaction.createGroupSheetTransaction.useMutation();
 
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
@@ -467,8 +468,8 @@ export const ExpenseAndIncomeForm = ({
 
   const [dineroValue, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
-  const [splitType, setSplitType] = useState<SplitGroupExpenseSplitType>(
-    SplitGroupExpenseSplitType.Evenly,
+  const [splitType, setSplitType] = useState<GroupTransactionSplitType>(
+    GroupTransactionSplitType.Evenly,
   );
   const [ratios, setRatios] = useState(getDefaultRatios(groupSheet));
   const splits = calcSplits(groupSheet, currencyCode, dineroValue, ratios);
@@ -488,7 +489,7 @@ export const ExpenseAndIncomeForm = ({
     moneySnapshot.amount > 0 && validateSplit(splitType, ratios, amount);
   const disabled = !valid || !onLine;
 
-  const handleCreateExpense = async () => {
+  const handleCreateTransaction = async () => {
     if (disabled) {
       return;
     }
@@ -503,13 +504,13 @@ export const ExpenseAndIncomeForm = ({
     };
 
     if (groupSheet.currencyCode === currencyCode) {
-      await createGroupSheetExpenseOrIncome({
+      await createGroupSheetTransaction({
         ...basePayload,
         money: moneySnapshot,
         splits,
       });
     } else if (convertedMoneySnapshot) {
-      await createGroupSheetExpenseOrIncome({
+      await createGroupSheetTransaction({
         ...basePayload,
         money: convertedMoneySnapshot,
         splits: calcSplits(
@@ -524,11 +525,11 @@ export const ExpenseAndIncomeForm = ({
     navigate(`/groups/${groupSheet.id}`);
 
     await Promise.all([
-      utils.expense.getAllUserExpenses.invalidate(),
-      utils.expense.getGroupSheetExpenses.invalidate({
+      utils.transaction.getAllUserTransactions.invalidate(),
+      utils.transaction.getGroupSheetTransactions.invalidate({
         groupSheetId: groupSheet.id,
       }),
-      utils.expense.getParticipantSummaries.invalidate(groupSheet.id),
+      utils.transaction.getParticipantSummaries.invalidate(groupSheet.id),
     ]);
   };
 
@@ -541,7 +542,7 @@ export const ExpenseAndIncomeForm = ({
           return;
         }
 
-        void handleCreateExpense();
+        void handleCreateTransaction();
       }}
     >
       <div className="flex gap-4">
@@ -619,7 +620,7 @@ export const ExpenseAndIncomeForm = ({
         type="submit"
         disabled={disabled}
       >
-        <MdPlaylistAdd /> Add Expense
+        <MdPlaylistAdd /> Add {type === 'EXPENSE' ? 'Expense' : 'Income'}
       </Button>
     </form>
   );
@@ -643,7 +644,7 @@ export const SettlementForm = ({
 
   const utils = trpc.useContext();
   const { mutateAsync: createGroupSheetSettlement, isLoading } =
-    trpc.expense.createGroupSheetSettlement.useMutation();
+    trpc.transaction.createGroupSheetSettlement.useMutation();
 
   const valid =
     fromId != null &&
@@ -666,11 +667,11 @@ export const SettlementForm = ({
     });
 
     await Promise.all([
-      utils.expense.getAllUserExpenses.invalidate(),
-      utils.expense.getGroupSheetExpenses.invalidate({
+      utils.transaction.getAllUserTransactions.invalidate(),
+      utils.transaction.getGroupSheetTransactions.invalidate({
         groupSheetId: groupSheet.id,
       }),
-      utils.expense.getParticipantSummaries.invalidate(groupSheet.id),
+      utils.transaction.getParticipantSummaries.invalidate(groupSheet.id),
     ]);
 
     navigate(`/groups/${groupSheet.id}`, { replace: true });
@@ -745,7 +746,7 @@ const TYPE_OPTIONS = [
     ),
   },
   {
-    value: 'SETTLEMENT',
+    value: 'TRANSFER',
     label: (
       <>
         <span className="text-xl">
@@ -757,16 +758,14 @@ const TYPE_OPTIONS = [
   },
 ] as const;
 
-export const CreateGroupSheetExpenseForm = ({
+export const CreateGroupSheetTransactionForm = ({
   groupSheet,
   me,
 }: {
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
-  const [type, setType] = useState<'EXPENSE' | 'INCOME' | 'SETTLEMENT'>(
-    'EXPENSE',
-  );
+  const [type, setType] = useState<TransactionType>('EXPENSE');
 
   return (
     <div className="flex flex-col gap-4">
@@ -776,10 +775,10 @@ export const CreateGroupSheetExpenseForm = ({
         setValue={setType}
         options={TYPE_OPTIONS}
       />
-      {type === 'SETTLEMENT' ? (
+      {type === 'TRANSFER' ? (
         <SettlementForm groupSheet={groupSheet} me={me} />
       ) : (
-        <ExpenseAndIncomeForm type={type} groupSheet={groupSheet} me={me} />
+        <TransactionForm type={type} groupSheet={groupSheet} me={me} />
       )}
     </div>
   );

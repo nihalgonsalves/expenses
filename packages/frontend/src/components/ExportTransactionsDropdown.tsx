@@ -5,7 +5,7 @@ import { MdCancel, MdCloudDownload } from 'react-icons/md';
 
 import { Button } from './form/Button';
 
-export const ExportExpensesDropdown = <TData, TOutput>({
+export const ExportTransactionsDropdown = <TData, TOutput>({
   id,
   name,
   fetch,

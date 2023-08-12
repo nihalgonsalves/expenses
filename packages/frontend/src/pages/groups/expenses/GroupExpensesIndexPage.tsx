@@ -2,32 +2,32 @@ import { MdPlaylistAdd } from 'react-icons/md';
 
 import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionButton';
-import { GroupSheetExpensesExpandedList } from '../../../components/group-sheets/GroupSheetExpensesExpandedList';
+import { GroupSheetTransactionsExpandedList } from '../../../components/group-sheets/GroupSheetTransactionsExpandedList';
 import { GroupParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';
 
 export const GroupExpensesIndexPage = () => {
   const { groupSheetId } = useParams(GroupParams);
-  const result = trpc.expense.getGroupSheetExpenses.useQuery({
+  const result = trpc.transaction.getGroupSheetTransactions.useQuery({
     groupSheetId,
   });
 
   return (
     <RootLoader
       result={result}
-      title="Expenses"
+      title="Transactions"
       showBackButton
       additionalChildren={
         <FloatingActionButton
           to={`/groups/${groupSheetId}/expenses/new`}
-          label="Add Expense"
+          label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />
       }
-      render={(groupSheetExpenses) => (
-        <GroupSheetExpensesExpandedList
+      render={({ transactions }) => (
+        <GroupSheetTransactionsExpandedList
           groupSheetId={groupSheetId}
-          expenses={groupSheetExpenses.expenses}
+          transactions={transactions}
         />
       )}
     />

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { personalSheetFactory, userFactory } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
-import { createPersonalSheetExpenseInput } from '../../../test/input';
+import { createPersonalSheetTransactionInput } from '../../../test/input';
 
 import { comparePassword, hashPassword } from './utils';
 
@@ -224,7 +224,8 @@ describe('anonymizeUser', () => {
 
     expect(setJWTToken.mock.calls).toEqual([[null]]);
   });
-  it('deletes personal sheets and expenses', async () => {
+
+  it('deletes personal sheets and transactions', async () => {
     const user = await userFactory(prisma, {
       passwordHash: await hashPassword('password'),
     });
@@ -235,8 +236,8 @@ describe('anonymizeUser', () => {
 
     const caller = useProtectedCaller(user);
 
-    const expense = await caller.expense.createPersonalSheetExpense(
-      createPersonalSheetExpenseInput(
+    const transaction = await caller.transaction.createPersonalSheetTransaction(
+      createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
         'EXPENSE',
@@ -255,7 +256,7 @@ describe('anonymizeUser', () => {
     ).toBeNull();
 
     expect(
-      await prisma.expense.findFirst({ where: { id: expense.id } }),
+      await prisma.transaction.findFirst({ where: { id: transaction.id } }),
     ).toBeNull();
   });
 

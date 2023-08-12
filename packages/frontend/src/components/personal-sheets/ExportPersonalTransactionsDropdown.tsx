@@ -2,14 +2,14 @@ import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
 import { moneyToString } from '../../utils/money';
-import { ExportExpensesDropdown } from '../ExportExpensesDropdown';
+import { ExportTransactionsDropdown } from '../ExportTransactionsDropdown';
 
-export const ExportPersonalExpensesDropdown = ({
+export const ExportPersonalTransactionsDropdown = ({
   personalSheet,
 }: {
   personalSheet: Pick<Sheet, 'id' | 'name'>;
 }) => {
-  const { refetch } = trpc.expense.getPersonalSheetExpenses.useQuery(
+  const { refetch } = trpc.transaction.getPersonalSheetTransactions.useQuery(
     {
       personalSheetId: personalSheet.id,
     },
@@ -17,7 +17,7 @@ export const ExportPersonalExpensesDropdown = ({
   );
 
   return (
-    <ExportExpensesDropdown
+    <ExportTransactionsDropdown
       id={personalSheet.id}
       name={personalSheet.name}
       fetch={async () => {
@@ -26,7 +26,7 @@ export const ExportPersonalExpensesDropdown = ({
         // should not be possible with throwOnError: true
         if (!data) throw new Error('Unknown Error');
 
-        return data.expenses;
+        return data.transactions;
       }}
       mapItem={({ id, category, description, spentAt, money }) => ({
         id,

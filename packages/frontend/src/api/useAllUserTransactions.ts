@@ -2,35 +2,35 @@ import type { Temporal } from '@js-temporal/polyfill';
 import { useMemo } from 'react';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
-import type { ExpenseListItem } from '@nihalgonsalves/expenses-shared/types/expense';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useConvertToPreferredCurrency } from './currencyConversion';
 import { trpc } from './trpc';
 
-export type ConvertedExpenseWithSheet = {
-  expense: ExpenseListItem & { convertedMoney: Money | undefined };
+export type ConvertedTransactionWithSheet = {
+  transaction: TransactionListItem & { convertedMoney: Money | undefined };
   sheet: Sheet;
 };
 
-export type AllConvertedUserExpenses = {
-  expenses: ConvertedExpenseWithSheet[];
-  earnings: ConvertedExpenseWithSheet[];
+export type AllConvertedUserTransactions = {
+  expenses: ConvertedTransactionWithSheet[];
+  earnings: ConvertedTransactionWithSheet[];
 };
 
-type AllConvertedUserExpensesQueryResult = Pick<
-  ReturnType<typeof trpc.expense.getAllUserExpenses.useQuery>,
+type AllConvertedUserTransactionsQueryResult = Pick<
+  ReturnType<typeof trpc.transaction.getAllUserTransactions.useQuery>,
   'error' | 'isLoading' | 'refetch'
 > & {
-  data: AllConvertedUserExpenses | undefined;
+  data: AllConvertedUserTransactions | undefined;
 };
 
-export const useAllUserExpenses = (
+export const useAllUserTransactions = (
   from: Temporal.ZonedDateTime,
   to: Temporal.ZonedDateTime,
-): AllConvertedUserExpensesQueryResult => {
+): AllConvertedUserTransactionsQueryResult => {
   const { data, isLoading, error, refetch } =
-    trpc.expense.getAllUserExpenses.useQuery(
+    trpc.transaction.getAllUserTransactions.useQuery(
       {
         fromTimestamp: from.toInstant().toString(),
         toTimestamp: to.toInstant().toString(),
@@ -39,17 +39,21 @@ export const useAllUserExpenses = (
     );
 
   const [convertCurrency] = useConvertToPreferredCurrency([
-    ...(data?.expenses.map(({ expense }) => expense.money.currencyCode) ?? []),
-    ...(data?.earnings.map(({ expense }) => expense.money.currencyCode) ?? []),
+    ...(data?.expenses.map(
+      ({ transaction }) => transaction.money.currencyCode,
+    ) ?? []),
+    ...(data?.earnings.map(
+      ({ transaction }) => transaction.money.currencyCode,
+    ) ?? []),
   ]);
 
   const convertedExpenses = useMemo(
     () =>
-      data?.expenses.map(({ sheet, expense }) => ({
+      data?.expenses.map(({ sheet, transaction }) => ({
         sheet,
-        expense: {
-          ...expense,
-          convertedMoney: convertCurrency(expense.money),
+        transaction: {
+          ...transaction,
+          convertedMoney: convertCurrency(transaction.money),
         },
       })),
     [data?.expenses, convertCurrency],
@@ -57,11 +61,11 @@ export const useAllUserExpenses = (
 
   const convertedEarnings = useMemo(
     () =>
-      data?.earnings.map(({ sheet, expense }) => ({
+      data?.earnings.map(({ sheet, transaction }) => ({
         sheet,
-        expense: {
-          ...expense,
-          convertedMoney: convertCurrency(expense.money),
+        transaction: {
+          ...transaction,
+          convertedMoney: convertCurrency(transaction.money),
         },
       })),
     [data?.earnings, convertCurrency],
