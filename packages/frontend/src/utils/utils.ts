@@ -58,8 +58,33 @@ const shortRelativeFormatter = new Intl.RelativeTimeFormat(getUserLanguage(), {
   style: 'short',
 });
 
-export const formatDateTimeRelative = (iso8601: string) => {
-  const instant = Temporal.Instant.from(iso8601);
+export const formatDateRelative = (
+  instantOrISO8601: string | Temporal.Instant,
+) => {
+  const instant = Temporal.Instant.from(instantOrISO8601);
+
+  const date = instant.toZonedDateTimeISO(CURRENT_TIMEZONE).toPlainDate();
+
+  const today = Temporal.Now.plainDateISO(CURRENT_TIMEZONE);
+
+  const { days: daysSinceToday } = today.since(date);
+
+  switch (daysSinceToday) {
+    case 1:
+      return 'Yesterday';
+    case 0:
+      return 'Today';
+    case -1:
+      return 'Tomorrow';
+    default:
+      return shortDateFormatter.format(instant.epochMilliseconds);
+  }
+};
+
+export const formatDateTimeRelative = (
+  instantOrISO8601: string | Temporal.Instant,
+) => {
+  const instant = Temporal.Instant.from(instantOrISO8601);
 
   const relativeToNow = instant.since(Temporal.Now.instant());
 

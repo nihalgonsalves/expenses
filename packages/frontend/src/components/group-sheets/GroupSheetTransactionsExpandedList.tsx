@@ -1,6 +1,8 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { motion, AnimatePresence } from 'framer-motion';
 import { forwardRef, useState } from 'react';
 
+import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
 import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
@@ -10,7 +12,7 @@ import {
   getTransactionDescription,
   getGroupSheetTransactionSummaryText,
   groupBySpentAt,
-  shortDateFormatter,
+  formatDateRelative,
 } from '../../utils/utils';
 import { Avatar } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';
@@ -137,20 +139,33 @@ export const GroupSheetTransactionsExpandedList = ({
         <div className="alert">No transactions</div>
       )}
       <AnimatePresence mode="popLayout" initial={false}>
-        {[...groupedByDate.keys()].flatMap((date) => [
-          <motion.div key={date} className="divider" {...scaleOut}>
-            {shortDateFormatter.format(date)}
-          </motion.div>,
-          groupedByDate
-            .get(date)
-            ?.map((transaction) => (
-              <ExpandedTransactionListItem
-                key={transaction.id}
-                transaction={transaction}
-                groupSheetId={groupSheetId}
-              />
-            )),
-        ])}
+        {[...groupedByDate.keys()].flatMap((date) => {
+          const dateTransactions = groupedByDate.get(date) ?? [];
+          const sum = sumMoneyOrUndefined(
+            dateTransactions.map(({ money }) => money),
+          );
+
+          return [
+            <motion.div
+              key={date}
+              className="flex items-center gap-4 px-2"
+              {...scaleOut}
+            >
+              {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
+              <div className="divider flex-grow relative top-[1.5px]" />
+              {sum ? formatCurrency(sum) : '–'}
+            </motion.div>,
+            groupedByDate
+              .get(date)
+              ?.map((transaction) => (
+                <ExpandedTransactionListItem
+                  key={transaction.id}
+                  transaction={transaction}
+                  groupSheetId={groupSheetId}
+                />
+              )),
+          ];
+        })}
       </AnimatePresence>
     </div>
   );

@@ -1,16 +1,18 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef, useState } from 'react';
 
+import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
 import { collapse, scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
 import {
+  formatDateRelative,
   formatDateTimeRelative,
   getTransactionDescription,
   groupBySpentAt,
-  shortDateFormatter,
 } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
@@ -97,20 +99,31 @@ export const PersonalSheetTransactionsExpandedList = ({
         <div className="alert">No transactions</div>
       )}
       <AnimatePresence mode="popLayout" initial={false}>
-        {[...groupedByDate.keys()].flatMap((date) => [
-          <motion.div key={date} className="divider" {...scaleOut}>
-            {shortDateFormatter.format(date)}
-          </motion.div>,
-          groupedByDate
-            .get(date)
-            ?.map((transaction) => (
+        {[...groupedByDate.keys()].flatMap((date) => {
+          const dateTransactions = groupedByDate.get(date) ?? [];
+          const sum = sumMoneyOrUndefined(
+            dateTransactions.map(({ money }) => money),
+          );
+
+          return [
+            <motion.div
+              key={date}
+              className="flex items-center gap-4 px-2"
+              {...scaleOut}
+            >
+              {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
+              <div className="divider flex-grow relative top-[1.5px]" />
+              {sum ? formatCurrency(sum) : '–'}
+            </motion.div>,
+            dateTransactions.map((transaction) => (
               <ExpandedTransactionListItem
                 key={transaction.id}
                 transaction={transaction}
                 personalSheetId={personalSheetId}
               />
             )),
-        ])}
+          ];
+        })}
       </AnimatePresence>
     </div>
   );

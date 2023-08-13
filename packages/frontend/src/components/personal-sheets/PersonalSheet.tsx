@@ -129,9 +129,9 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                   </span>
                   ,{' next: '}
                   {formatDateTimeRelative(
-                    Temporal.ZonedDateTime.from(schedule.nextOccurrenceAt)
-                      .toInstant()
-                      .toString(),
+                    Temporal.ZonedDateTime.from(
+                      schedule.nextOccurrenceAt,
+                    ).toInstant(),
                   )}
                 </>
               }

@@ -47,14 +47,10 @@ export const zeroMoney = (currencyCode: string): Money => ({
 export const addMoney = (a: Money, b: Money): Money =>
   dineroToMoney(dineroAdd(moneyToDinero(a), moneyToDinero(b)));
 
-export const sumMoney = (
-  [firstValue, ...otherValues]: Money[],
-  currencyCode: string,
-): Money => {
+export const sumMoneyOrUndefined = ([firstValue, ...otherValues]: Money[]) => {
   if (!firstValue) {
-    return zeroMoney(currencyCode);
+    return undefined;
   }
-
   return dineroToMoney(
     otherValues.reduce(
       (total, val) => dineroAdd(total, moneyToDinero(val)),
@@ -62,6 +58,9 @@ export const sumMoney = (
     ),
   );
 };
+
+export const sumMoney = (values: Money[], currencyCode: string): Money =>
+  sumMoneyOrUndefined(values) ?? zeroMoney(currencyCode);
 
 export const equalMoney = (a: Money, b: Money) =>
   equal(moneyToDinero(a), moneyToDinero(b));
