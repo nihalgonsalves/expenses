@@ -1,6 +1,6 @@
-import { QueueEvents } from 'bullmq';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import { makeWaitForQueueSuccess } from '../../../test/bullMQUtils';
 import {
   notificationSubscriptionFactory,
   userFactory,
@@ -38,19 +38,10 @@ const sendTestNotification = async (userId: string) =>
     },
   });
 
-const waitForQueueSuccess = async (exec: () => Promise<void>) => {
-  const queueEvents = new QueueEvents(NOTIFICATION_BULLMQ_QUEUE, {
-    connection: redis,
-  });
-
-  await exec();
-
-  return new Promise<{
-    jobId: string;
-    returnvalue: unknown;
-    prev?: string;
-  }>((resolve) => queueEvents.on('completed', resolve));
-};
+const waitForQueueSuccess = makeWaitForQueueSuccess(
+  NOTIFICATION_BULLMQ_QUEUE,
+  redis,
+);
 
 describe('NotificationService', () => {
   describe('sendNotifications', () => {

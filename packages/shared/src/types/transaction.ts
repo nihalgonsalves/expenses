@@ -25,6 +25,30 @@ export const ZCreatePersonalSheetTransactionInput =
     personalSheetId: z.string().nonempty(),
   });
 
+export const ZRecurrenceFrequency = z.union([
+  z.literal('WEEKLY'),
+  z.literal('MONTHLY'),
+]);
+
+export type RecurrenceFrequency = z.infer<typeof ZRecurrenceFrequency>;
+
+const ZRecurrenceRule = z.object({
+  freq: ZRecurrenceFrequency,
+  dtstart: z.string().nonempty(),
+});
+
+export type RecurrenceRule = z.infer<typeof ZRecurrenceRule>;
+
+export const ZCreatePersonalSheetTransactionScheduleInput =
+  ZCreatePersonalSheetTransactionInput.omit({ spentAt: true }).extend({
+    tzId: z.string().nonempty(),
+    recurrenceRule: ZRecurrenceRule,
+  });
+
+export type CreatePersonalSheetTransactionScheduleInput = z.infer<
+  typeof ZCreatePersonalSheetTransactionScheduleInput
+>;
+
 export const ZBatchCreatePersonalSheetTransactionInput = z.object({
   personalSheetId: z.string().nonempty(),
   transactions: z.array(ZCreateSheetTransactionInput),
@@ -88,6 +112,18 @@ export const ZTransactionListItem = z.object({
 });
 
 export type TransactionListItem = z.infer<typeof ZTransactionListItem>;
+
+export const ZTransactionScheduleListItem = ZTransactionListItem.omit({
+  spentAt: true,
+}).extend({
+  tzId: z.string().nonempty(),
+  recurrenceRule: ZRecurrenceRule,
+  nextOccurrenceAt: z.string().nonempty(),
+});
+
+export type TransactionScheduleListItem = z.infer<
+  typeof ZTransactionScheduleListItem
+>;
 
 export const ZTransactionWithSheet = z.object({
   transaction: ZTransactionListItem,

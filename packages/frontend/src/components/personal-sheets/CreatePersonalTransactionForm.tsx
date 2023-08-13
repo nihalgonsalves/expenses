@@ -2,9 +2,13 @@ import { Temporal } from '@js-temporal/polyfill';
 import { useState } from 'react';
 import { MdArrowCircleDown, MdArrowCircleUp } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { TransactionType } from '@nihalgonsalves/expenses-shared/types/transaction';
+import {
+  ZRecurrenceFrequency,
+  type TransactionType,
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
@@ -12,13 +16,16 @@ import { CategoryId } from '../../data/categories';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency, useMoneyValues } from '../../utils/money';
 import {
-  dateTimeLocalToISOString,
+  CURRENT_TIMEZONE,
+  dateTimeLocalToPlainISOString,
+  dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
 } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { CategorySelect } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
+import { Select, type SelectOption } from '../form/Select';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
@@ -47,6 +54,23 @@ const TYPE_OPTIONS = [
   },
 ] as const;
 
+const ZRecurrence = z.union([z.literal('NO_RRULE'), ZRecurrenceFrequency]);
+
+const RECURRENCE_OPTIONS = [
+  {
+    value: 'NO_RRULE',
+    label: 'No',
+  },
+  {
+    value: 'MONTHLY',
+    label: 'Every month',
+  },
+  {
+    value: 'WEEKLY',
+    label: 'Every week',
+  },
+] satisfies SelectOption<typeof ZRecurrence>[];
+
 export const CreatePersonalTransactionForm = ({
   personalSheet,
 }: {
@@ -62,36 +86,64 @@ export const CreatePersonalTransactionForm = ({
   const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
   const [category, setCategory] = useState<CategoryId>();
   const [description, setDescription] = useState('');
-  const [spentAt, setSpentAt] = useState(nowForDateTimeInput());
+  const [dateTime, setDateTime] = useState(nowForDateTimeInput());
+
+  const [recurrence, setRecurrence] =
+    useState<(typeof RECURRENCE_OPTIONS)[number]['value']>('NO_RRULE');
 
   const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
   const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
     useCurrencyConversion(
-      Temporal.PlainDate.from(spentAt),
+      Temporal.PlainDate.from(dateTime),
       currencyCode,
       personalSheet.currencyCode,
       moneySnapshot,
     );
 
   const utils = trpc.useContext();
-  const { mutateAsync: createPersonalSheetTransaction, isLoading } =
-    trpc.transaction.createPersonalSheetTransaction.useMutation();
+  const {
+    mutateAsync: createPersonalSheetTransaction,
+    isLoading: noScheduleMutationIsLoading,
+  } = trpc.transaction.createPersonalSheetTransaction.useMutation();
+
+  const {
+    mutateAsync: createPersonalSheetTransactionSchedule,
+    isLoading: scheduleMutationIsLoading,
+  } = trpc.transaction.createPersonalSheetTransactionSchedule.useMutation();
+
+  const isLoading = noScheduleMutationIsLoading || scheduleMutationIsLoading;
 
   const valid = amount > 0;
 
   const handleCreateTransaction = async () => {
     const money = convertedMoneySnapshot ?? moneySnapshot;
-    await createPersonalSheetTransaction({
-      type,
-      personalSheetId: personalSheet.id,
-      money,
-      category: category ?? CategoryId.Other,
-      description,
-      spentAt: dateTimeLocalToISOString(spentAt),
-    });
 
-    navigate(`/sheets/${personalSheet.id}/expenses`, { replace: true });
+    if (recurrence == 'NO_RRULE') {
+      await createPersonalSheetTransaction({
+        type,
+        personalSheetId: personalSheet.id,
+        money,
+        category: category ?? CategoryId.Other,
+        description,
+        spentAt: dateTimeLocalToZonedISOString(dateTime),
+      });
+      navigate(`/sheets/${personalSheet.id}/expenses`, { replace: true });
+    } else {
+      await createPersonalSheetTransactionSchedule({
+        type,
+        personalSheetId: personalSheet.id,
+        money,
+        category: category ?? CategoryId.Other,
+        description,
+        tzId: CURRENT_TIMEZONE,
+        recurrenceRule: {
+          freq: recurrence,
+          dtstart: dateTimeLocalToPlainISOString(dateTime),
+        },
+      });
+      navigate(`/sheets/${personalSheet.id}`, { replace: true });
+    }
 
     await Promise.all([
       utils.transaction.getAllUserTransactions.invalidate(),
@@ -152,11 +204,21 @@ export const CreatePersonalTransactionForm = ({
       />
 
       <TextField
-        label="Date & Time"
+        label={
+          recurrence === 'NO_RRULE' ? 'Date & Time' : 'Starting Date & Time'
+        }
         type="datetime-local"
         inputClassName="appearance-none"
-        value={spentAt}
-        setValue={setSpentAt}
+        value={dateTime}
+        setValue={setDateTime}
+      />
+
+      <Select
+        label="Recurring?"
+        options={RECURRENCE_OPTIONS}
+        value={recurrence}
+        setValue={setRecurrence}
+        schema={ZRecurrence}
       />
 
       <Button
