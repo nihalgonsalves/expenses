@@ -1,7 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
 import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
 import cookie from 'cookie';
-import type IORedis from 'ioredis';
 import { UAParser } from 'ua-parser-js';
 
 import {
@@ -12,14 +11,12 @@ import {
 
 import { config } from './config';
 import { FrankfurterService } from './service/frankfurter/FrankfurterService';
-import {
-  NotificationSubscriptionService,
-  NotificationDispatchService,
-} from './service/notification/service';
+import { NotificationSubscriptionService } from './service/notification/service';
 import { SheetService } from './service/sheet/service';
 import { TransactionService } from './service/transaction/service';
 import { UserService } from './service/user/service';
 import { UserServiceError } from './service/user/utils';
+import type { Workers } from './startWorkers';
 
 export const AUTH_COOKIE_NAME = 'auth';
 
@@ -56,23 +53,16 @@ export const getMaybeUser = async (
   }
 };
 
-export const makeCreateContext = (prisma: PrismaClient, redis: IORedis) => {
+export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
   const userService = new UserService(prisma);
+
   const notificationSubscriptionService = new NotificationSubscriptionService(
     prisma,
   );
-  const notificationDispatchService = new NotificationDispatchService(
-    prisma,
-    redis,
-    {
-      publicKey: config.VAPID_PUBLIC_KEY,
-      privateKey: config.VAPID_PRIVATE_KEY,
-      subject: `mailto:${config.VAPID_EMAIL}`,
-    },
-  );
+
   const transactionService = new TransactionService(
     prisma,
-    notificationDispatchService,
+    workers.notificationDispatchService,
   );
   const sheetService = new SheetService(prisma, transactionService);
 

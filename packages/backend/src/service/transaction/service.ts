@@ -3,7 +3,6 @@ import {
   type PrismaClient,
   type Prisma,
   TransactionType,
-  type Transaction,
   type TransactionEntry,
   type User as PrismaUser,
 } from '@prisma/client';
@@ -28,52 +27,24 @@ import type {
   CreateGroupSheetSettlementInput,
   CreatePersonalSheetTransactionInput,
   GroupSheetParticipantItem,
+  CreatePersonalSheetTransactionScheduleInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { generateId } from '../../utils/nanoid';
 import type { INotificationDispatchService } from '../notification/service';
 
+import {
+  transactionToNotificationPayload,
+  transferToNotificationPayload,
+} from './notificationMappers';
+import {
+  mapInputToCreatePersonalTransaction,
+  mapInputToCreatePersonalTransactionEntry,
+  mapInputToCreatePersonalTransactionSchedule,
+} from './prismaMappers';
+
 class TransactionServiceError extends TRPCError {}
-
-const transactionToNotificationPayload = (
-  transaction: Omit<Transaction, 'type'> & { type: 'INCOME' | 'EXPENSE' },
-  groupSheet: Sheet,
-  yourShare: Omit<Money, 'currencyCode'>,
-): NotificationPayload => ({
-  type: transaction.type,
-  groupSheet,
-  transaction: {
-    ...transaction,
-    money: {
-      currencyCode: groupSheet.currencyCode,
-      amount: transaction.amount,
-      scale: transaction.scale,
-    },
-    yourShare: {
-      ...yourShare,
-      currencyCode: groupSheet.currencyCode,
-    },
-  },
-});
-
-const transferToNotificationPayload = (
-  transaction: Omit<Transaction, 'type'> & { type: 'TRANSFER' },
-  groupSheet: Sheet,
-  transferType: 'sent' | 'received',
-): NotificationPayload => ({
-  type: transaction.type,
-  groupSheet,
-  transaction: {
-    ...transaction,
-    type: transferType,
-    money: {
-      currencyCode: groupSheet.currencyCode,
-      amount: transaction.amount,
-      scale: transaction.scale,
-    },
-  },
-});
 
 const sumTransactions = (
   currencyCode: string,
@@ -154,33 +125,6 @@ const calculateBalances = (
     .sort((a, b) => a.balance.share.amount - b.balance.share.amount);
 };
 
-const mapInputToCreatePersonalTransaction = (
-  input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,
-  personalSheet: Sheet,
-  id = generateId(),
-): Prisma.TransactionUncheckedCreateInput => ({
-  id,
-  sheetId: personalSheet.id,
-  amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
-  scale: input.money.scale,
-  type: input.type,
-  category: input.category,
-  description: input.description,
-  spentAt: new Date(
-    Temporal.ZonedDateTime.from(input.spentAt).toInstant().epochMilliseconds,
-  ),
-});
-
-const mapInputToCreatePersonalTransactionEntry = (
-  input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,
-  user: User,
-): Omit<Prisma.TransactionEntryUncheckedCreateInput, 'transactionId'> => ({
-  id: generateId(),
-  userId: user.id,
-  amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
-  scale: input.money.scale,
-});
-
 const verifyCurrencies = (
   sheetCurrencyCode: string,
   ...inputCurrencyCodes: string[]
@@ -207,7 +151,11 @@ export class TransactionService {
   constructor(
     private prismaClient: Pick<
       PrismaClient,
-      '$transaction' | 'transaction' | 'transactionEntry' | 'sheetMemberships'
+      | '$transaction'
+      | 'transaction'
+      | 'transactionSchedule'
+      | 'transactionEntry'
+      | 'sheetMemberships'
     >,
     private notificationService: INotificationDispatchService,
   ) {}
@@ -221,8 +169,8 @@ export class TransactionService {
         type: { in: ['EXPENSE', 'INCOME'] },
         transactionEntries: { some: { userId: user.id } },
         spentAt: {
-          gte: new Date(from.epochMilliseconds),
-          lte: new Date(to.epochMilliseconds),
+          gte: from.toString(),
+          lte: to.toString(),
         },
       },
       include: {
@@ -305,6 +253,16 @@ export class TransactionService {
     };
   }
 
+  async getTransactionSchedules({ sheetId }: { sheetId: string }) {
+    return this.prismaClient.transactionSchedule.findMany({
+      where: { sheetId },
+      include: {
+        transactions: true,
+      },
+      orderBy: { nextOccurrenceAt: 'asc' },
+    });
+  }
+
   private async getTransactions({
     sheetId,
     limit,
@@ -356,6 +314,18 @@ export class TransactionService {
           create: [mapInputToCreatePersonalTransactionEntry(input, user)],
         },
       },
+    });
+  }
+
+  async createPersonalSheetTransactionSchedule(
+    input: Omit<CreatePersonalSheetTransactionScheduleInput, 'personalSheetId'>,
+    personalSheet: Sheet,
+  ) {
+    verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
+    verifyAmountIsAbsolute(input.money);
+
+    return this.prismaClient.transactionSchedule.create({
+      data: mapInputToCreatePersonalTransactionSchedule(input, personalSheet),
     });
   }
 
@@ -431,11 +401,9 @@ export class TransactionService {
         type: input.type,
         category: input.category,
         description: input.description,
-        spentAt: new Date(
-          Temporal.ZonedDateTime.from(
-            input.spentAt,
-          ).toInstant().epochMilliseconds,
-        ),
+        spentAt: Temporal.ZonedDateTime.from(input.spentAt)
+          .toInstant()
+          .toString(),
         transactionEntries: {
           create: input.splits
             .filter(({ share }) => share.amount !== 0)
@@ -516,7 +484,7 @@ export class TransactionService {
         type: TransactionType.TRANSFER,
         category: 'transfer',
         description: '',
-        spentAt: new Date(Temporal.Now.instant().epochMilliseconds),
+        spentAt: Temporal.Now.instant().toString(),
         transactionEntries: {
           create: [
             {
@@ -556,7 +524,7 @@ export class TransactionService {
     return transaction;
   }
 
-  async deleteExpense(id: string, groupSheet: Sheet) {
+  async deleteTransaction(id: string, groupSheet: Sheet) {
     try {
       await this.prismaClient.transaction.delete({
         where: { id, sheetId: groupSheet.id },
@@ -569,6 +537,26 @@ export class TransactionService {
         throw new TransactionServiceError({
           code: 'NOT_FOUND',
           message: 'Transaction not found',
+        });
+      }
+
+      throw error;
+    }
+  }
+
+  async deleteTransactionSchedule(id: string, groupSheet: Sheet) {
+    try {
+      await this.prismaClient.transactionSchedule.delete({
+        where: { id, sheetId: groupSheet.id },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new TransactionServiceError({
+          code: 'NOT_FOUND',
+          message: 'Transaction schedule not found',
         });
       }
 

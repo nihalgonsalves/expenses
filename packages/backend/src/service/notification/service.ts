@@ -15,6 +15,7 @@ import {
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { NOTIFICATION_BULLMQ_QUEUE } from '../../config';
+import type { IWorker } from '../../startWorkers';
 import { generateId } from '../../utils/nanoid';
 
 export class NotificationSubscriptionService {
@@ -83,11 +84,13 @@ export type INotificationDispatchService = {
 };
 
 export class NotificationDispatchService
-  implements INotificationDispatchService
+  implements
+    INotificationDispatchService,
+    IWorker<WebPushQueueItem, NotificationDispatchResult>
 {
-  private queue: Queue<WebPushQueueItem, NotificationDispatchResult>;
+  queue: Queue<WebPushQueueItem, NotificationDispatchResult>;
 
-  private worker: Worker<WebPushQueueItem, NotificationDispatchResult>;
+  worker: Worker<WebPushQueueItem, NotificationDispatchResult>;
 
   constructor(
     private prismaClient: PrismaClient,
@@ -105,10 +108,6 @@ export class NotificationDispatchService
         connection: redis,
       },
     );
-
-    process.on('SIGINT', () => {
-      void this.worker.close();
-    });
   }
 
   async sendNotifications(

@@ -13,6 +13,10 @@ import {
   ZGetGroupSheetTransactionsResponse,
   ZBatchCreatePersonalSheetTransactionInput,
   ZGetAllUserTransactionsResponse,
+  ZCreatePersonalSheetTransactionScheduleInput,
+  ZTransactionScheduleListItem,
+  type TransactionScheduleListItem,
+  ZRecurrenceFrequency,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { protectedProcedure, router } from '../../trpc';
@@ -29,6 +33,21 @@ export const transactionRouter = router({
 
       return ctx.transactionService.createPersonalSheetTransaction(
         ctx.user,
+        input,
+        sheet,
+      );
+    }),
+
+  createPersonalSheetTransactionSchedule: protectedProcedure
+    .input(ZCreatePersonalSheetTransactionScheduleInput)
+    .output(ZCreateSheetTransactionResponse)
+    .mutation(async ({ input, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensurePersonalSheetMembership(
+        input.personalSheetId,
+        ctx.user.id,
+      );
+
+      return ctx.transactionService.createPersonalSheetTransactionSchedule(
         input,
         sheet,
       );
@@ -117,7 +136,27 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      await ctx.transactionService.deleteExpense(transactionId, sheet);
+      await ctx.transactionService.deleteTransaction(transactionId, sheet);
+    }),
+
+  deleteTransactionSchedule: protectedProcedure
+    .input(
+      z.object({
+        sheetId: z.string().nonempty(),
+        transactionScheduleId: z.string().nonempty(),
+      }),
+    )
+    .output(z.void())
+    .mutation(async ({ input: { sheetId, transactionScheduleId }, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensureSheetMembership(
+        sheetId,
+        ctx.user.id,
+      );
+
+      await ctx.transactionService.deleteTransactionSchedule(
+        transactionScheduleId,
+        sheet,
+      );
     }),
 
   getAllUserTransactions: protectedProcedure
@@ -177,6 +216,47 @@ export const transactionRouter = router({
         ),
         total,
       };
+    }),
+
+  getPersonalSheetTransactionSchedules: protectedProcedure
+    .input(
+      z.object({
+        personalSheetId: z.string().nonempty(),
+      }),
+    )
+    .output(z.array(ZTransactionScheduleListItem))
+    .query(async ({ input: { personalSheetId }, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensurePersonalSheetMembership(
+        personalSheetId,
+        ctx.user.id,
+      );
+
+      const transactionSchedules =
+        await ctx.transactionService.getTransactionSchedules({
+          sheetId: sheet.id,
+        });
+
+      return transactionSchedules.map(
+        ({
+          rruleDtstart,
+          rruleFreq,
+          amount,
+          scale,
+          ...item
+        }): TransactionScheduleListItem => ({
+          ...item,
+          money: {
+            amount,
+            scale,
+            currencyCode: sheet.currencyCode,
+          },
+          recurrenceRule: {
+            dtstart: rruleDtstart.toISOString(),
+            freq: ZRecurrenceFrequency.parse(rruleFreq),
+          },
+          nextOccurrenceAt: item.nextOccurrenceAt.toISOString(),
+        }),
+      );
     }),
 
   getGroupSheetTransactions: protectedProcedure

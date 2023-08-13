@@ -16,6 +16,7 @@ export const getRedis = async () => {
   });
 
   afterAll(async () => {
+    await redis.quit();
     await container.stop();
   });
 

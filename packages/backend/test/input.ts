@@ -1,8 +1,10 @@
+import { faker } from '@faker-js/faker';
 import { Temporal } from '@js-temporal/polyfill';
 
 import type {
   CreatePersonalSheetTransactionInput,
   CreateGroupSheetTransactionInput,
+  CreatePersonalSheetTransactionScheduleInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 export const createPersonalSheetTransactionInput = (
@@ -17,6 +19,25 @@ export const createPersonalSheetTransactionInput = (
   category: 'other',
   money: { amount, scale: 2, currencyCode },
   spentAt: Temporal.Now.zonedDateTimeISO().toString(),
+});
+
+export const createPersonalSheetTransactionScheduleInput = (
+  personalSheetId: string,
+  currencyCode: string,
+  type: 'EXPENSE' | 'INCOME',
+  amount = 100_00,
+  dtstart = Temporal.Now.plainDateTimeISO().toString(),
+): CreatePersonalSheetTransactionScheduleInput => ({
+  personalSheetId,
+  type,
+  description: `test personal ${type.toLowerCase()}`,
+  category: 'other',
+  money: { amount, scale: 2, currencyCode },
+  tzId: faker.location.timeZone(),
+  recurrenceRule: {
+    freq: 'MONTHLY',
+    dtstart,
+  },
 });
 
 export const createGroupSheetTransactionInput = (

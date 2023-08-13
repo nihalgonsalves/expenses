@@ -51,8 +51,9 @@ model Sheet {
   name         String
   currencyCode String    @map("currency_code")
 
-  participants SheetMemberships[]
-  transactions Transaction[]
+  participants         SheetMemberships[]
+  transactions         Transaction[]
+  transactionSchedules TransactionSchedule[]
 
   @@map("sheets")
 }
@@ -111,7 +112,35 @@ model Transaction {
 
   transactionEntries TransactionEntry[]
 
+  transactionSchedule   TransactionSchedule? @relation(fields: [transactionScheduleId], references: [id], onDelete: SetNull)
+  transactionScheduleId String?              @map("transaction_schedule_id")
+
   @@map("transactions")
+}
+
+model TransactionSchedule {
+  id        String   @id
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  type    TransactionType
+  sheet   Sheet           @relation(fields: [sheetId], references: [id], onDelete: Cascade)
+  sheetId String          @map("sheet_id")
+
+  category    String
+  description String
+  amount      Int
+  scale       Int    @db.SmallInt()
+
+  tzId String @map("tz_id")
+
+  rruleDtstart     DateTime @map("rrule_dtstart") @db.Timestamp()
+  rruleFreq        String   @map("rrule_freq")
+  nextOccurrenceAt DateTime @map("next_occurrence_at") @db.Timestamptz()
+
+  transactions Transaction[]
+
+  @@map("transaction_schedule")
 }
 
 model TransactionEntry {

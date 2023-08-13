@@ -32,5 +32,6 @@ const ZEnv = z.object({
 });
 
 export const NOTIFICATION_BULLMQ_QUEUE = 'notifications';
+export const TRANSACTION_SCHEDULE_BULLMQ_QUEUE = 'transaction-schedules';
 
 export const config = ZEnv.parse(process.env);

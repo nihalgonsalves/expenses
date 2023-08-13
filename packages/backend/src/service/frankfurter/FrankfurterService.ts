@@ -85,8 +85,10 @@ export class FrankfurterService {
     date: Temporal.PlainDate,
   ) {
     if (
-      Temporal.PlainDate.compare(date, Temporal.PlainDate.from('1999-01-04')) <
-      0
+      Temporal.PlainDate.compare(
+        date,
+        Temporal.PlainDate.from('1999-01-04'),
+      ) === -1
     ) {
       throw new FrankfurterServiceError({
         code: 'NOT_FOUND',

@@ -40,7 +40,7 @@ import {
 } from '../../utils/money';
 import {
   clsxtw,
-  dateTimeLocalToISOString,
+  dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
 } from '../../utils/utils';
 import { Avatar } from '../Avatar';
@@ -500,7 +500,7 @@ export const TransactionForm = ({
       paidOrReceivedById,
       description,
       category: category ?? CategoryId.Other,
-      spentAt: dateTimeLocalToISOString(spentAt),
+      spentAt: dateTimeLocalToZonedISOString(spentAt),
     };
 
     if (groupSheet.currencyCode === currencyCode) {

@@ -1,4 +1,4 @@
-import { MdListAlt } from 'react-icons/md';
+import { MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -11,11 +11,17 @@ import {
   getTransactionDescription,
 } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
+import { DropdownMenu } from '../DropdownMenu';
+import { ConfirmDialog } from '../form/ConfirmDialog';
 
 const TransactionListItemComponent = ({
   transaction,
+  description,
+  addons,
 }: {
-  transaction: TransactionListItem;
+  transaction: Pick<TransactionListItem, 'category' | 'description' | 'money'>;
+  description: React.ReactNode;
+  addons?: React.ReactNode;
 }) => {
   const descriptionText = getTransactionDescription(transaction);
   return (
@@ -25,9 +31,45 @@ const TransactionListItemComponent = ({
         <span>
           <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
         </span>
-        <span>{formatDateTimeRelative(transaction.spentAt)}</span>
+        <span>{description}</span>
       </div>
+      <div className="flex-grow" />
+      {addons}
     </div>
+  );
+};
+
+const TransactionScheduleDropdownMenu = ({
+  sheetId,
+  transactionScheduleId,
+}: {
+  sheetId: string;
+  transactionScheduleId: string;
+}) => {
+  const utils = trpc.useContext();
+  const { mutateAsync: deleteTransactionSchedule } =
+    trpc.transaction.deleteTransactionSchedule.useMutation();
+
+  const handleDelete = async () => {
+    await deleteTransactionSchedule({ sheetId, transactionScheduleId });
+    await utils.transaction.getPersonalSheetTransactionSchedules.invalidate();
+  };
+
+  return (
+    <DropdownMenu aria-label="Actions">
+      <ConfirmDialog
+        confirmLabel="Confirm Delete"
+        description="Delete transaction schedule? Existing transactions will not be affected."
+        onConfirm={handleDelete}
+        renderButton={(onClick) => (
+          <li>
+            <a onClick={onClick}>
+              <MdDeleteOutline /> Delete
+            </a>
+          </li>
+        )}
+      />
+    </DropdownMenu>
   );
 };
 
@@ -37,26 +79,59 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
       personalSheetId: personalSheet.id,
     });
 
+  const { data: getPersonalSheetTransactionSchedulesResponse } =
+    trpc.transaction.getPersonalSheetTransactionSchedules.useQuery({
+      personalSheetId: personalSheet.id,
+    });
+
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-semibold">Latest Transactions</h2>
+    <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
+      <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
+        <div className="card-body">
+          <h2 className="card-title">Latest Transactions</h2>
 
-      {getPersonalSheetTransactionsResponse?.transactions
-        .slice(0, 4)
-        .map((transaction) => (
-          <TransactionListItemComponent
-            key={transaction.id}
-            transaction={transaction}
-          />
-        ))}
+          {getPersonalSheetTransactionsResponse?.transactions
+            .slice(0, 4)
+            .map((transaction) => (
+              <TransactionListItemComponent
+                key={transaction.id}
+                transaction={transaction}
+                description={formatDateTimeRelative(transaction.spentAt)}
+              />
+            ))}
 
-      <Link
-        to={`/sheets/${personalSheet.id}/expenses`}
-        className="btn btn-primary btn-outline "
-      >
-        <MdListAlt /> All Transactions (
-        {getPersonalSheetTransactionsResponse?.total})
-      </Link>
+          <Link
+            to={`/sheets/${personalSheet.id}/expenses`}
+            className="btn btn-primary btn-outline "
+          >
+            <MdListAlt /> All Transactions (
+            {getPersonalSheetTransactionsResponse?.total})
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
+        <div className="card-body">
+          <h2 className="card-title">
+            Scheduled Transactions (
+            {getPersonalSheetTransactionSchedulesResponse?.length})
+          </h2>
+
+          {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => (
+            <TransactionListItemComponent
+              key={schedule.id}
+              transaction={schedule}
+              description={formatDateTimeRelative(schedule.nextOccurrenceAt)}
+              addons={
+                <TransactionScheduleDropdownMenu
+                  sheetId={personalSheet.id}
+                  transactionScheduleId={schedule.id}
+                />
+              }
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
