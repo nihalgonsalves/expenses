@@ -15,15 +15,6 @@ export const clsxtw = (...classes: ClassValue[]) => twMerge(clsx(...classes));
 
 export const getUserLanguage = () => globalThis.navigator.languages[0];
 
-export const generateId = () => {
-  const bytes = new Uint8Array(36);
-  globalThis.crypto.getRandomValues(bytes);
-
-  const binString = Array.from(bytes, (x) => String.fromCodePoint(x)).join('');
-
-  return btoa(binString).replace(/\+/g, '-').replace(/\//g, '_');
-};
-
 // simply check for anything@anything.anytld
 export const prevalidateEmail = (email: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -105,22 +96,6 @@ export const getInitials = (name: string): string => {
 };
 
 export const getShortName = (name: string): string => name.split(' ')[0] ?? '';
-
-export const joinList = (list: string[]): string => {
-  if (list.length === 0) {
-    return '';
-  }
-
-  if (list.length === 1) {
-    return list[0] ?? '';
-  }
-
-  if (list.length === 2) {
-    return `${list[0]} & ${list[1]}`;
-  }
-
-  return `${list.slice(0, -1).join(', ')} & ${list.at(-1)}`;
-};
 
 export const getTransactionDescription = ({
   description,

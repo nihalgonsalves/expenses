@@ -6,33 +6,12 @@ import { describe, it, expect } from 'vitest';
 import {
   durationMilliseconds,
   formatDateTimeRelative,
-  joinList,
   shortDateTimeFormatter,
 } from './utils';
 
 describe('durationMilliseconds', () => {
   it('returns total milliseconds', () => {
     expect(durationMilliseconds({ hours: 1 })).toBe(36_000_00);
-  });
-});
-
-describe('joinList', () => {
-  it('returns an empty string for an empty list', () => {
-    expect(joinList([])).toBe('');
-  });
-
-  it('returns a single item', () => {
-    expect(joinList(['Hello'])).toBe('Hello');
-  });
-
-  it('returns two items joined by "&"', () => {
-    expect(joinList(['Hello', 'World'])).toBe('Hello & World');
-  });
-
-  it('returns three or more items joined by ", " and "&"', () => {
-    expect(joinList(['Hello', 'World', 'Goodbye'])).toBe(
-      'Hello, World & Goodbye',
-    );
   });
 });
 
