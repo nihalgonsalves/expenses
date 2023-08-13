@@ -1,32 +1,53 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useAllUserTransactions } from '../../api/useAllUserTransactions';
 import { AllUserTransactionsList } from '../../components/AllUserTransactionsList';
+import { shortDateFormatter } from '../../utils/utils';
 import { RootLoader } from '../Root';
 
 export const ExpensesIndexPage = () => {
-  const [from] = useState(
+  const [from, setFrom] = useState(
     Temporal.Now.zonedDateTimeISO()
       .with({ day: 1 })
       .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
   );
 
-  const [to] = useState(
+  const [to, setTo] = useState(
     Temporal.Now.zonedDateTimeISO()
       .add({ months: 1 })
       .with({ day: 1 })
       .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
   );
 
-  const result = useAllUserTransactions(from, to);
+  const offsetByDuration = useCallback((duration: Temporal.DurationLike) => {
+    setFrom((prev) => prev.add(duration));
+    setTo((prev) => prev.add(duration));
+  }, []);
+
+  const displayPeriod = useMemo(
+    () =>
+      `${shortDateFormatter.format(from.toInstant().epochMilliseconds)} -
+        ${shortDateFormatter.format(
+          to.subtract({ seconds: 1 }).toInstant().epochMilliseconds,
+        )}`,
+    [from, to],
+  );
+
+  const result = useAllUserTransactions(from, to.subtract({ seconds: 1 }));
 
   return (
     <RootLoader
       result={result}
       title="Expenses"
-      mainClassName="p-0"
-      render={(data) => <AllUserTransactionsList data={data} />}
+      mainClassName="p-0 md:p-0"
+      render={(data) => (
+        <AllUserTransactionsList
+          data={data}
+          offsetByDuration={offsetByDuration}
+          displayPeriod={displayPeriod}
+        />
+      )}
     />
   );
 };

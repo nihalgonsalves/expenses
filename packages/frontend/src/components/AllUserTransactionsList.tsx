@@ -1,5 +1,7 @@
+import type { Temporal } from '@js-temporal/polyfill';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Fragment, useMemo, useState } from 'react';
+import { MdArrowLeft, MdArrowRight } from 'react-icons/md';
 
 import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -7,6 +9,7 @@ import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/
 
 import type { AllConvertedUserTransactions } from '../api/useAllUserTransactions';
 import { usePreferredCurrencyCode } from '../state/preferences';
+import { fadeInOut } from '../utils/framer';
 import { formatCurrency } from '../utils/money';
 import {
   clsxtw,
@@ -17,6 +20,7 @@ import {
 } from '../utils/utils';
 
 import { CategoryAvatar } from './CategoryAvatar';
+import { Button } from './form/Button';
 
 const TransactionRow = ({
   transaction,
@@ -74,18 +78,6 @@ const TransactionRow = ({
   );
 };
 
-const variants = {
-  enter: (direction: 'left' | 'right') => ({
-    x: direction === 'left' ? '-100dvw' : '100dvw',
-  }),
-  center: {
-    x: 0,
-  },
-  exit: (direction: 'left' | 'right') => ({
-    x: direction === 'left' ? '100dvw' : '-100dvw',
-  }),
-};
-
 const ButtonStat = ({
   title,
   desc,
@@ -121,16 +113,18 @@ const ButtonStat = ({
 
 export const AllUserTransactionsList = ({
   data,
+  offsetByDuration,
+  displayPeriod,
 }: {
   data: AllConvertedUserTransactions;
+  offsetByDuration: (duration: Temporal.DurationLike) => void;
+  displayPeriod: string;
 }) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
   const [selectedView, setSelectedView] = useState<'EXPENSES' | 'INCOME'>(
     'EXPENSES',
   );
-  const nextMotionTowardsDirection =
-    selectedView === 'EXPENSES' ? ('left' as const) : ('right' as const);
 
   const totalSpent = sumMoney(
     data.expenses
@@ -157,11 +151,30 @@ export const AllUserTransactionsList = ({
 
   return (
     <>
-      <div className="p-3 md:p-5">
+      <div className="flex flex-col gap-4 p-2 md:mb-2">
+        <div className="join">
+          <Button
+            className="join-item"
+            onClick={() => {
+              offsetByDuration({ months: -1 });
+            }}
+          >
+            <MdArrowLeft />
+          </Button>
+          <Button className="join-item flex-grow">{displayPeriod}</Button>
+          <Button
+            className="join-item"
+            onClick={() => {
+              offsetByDuration({ months: 1 });
+            }}
+          >
+            <MdArrowRight />
+          </Button>
+        </div>
         <div className="stats w-full shadow">
           <ButtonStat
-            title="Spent"
-            desc="this month"
+            title="Expenses"
+            desc=""
             value={formatCurrency(totalSpent)}
             selected={selectedView === 'EXPENSES'}
             setSelected={() => {
@@ -170,7 +183,7 @@ export const AllUserTransactionsList = ({
           />
           <ButtonStat
             title="Income"
-            desc="this month"
+            desc=""
             value={formatCurrency(totalEarned)}
             selected={selectedView === 'INCOME'}
             setSelected={() => {
@@ -180,22 +193,11 @@ export const AllUserTransactionsList = ({
         </div>
       </div>
 
-      <AnimatePresence
-        initial={false}
-        mode="popLayout"
-        custom={nextMotionTowardsDirection}
-      >
+      <AnimatePresence mode="popLayout" initial={false}>
         <motion.table
           key={selectedView}
           className="table table-pin-rows table-auto"
-          variants={variants}
-          custom={nextMotionTowardsDirection}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{
-            x: { type: 'spring', stiffness: 300, damping: 30, duration: 0.2 },
-          }}
+          {...fadeInOut}
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {[...groupedByDate.keys()].map((date) => (

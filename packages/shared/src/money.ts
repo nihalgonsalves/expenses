@@ -5,6 +5,7 @@ import {
   dinero,
   toSnapshot,
   equal,
+  compare,
 } from 'dinero.js';
 import { z } from 'zod';
 
@@ -70,3 +71,6 @@ export const negateMoney = ({ amount, scale, currencyCode }: Money): Money => ({
   scale,
   currencyCode,
 });
+
+export const compareMoney = (a: Money, b: Money) =>
+  compare(moneyToDinero(a), moneyToDinero(b));

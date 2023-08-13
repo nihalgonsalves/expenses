@@ -13,3 +13,9 @@ export const scaleOut: MotionProps = {
   animate: { scale: 1, opacity: 1 },
   exit: { scale: 0.8, opacity: 0 },
 };
+
+export const fadeInOut: MotionProps = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+};
