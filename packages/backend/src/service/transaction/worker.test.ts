@@ -90,4 +90,23 @@ describe('TransactionScheduleWorker', () => {
       ),
     ).toBe(true);
   });
+
+  it('processes without now set', async () => {
+    const worker = new TransactionScheduleWorker(prisma, redis);
+
+    const waitForQueueSuccess = makeWaitForQueueSuccess(
+      worker.queue.name,
+      redis,
+    );
+    const { returnvalue } = await waitForQueueSuccess(async () => {
+      await worker.processOnce();
+    });
+
+    expect(returnvalue).toEqual({
+      now: expect.any(String),
+      schedulesToProcessIds: [],
+      successfulSchedules: {},
+      failedSchedules: {},
+    });
+  });
 });

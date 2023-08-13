@@ -21,11 +21,12 @@ type TransactionScheduleWorkerResult = {
 };
 
 export class TransactionScheduleWorker
-  implements IWorker<string | undefined, TransactionScheduleWorkerResult>
+  implements
+    IWorker<{ now: string | undefined }, TransactionScheduleWorkerResult>
 {
-  queue: Queue<string | undefined, TransactionScheduleWorkerResult>;
+  queue: Queue<{ now: string | undefined }, TransactionScheduleWorkerResult>;
 
-  worker: Worker<string | undefined, TransactionScheduleWorkerResult>;
+  worker: Worker<{ now: string | undefined }, TransactionScheduleWorkerResult>;
 
   constructor(
     private prisma: PrismaClient,
@@ -39,23 +40,31 @@ export class TransactionScheduleWorker
       TRANSACTION_SCHEDULE_BULLMQ_QUEUE,
       async (job) =>
         this.process(
-          job.data ? Temporal.Instant.from(job.data) : Temporal.Now.instant(),
+          job.data.now
+            ? Temporal.Instant.from(job.data.now)
+            : Temporal.Now.instant(),
         ),
       { connection: redis },
     );
   }
 
   async init() {
-    await this.queue.add('process-transaction-schedules', undefined, {
-      repeat: {
-        // every hour
-        pattern: '0 * * * *',
+    await this.queue.add(
+      'process-transaction-schedules',
+      { now: undefined },
+      {
+        repeat: {
+          // every hour
+          pattern: '0 * * * *',
+        },
       },
-    });
+    );
   }
 
   async processOnce(now?: Temporal.Instant) {
-    await this.queue.add('process-transaction-schedules', now?.toString());
+    await this.queue.add('process-transaction-schedules', {
+      now: now?.toString(),
+    });
   }
 
   private async process(
