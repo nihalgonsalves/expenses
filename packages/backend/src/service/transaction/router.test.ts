@@ -182,10 +182,9 @@ describe('createPersonalSheetTransactionSchedule', () => {
         description: expect.stringMatching(/test personal (income|expense)/),
         amount: expectedAmount,
         scale: 2,
-        tzId: expect.any(String),
-        rruleDtstart: expect.any(Date),
-        rruleFreq: 'MONTHLY',
         nextOccurrenceAt: expect.any(Date),
+        nextOccurrenceTzId: expect.any(String),
+        rruleFreq: 'MONTHLY',
       });
     },
   );
@@ -1021,12 +1020,10 @@ describe('getPersonalSheetTransactionSchedules', () => {
           scale: 2,
           currencyCode: personalSheet.currencyCode,
         },
-        tzId: expect.any(String),
+        nextOccurrenceAt: expect.any(String),
         recurrenceRule: {
           freq: 'MONTHLY',
-          dtstart: expect.any(String),
         },
-        nextOccurrenceAt: expect.any(String),
       },
     ]);
   });

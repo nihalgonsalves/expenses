@@ -21,17 +21,32 @@ export const getFloatingRRuleDate = (isoString: string) =>
 
 const floatingDateToZonedDateTime = (floatingDate: Date, tzId: string) =>
   Temporal.Instant.fromEpochMilliseconds(floatingDate.valueOf())
-    // pretend the date is UTC,
+    // pretend the date is UTC
     .toZonedDateTimeISO('UTC')
-    // ... truncate the timezone
+    // truncate the timezone
     .toPlainDateTime()
     // and replace it with the local timezone
     .toZonedDateTime(tzId);
 
+const zonedDateTimeToFloatingDate = (zonedDateTime: Temporal.ZonedDateTime) =>
+  new Date(
+    zonedDateTime
+      // truncate the timezone
+      .toPlainDateTime()
+      // replace it with UTC
+      .toZonedDateTime('UTC')
+      .toInstant().epochMilliseconds,
+  );
+
+const zonedDateTimeFromDate = (date: Date, tzId: string) =>
+  Temporal.Instant.fromEpochMilliseconds(date.valueOf()).toZonedDateTimeISO(
+    tzId,
+  );
+
 export const getRRuleInstancesTzAware = (
   transactionSchedule: Pick<
     TransactionSchedule,
-    'tzId' | 'rruleFreq' | 'rruleDtstart'
+    'nextOccurrenceTzId' | 'nextOccurrenceAt' | 'rruleFreq'
   >,
   now = Temporal.Now.zonedDateTimeISO(),
 ) => {
@@ -42,7 +57,12 @@ export const getRRuleInstancesTzAware = (
     freq: frequencyToRRuleEnum[
       ZRecurrenceFrequency.parse(transactionSchedule.rruleFreq)
     ],
-    dtstart: transactionSchedule.rruleDtstart,
+    dtstart: zonedDateTimeToFloatingDate(
+      zonedDateTimeFromDate(
+        transactionSchedule.nextOccurrenceAt,
+        transactionSchedule.nextOccurrenceTzId,
+      ),
+    ),
   });
 
   const tzAwarePastInstances: Temporal.ZonedDateTime[] = [];
@@ -51,7 +71,7 @@ export const getRRuleInstancesTzAware = (
   rrule.all((date) => {
     const instance = floatingDateToZonedDateTime(
       date,
-      transactionSchedule.tzId,
+      transactionSchedule.nextOccurrenceTzId,
     );
 
     if (Temporal.ZonedDateTime.compare(instance, now) === -1) {

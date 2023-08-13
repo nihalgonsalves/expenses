@@ -16,8 +16,6 @@ import { CategoryId } from '../../data/categories';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency, useMoneyValues } from '../../utils/money';
 import {
-  CURRENT_TIMEZONE,
-  dateTimeLocalToPlainISOString,
   dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
 } from '../../utils/utils';
@@ -136,10 +134,9 @@ export const CreatePersonalTransactionForm = ({
         money,
         category: category ?? CategoryId.Other,
         description,
-        tzId: CURRENT_TIMEZONE,
+        firstOccurrenceAt: dateTimeLocalToZonedISOString(dateTime),
         recurrenceRule: {
           freq: recurrence,
-          dtstart: dateTimeLocalToPlainISOString(dateTime),
         },
       });
       navigate(`/sheets/${personalSheet.id}`, { replace: true });

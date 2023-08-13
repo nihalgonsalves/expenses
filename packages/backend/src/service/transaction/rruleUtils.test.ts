@@ -8,9 +8,13 @@ describe('getRRuleInstancesTzAware', () => {
     expect(
       getRRuleInstancesTzAware(
         {
-          tzId: 'Europe/Berlin',
           rruleFreq: 'MONTHLY',
-          rruleDtstart: new Date('2023-01-01T00:00:00.000Z'),
+          nextOccurrenceAt: new Date(
+            Temporal.ZonedDateTime.from(
+              '2023-01-01T00:00:00+01:00[Europe/Berlin]',
+            ).toInstant().epochMilliseconds,
+          ),
+          nextOccurrenceTzId: 'Europe/Berlin',
         },
         Temporal.ZonedDateTime.from('2024-01-01T00:00:00+01:00[Europe/Berlin]'),
       ),

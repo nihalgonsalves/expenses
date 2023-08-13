@@ -238,23 +238,25 @@ export const transactionRouter = router({
 
       return transactionSchedules.map(
         ({
-          rruleDtstart,
           rruleFreq,
           amount,
           scale,
           ...item
         }): TransactionScheduleListItem => ({
           ...item,
+          nextOccurrenceAt: Temporal.Instant.fromEpochMilliseconds(
+            item.nextOccurrenceAt.valueOf(),
+          )
+            .toZonedDateTimeISO(item.nextOccurrenceTzId)
+            .toString(),
           money: {
             amount,
             scale,
             currencyCode: sheet.currencyCode,
           },
           recurrenceRule: {
-            dtstart: rruleDtstart.toISOString(),
             freq: ZRecurrenceFrequency.parse(rruleFreq),
           },
-          nextOccurrenceAt: item.nextOccurrenceAt.toISOString(),
         }),
       );
     }),

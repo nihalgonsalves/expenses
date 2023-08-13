@@ -95,7 +95,7 @@ export class TransactionScheduleWorker
         const { tzAwarePastInstances, nextOccurrenceAt } =
           getRRuleInstancesTzAware(
             schedule,
-            now.toZonedDateTimeISO(schedule.tzId),
+            now.toZonedDateTimeISO(schedule.nextOccurrenceTzId),
           );
 
         if (tzAwarePastInstances.length > 0) {

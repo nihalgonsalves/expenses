@@ -10,8 +10,6 @@ import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { generateId } from '../../utils/nanoid';
 
-import { getFloatingRRuleDate } from './rruleUtils';
-
 export const mapInputToCreatePersonalTransaction = (
   input: Omit<
     CreatePersonalSheetTransactionInput,
@@ -35,23 +33,24 @@ export const mapInputToCreatePersonalTransaction = (
 export const mapInputToCreatePersonalTransactionSchedule = (
   input: Omit<CreatePersonalSheetTransactionScheduleInput, 'personalSheetId'>,
   personalSheet: Sheet,
-): Prisma.TransactionScheduleUncheckedCreateInput => ({
-  id: generateId(),
-  sheetId: personalSheet.id,
-  amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
-  scale: input.money.scale,
-  type: input.type,
-  category: input.category,
-  description: input.description,
-  tzId: input.tzId,
-  rruleFreq: input.recurrenceRule.freq,
-  // Note: this is a TIMESTAMP WITHOUT TIMEZONE in Postgres, since the rrule library uses a 'floating' date
-  rruleDtstart: getFloatingRRuleDate(input.recurrenceRule.dtstart),
-  nextOccurrenceAt: Temporal.PlainDateTime.from(input.recurrenceRule.dtstart)
-    .toZonedDateTime(input.tzId)
-    .toInstant()
-    .toString(),
-});
+): Prisma.TransactionScheduleUncheckedCreateInput => {
+  const firstOccurrenceAt = Temporal.ZonedDateTime.from(
+    input.firstOccurrenceAt,
+  );
+
+  return {
+    id: generateId(),
+    sheetId: personalSheet.id,
+    amount: input.type === 'EXPENSE' ? -input.money.amount : input.money.amount,
+    scale: input.money.scale,
+    type: input.type,
+    category: input.category,
+    description: input.description,
+    rruleFreq: input.recurrenceRule.freq,
+    nextOccurrenceTzId: firstOccurrenceAt.timeZoneId,
+    nextOccurrenceAt: firstOccurrenceAt.toInstant().toString(),
+  };
+};
 
 export const mapInputToCreatePersonalTransactionEntry = (
   input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,

@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { MdDeleteOutline, MdListAlt } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
@@ -121,7 +122,11 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             <TransactionListItemComponent
               key={schedule.id}
               transaction={schedule}
-              description={formatDateTimeRelative(schedule.nextOccurrenceAt)}
+              description={formatDateTimeRelative(
+                Temporal.ZonedDateTime.from(schedule.nextOccurrenceAt)
+                  .toInstant()
+                  .toString(),
+              )}
               addons={
                 <TransactionScheduleDropdownMenu
                   sheetId={personalSheet.id}

@@ -33,25 +33,25 @@ describe('TransactionScheduleWorker', () => {
             sheet.currencyCode,
             'EXPENSE',
             100_00,
-            // "floating" local timestamp
-            '2023-01-01T00:00:00.000',
+            Temporal.ZonedDateTime.from(
+              '2023-01-01T00:00:00+01:00[Europe/Berlin]',
+            ),
           ),
-          tzId: 'Europe/Berlin',
         },
         sheet,
       ),
     });
 
+    const now = Temporal.ZonedDateTime.from(
+      '2024-01-01T00:00:00+01:00[Europe/Berlin]',
+    ).toInstant();
+
     const { returnvalue } = await waitForQueueSuccess(async () => {
-      await worker.processOnce(
-        Temporal.ZonedDateTime.from(
-          '2024-01-01T00:00:00+01:00[Europe/Berlin]',
-        ).toInstant(),
-      );
+      await worker.processOnce(now);
     });
 
     expect(returnvalue).toEqual({
-      now: '2023-12-31T23:00:00Z',
+      now: now.toString(),
       schedulesToProcessIds: [id],
       successfulSchedules: {
         [id]: {
@@ -89,6 +89,37 @@ describe('TransactionScheduleWorker', () => {
         ).toInstant(),
       ),
     ).toBe(true);
+
+    // fast-forward one month
+
+    const now2 = Temporal.ZonedDateTime.from(
+      '2024-02-01T00:00:00+01:00[Europe/Berlin]',
+    ).toInstant();
+
+    const { returnvalue: secondReturnvalue } = await waitForQueueSuccess(
+      async () => {
+        await worker.processOnce(
+          Temporal.ZonedDateTime.from(
+            '2024-02-01T00:00:00+01:00[Europe/Berlin]',
+          ).toInstant(),
+        );
+      },
+    );
+
+    // should only create one more
+
+    expect(secondReturnvalue).toEqual({
+      now: now2.toString(),
+      schedulesToProcessIds: [id],
+      successfulSchedules: {
+        [id]: {
+          created: 1,
+          instances: ['2024-01-01T00:00:00+01:00[Europe/Berlin]'],
+          nextOccurrenceAt: '2024-02-01T00:00:00+01:00[Europe/Berlin]',
+        },
+      },
+      failedSchedules: {},
+    });
   });
 
   it('processes without now set', async () => {

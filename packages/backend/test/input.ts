@@ -26,17 +26,16 @@ export const createPersonalSheetTransactionScheduleInput = (
   currencyCode: string,
   type: 'EXPENSE' | 'INCOME',
   amount = 100_00,
-  dtstart = Temporal.Now.plainDateTimeISO().toString(),
+  firstOccurrenceAt = Temporal.Now.zonedDateTimeISO(faker.location.timeZone()),
 ): CreatePersonalSheetTransactionScheduleInput => ({
   personalSheetId,
   type,
   description: `test personal ${type.toLowerCase()}`,
   category: 'other',
   money: { amount, scale: 2, currencyCode },
-  tzId: faker.location.timeZone(),
+  firstOccurrenceAt: firstOccurrenceAt.toString(),
   recurrenceRule: {
     freq: 'MONTHLY',
-    dtstart,
   },
 });
 

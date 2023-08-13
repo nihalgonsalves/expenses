@@ -115,6 +115,7 @@ model Transaction {
   transactionSchedule   TransactionSchedule? @relation(fields: [transactionScheduleId], references: [id], onDelete: SetNull)
   transactionScheduleId String?              @map("transaction_schedule_id")
 
+  @@unique([transactionScheduleId, spentAt])
   @@map("transactions")
 }
 
@@ -132,11 +133,10 @@ model TransactionSchedule {
   amount      Int
   scale       Int    @db.SmallInt()
 
-  tzId String @map("tz_id")
+  rruleFreq String @map("rrule_freq")
 
-  rruleDtstart     DateTime @map("rrule_dtstart") @db.Timestamp()
-  rruleFreq        String   @map("rrule_freq")
-  nextOccurrenceAt DateTime @map("next_occurrence_at") @db.Timestamptz()
+  nextOccurrenceAt   DateTime @map("next_occurrence_at") @db.Timestamptz()
+  nextOccurrenceTzId String   @map("next_occurrence_tz_id")
 
   transactions Transaction[]
 

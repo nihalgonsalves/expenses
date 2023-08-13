@@ -34,14 +34,15 @@ export type RecurrenceFrequency = z.infer<typeof ZRecurrenceFrequency>;
 
 const ZRecurrenceRule = z.object({
   freq: ZRecurrenceFrequency,
-  dtstart: z.string().nonempty(),
 });
 
 export type RecurrenceRule = z.infer<typeof ZRecurrenceRule>;
 
 export const ZCreatePersonalSheetTransactionScheduleInput =
   ZCreatePersonalSheetTransactionInput.omit({ spentAt: true }).extend({
-    tzId: z.string().nonempty(),
+    // TODO: add Zod type
+    /** ISO86001 string with timezone */
+    firstOccurrenceAt: z.string().nonempty(),
     recurrenceRule: ZRecurrenceRule,
   });
 
@@ -116,9 +117,8 @@ export type TransactionListItem = z.infer<typeof ZTransactionListItem>;
 export const ZTransactionScheduleListItem = ZTransactionListItem.omit({
   spentAt: true,
 }).extend({
-  tzId: z.string().nonempty(),
+  nextOccurrenceAt: z.string(),
   recurrenceRule: ZRecurrenceRule,
-  nextOccurrenceAt: z.string().nonempty(),
 });
 
 export type TransactionScheduleListItem = z.infer<
