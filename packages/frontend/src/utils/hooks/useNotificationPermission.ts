@@ -11,7 +11,7 @@ const navigatorPermissions =
     ? globalThis.navigator.permissions
     : undefined;
 
-export const PUSH_SUPPORTED =
+const PUSH_SUPPORTED =
   'serviceWorker' in globalThis.navigator && 'PushManager' in globalThis.window;
 
 export const useNotificationPermission = (): {

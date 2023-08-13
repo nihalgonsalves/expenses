@@ -443,7 +443,7 @@ const ParticipantSelect = ({
   );
 };
 
-export const TransactionForm = ({
+const TransactionForm = ({
   groupSheet,
   me,
   type,
@@ -626,7 +626,7 @@ export const TransactionForm = ({
   );
 };
 
-export const SettlementForm = ({
+const SettlementForm = ({
   groupSheet,
   me,
 }: {

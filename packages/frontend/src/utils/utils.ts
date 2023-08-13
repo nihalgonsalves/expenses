@@ -28,9 +28,6 @@ export const durationMilliseconds = (duration: Temporal.DurationLike) =>
 export const dateTimeLocalToZonedISOString = (val: string) =>
   Temporal.PlainDateTime.from(val).toZonedDateTime(CURRENT_TIMEZONE).toString();
 
-export const dateTimeLocalToPlainISOString = (val: string) =>
-  Temporal.PlainDateTime.from(val).toString();
-
 export const dateToISOString = (date: Date) =>
   Temporal.Instant.fromEpochMilliseconds(date.valueOf())
     .toZonedDateTimeISO(CURRENT_TIMEZONE)

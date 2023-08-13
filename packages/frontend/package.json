@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "@dinero.js/currencies": "^2.0.0-alpha.1",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",

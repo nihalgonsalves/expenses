@@ -53,26 +53,25 @@ const ZThemePreference = z.union([
   z.literal('dark'),
 ]);
 
-export type ThemePreference = z.infer<typeof ZThemePreference>;
+type ThemePreference = z.infer<typeof ZThemePreference>;
 
-export const [useThemePreference, getThemePreference] =
-  createPreferenceWithDefault(
-    'theme_preference',
-    (v) => {
-      const result = ZThemePreference.safeParse(v);
-      return result.success ? result.data : 'system';
-    },
-    'system',
-  );
+export const [useThemePreference] = createPreferenceWithDefault(
+  'theme_preference',
+  (v) => {
+    const result = ZThemePreference.safeParse(v);
+    return result.success ? result.data : 'system';
+  },
+  'system',
+);
 
-export const [useLightTheme, getLightTheme] = createPreferenceWithDefault(
+export const [useLightTheme] = createPreferenceWithDefault(
   'light_theme',
   (v) =>
     typeof v === 'string' && LIGHT_THEMES.includes(v) ? v : LIGHT_THEME_DEFAULT,
   LIGHT_THEME_DEFAULT,
 );
 
-export const [useDarkTheme, getDarkTheme] = createPreferenceWithDefault(
+export const [useDarkTheme] = createPreferenceWithDefault(
   'light_theme',
   (v) =>
     typeof v === 'string' && DARK_THEMES.includes(v) ? v : DARK_THEME_DEFAULT,

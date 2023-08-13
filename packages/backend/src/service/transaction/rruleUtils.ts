@@ -7,7 +7,7 @@ import {
   type RecurrenceFrequency,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
-export const frequencyToRRuleEnum: Record<RecurrenceFrequency, Frequency> = {
+const frequencyToRRuleEnum: Record<RecurrenceFrequency, Frequency> = {
   WEEKLY: Frequency.WEEKLY,
   MONTHLY: Frequency.MONTHLY,
 };
