@@ -42,7 +42,7 @@ const TransactionRow = ({
   const dateTime = formatDateTimeRelative(transaction.spentAt);
 
   return (
-    <motion.tr key={transaction.id} layout>
+    <motion.tr key={transaction.id} {...fadeInOut}>
       <td>
         <div className="flex items-center gap-4">
           <CategoryAvatar category={transaction.category} />
@@ -202,7 +202,7 @@ export const AllUserTransactionsList = ({
           <AnimatePresence mode="popLayout" initial={false}>
             {[...groupedByDate.keys()].map((date) => (
               <Fragment key={date}>
-                <thead>
+                <motion.thead {...fadeInOut}>
                   <tr>
                     <th>Category</th>
 
@@ -218,7 +218,7 @@ export const AllUserTransactionsList = ({
                     <th className="text-right">Amount</th>
                     <th className="hidden sm:table-cell">Sheet</th>
                   </tr>
-                </thead>
+                </motion.thead>
                 <tbody>
                   {groupedByDate
                     .get(date)
