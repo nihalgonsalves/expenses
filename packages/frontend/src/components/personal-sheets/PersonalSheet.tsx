@@ -26,7 +26,7 @@ const TransactionListItemComponent = ({
 }) => {
   const descriptionText = getTransactionDescription(transaction);
   return (
-    <div className="flex flex-row gap-4 text-sm">
+    <div className="flex flex-row gap-4 items-center text-sm">
       <CategoryAvatar category={transaction.category} />
       <div className="flex flex-col">
         <span>
@@ -122,11 +122,19 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             <TransactionListItemComponent
               key={schedule.id}
               transaction={schedule}
-              description={formatDateTimeRelative(
-                Temporal.ZonedDateTime.from(schedule.nextOccurrenceAt)
-                  .toInstant()
-                  .toString(),
-              )}
+              description={
+                <>
+                  <span className="capitalize">
+                    {schedule.recurrenceRule.freq.toLowerCase()}
+                  </span>
+                  ,{' next: '}
+                  {formatDateTimeRelative(
+                    Temporal.ZonedDateTime.from(schedule.nextOccurrenceAt)
+                      .toInstant()
+                      .toString(),
+                  )}
+                </>
+              }
               addons={
                 <TransactionScheduleDropdownMenu
                   sheetId={personalSheet.id}
