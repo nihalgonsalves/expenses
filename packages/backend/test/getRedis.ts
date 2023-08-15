@@ -1,5 +1,5 @@
 import IORedis from 'ioredis';
-import { GenericContainer } from 'testcontainers';
+import { GenericContainer, Wait } from 'testcontainers';
 import { afterAll } from 'vitest';
 
 export const getRedis = async () => {
@@ -7,6 +7,7 @@ export const getRedis = async () => {
     .withName(`vitest-redis-${process.env['VITEST_WORKER_ID'] ?? 0}`)
     .withExposedPorts(6379)
     .withReuse()
+    .withWaitStrategy(Wait.forLogMessage('Ready to accept connections'))
     .start();
 
   const redis = new IORedis({
