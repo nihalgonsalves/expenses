@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
+    "@testcontainers/postgresql": "^10.2.1",
     "@total-typescript/ts-reset": "^0.4.2",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie": "^0.5.1",

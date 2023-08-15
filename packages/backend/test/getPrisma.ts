@@ -3,7 +3,7 @@ import path from 'path';
 import { promisify } from 'util';
 
 import { PrismaClient } from '@prisma/client';
-import { PostgreSqlContainer } from 'testcontainers';
+import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import { afterAll, beforeEach } from 'vitest';
 
 export const getPrisma = async () => {
