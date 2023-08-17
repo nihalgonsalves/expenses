@@ -90,3 +90,6 @@ typings/
 # Output directory
 build
 dist
+
+# lefthook local-only file
+lefthook-local.yml
