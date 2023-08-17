@@ -7,6 +7,7 @@ export const makeWaitForQueueSuccess =
       connection: redis,
     });
 
+    await queueEvents.waitUntilReady();
     await exec();
 
     return new Promise<{
