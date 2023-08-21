@@ -13,10 +13,10 @@
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
-    "@tanstack/query-async-storage-persister": "^4.32.6",
-    "@tanstack/react-query": "^4.32.6",
-    "@tanstack/react-query-devtools": "^4.32.6",
-    "@tanstack/react-query-persist-client": "^4.32.6",
+    "@tanstack/query-async-storage-persister": "^4.33.0",
+    "@tanstack/react-query": "^4.33.0",
+    "@tanstack/react-query-devtools": "^4.33.0",
+    "@tanstack/react-query-persist-client": "^4.33.0",
     "@trpc/client": "^10.37.1",
     "@trpc/react-query": "^10.37.1",
     "@trpc/server": "^10.37.1",
@@ -25,7 +25,7 @@
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.6",
     "dinero.js": "^2.0.0-alpha.14",
-    "framer-motion": "^10.15.2",
+    "framer-motion": "^10.16.1",
     "immer": "^10.0.2",
     "jotai": "^2.3.1",
     "papaparse": "^5.4.1",
@@ -40,7 +40,7 @@
     "workbox-precaching": "^7.0.0",
     "workbox-routing": "^7.0.0",
     "workbox-window": "^7.0.0",
-    "zod": "^3.22.0"
+    "zod": "^3.22.2"
   },
   "devDependencies": {
     "@types/papaparse": "^5.3.7",
@@ -49,11 +49,11 @@
     "@vitejs/plugin-react": "^4.0.4",
     "autoprefixer": "^10.4.15",
     "daisyui": "^3.5.1",
-    "happy-dom": "^10.9.0",
-    "postcss": "^8.4.27",
+    "happy-dom": "^10.10.4",
+    "postcss": "^8.4.28",
     "tailwindcss": "^3.3.3",
     "vite": "^4.4.9",
     "vite-plugin-pwa": "^0.16.4",
-    "vitest": "~0.34.1"
+    "vitest": "~0.34.2"
   }
 }
