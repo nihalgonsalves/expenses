@@ -15,21 +15,21 @@
     "db:generate": "prisma generate"
   },
   "dependencies": {
-    "@bull-board/api": "^5.8.0",
-    "@bull-board/fastify": "^5.8.0",
+    "@bull-board/api": "^5.8.1",
+    "@bull-board/fastify": "^5.8.1",
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
     "@trpc/server": "^10.38.1",
     "bcrypt": "*",
-    "bullmq": "^4.8.0",
+    "bullmq": "^4.9.0",
     "cookie": "^0.5.0",
-    "fastify": "^4.22.2",
+    "fastify": "^4.23.0",
     "ioredis": "^5.3.2",
     "jose": "^4.14.6",
     "nanoid": "^4.0.2",
     "rrule": "^2.7.2",
-    "ua-parser-js": "^1.0.35",
+    "ua-parser-js": "^1.0.36",
     "web-push": "^3.6.5",
     "zod": "^3.22.2"
   },
@@ -42,14 +42,14 @@
     "@types/pem": "^1.14.0",
     "@types/ua-parser-js": "^0.7.37",
     "@types/web-push": "^3.6.0",
-    "@vitest/coverage-v8": "^0.34.3",
+    "@vitest/coverage-v8": "^0.34.4",
     "dotenv": "^16.3.1",
     "esbuild": "^0.19.2",
     "pem": "^1.14.8",
     "prisma": "*",
     "squawk-cli": "^0.24.0",
     "testcontainers": "^10.2.1",
-    "vitest": "~0.34.3"
+    "vitest": "~0.34.4"
   },
   "resolutions": {
     "@bull-board/ui": "5.8.0",
