@@ -312,9 +312,8 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      const summaries = await ctx.transactionService.getParticipantSummaries(
-        sheet,
-      );
+      const summaries =
+        await ctx.transactionService.getParticipantSummaries(sheet);
 
       return summaries.sort(({ participantId }) =>
         participantId === ctx.user.id ? -1 : 1,
