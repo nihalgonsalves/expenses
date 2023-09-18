@@ -37,7 +37,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "eslint-plugin-unused-imports": "^3.0.0",
-    "lefthook": "^1.4.10",
+    "lefthook": "^1.4.11",
     "npm-run-all2": "^6.0.6",
     "prettier": "^3.0.3",
     "prettier-plugin-prisma": "^5.0.0",
