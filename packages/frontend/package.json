@@ -17,9 +17,9 @@
     "@tanstack/react-query": "^4.35.3",
     "@tanstack/react-query-devtools": "^4.35.3",
     "@tanstack/react-query-persist-client": "^4.35.5",
-    "@trpc/client": "^10.38.3",
-    "@trpc/react-query": "^10.38.3",
-    "@trpc/server": "^10.38.3",
+    "@trpc/client": "^10.38.4",
+    "@trpc/react-query": "^10.38.4",
+    "@trpc/server": "^10.38.4",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
     "dexie": "^3.2.4",
@@ -43,17 +43,17 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
-    "@types/papaparse": "^5.3.8",
+    "@types/papaparse": "^5.3.9",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.0.4",
-    "autoprefixer": "^10.4.15",
-    "daisyui": "^3.7.5",
-    "happy-dom": "^12.1.2",
+    "@vitejs/plugin-react": "^4.1.0",
+    "autoprefixer": "^10.4.16",
+    "daisyui": "^3.7.7",
+    "happy-dom": "^12.2.0",
     "postcss": "^8.4.30",
     "tailwindcss": "^3.3.3",
     "vite": "^4.4.9",
     "vite-plugin-pwa": "^0.16.5",
-    "vitest": "~0.34.4"
+    "vitest": "~0.34.5"
   }
 }
