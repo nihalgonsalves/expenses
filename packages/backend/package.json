@@ -31,7 +31,7 @@
     "rrule": "^2.7.2",
     "ua-parser-js": "^1.0.36",
     "web-push": "^3.6.6",
-    "zod": "^3.22.2"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
