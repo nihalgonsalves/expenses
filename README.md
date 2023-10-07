@@ -1,30 +1,30 @@
 # expenses
 
-![build status](https://github.com/nihalgonsalves/expenses/workflows/build/badge.svg)
-![last commit](https://img.shields.io/github/last-commit/nihalgonsalves/expenses)
+## Initial dev setup
 
-Scripts:
+1. Configure local environment variables
 
-- `yarn dev` run from source, auto-restarting
-- `yarn lint` run eslint
-- `yarn lint --fix` run eslint with auto-formatting
-- `yarn build` build to JS
-- `yarn start` run built JS
-- `yarn test` currently does nothing
+   ```sh
+   cd packages/backend/
+   yarn web-push generate-vapid-keys
+   cp .env.example .env
+   # edit .env to add the generated keys
+   ```
 
-## use with react
+2. Start dev services
 
-```diff
-diff --git a/.eslintrc b/.eslintrc
-index e755856..bbaeee5 100644
---- a/.eslintrc
-+++ b/.eslintrc
-@@ -1,3 +1,6 @@
-{
--  "extends": ["./node_modules/@nihalgonsalves/esconfig/.eslintrc"]
-+  "extends": [
-+    "./node_modules/@nihalgonsalves/esconfig/.eslintrc",
-+    "./node_modules/@nihalgonsalves/esconfig/.eslintrc.react"
-+  ]
-}
-```
+   ```sh
+   docker compose -f compose.dev.yaml up
+   ```
+
+3. Migrate databases
+
+   ```sh
+   yarn be prisma migrate dev
+   ```
+
+4. Start dev servers
+
+   ```sh
+   yarn dev
+   ```
