@@ -20,18 +20,18 @@
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
-    "@trpc/server": "^10.38.5",
+    "@trpc/server": "^10.40.0",
     "bcrypt": "*",
-    "bullmq": "^4.12.0",
+    "bullmq": "^4.12.2",
     "cookie": "^0.5.0",
     "fastify": "^4.23.2",
     "ioredis": "^5.3.2",
-    "jose": "^4.15.1",
+    "jose": "^4.15.2",
     "nanoid": "^5.0.1",
     "rrule": "^2.7.2",
     "ua-parser-js": "^1.0.36",
     "web-push": "^3.6.6",
-    "zod": "^3.22.3"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
@@ -53,8 +53,8 @@
   },
   "resolutions": {
     "@bull-board/ui": "5.8.0",
-    "@prisma/client": "5.3.1",
-    "prisma": "5.3.1",
+    "@prisma/client": "5.4.2",
+    "prisma": "5.4.2",
     "bcrypt": "5.1.1"
   }
 }
