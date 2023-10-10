@@ -12,6 +12,6 @@
   "dependencies": {
     "@dinero.js/currencies": "^2.0.0-alpha.1",
     "dinero.js": "^2.0.0-alpha.14",
-    "zod": "^3.22.3"
+    "zod": "^3.22.4"
   }
 }
