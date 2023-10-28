@@ -23,3 +23,6 @@ pre-commit:
       glob: '*.{js,ts,jsx,tsx,mjs,mts,cjs,cts,html,css,json,md,yml,yaml,sql}'
       run: yarn prettier --write {staged_files}
       stage_fixed: true
+    hadolint:
+      glob: '**/Dockerfile*'
+      run: hadolint {staged_files}
