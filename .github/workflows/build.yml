@@ -11,7 +11,6 @@ jobs:
           node-version: 20
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn format:check
       - run: yarn build
       - run: yarn lint
       - uses: hadolint/hadolint-action@v3.1.0

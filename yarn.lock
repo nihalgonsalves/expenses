@@ -1143,11 +1143,6 @@
   resolved "https://registry.yarnpkg.com/@dinero.js/currencies/-/currencies-2.0.0-alpha.14.tgz#140cfa036520577a6d0b5b303136ffbdc05b2ca2"
   integrity sha512-Ck5ZLjRI7Pl7Y4VkeOst4WEwiN5vZezv8GHcXWsVLUfTNsmkV37VeLYDRAuTUP4akEJyIry+1o1qHYNtLq3eNw==
 
-"@dinero.js/currencies@^2.0.0-alpha.1":
-  version "2.0.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@dinero.js/currencies/-/currencies-2.0.0-alpha.1.tgz#bcee84319c14bdb1de0e09778005b59d56f37237"
-  integrity sha512-JoKY6q3AOm2II44qLp6VMGn+j+p6QC39m3DFogKZXsucWIIvzt7c2v04DZrrHWLNnDYNzITOnbQ7f2pGbONjig==
-
 "@emotion/is-prop-valid@^0.8.2":
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz#db28b1c4368a259b60a97311d6a952d4fd01ac1a"
@@ -6110,6 +6105,48 @@ shell-quote@^1.7.3:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/shell-quote/-/shell-quote-1.8.1.tgz#6dbf4db75515ad5bac63b4f1894c3a154c766680"
   integrity sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==
+
+sherif-darwin-arm64@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sherif-darwin-arm64/-/sherif-darwin-arm64-0.3.1.tgz#3d9a772c8dba8e0bc42ad2658b5909d97c36750f"
+  integrity sha512-faXW73a5urqbR2TbAXcJm4cYclh75IxWWfPHF0zoWq1aTocO9ou/5mGquB2kzmXzn3oskXUwuRuuhu4tJpeOQg==
+
+sherif-darwin-x64@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sherif-darwin-x64/-/sherif-darwin-x64-0.3.1.tgz#57be17cfc148b584ab346e0edb8aa52f2eea9060"
+  integrity sha512-CT1SozIYrXiAFjhHFA8KVKgdoHfYYiiaG6VADyLyygqIN3Gx3p5+XFt9NTEGqojQIsXQ/79EJpPd0Cbv7b6SsQ==
+
+sherif-linux-arm64@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sherif-linux-arm64/-/sherif-linux-arm64-0.3.1.tgz#36cf3654fcf0222cd5cadf0090b1d234f30ce767"
+  integrity sha512-YVsaubFlQVadk3Q8Zl/TMKciq2Cnbk0tQCgDAOsEFsPnPHgN/yW+X4q4fdBw1Unl6y9sLqIFSGPdW49EKSHS5w==
+
+sherif-linux-x64@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sherif-linux-x64/-/sherif-linux-x64-0.3.1.tgz#061906596193605ce3d41ee1fdea1dc2896093dd"
+  integrity sha512-Z4jgMYGptQMPmaEega7SjoXNIBBVV0Jw/b9LsdXmJIw3CWAOTncHFVDJP8PGRzIfXjIg5d+Z25z7KWni6AuzjA==
+
+sherif-windows-arm64@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sherif-windows-arm64/-/sherif-windows-arm64-0.3.1.tgz#982b019d5b686b976ac1ea0248f50eeb792bf153"
+  integrity sha512-XeHNyiA7cR7pl9HMYZjCjP1r4qXIcl19Jgod85Uz31zEBECGUiKCwD73GA5edIhiH5xaARHQiZjzpud/m+y8Jw==
+
+sherif-windows-x64@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sherif-windows-x64/-/sherif-windows-x64-0.3.1.tgz#97f341a32afaf46b2c600bb860d7099595bcddb0"
+  integrity sha512-lTAjlE6eegVIu+83RRx8kzOPVPjEy+fsukbGFjPwgnAmC1Tmcf00O/UuCjoZ1Ars27zE6H39zUNhDkBtBSu1Ag==
+
+sherif@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sherif/-/sherif-0.3.1.tgz#730d3cfec6b33a681ab3ecd5936526fe9df71b60"
+  integrity sha512-XFAx2ElwQXXi4gwnuUPxbrWNEkiVFz18pMLBWAJI460KzzXIodtcc76IVAci4yO3YOgH+NBOlXvFq03clJnjkQ==
+  optionalDependencies:
+    sherif-darwin-arm64 "0.3.1"
+    sherif-darwin-x64 "0.3.1"
+    sherif-linux-arm64 "0.3.1"
+    sherif-linux-x64 "0.3.1"
+    sherif-windows-arm64 "0.3.1"
+    sherif-windows-x64 "0.3.1"
 
 side-channel@^1.0.4:
   version "1.0.4"

@@ -14,9 +14,11 @@
     "build": "tsc --build",
     "clean": "git clean -Xdf",
     "test": "vitest",
-    "lint": "eslint --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx ./packages/*",
+    "lint": "run-p lint:*",
+    "lint:eslint": "eslint --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx ./packages/*",
+    "lint:sherif": "sherif",
+    "lint:format": "prettier . --check",
     "format": "prettier . --write",
-    "format:check": "prettier . --check",
     "fe": "yarn workspace @nihalgonsalves/expenses-frontend",
     "be": "yarn workspace @nihalgonsalves/expenses-backend",
     "e2e": "yarn workspace @nihalgonsalves/expenses-e2e",
@@ -42,6 +44,7 @@
     "prettier": "^3.0.3",
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-sql": "^0.15.1",
+    "sherif": "^0.3.1",
     "typescript": "^5.2.2",
     "vitest": "~0.34.6"
   }
