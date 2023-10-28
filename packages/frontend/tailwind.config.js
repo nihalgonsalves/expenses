@@ -1,7 +1,9 @@
-/* eslint-env commonjs */
+// eslint-disable-next-line import/no-extraneous-dependencies
+import daisyui from 'daisyui';
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+// eslint-disable-next-line import/no-default-export
+export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {},
@@ -74,6 +76,5 @@ module.exports = {
       'winter',
     ],
   },
-  // eslint-disable-next-line import/no-extraneous-dependencies
-  plugins: [require('daisyui')],
+  plugins: [daisyui],
 };
