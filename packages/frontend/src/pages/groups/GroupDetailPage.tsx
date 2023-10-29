@@ -79,19 +79,6 @@ export const GroupDetailPage = () => {
           {actorInfo?.isAdmin && (
             <>
               <ConfirmDialog
-                confirmLabel="Confirm Delete"
-                description="Are you sure you want to delete this group? This action is irreversible."
-                onConfirm={handleDelete}
-                renderButton={(onClick) => (
-                  <li>
-                    <a onClick={onClick}>
-                      <MdDeleteOutline /> Delete Group
-                    </a>
-                  </li>
-                )}
-              />
-
-              <ConfirmDialog
                 confirmLabel="Confirm Archive"
                 description="Are you sure you want to archive this sheet?"
                 onConfirm={handleArchive}
@@ -99,6 +86,19 @@ export const GroupDetailPage = () => {
                   <li>
                     <a onClick={onClick}>
                       <MdOutlineArchive /> Archive Sheet
+                    </a>
+                  </li>
+                )}
+              />
+
+              <ConfirmDialog
+                confirmLabel="Confirm Delete"
+                description="Are you sure you want to delete this group? This action is irreversible."
+                onConfirm={handleDelete}
+                renderButton={(onClick) => (
+                  <li>
+                    <a onClick={onClick}>
+                      <MdDeleteOutline /> Delete Group
                     </a>
                   </li>
                 )}
