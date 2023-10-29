@@ -216,7 +216,7 @@ describe('mySheets', () => {
     expect(mySheets).toMatchObject([{ id: personalSheet.id }]);
   });
 
-  it.only('hides archived sheets when includeArchived is false', async () => {
+  it('hides archived sheets when includeArchived is false', async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
