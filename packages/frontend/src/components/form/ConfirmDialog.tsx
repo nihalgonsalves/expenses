@@ -1,4 +1,6 @@
-import { type MouseEvent, useCallback, useRef, useState } from 'react';
+import { type MouseEvent, useCallback, useState } from 'react';
+
+import { Dialog } from '../Dialog';
 
 import { Button } from './Button';
 
@@ -14,7 +16,7 @@ export const ConfirmDialog = ({
   renderButton: (onClick: () => void) => React.ReactNode;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const ref = useRef<HTMLDialogElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleConfirmed = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
@@ -23,7 +25,7 @@ export const ConfirmDialog = ({
 
       try {
         await onConfirm();
-        ref.current?.close();
+        setIsOpen(false);
       } catch {
         setIsLoading(false);
       }
@@ -33,27 +35,22 @@ export const ConfirmDialog = ({
 
   return (
     <>
-      <dialog ref={ref} className="modal">
-        <form method="dialog" className="modal-box">
-          <h3 className="font-bold text-lg">Confirm</h3>
-          <p className="py-4">{description}</p>
-          <div className="modal-action">
-            <button className="btn">Cancel</button>
-            <Button
-              className="btn-error"
-              isLoading={isLoading}
-              onClick={handleConfirmed}
-            >
-              {confirmLabel}
-            </Button>
-          </div>
-        </form>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
+      <Dialog isOpen={isOpen} setIsOpen={setIsOpen}>
+        <h3 className="font-bold text-lg">Confirm</h3>
+        <p className="py-4">{description}</p>
+        <div className="modal-action">
+          <button className="btn">Cancel</button>
+          <Button
+            className="btn-error"
+            isLoading={isLoading}
+            onClick={handleConfirmed}
+          >
+            {confirmLabel}
+          </Button>
+        </div>
+      </Dialog>
       {renderButton(() => {
-        ref.current?.showModal();
+        setIsOpen(true);
       })}
     </>
   );

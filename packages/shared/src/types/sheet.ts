@@ -41,6 +41,10 @@ export const ZGroupSheetByIdResponse = ZSheet.extend({
 });
 export type GroupSheetByIdResponse = z.infer<typeof ZGroupSheetByIdResponse>;
 
+export const ZSheetsQuery = z.object({
+  includeArchived: z.boolean(),
+});
+
 export const ZSheetsResponse = z.array(
   ZSheet.extend({
     participants: z.array(ZParticipant),

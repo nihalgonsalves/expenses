@@ -201,17 +201,42 @@ describe('mySheets', () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
-    const groupWithOwner = await personalSheetFactory(prisma, {
+    const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
     });
 
-    // otherPersonalSheet
-    await personalSheetFactory(prisma);
-    // otherGroupSheet
-    await groupSheetFactory(prisma);
+    await Promise.all([
+      // otherPersonalSheet
+      personalSheetFactory(prisma),
+      // otherGroupSheet
+      groupSheetFactory(prisma),
+    ]);
 
-    const mySheets = await caller.sheet.mySheets();
-    expect(mySheets).toMatchObject([{ id: groupWithOwner.id }]);
+    const mySheets = await caller.sheet.mySheets({ includeArchived: true });
+    expect(mySheets).toMatchObject([{ id: personalSheet.id }]);
+  });
+
+  it.only('hides archived sheets when includeArchived is false', async () => {
+    const user = await userFactory(prisma);
+
+    const caller = useProtectedCaller(user);
+
+    await Promise.all([
+      personalSheetFactory(prisma, {
+        withOwnerId: user.id,
+        isArchived: true,
+      }),
+      groupSheetFactory(prisma, {
+        withOwnerId: user.id,
+        isArchived: true,
+      }),
+    ]);
+
+    const mySheets = await caller.sheet.mySheets({ includeArchived: false });
+    expect(mySheets).toHaveLength(0);
+
+    const allMySheets = await caller.sheet.mySheets({ includeArchived: true });
+    expect(allMySheets).toHaveLength(2);
   });
 
   it('returns all groups where the user is a participant', async () => {
@@ -226,7 +251,7 @@ describe('mySheets', () => {
     });
     const otherGroupSheet = await groupSheetFactory(prisma);
 
-    const mySheets = await caller.sheet.mySheets();
+    const mySheets = await caller.sheet.mySheets({ includeArchived: true });
 
     expect(mySheets.length).toBe(2);
 

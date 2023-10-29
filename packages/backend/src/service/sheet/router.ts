@@ -10,15 +10,20 @@ import {
   ZGroupSheetWithParticipants,
   ZSheetsResponse,
   ZSheet,
+  ZSheetsQuery,
 } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { protectedProcedure, router } from '../../trpc';
 
 export const sheetRouter = router({
   mySheets: protectedProcedure
+    .input(ZSheetsQuery)
     .output(ZSheetsResponse)
-    .query(async ({ ctx }) => {
-      const groupSheets = await ctx.sheetService.getSheets(ctx.user);
+    .query(async ({ ctx, input }) => {
+      const groupSheets = await ctx.sheetService.getSheets(
+        ctx.user,
+        input.includeArchived,
+      );
 
       return groupSheets.map((groupSheet) => ({
         ...groupSheet,

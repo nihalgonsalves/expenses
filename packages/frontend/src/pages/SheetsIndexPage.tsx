@@ -7,7 +7,7 @@ import { SheetsList } from '../components/SheetsList';
 import { RootLoader } from './Root';
 
 export const SheetsIndexPage = () => {
-  const result = trpc.sheet.mySheets.useQuery();
+  const result = trpc.sheet.mySheets.useQuery({ includeArchived: true });
 
   return (
     <RootLoader

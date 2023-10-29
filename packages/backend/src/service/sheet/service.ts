@@ -137,10 +137,11 @@ export class SheetService {
     });
   }
 
-  async getSheets(user: User) {
+  async getSheets(user: User, includeArchived: boolean) {
     return this.prismaClient.sheet.findMany({
       where: {
         participants: { some: { participantId: user.id } },
+        ...(includeArchived ? {} : { isArchived: false }),
       },
       include: { participants: { include: { participant: true } } },
     });

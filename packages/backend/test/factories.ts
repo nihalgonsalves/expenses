@@ -37,6 +37,7 @@ export const groupSheetFactory = async (
     withOwnerId?: string;
     withParticipantIds?: string[];
     currencyCode?: string;
+    isArchived?: boolean;
   } = {},
 ) => {
   const createOptions = [];
@@ -63,6 +64,7 @@ export const groupSheetFactory = async (
       type: SheetType.GROUP,
       name: `${faker.location.city()} trip`,
       currencyCode: opts.currencyCode ?? currencyCodeFactory(),
+      isArchived: opts.isArchived ?? false,
       participants: {
         create: createOptions,
       },
@@ -75,6 +77,7 @@ export const personalSheetFactory = async (
   opts: {
     withOwnerId?: string;
     currencyCode?: string;
+    isArchived?: boolean;
   } = {},
 ) => {
   const createOptions = [];
@@ -92,6 +95,7 @@ export const personalSheetFactory = async (
       type: SheetType.PERSONAL,
       name: 'Personal expenses',
       currencyCode: opts.currencyCode ?? currencyCodeFactory(),
+      isArchived: opts.isArchived ?? false,
       participants: {
         create: createOptions,
       },

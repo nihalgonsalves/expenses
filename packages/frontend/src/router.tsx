@@ -1,8 +1,5 @@
-import { forwardRef } from 'react';
 import {
   createBrowserRouter,
-  Link,
-  type LinkProps,
   useParams as useParamsOriginal,
   Navigate,
   useLocation,
@@ -26,14 +23,6 @@ import { SheetImportPage } from './pages/sheets/SheetImportPage';
 import { NewPersonalSheetExpensePage } from './pages/sheets/expenses/NewExpensePage';
 import { PersonalExpensesIndexPage } from './pages/sheets/expenses/PersonalExpensesIndexPage';
 import { StatsIndexPage } from './pages/stats/StatsIndexPage';
-
-export const RouterLink = forwardRef<
-  HTMLAnchorElement,
-  Omit<LinkProps, 'to'> & { href: string }
->(({ href, ...props }, ref) => (
-  <Link ref={ref} to={href} {...props} role={undefined} />
-));
-RouterLink.displayName = 'RouterLink';
 
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();

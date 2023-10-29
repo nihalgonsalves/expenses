@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useAllUserTransactions } from '../../api/useAllUserTransactions';
 import { AllUserTransactionsList } from '../../components/AllUserTransactionsList';
+import { QuickCreateTransactionFAB } from '../../components/expenses/QuickCreateTransactionFAB';
 import { shortDateFormatter } from '../../utils/utils';
 import { RootLoader } from '../Root';
 
@@ -39,8 +40,9 @@ export const ExpensesIndexPage = () => {
   return (
     <RootLoader
       result={result}
-      title="Expenses"
+      title="Transactions"
       mainClassName="p-0 md:p-0"
+      additionalChildren={<QuickCreateTransactionFAB />}
       render={(data) => (
         <AllUserTransactionsList
           data={data}
