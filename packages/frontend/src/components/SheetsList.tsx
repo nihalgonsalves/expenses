@@ -68,14 +68,16 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
     </div>
   ) : (
     <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
-      <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
-        <div className="card-body">
-          <h2 className="card-title">Personal Sheets</h2>
-          {personal.map((sheet) => (
-            <SheetItem key={sheet.id} sheet={sheet} />
-          ))}
+      {personal.length > 0 && (
+        <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
+          <div className="card-body">
+            <h2 className="card-title">Personal Sheets</h2>
+            {personal.map((sheet) => (
+              <SheetItem key={sheet.id} sheet={sheet} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {group.length > 0 && (
         <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
