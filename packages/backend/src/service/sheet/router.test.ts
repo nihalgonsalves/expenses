@@ -28,6 +28,7 @@ describe('createPersonalSheet', () => {
       type: 'PERSONAL',
       name: 'Personal Expenses',
       currencyCode: 'EUR',
+      isArchived: false,
     });
   });
 });
@@ -50,6 +51,7 @@ describe('createGroupSheet', () => {
       type: 'GROUP',
       name: 'WG Expenses',
       currencyCode: 'EUR',
+      isArchived: false,
       participants: expect.arrayContaining([
         {
           id: user.id,
@@ -98,6 +100,7 @@ describe('personalSheetById', () => {
       type: 'PERSONAL',
       name: personalSheet.name,
       currencyCode: personalSheet.currencyCode,
+      isArchived: false,
     });
   });
 
@@ -149,6 +152,7 @@ describe('groupSheetById', () => {
       type: 'GROUP',
       name: groupSheet.name,
       currencyCode: groupSheet.currencyCode,
+      isArchived: false,
       participants: [
         {
           id: user.id,
@@ -277,6 +281,53 @@ describe('deleteSheet', () => {
 
         await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
           'Only admins can delete sheets',
+        );
+      });
+    }
+  });
+});
+
+describe('archiveSheet', () => {
+  describe.each([
+    ['personalSheet', personalSheetFactory],
+    ['groupSheet', groupSheetFactory],
+  ])('%s', (sheetType, factory) => {
+    it(`archives a ${sheetType}`, async () => {
+      const user = await userFactory(prisma);
+      const caller = useProtectedCaller(user);
+      const sheet = await factory(prisma, {
+        withOwnerId: user.id,
+      });
+
+      await caller.sheet.archiveSheet(sheet.id);
+
+      expect(
+        await prisma.sheet.findUnique({ where: { id: sheet.id } }),
+      ).toMatchObject({ isArchived: true });
+    });
+
+    it.todo(`archives a ${sheetType} with transactions`);
+
+    it('returns a 404 if the participant has no access', async () => {
+      const user = await userFactory(prisma);
+      const caller = useProtectedCaller(user);
+      const sheet = await factory(prisma);
+
+      await expect(caller.sheet.archiveSheet(sheet.id)).rejects.toThrow(
+        'Sheet not found',
+      );
+    });
+
+    if (sheetType === 'groupSheet') {
+      it('returns a 403 if the participant is not an admin', async () => {
+        const user = await userFactory(prisma);
+        const caller = useProtectedCaller(user);
+        const sheet = await factory(prisma, {
+          withParticipantIds: [user.id],
+        });
+
+        await expect(caller.sheet.archiveSheet(sheet.id)).rejects.toThrow(
+          'Only admins can archive sheets',
         );
       });
     }

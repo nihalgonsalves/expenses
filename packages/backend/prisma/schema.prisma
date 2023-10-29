@@ -50,6 +50,7 @@ model Sheet {
   type         SheetType
   name         String
   currencyCode String    @map("currency_code")
+  isArchived   Boolean   @default(false) @map("is_archived")
 
   participants         SheetMemberships[]
   transactions         Transaction[]

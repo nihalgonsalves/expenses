@@ -94,6 +94,25 @@ export const sheetRouter = router({
       };
     }),
 
+  archiveSheet: protectedProcedure
+    .input(z.string().nonempty())
+    .output(z.void())
+    .mutation(async ({ input, ctx }) => {
+      const { role } = await ctx.sheetService.ensureSheetMembership(
+        input,
+        ctx.user.id,
+      );
+
+      if (role !== SheetParticipantRole.ADMIN) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Only admins can archive sheets',
+        });
+      }
+
+      await ctx.sheetService.archiveSheet(input);
+    }),
+
   deleteSheet: protectedProcedure
     .input(z.string().nonempty())
     .output(z.void())

@@ -1,5 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { MdDeleteOutline, MdMoreVert, MdPlaylistAdd } from 'react-icons/md';
+import {
+  MdDeleteOutline,
+  MdMoreVert,
+  MdOutlineArchive,
+  MdPlaylistAdd,
+} from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
@@ -23,6 +28,7 @@ export const GroupDetailPage = () => {
 
   const { mutateAsync: deleteGroupSheet } =
     trpc.sheet.deleteSheet.useMutation();
+  const { mutateAsync: archiveSheet } = trpc.sheet.archiveSheet.useMutation();
 
   const handleDelete = useCallback(async () => {
     await deleteGroupSheet(groupSheetId);
@@ -32,6 +38,13 @@ export const GroupDetailPage = () => {
 
     navigate('/groups');
   }, [deleteGroupSheet, groupSheetId, navigate, utils]);
+
+  const handleArchive = useCallback(async () => {
+    await archiveSheet(groupSheetId);
+    void utils.sheet.groupSheetById.invalidate(groupSheetId);
+    void utils.sheet.mySheets.invalidate();
+    navigate('/sheets');
+  }, [archiveSheet, groupSheetId, navigate, utils]);
 
   const actorInfo: ActorInfo | undefined = useMemo(
     () =>
@@ -64,18 +77,33 @@ export const GroupDetailPage = () => {
             <ExportGroupTransactionsDropdown groupSheet={result.data} />
           )}
           {actorInfo?.isAdmin && (
-            <ConfirmDialog
-              confirmLabel="Confirm Delete"
-              description="Are you sure you want to delete this group? This action is irreversible."
-              onConfirm={handleDelete}
-              renderButton={(onClick) => (
-                <li>
-                  <a onClick={onClick}>
-                    <MdDeleteOutline /> Delete Group
-                  </a>
-                </li>
-              )}
-            />
+            <>
+              <ConfirmDialog
+                confirmLabel="Confirm Delete"
+                description="Are you sure you want to delete this group? This action is irreversible."
+                onConfirm={handleDelete}
+                renderButton={(onClick) => (
+                  <li>
+                    <a onClick={onClick}>
+                      <MdDeleteOutline /> Delete Group
+                    </a>
+                  </li>
+                )}
+              />
+
+              <ConfirmDialog
+                confirmLabel="Confirm Archive"
+                description="Are you sure you want to archive this sheet?"
+                onConfirm={handleArchive}
+                renderButton={(onClick) => (
+                  <li>
+                    <a onClick={onClick}>
+                      <MdOutlineArchive /> Archive Sheet
+                    </a>
+                  </li>
+                )}
+              />
+            </>
           )}
         </DropdownMenu>
       }

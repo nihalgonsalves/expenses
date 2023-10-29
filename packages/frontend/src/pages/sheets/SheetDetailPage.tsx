@@ -1,5 +1,10 @@
 import { useCallback } from 'react';
-import { MdCloudUpload, MdDeleteOutline, MdPlaylistAdd } from 'react-icons/md';
+import {
+  MdCloudUpload,
+  MdDeleteOutline,
+  MdOutlineArchive,
+  MdPlaylistAdd,
+} from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
@@ -19,6 +24,7 @@ export const SheetDetailPage = () => {
 
   const utils = trpc.useContext();
   const { mutateAsync: deleteSheet } = trpc.sheet.deleteSheet.useMutation();
+  const { mutateAsync: archiveSheet } = trpc.sheet.archiveSheet.useMutation();
 
   const handleDelete = useCallback(async () => {
     await deleteSheet(sheetId);
@@ -26,6 +32,13 @@ export const SheetDetailPage = () => {
     void utils.sheet.mySheets.invalidate();
     navigate('/sheets');
   }, [deleteSheet, sheetId, navigate, utils]);
+
+  const handleArchive = useCallback(async () => {
+    await archiveSheet(sheetId);
+    void utils.sheet.personalSheetById.invalidate(sheetId);
+    void utils.sheet.mySheets.invalidate();
+    navigate('/sheets');
+  }, [archiveSheet, sheetId, navigate, utils]);
 
   return (
     <RootLoader
@@ -51,6 +64,19 @@ export const SheetDetailPage = () => {
           {result.data && (
             <ExportPersonalTransactionsDropdown personalSheet={result.data} />
           )}
+
+          <ConfirmDialog
+            confirmLabel="Confirm Archive"
+            description="Are you sure you want to archive this sheet?"
+            onConfirm={handleArchive}
+            renderButton={(onClick) => (
+              <li>
+                <a onClick={onClick}>
+                  <MdOutlineArchive /> Archive Sheet
+                </a>
+              </li>
+            )}
+          />
 
           <ConfirmDialog
             confirmLabel="Confirm Delete"

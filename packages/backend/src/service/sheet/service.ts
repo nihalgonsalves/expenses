@@ -165,6 +165,17 @@ export class SheetService {
     });
   }
 
+  async archiveSheet(id: string) {
+    return this.prismaClient.sheet.update({
+      where: {
+        id,
+      },
+      data: {
+        isArchived: true,
+      },
+    });
+  }
+
   async addGroupSheetMember(groupSheet: Sheet, participantEmail: string) {
     try {
       const member = await this.prismaClient.sheetMemberships.create({

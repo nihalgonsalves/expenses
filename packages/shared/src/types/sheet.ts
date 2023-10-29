@@ -8,6 +8,7 @@ export const ZSheet = z.object({
   type: ZSheetType,
   name: z.string(),
   currencyCode: z.string(),
+  isArchived: z.boolean(),
 });
 export type Sheet = z.infer<typeof ZSheet>;
 
