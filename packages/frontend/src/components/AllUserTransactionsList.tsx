@@ -95,17 +95,21 @@ const ButtonStat = ({
     aria-selected={selected}
     className={clsxtw(
       'stat place-items-center',
-      selected ? 'btn-secondary text-secondary-content' : 'btn-ghost',
+      selected
+        ? 'btn-secondary bg-secondary text-secondary-content'
+        : 'btn-ghost',
     )}
     onClick={setSelected}
   >
     <span
-      className={clsxtw('stat-title', selected && 'text-secondary-content')}
+      className={clsxtw('stat-title', { 'text-secondary-content': selected })}
     >
       {title}
     </span>
     <span className="stat-value text-xl md:text-4xl">{value}</span>
-    <span className={clsxtw('stat-desc', selected && 'text-secondary-content')}>
+    <span
+      className={clsxtw('stat-desc', { 'text-secondary-content': selected })}
+    >
       {desc}
     </span>
   </button>

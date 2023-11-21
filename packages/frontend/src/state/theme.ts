@@ -10,6 +10,7 @@ import { createPreferenceWithDefault } from './preferences';
 export const LIGHT_THEMES = [
   'expenses-light',
   'light',
+  'nord',
   'cupcake',
   'bumblebee',
   'emerald',
@@ -33,6 +34,8 @@ export const DARK_THEMES = [
   'expenses-dark',
   'synthwave',
   'night',
+  'dim',
+  'sunset',
   'dark',
   'halloween',
   'forest',
