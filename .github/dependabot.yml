@@ -24,9 +24,6 @@ updates:
       - dependency-name: '@tanstack/react-query-persist-client'
         update-types:
           - 'version-update:semver-major'
-      - dependency-name: 'daisyui'
-        update-types:
-          - 'version-update:semver-major'
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
