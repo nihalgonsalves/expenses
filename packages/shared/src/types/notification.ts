@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { ZMoney } from './transaction';
 
 const ZNotificationTransaction = z.object({
-  id: z.string().nonempty(),
-  category: z.string().nonempty(),
+  id: z.string().min(1),
+  category: z.string().min(1),
   description: z.string(),
   money: ZMoney,
 });
@@ -12,8 +12,8 @@ const ZNotificationTransaction = z.object({
 const ZExpenseNotificationPayload = z.object({
   type: z.literal('EXPENSE'),
   groupSheet: z.object({
-    id: z.string().nonempty(),
-    name: z.string().nonempty(),
+    id: z.string().min(1),
+    name: z.string().min(1),
   }),
   transaction: ZNotificationTransaction.extend({
     yourShare: ZMoney,
@@ -23,8 +23,8 @@ const ZExpenseNotificationPayload = z.object({
 const ZIncomeNotificationPayload = z.object({
   type: z.literal('INCOME'),
   groupSheet: z.object({
-    id: z.string().nonempty(),
-    name: z.string().nonempty(),
+    id: z.string().min(1),
+    name: z.string().min(1),
   }),
   transaction: ZNotificationTransaction.extend({
     yourShare: ZMoney,
@@ -34,8 +34,8 @@ const ZIncomeNotificationPayload = z.object({
 const ZTransferNotificationPayload = z.object({
   type: z.literal('TRANSFER'),
   groupSheet: z.object({
-    id: z.string().nonempty(),
-    name: z.string().nonempty(),
+    id: z.string().min(1),
+    name: z.string().min(1),
   }),
   transaction: ZNotificationTransaction.extend({
     type: z.union([z.literal('sent'), z.literal('received')]),
@@ -44,7 +44,7 @@ const ZTransferNotificationPayload = z.object({
 
 const ZTestNotificationPayload = z.object({
   type: z.literal('TEST'),
-  message: z.string().nonempty(),
+  message: z.string().min(1),
 });
 
 export const ZNotificationPayload = z.union([
@@ -59,8 +59,8 @@ export type NotificationPayload = z.infer<typeof ZNotificationPayload>;
 export const ZPushSubscription = z.object({
   endpoint: z.string().url(),
   keys: z.object({
-    auth: z.string().nonempty(),
-    p256dh: z.string().nonempty(),
+    auth: z.string().min(1),
+    p256dh: z.string().min(1),
   }),
 });
 

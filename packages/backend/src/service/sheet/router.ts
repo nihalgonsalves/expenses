@@ -34,7 +34,7 @@ export const sheetRouter = router({
     }),
 
   groupSheetById: protectedProcedure
-    .input(z.string().nonempty())
+    .input(z.string().min(1))
     .output(ZGroupSheetByIdResponse)
     .query(async ({ input, ctx }) => {
       const groupSheet = await ctx.sheetService.getGroupSheetById(
@@ -60,7 +60,7 @@ export const sheetRouter = router({
     }),
 
   personalSheetById: protectedProcedure
-    .input(z.string().nonempty())
+    .input(z.string().min(1))
     .output(ZSheet)
     .query(async ({ input, ctx }) => {
       const sheet = await ctx.sheetService.getPersonalSheetById(
@@ -100,7 +100,7 @@ export const sheetRouter = router({
     }),
 
   archiveSheet: protectedProcedure
-    .input(z.string().nonempty())
+    .input(z.string().min(1))
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { role } = await ctx.sheetService.ensureSheetMembership(
@@ -119,7 +119,7 @@ export const sheetRouter = router({
     }),
 
   deleteSheet: protectedProcedure
-    .input(z.string().nonempty())
+    .input(z.string().min(1))
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { role } = await ctx.sheetService.ensureSheetMembership(
@@ -140,7 +140,7 @@ export const sheetRouter = router({
   addGroupSheetMember: protectedProcedure
     .input(
       z.object({
-        groupSheetId: z.string().nonempty(),
+        groupSheetId: z.string().min(1),
         email: z.string(),
       }),
     )
@@ -175,8 +175,8 @@ export const sheetRouter = router({
   deleteGroupSheetMember: protectedProcedure
     .input(
       z.object({
-        groupSheetId: z.string().nonempty(),
-        participantId: z.string().nonempty(),
+        groupSheetId: z.string().min(1),
+        participantId: z.string().min(1),
       }),
     )
     .output(z.void())

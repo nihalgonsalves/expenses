@@ -4,7 +4,7 @@ export const ZSheetType = z.union([z.literal('PERSONAL'), z.literal('GROUP')]);
 export type SheetType = z.infer<typeof ZSheetType>;
 
 export const ZSheet = z.object({
-  id: z.string().nonempty(),
+  id: z.string().min(1),
   type: ZSheetType,
   name: z.string(),
   currencyCode: z.string(),
@@ -13,7 +13,7 @@ export const ZSheet = z.object({
 export type Sheet = z.infer<typeof ZSheet>;
 
 export const ZParticipant = z.object({
-  id: z.string().nonempty(),
+  id: z.string().min(1),
   name: z.string(),
 });
 

@@ -125,8 +125,8 @@ export const transactionRouter = router({
   deleteTransaction: protectedProcedure
     .input(
       z.object({
-        sheetId: z.string().nonempty(),
-        transactionId: z.string().nonempty(),
+        sheetId: z.string().min(1),
+        transactionId: z.string().min(1),
       }),
     )
     .output(z.void())
@@ -142,8 +142,8 @@ export const transactionRouter = router({
   deleteTransactionSchedule: protectedProcedure
     .input(
       z.object({
-        sheetId: z.string().nonempty(),
-        transactionScheduleId: z.string().nonempty(),
+        sheetId: z.string().min(1),
+        transactionScheduleId: z.string().min(1),
       }),
     )
     .output(z.void())
@@ -189,7 +189,7 @@ export const transactionRouter = router({
   getPersonalSheetTransactions: protectedProcedure
     .input(
       z.object({
-        personalSheetId: z.string().nonempty(),
+        personalSheetId: z.string().min(1),
         limit: z.number().positive().optional(),
       }),
     )
@@ -221,7 +221,7 @@ export const transactionRouter = router({
   getPersonalSheetTransactionSchedules: protectedProcedure
     .input(
       z.object({
-        personalSheetId: z.string().nonempty(),
+        personalSheetId: z.string().min(1),
       }),
     )
     .output(z.array(ZTransactionScheduleListItem))
@@ -264,7 +264,7 @@ export const transactionRouter = router({
   getGroupSheetTransactions: protectedProcedure
     .input(
       z.object({
-        groupSheetId: z.string().nonempty(),
+        groupSheetId: z.string().min(1),
         limit: z.number().positive().optional(),
       }),
     )
@@ -304,7 +304,7 @@ export const transactionRouter = router({
     }),
 
   getParticipantSummaries: protectedProcedure
-    .input(z.string().nonempty())
+    .input(z.string().min(1))
     .output(ZTransactionSummaryResponse)
     .query(async ({ input, ctx }) => {
       const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(

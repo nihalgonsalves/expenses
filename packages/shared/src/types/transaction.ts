@@ -13,7 +13,7 @@ const ZCreateSheetTransactionInput = z.object({
   money: ZMoney,
   spentAt: z.string().nonempty(),
   description: z.string(),
-  category: z.string().nonempty(),
+  category: z.string().min(1),
 });
 
 export type CreateSheetTransactionInput = z.infer<
@@ -22,7 +22,7 @@ export type CreateSheetTransactionInput = z.infer<
 
 export const ZCreatePersonalSheetTransactionInput =
   ZCreateSheetTransactionInput.extend({
-    personalSheetId: z.string().nonempty(),
+    personalSheetId: z.string().min(1),
   });
 
 export const ZRecurrenceFrequency = z.union([
@@ -51,7 +51,7 @@ export type CreatePersonalSheetTransactionScheduleInput = z.infer<
 >;
 
 export const ZBatchCreatePersonalSheetTransactionInput = z.object({
-  personalSheetId: z.string().nonempty(),
+  personalSheetId: z.string().min(1),
   transactions: z.array(ZCreateSheetTransactionInput),
 });
 
@@ -61,8 +61,8 @@ export type CreatePersonalSheetTransactionInput = z.infer<
 
 export const ZCreateGroupSheetTransactionInput =
   ZCreateSheetTransactionInput.extend({
-    paidOrReceivedById: z.string().nonempty(),
-    groupSheetId: z.string().nonempty(),
+    paidOrReceivedById: z.string().min(1),
+    groupSheetId: z.string().min(1),
     splits: z.array(
       z.object({
         participantId: z.string(),
@@ -76,14 +76,14 @@ export type CreateGroupSheetTransactionInput = z.infer<
 >;
 
 export const ZCreateSheetTransactionResponse = z.object({
-  id: z.string().nonempty(),
+  id: z.string().min(1),
   description: z.string(),
 });
 
 export const ZCreateGroupSheetSettlementInput = z.object({
-  groupSheetId: z.string().nonempty(),
-  fromId: z.string().nonempty(),
-  toId: z.string().nonempty(),
+  groupSheetId: z.string().min(1),
+  fromId: z.string().min(1),
+  toId: z.string().min(1),
   money: ZMoney,
 });
 
@@ -104,11 +104,11 @@ export const ZTransactionType = z.union([
 export type TransactionType = z.infer<typeof ZTransactionType>;
 
 export const ZTransactionListItem = z.object({
-  id: z.string().nonempty(),
+  id: z.string().min(1),
   money: ZMoney,
   spentAt: z.string().nonempty(),
   description: z.string(),
-  category: z.string().nonempty(),
+  category: z.string().min(1),
   type: ZTransactionType,
 });
 
@@ -153,10 +153,10 @@ export const ZBalance = z.object({
   share: ZMoney,
 });
 
-const ZTransactionParticipantType = z.union([
-  z.literal('participant'),
-  z.literal('transfer_from'),
-  z.literal('transfer_to'),
+const ZTransactionParticipantType = z.enum([
+  'participant',
+  'transfer_from',
+  'transfer_to',
 ]);
 
 const ZGroupSheetParticipantItem = ZParticipant.extend({
@@ -184,7 +184,7 @@ export const ZGetGroupSheetTransactionsResponse = z.object({
 
 export const ZTransactionSummaryResponse = z.array(
   z.object({
-    participantId: z.string().nonempty(),
+    participantId: z.string().min(1),
     name: z.string(),
     balance: ZMoney,
   }),
