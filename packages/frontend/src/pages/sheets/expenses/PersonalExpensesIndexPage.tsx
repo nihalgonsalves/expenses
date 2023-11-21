@@ -3,11 +3,11 @@ import { MdPlaylistAdd } from 'react-icons/md';
 import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionButton';
 import { PersonalSheetTransactionsExpandedList } from '../../../components/personal-sheets/PersonalSheetTransactionsExpandedList';
-import { PersonalSheetParams, useParams } from '../../../router';
+import { SheetParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';
 
 export const PersonalExpensesIndexPage = () => {
-  const { sheetId } = useParams(PersonalSheetParams);
+  const { sheetId } = useParams(SheetParams);
   const result = trpc.transaction.getPersonalSheetTransactions.useQuery({
     personalSheetId: sheetId,
   });

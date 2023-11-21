@@ -15,15 +15,15 @@ import { ConfirmDialog } from '../../components/form/ConfirmDialog';
 import type { ActorInfo } from '../../components/group-sheets/BalanceSummary';
 import { ExportGroupTransactionsDropdown } from '../../components/group-sheets/ExportGroupTransactionsDropdown';
 import { GroupSheet } from '../../components/group-sheets/GroupSheet';
-import { GroupParams, useParams } from '../../router';
+import { SheetParams, useParams } from '../../router';
 import { RootLoader } from '../Root';
 
 export const GroupDetailPage = () => {
   const navigate = useNavigate();
-  const { groupSheetId } = useParams(GroupParams);
+  const { sheetId } = useParams(SheetParams);
 
   const utils = trpc.useContext();
-  const result = trpc.sheet.groupSheetById.useQuery(groupSheetId);
+  const result = trpc.sheet.groupSheetById.useQuery(sheetId);
   const { data: me } = useCurrentUser();
 
   const { mutateAsync: deleteGroupSheet } =
@@ -31,20 +31,20 @@ export const GroupDetailPage = () => {
   const { mutateAsync: archiveSheet } = trpc.sheet.archiveSheet.useMutation();
 
   const handleDelete = useCallback(async () => {
-    await deleteGroupSheet(groupSheetId);
+    await deleteGroupSheet(sheetId);
 
-    void utils.sheet.groupSheetById.invalidate(groupSheetId);
+    void utils.sheet.groupSheetById.invalidate(sheetId);
     void utils.sheet.mySheets.invalidate();
 
     navigate('/groups');
-  }, [deleteGroupSheet, groupSheetId, navigate, utils]);
+  }, [deleteGroupSheet, sheetId, navigate, utils]);
 
   const handleArchive = useCallback(async () => {
-    await archiveSheet(groupSheetId);
-    void utils.sheet.groupSheetById.invalidate(groupSheetId);
+    await archiveSheet(sheetId);
+    void utils.sheet.groupSheetById.invalidate(sheetId);
     void utils.sheet.mySheets.invalidate();
     navigate('/sheets');
-  }, [archiveSheet, groupSheetId, navigate, utils]);
+  }, [archiveSheet, sheetId, navigate, utils]);
 
   const actorInfo: ActorInfo | undefined = useMemo(
     () =>
@@ -66,7 +66,7 @@ export const GroupDetailPage = () => {
       showBackButton
       additionalChildren={
         <FloatingActionButton
-          to={`/groups/${groupSheetId}/expenses/new`}
+          to={`/groups/${sheetId}/expenses/new`}
           label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />

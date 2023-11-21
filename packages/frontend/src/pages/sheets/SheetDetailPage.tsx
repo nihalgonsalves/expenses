@@ -13,11 +13,11 @@ import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { ConfirmDialog } from '../../components/form/ConfirmDialog';
 import { ExportPersonalTransactionsDropdown } from '../../components/personal-sheets/ExportPersonalTransactionsDropdown';
 import { PersonalSheet } from '../../components/personal-sheets/PersonalSheet';
-import { useParams, PersonalSheetParams } from '../../router';
+import { useParams, SheetParams } from '../../router';
 import { RootLoader } from '../Root';
 
 export const SheetDetailPage = () => {
-  const { sheetId } = useParams(PersonalSheetParams);
+  const { sheetId } = useParams(SheetParams);
   const result = trpc.sheet.personalSheetById.useQuery(sheetId);
 
   const navigate = useNavigate();

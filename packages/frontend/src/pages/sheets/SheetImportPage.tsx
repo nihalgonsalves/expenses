@@ -1,10 +1,10 @@
 import { trpc } from '../../api/trpc';
 import { PersonalTransactionsImporter } from '../../components/personal-sheets/PersonalTransactionsImporter';
-import { useParams, PersonalSheetParams } from '../../router';
+import { useParams, SheetParams } from '../../router';
 import { Root } from '../Root';
 
 export const SheetImportPage = () => {
-  const { sheetId } = useParams(PersonalSheetParams);
+  const { sheetId } = useParams(SheetParams);
   const { data } = trpc.sheet.personalSheetById.useQuery(sheetId);
 
   return (

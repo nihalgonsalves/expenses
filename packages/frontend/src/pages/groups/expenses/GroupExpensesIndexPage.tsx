@@ -3,13 +3,13 @@ import { MdPlaylistAdd } from 'react-icons/md';
 import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionButton';
 import { GroupSheetTransactionsExpandedList } from '../../../components/group-sheets/GroupSheetTransactionsExpandedList';
-import { GroupParams, useParams } from '../../../router';
+import { SheetParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';
 
 export const GroupExpensesIndexPage = () => {
-  const { groupSheetId } = useParams(GroupParams);
+  const { sheetId } = useParams(SheetParams);
   const result = trpc.transaction.getGroupSheetTransactions.useQuery({
-    groupSheetId,
+    groupSheetId: sheetId,
   });
 
   return (
@@ -19,14 +19,14 @@ export const GroupExpensesIndexPage = () => {
       showBackButton
       additionalChildren={
         <FloatingActionButton
-          to={`/groups/${groupSheetId}/expenses/new`}
+          to={`/groups/${sheetId}/expenses/new`}
           label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />
       }
       render={({ transactions }) => (
         <GroupSheetTransactionsExpandedList
-          groupSheetId={groupSheetId}
+          groupSheetId={sheetId}
           transactions={transactions}
         />
       )}

@@ -81,10 +81,10 @@ export const router = createBrowserRouter([
             element: <Navigate to="/sheets" />,
           },
           {
-            path: '/groups/:groupSheetId',
+            path: '/groups/:sheetId',
             children: [
               {
-                path: '/groups/:groupSheetId',
+                path: '/groups/:sheetId',
                 element: (
                   <AuthenticatedRoute>
                     <GroupDetailPage />
@@ -92,7 +92,7 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/groups/:groupSheetId/expenses',
+                path: '/groups/:sheetId/expenses',
                 element: (
                   <AuthenticatedRoute>
                     <GroupExpensesIndexPage />
@@ -100,7 +100,7 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/groups/:groupSheetId/expenses/new',
+                path: '/groups/:sheetId/expenses/new',
                 element: (
                   <AuthenticatedRoute>
                     <NewGroupSheetExpensePage />
@@ -186,8 +186,6 @@ export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
   return schema.parse(params);
 };
 
-export const GroupParams = z.object({ groupSheetId: z.string() });
-
-export const PersonalSheetParams = z.object({ sheetId: z.string() });
+export const SheetParams = z.object({ sheetId: z.string() });
 
 export { RouterProvider } from 'react-router-dom';
