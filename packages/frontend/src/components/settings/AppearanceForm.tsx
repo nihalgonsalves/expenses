@@ -1,6 +1,5 @@
 import { CgDarkMode } from 'react-icons/cg';
 import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
-import { z } from 'zod';
 
 import { useSupportedCurrencies } from '../../api/currencyConversion';
 import { usePreferredCurrencyCode } from '../../state/preferences';
@@ -10,6 +9,8 @@ import {
   useThemePreference,
   useDarkTheme,
   useLightTheme,
+  ZLightTheme,
+  ZDarkTheme,
 } from '../../state/theme';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { Select } from '../form/Select';
@@ -75,14 +76,14 @@ export const AppearanceForm = () => {
           value={lightTheme}
           setValue={setLightTheme}
           options={lightThemeOptions}
-          schema={z.string()}
+          schema={ZLightTheme}
         />
         <Select
           label="Dark Theme"
           value={darkTheme}
           setValue={setDarkTheme}
           options={darkThemeOptions}
-          schema={z.string()}
+          schema={ZDarkTheme}
         />
 
         <CurrencySelect
