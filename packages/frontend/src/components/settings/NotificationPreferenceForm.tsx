@@ -20,7 +20,7 @@ export const NotificationPreferenceForm = () => {
   const serviceWorkerRegistration = useServiceWorkerRegistration();
   const [endpoint, setEndpoint] = useSubscriptionEndpoint();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { data: applicationServerKey } =
     trpc.notification.getPublicKey.useQuery();
   const { data: subscriptions } = trpc.notification.getSubscriptions.useQuery();

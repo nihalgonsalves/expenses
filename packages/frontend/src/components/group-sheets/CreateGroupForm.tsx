@@ -18,7 +18,7 @@ export const CreateGroupForm = ({
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: createGroupSheet, isLoading } =
     trpc.sheet.createGroupSheet.useMutation();
 

@@ -254,7 +254,7 @@ export const PersonalTransactionsImporter = ({
 }) => {
   const navigate = useNavigate();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: batchCreatePersonalSheetTransactions } =
     trpc.transaction.batchCreatePersonalSheetTransactions.useMutation();
 

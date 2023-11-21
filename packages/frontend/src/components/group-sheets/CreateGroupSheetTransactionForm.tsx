@@ -452,7 +452,7 @@ const TransactionForm = ({
   me: User;
   type: Exclude<TransactionType, 'TRANSFER'>;
 }) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: createGroupSheetTransaction, isLoading } =
     trpc.transaction.createGroupSheetTransaction.useMutation();
 
@@ -642,7 +642,7 @@ const SettlementForm = ({
 
   const [, moneySnapshot] = useMoneyValues(amount, groupSheet.currencyCode);
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: createGroupSheetSettlement, isLoading } =
     trpc.transaction.createGroupSheetSettlement.useMutation();
 

@@ -28,7 +28,7 @@ const ExpandedTransactionListItem = forwardRef<
     groupSheetId: string;
   }
 >(({ transaction, groupSheetId }, ref) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const [expanded, setExpanded] = useState(false);
 

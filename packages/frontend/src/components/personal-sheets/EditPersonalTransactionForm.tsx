@@ -57,7 +57,7 @@ export const EditPersonalTransactionForm = ({
       moneySnapshot,
     );
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: updatePersonalSheetTransaction, isLoading } =
     trpc.transaction.updatePersonalSheetTransaction.useMutation();
 

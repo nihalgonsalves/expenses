@@ -99,7 +99,7 @@ export const CreatePersonalTransactionForm = ({
       moneySnapshot,
     );
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const {
     mutateAsync: createPersonalSheetTransaction,
     isLoading: noScheduleMutationIsLoading,

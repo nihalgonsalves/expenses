@@ -15,7 +15,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
 
   const { mutateAsync: addGroupSheetMember, isLoading } =
     trpc.sheet.addGroupSheetMember.useMutation();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [email, setEmail] = useState('');

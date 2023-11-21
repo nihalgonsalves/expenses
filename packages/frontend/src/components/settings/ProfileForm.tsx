@@ -11,7 +11,7 @@ import { TextField } from '../form/TextField';
 
 export const ProfileForm = ({ me }: { me: User }) => {
   const onLine = useNavigatorOnLine();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: updateUser, isLoading } =
     trpc.user.updateUser.useMutation();
 

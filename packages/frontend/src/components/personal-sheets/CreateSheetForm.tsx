@@ -16,7 +16,7 @@ export const CreateSheetForm = ({
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: createSheet, isLoading } =
     trpc.sheet.createPersonalSheet.useMutation();
 

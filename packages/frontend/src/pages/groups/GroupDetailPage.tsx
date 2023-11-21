@@ -22,7 +22,7 @@ export const GroupDetailPage = () => {
   const navigate = useNavigate();
   const { sheetId } = useParams(SheetParams);
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const result = trpc.sheet.groupSheetById.useQuery(sheetId);
   const { data: me } = useCurrentUser();
 

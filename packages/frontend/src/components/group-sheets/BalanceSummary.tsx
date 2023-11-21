@@ -30,7 +30,7 @@ const PersonMenu = ({
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: deleteGroupSheetMember } =
     trpc.sheet.deleteGroupSheetMember.useMutation();
 

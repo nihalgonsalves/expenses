@@ -47,7 +47,7 @@ const TransactionScheduleDropdownMenu = ({
   sheetId: string;
   transactionScheduleId: string;
 }) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: deleteTransactionSchedule } =
     trpc.transaction.deleteTransactionSchedule.useMutation();
 

@@ -22,7 +22,7 @@ export const SheetDetailPage = () => {
 
   const navigate = useNavigate();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync: deleteSheet } = trpc.sheet.deleteSheet.useMutation();
   const { mutateAsync: archiveSheet } = trpc.sheet.archiveSheet.useMutation();
 
