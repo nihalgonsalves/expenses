@@ -25,6 +25,19 @@ export const ZCreatePersonalSheetTransactionInput =
     personalSheetId: z.string().min(1),
   });
 
+export type CreatePersonalSheetTransactionInput = z.infer<
+  typeof ZCreatePersonalSheetTransactionInput
+>;
+
+export const ZUpdatePersonalSheetTransactionInput =
+  ZCreatePersonalSheetTransactionInput.extend({
+    id: z.string().min(1),
+  });
+
+export type UpdatePersonalSheetTransactionInput = z.infer<
+  typeof ZUpdatePersonalSheetTransactionInput
+>;
+
 export const ZRecurrenceFrequency = z.enum(['WEEKLY', 'MONTHLY']);
 
 export type RecurrenceFrequency = z.infer<typeof ZRecurrenceFrequency>;
@@ -51,10 +64,6 @@ export const ZBatchCreatePersonalSheetTransactionInput = z.object({
   personalSheetId: z.string().min(1),
   transactions: z.array(ZCreateSheetTransactionInput),
 });
-
-export type CreatePersonalSheetTransactionInput = z.infer<
-  typeof ZCreatePersonalSheetTransactionInput
->;
 
 export const ZCreateGroupSheetTransactionInput =
   ZCreateSheetTransactionInput.extend({

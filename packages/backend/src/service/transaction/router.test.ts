@@ -21,7 +21,10 @@ import { generateId } from '../../utils/nanoid';
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
 describe('createPersonalSheetTransaction', () => {
-  it('creates an transaction', async () => {
+  it.each([
+    ['EXPENSE', -100_00],
+    ['INCOME', 100_00],
+  ] as const)('creates an %s transaction', async (type, amount) => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -33,7 +36,7 @@ describe('createPersonalSheetTransaction', () => {
       createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
-        'EXPENSE',
+        type,
       ),
     );
 
@@ -47,46 +50,11 @@ describe('createPersonalSheetTransaction', () => {
     });
 
     expect(transaction).toMatchObject({
-      type: TransactionType.EXPENSE,
+      type,
     });
 
     expect(transaction?.transactionEntries).toMatchObject([
-      { scale: 2, amount: -100_00, userId: user.id },
-    ]);
-  });
-
-  it('creates an income transaction', async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
-    const personalSheet = await personalSheetFactory(prisma, {
-      withOwnerId: user.id,
-    });
-
-    const response = await caller.transaction.createPersonalSheetTransaction(
-      createPersonalSheetTransactionInput(
-        personalSheet.id,
-        personalSheet.currencyCode,
-        'INCOME',
-        100_00,
-      ),
-    );
-
-    expect(response).toMatchObject({
-      id: expect.any(String),
-    });
-
-    const transaction = await prisma.transaction.findUnique({
-      where: { id: response.id },
-      include: { transactionEntries: true },
-    });
-
-    expect(transaction).toMatchObject({
-      type: TransactionType.INCOME,
-    });
-
-    expect(transaction?.transactionEntries).toMatchObject([
-      { scale: 2, amount: 100_00, userId: user.id },
+      { scale: 2, amount, userId: user.id },
     ]);
   });
 
@@ -139,6 +107,141 @@ describe('createPersonalSheetTransaction', () => {
           'EXPENSE',
         ),
       ),
+    ).rejects.toThrow('Sheet not found');
+  });
+});
+
+describe('updatePersonalSheetTransaction', () => {
+  it.each([
+    ['EXPENSE', -50_00],
+    ['INCOME', 50_00],
+  ] as const)('updates an %s transaction', async (type, amount) => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    const { id } = await caller.transaction.createPersonalSheetTransaction(
+      createPersonalSheetTransactionInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        type,
+      ),
+    );
+
+    const response = await caller.transaction.updatePersonalSheetTransaction({
+      id,
+      ...createPersonalSheetTransactionInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        type,
+        Math.abs(amount),
+      ),
+    });
+
+    expect(response).toMatchObject({
+      id,
+    });
+
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: response.id },
+      include: { transactionEntries: true },
+    });
+
+    expect(transaction).toMatchObject({
+      type,
+    });
+
+    expect(transaction?.transactionEntries).toMatchObject([
+      { scale: 2, amount, userId: user.id },
+    ]);
+  });
+
+  it("returns 400 if the transaction currency doesn't match", async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: 'EUR',
+    });
+
+    const { id } = await caller.transaction.createPersonalSheetTransaction(
+      createPersonalSheetTransactionInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        'EXPENSE',
+      ),
+    );
+
+    const invalidInput = {
+      id,
+      ...createPersonalSheetTransactionInput(
+        personalSheet.id,
+        'GBP',
+        'EXPENSE',
+      ),
+    };
+
+    await expect(
+      caller.transaction.updatePersonalSheetTransaction(invalidInput),
+    ).rejects.toThrow('Currencies do not match');
+  });
+
+  it('returns 404 if the transaction does not exist', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: 'EUR',
+    });
+
+    await expect(
+      caller.transaction.updatePersonalSheetTransaction({
+        id: generateId(),
+        ...createPersonalSheetTransactionInput(
+          personalSheet.id,
+          personalSheet.currencyCode,
+          'EXPENSE',
+        ),
+      }),
+    ).rejects.toThrow('Transaction not found');
+  });
+
+  it('returns 404 if the personalSheet does not exist', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    await expect(
+      caller.transaction.updatePersonalSheetTransaction({
+        id: generateId(),
+        ...createPersonalSheetTransactionInput(
+          generateId(),
+          currencyCodeFactory(),
+          'EXPENSE',
+        ),
+      }),
+    ).rejects.toThrow('Sheet not found');
+  });
+
+  it('returns 404 if the user is not the personalSheet owner', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma);
+
+    await expect(
+      caller.transaction.updatePersonalSheetTransaction({
+        id: generateId(),
+        ...createPersonalSheetTransactionInput(
+          personalSheet.id,
+          personalSheet.currencyCode,
+          'EXPENSE',
+        ),
+      }),
     ).rejects.toThrow('Sheet not found');
   });
 });
@@ -298,7 +401,7 @@ describe('batchCreatePersonalSheetTransactions', () => {
     ).rejects.toThrow('Currencies do not match');
   });
 
-  it("returns 400 if the amount isn't abosolute", async () => {
+  it("returns 400 if the amount isn't absolute", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -327,7 +430,7 @@ describe('batchCreatePersonalSheetTransactions', () => {
 });
 
 describe('createGroupSheetTransaction', () => {
-  it('creates an transaction', async () => {
+  it('creates an expense transaction', async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -935,6 +1038,54 @@ describe('deleteTransactionSchedule', () => {
       }),
     ).rejects.toThrow('Transaction schedule not found');
   });
+});
+
+describe('getTransaction', () => {
+  it('returns a transaction', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    const { id } = await caller.transaction.createPersonalSheetTransaction(
+      createPersonalSheetTransactionInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        'EXPENSE',
+      ),
+    );
+
+    expect(
+      await caller.transaction.getTransaction({
+        sheetId: personalSheet.id,
+        transactionId: id,
+      }),
+    ).toMatchObject({
+      transaction: { id },
+    });
+  });
+
+  it('returns 404 if the transaction does not exist', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    await expect(
+      caller.transaction.getTransaction({
+        sheetId: personalSheet.id,
+        transactionId: generateId(),
+      }),
+    ).rejects.toThrow('Transaction not found');
+  });
+
+  it.todo('returns 404 if the personalSheet does not exist');
+
+  it.todo('returns 404 if the user is not the personalSheet owner');
 });
 
 describe('getAllUserTransactions', () => {

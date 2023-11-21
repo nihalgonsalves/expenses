@@ -19,6 +19,7 @@ import { NewGroupSheetTransactionPage } from './pages/groups/transactions/NewGro
 import { NewSheetPage } from './pages/sheets/NewSheetPage';
 import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
 import { SheetImportPage } from './pages/sheets/SheetImportPage';
+import { EditPersonalSheetTransactionPage } from './pages/sheets/transactions/EditPersonalSheetTransactionPage';
 import { NewPersonalSheetTransactionPage } from './pages/sheets/transactions/NewPersonalSheetTransactionPage';
 import { PersonalExpensesIndexPage } from './pages/sheets/transactions/PersonalTransactionsIndexPage';
 import { StatsIndexPage } from './pages/stats/StatsIndexPage';
@@ -158,6 +159,14 @@ export const router = createBrowserRouter([
                 ),
               },
               {
+                path: '/sheets/:sheetId/transactions/:transactionId',
+                element: (
+                  <AuthenticatedRoute>
+                    <EditPersonalSheetTransactionPage />
+                  </AuthenticatedRoute>
+                ),
+              },
+              {
                 path: '/sheets/:sheetId/import',
                 element: (
                   <AuthenticatedRoute>
@@ -187,5 +196,9 @@ export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
 };
 
 export const SheetParams = z.object({ sheetId: z.string() });
+
+export const TransactionParams = SheetParams.extend({
+  transactionId: z.string(),
+});
 
 export { RouterProvider } from 'react-router-dom';

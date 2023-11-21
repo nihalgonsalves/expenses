@@ -28,6 +28,7 @@ import type {
   CreatePersonalSheetTransactionInput,
   GroupSheetParticipantItem,
   CreatePersonalSheetTransactionScheduleInput,
+  UpdatePersonalSheetTransactionInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
@@ -317,6 +318,53 @@ export class TransactionService {
     });
   }
 
+  async updatePersonalSheetTransaction(
+    user: User,
+    input: Omit<UpdatePersonalSheetTransactionInput, 'personalSheetId'>,
+    personalSheet: Sheet,
+  ) {
+    verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
+    verifyAmountIsAbsolute(input.money);
+
+    const transaction = await this.prismaClient.transaction.findUnique({
+      where: { id: input.id },
+    });
+
+    if (!transaction) {
+      throw new TransactionServiceError({
+        code: 'NOT_FOUND',
+        message: 'Transaction not found',
+      });
+    }
+
+    const [, result] = await this.prismaClient.$transaction([
+      this.prismaClient.transaction.delete({
+        where: { id: input.id },
+      }),
+      this.prismaClient.transaction.create({
+        include: {
+          transactionEntries: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        data: {
+          ...mapInputToCreatePersonalTransaction(
+            input,
+            personalSheet,
+            input.id,
+          ),
+          transactionEntries: {
+            create: [mapInputToCreatePersonalTransactionEntry(input, user)],
+          },
+        },
+      }),
+    ]);
+
+    return result;
+  }
+
   async createPersonalSheetTransactionSchedule(
     input: Omit<CreatePersonalSheetTransactionScheduleInput, 'personalSheetId'>,
     personalSheet: Sheet,
@@ -448,7 +496,6 @@ export class TransactionService {
       transaction.transactionEntries,
     );
 
-    // TODO: Background task
     await this.notificationService.sendNotifications(
       Object.fromEntries(
         balances
@@ -504,7 +551,6 @@ export class TransactionService {
       },
     });
 
-    // TODO: Background task
     const messages: Record<string, NotificationPayload> = {};
     if (input.fromId !== user.id)
       messages[input.fromId] = transferToNotificationPayload(
@@ -522,6 +568,15 @@ export class TransactionService {
     await this.notificationService.sendNotifications(messages);
 
     return transaction;
+  }
+
+  async getTransaction(id: string, sheet: Sheet) {
+    return this.prismaClient.transaction.findUnique({
+      where: { id, sheetId: sheet.id },
+      include: {
+        sheet: true,
+      },
+    });
   }
 
   async deleteTransaction(id: string, groupSheet: Sheet) {

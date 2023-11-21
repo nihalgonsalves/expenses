@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
+import type { Money } from '@nihalgonsalves/expenses-shared/money';
 import {
   ZCreateGroupSheetTransactionInput,
   ZCreateSheetTransactionResponse,
@@ -17,9 +18,25 @@ import {
   ZTransactionScheduleListItem,
   type TransactionScheduleListItem,
   ZRecurrenceFrequency,
+  ZTransactionWithSheet,
+  ZUpdatePersonalSheetTransactionInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { protectedProcedure, router } from '../../trpc';
+
+const mapTransaction = <
+  T extends { amount: number; scale: number; spentAt: Date },
+>(
+  { amount, scale, spentAt, ...transaction }: T,
+  sheet: { currencyCode: string },
+): Omit<T, 'amount' | 'scale' | 'spentAt'> & {
+  spentAt: string;
+  money: Money;
+} => ({
+  ...transaction,
+  spentAt: spentAt.toISOString(),
+  money: { amount, scale, currencyCode: sheet.currencyCode },
+});
 
 export const transactionRouter = router({
   createPersonalSheetTransaction: protectedProcedure
@@ -32,6 +49,22 @@ export const transactionRouter = router({
       );
 
       return ctx.transactionService.createPersonalSheetTransaction(
+        ctx.user,
+        input,
+        sheet,
+      );
+    }),
+
+  updatePersonalSheetTransaction: protectedProcedure
+    .input(ZUpdatePersonalSheetTransactionInput)
+    .output(ZCreateSheetTransactionResponse)
+    .mutation(async ({ input, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensurePersonalSheetMembership(
+        input.personalSheetId,
+        ctx.user.id,
+      );
+
+      return ctx.transactionService.updatePersonalSheetTransaction(
         ctx.user,
         input,
         sheet,
@@ -159,6 +192,38 @@ export const transactionRouter = router({
       );
     }),
 
+  getTransaction: protectedProcedure
+    .input(
+      z.object({
+        sheetId: z.string().min(1),
+        transactionId: z.string().min(1),
+      }),
+    )
+    .output(ZTransactionWithSheet)
+    .query(async ({ input: { sheetId, transactionId }, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensureSheetMembership(
+        sheetId,
+        ctx.user.id,
+      );
+
+      const transaction = await ctx.transactionService.getTransaction(
+        transactionId,
+        sheet,
+      );
+
+      if (!transaction) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Transaction not found',
+        });
+      }
+
+      return {
+        transaction: mapTransaction(transaction, sheet),
+        sheet,
+      };
+    }),
+
   getAllUserTransactions: protectedProcedure
     .input(
       z.object({
@@ -175,12 +240,12 @@ export const transactionRouter = router({
         });
 
       return {
-        expenses: expenses.map(({ spentAt, sheet, ...transaction }) => ({
-          transaction: { ...transaction, spentAt: spentAt.toISOString() },
+        expenses: expenses.map(({ sheet, ...transaction }) => ({
+          transaction: mapTransaction(transaction, sheet),
           sheet,
         })),
-        earnings: earnings.map(({ spentAt, sheet, ...transaction }) => ({
-          transaction: { ...transaction, spentAt: spentAt.toISOString() },
+        earnings: earnings.map(({ sheet, ...transaction }) => ({
+          transaction: mapTransaction(transaction, sheet),
           sheet,
         })),
       };
@@ -207,12 +272,8 @@ export const transactionRouter = router({
         });
 
       return {
-        transactions: transactions.map(
-          ({ amount, scale, spentAt, ...transaction }) => ({
-            ...transaction,
-            spentAt: spentAt.toISOString(),
-            money: { amount, scale, currencyCode: sheet.currencyCode },
-          }),
+        transactions: transactions.map((transaction) =>
+          mapTransaction(transaction, sheet),
         ),
         total,
       };
@@ -283,17 +344,9 @@ export const transactionRouter = router({
 
       return {
         transactions: transactions.map(
-          ({
-            participantBalances,
-            amount,
-            scale,
-            spentAt,
-            ...transaction
-          }) => ({
-            ...transaction,
+          ({ participantBalances, ...transaction }) => ({
+            ...mapTransaction(transaction, sheet),
             participants: participantBalances,
-            spentAt: spentAt.toISOString(),
-            money: { amount, scale, currencyCode: sheet.currencyCode },
             yourBalance: participantBalances.find(
               ({ id }) => id === ctx.user.id,
             )?.balance,

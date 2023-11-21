@@ -1,6 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef, useState } from 'react';
+import { MdEdit } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 
 import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
@@ -63,6 +65,13 @@ const ExpandedTransactionListItem = forwardRef<
           {expanded && (
             <motion.div className="flex flex-col gap-4 p-0" {...collapse}>
               <div className="divider mb-0" />
+
+              <Link
+                to={`/sheets/${personalSheetId}/transactions/${transaction.id}`}
+                className="btn btn-outline btn-block"
+              >
+                <MdEdit /> Edit
+              </Link>
 
               <TransactionActions
                 sheetId={personalSheetId}
