@@ -36,8 +36,8 @@ export const QuickCreateTransactionFAB = () => {
               <Link
                 to={
                   sheet.type === 'PERSONAL'
-                    ? `/sheets/${sheet.id}/expenses/new`
-                    : `/groups/${sheet.id}/expenses/new`
+                    ? `/sheets/${sheet.id}/transactions/new`
+                    : `/groups/${sheet.id}/transactions/new`
                 }
               >
                 {sheet.name}

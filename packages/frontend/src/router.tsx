@@ -13,16 +13,16 @@ import { AuthenticationPage } from './pages/AuthenticationPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { SheetsIndexPage } from './pages/SheetsIndexPage';
-import { ExpensesIndexPage } from './pages/expenses/ExpensesIndexPage';
 import { GroupDetailPage } from './pages/groups/GroupDetailPage';
-import { GroupExpensesIndexPage } from './pages/groups/expenses/GroupExpensesIndexPage';
-import { NewGroupSheetExpensePage } from './pages/groups/expenses/NewGroupSheetExpensePage';
+import { GroupTransactionsIndexPage } from './pages/groups/transactions/GroupTransactionsIndexPage';
+import { NewGroupSheetTransactionPage } from './pages/groups/transactions/NewGroupSheetTransactionPage';
 import { NewSheetPage } from './pages/sheets/NewSheetPage';
 import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
 import { SheetImportPage } from './pages/sheets/SheetImportPage';
-import { NewPersonalSheetExpensePage } from './pages/sheets/expenses/NewExpensePage';
-import { PersonalExpensesIndexPage } from './pages/sheets/expenses/PersonalExpensesIndexPage';
+import { NewPersonalSheetTransactionPage } from './pages/sheets/transactions/NewPersonalSheetTransactionPage';
+import { PersonalExpensesIndexPage } from './pages/sheets/transactions/PersonalTransactionsIndexPage';
 import { StatsIndexPage } from './pages/stats/StatsIndexPage';
+import { TransactionsIndexPage } from './pages/transactions/TransactionsIndexPage';
 
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
         path: '/',
         element: (
           <AuthenticatedRoute>
-            <ExpensesIndexPage />
+            <TransactionsIndexPage />
           </AuthenticatedRoute>
         ),
       },
@@ -92,18 +92,18 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/groups/:sheetId/expenses',
+                path: '/groups/:sheetId/transactions',
                 element: (
                   <AuthenticatedRoute>
-                    <GroupExpensesIndexPage />
+                    <GroupTransactionsIndexPage />
                   </AuthenticatedRoute>
                 ),
               },
               {
-                path: '/groups/:sheetId/expenses/new',
+                path: '/groups/:sheetId/transactions/new',
                 element: (
                   <AuthenticatedRoute>
-                    <NewGroupSheetExpensePage />
+                    <NewGroupSheetTransactionPage />
                   </AuthenticatedRoute>
                 ),
               },
@@ -142,7 +142,7 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/sheets/:sheetId/expenses',
+                path: '/sheets/:sheetId/transactions',
                 element: (
                   <AuthenticatedRoute>
                     <PersonalExpensesIndexPage />
@@ -150,10 +150,10 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/sheets/:sheetId/expenses/new',
+                path: '/sheets/:sheetId/transactions/new',
                 element: (
                   <AuthenticatedRoute>
-                    <NewPersonalSheetExpensePage />
+                    <NewPersonalSheetTransactionPage />
                   </AuthenticatedRoute>
                 ),
               },

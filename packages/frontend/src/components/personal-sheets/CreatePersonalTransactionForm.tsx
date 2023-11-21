@@ -126,7 +126,7 @@ export const CreatePersonalTransactionForm = ({
         description,
         spentAt: dateTimeLocalToZonedISOString(dateTime),
       });
-      navigate(`/sheets/${personalSheet.id}/expenses`, { replace: true });
+      navigate(`/sheets/${personalSheet.id}/transactions`, { replace: true });
     } else {
       await createPersonalSheetTransactionSchedule({
         type,

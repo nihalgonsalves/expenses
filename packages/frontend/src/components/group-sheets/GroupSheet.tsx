@@ -54,7 +54,7 @@ export const GroupSheet = ({
                 )}
               />
               <Link
-                to={`/groups/${groupSheet.id}/expenses`}
+                to={`/groups/${groupSheet.id}/transactions`}
                 className="btn btn-primary btn-outline"
               >
                 <MdListAlt /> All Transactions (

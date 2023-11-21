@@ -46,7 +46,7 @@ export const SheetDetailPage = () => {
       showBackButton
       additionalChildren={
         <FloatingActionButton
-          to={`/sheets/${sheetId}/expenses/new`}
+          to={`/sheets/${sheetId}/transactions/new`}
           label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />

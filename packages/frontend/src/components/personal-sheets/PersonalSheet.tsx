@@ -102,7 +102,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             ))}
 
           <Link
-            to={`/sheets/${personalSheet.id}/expenses`}
+            to={`/sheets/${personalSheet.id}/transactions`}
             className="btn btn-primary btn-outline "
           >
             <MdListAlt /> All Transactions (

@@ -6,7 +6,7 @@ import { GroupSheetTransactionsExpandedList } from '../../../components/group-sh
 import { SheetParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';
 
-export const GroupExpensesIndexPage = () => {
+export const GroupTransactionsIndexPage = () => {
   const { sheetId } = useParams(SheetParams);
   const result = trpc.transaction.getGroupSheetTransactions.useQuery({
     groupSheetId: sheetId,
@@ -19,7 +19,7 @@ export const GroupExpensesIndexPage = () => {
       showBackButton
       additionalChildren={
         <FloatingActionButton
-          to={`/groups/${sheetId}/expenses/new`}
+          to={`/groups/${sheetId}/transactions/new`}
           label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />

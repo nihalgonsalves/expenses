@@ -66,7 +66,7 @@ export const GroupDetailPage = () => {
       showBackButton
       additionalChildren={
         <FloatingActionButton
-          to={`/groups/${sheetId}/expenses/new`}
+          to={`/groups/${sheetId}/transactions/new`}
           label="Add Transaction"
           icon={<MdPlaylistAdd />}
         />

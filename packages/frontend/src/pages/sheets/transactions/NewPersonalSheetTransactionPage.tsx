@@ -3,7 +3,7 @@ import { CreatePersonalTransactionForm } from '../../../components/personal-shee
 import { SheetParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
-export const NewPersonalSheetExpensePage = () => {
+export const NewPersonalSheetTransactionPage = () => {
   const { sheetId } = useParams(SheetParams);
   const { data: personalSheet } =
     trpc.sheet.personalSheetById.useQuery(sheetId);

@@ -4,7 +4,7 @@ import { CreateGroupSheetTransactionForm } from '../../../components/group-sheet
 import { SheetParams, useParams } from '../../../router';
 import { Root } from '../../Root';
 
-export const NewGroupSheetExpensePage = () => {
+export const NewGroupSheetTransactionPage = () => {
   const { sheetId } = useParams(SheetParams);
   const { data: groupSheet } = trpc.sheet.groupSheetById.useQuery(sheetId);
 

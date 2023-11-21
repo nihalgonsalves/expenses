@@ -7,7 +7,7 @@ import { QuickCreateTransactionFAB } from '../../components/expenses/QuickCreate
 import { shortDateFormatter } from '../../utils/utils';
 import { RootLoader } from '../Root';
 
-export const ExpensesIndexPage = () => {
+export const TransactionsIndexPage = () => {
   const [from, setFrom] = useState(
     Temporal.Now.zonedDateTimeISO()
       .with({ day: 1 })
