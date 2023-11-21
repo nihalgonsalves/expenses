@@ -20,7 +20,7 @@
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
-    "@trpc/server": "^10.43.7",
+    "@trpc/server": "^10.44.0",
     "bcrypt": "*",
     "bullmq": "^4.14.0",
     "cookie": "^0.6.0",

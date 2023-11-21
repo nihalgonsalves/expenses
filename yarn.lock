@@ -2043,20 +2043,20 @@
   resolved "https://registry.yarnpkg.com/@total-typescript/ts-reset/-/ts-reset-0.5.1.tgz#93b0535d00faa588518bcfb0db30182e63e4f7af"
   integrity sha512-AqlrT8YA1o7Ff5wPfMOL0pvL+1X+sw60NN6CcOCqs658emD6RfiXhF7Gu9QcfKBH7ELY2nInLhKSCWVoNL70MQ==
 
-"@trpc/client@^10.43.7":
-  version "10.43.7"
-  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-10.43.7.tgz#35b93b72787d525bce5a52498c47575111c50c7d"
-  integrity sha512-dnZdHGrN6jZ6CO+stgGsM5M+A1iFYh/W5iuNs7O3sm0jX5I2/U26dSQrMuCu2PZxhl3MUC/i/PU4G8uS8/vcOw==
+"@trpc/client@^10.44.0":
+  version "10.44.0"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-10.44.0.tgz#f67b0a27c4dd42dc0214833192eb5609936f09ff"
+  integrity sha512-6PAL5rXMGTMlsKKGW9aBsij8XFBbLUbOCJ7jNVX3IripGqiQG3b/VJyTsHRWkss/oaz/sZMOn62amhfev1UVfg==
 
-"@trpc/react-query@^10.43.7":
-  version "10.43.7"
-  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-10.43.7.tgz#beafbec6ad289477792b30d2a114e8d38f55d840"
-  integrity sha512-JG73mbFhVSOHk9jpNKJiaWjJ4j7wxGL4EwzUF0Oqo22ilLgPjDGBCtl1A6MvIO1Tb8mfmSa3kaoFEmP1XVn4kA==
+"@trpc/react-query@^10.44.0":
+  version "10.44.0"
+  resolved "https://registry.yarnpkg.com/@trpc/react-query/-/react-query-10.44.0.tgz#3dc95e5282fe91e51275020560a8c627b09740ec"
+  integrity sha512-0l9mar1kSamm/sePnHOuhX8v9LFQbgpVJ2U2s/hWnScNexBFzV03SpCjLAkXtiIapw5lkIG0QlveZXu4G86Xnw==
 
-"@trpc/server@^10.43.7":
-  version "10.43.7"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.43.7.tgz#1f8b65c3cb04de31b6b23aad9aa8aa6661fc98f2"
-  integrity sha512-i02zxH9ypeSrld6CAYdqwDJEAcnWvTZ8k3f5vWoi5dB7Qxw6dyxyLQY4ioV5D9cRJk6kBUJqEWc1lK0/SwUncg==
+"@trpc/server@^10.44.0":
+  version "10.44.0"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-10.44.0.tgz#09dd035dec0aed4b5a113449101217d682978bd3"
+  integrity sha512-QBq/FnjyU6a7CAl9p2dv6kApn2i8MFuPt8uVLyGr0oa2aFv31rHaX0m+ibdsviE/3fOJIC8EUOfMYOJma5uK2w==
 
 "@types/babel__core@^7.20.4":
   version "7.20.4"
@@ -2136,9 +2136,9 @@
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
 "@types/node@*", "@types/node@20":
-  version "20.9.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.9.2.tgz#002815c8e87fe0c9369121c78b52e800fadc0ac6"
-  integrity sha512-WHZXKFCEyIUJzAwh3NyyTHYSR35SevJ6mZ1nWwJafKtiQbqRTIKSRcw3Ma3acqgsent3RRDqeVwpHntMk+9irg==
+  version "20.9.3"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.9.3.tgz#e089e1634436f676ff299596c9531bd2b59fffc6"
+  integrity sha512-nk5wXLAXGBKfrhLB0cyHGbSqopS+nz0BUgZkUQqSHSSgdee0kssp1IAqlQOu333bW+gMNs2QREx7iynm19Abxw==
   dependencies:
     undici-types "~5.26.4"
 
