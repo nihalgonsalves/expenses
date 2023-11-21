@@ -131,6 +131,10 @@ describe('updatePersonalSheetTransaction', () => {
       ),
     );
 
+    const originalTransaction = await prisma.transaction.findUnique({
+      where: { id },
+    });
+
     const response = await caller.transaction.updatePersonalSheetTransaction({
       id,
       ...createPersonalSheetTransactionInput(
@@ -145,16 +149,18 @@ describe('updatePersonalSheetTransaction', () => {
       id,
     });
 
-    const transaction = await prisma.transaction.findUnique({
+    const updatedTransaction = await prisma.transaction.findUnique({
       where: { id: response.id },
       include: { transactionEntries: true },
     });
 
-    expect(transaction).toMatchObject({
+    expect(updatedTransaction).toMatchObject({
+      id,
       type,
+      createdAt: originalTransaction?.createdAt,
     });
 
-    expect(transaction?.transactionEntries).toMatchObject([
+    expect(updatedTransaction?.transactionEntries).toMatchObject([
       { scale: 2, amount, userId: user.id },
     ]);
   });

@@ -339,7 +339,7 @@ export class TransactionService {
 
     const [, result] = await this.prismaClient.$transaction([
       this.prismaClient.transaction.delete({
-        where: { id: input.id },
+        where: { id: transaction.id },
       }),
       this.prismaClient.transaction.create({
         include: {
@@ -353,8 +353,9 @@ export class TransactionService {
           ...mapInputToCreatePersonalTransaction(
             input,
             personalSheet,
-            input.id,
+            transaction.id,
           ),
+          createdAt: transaction.createdAt,
           transactionEntries: {
             create: [mapInputToCreatePersonalTransactionEntry(input, user)],
           },
