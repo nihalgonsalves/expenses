@@ -9,9 +9,9 @@ export const ZMoney = z.object({
 });
 
 const ZCreateSheetTransactionInput = z.object({
-  type: z.union([z.literal('EXPENSE'), z.literal('INCOME')]),
+  type: z.enum(['EXPENSE', 'INCOME']),
   money: ZMoney,
-  spentAt: z.string().nonempty(),
+  spentAt: z.string().min(1),
   description: z.string(),
   category: z.string().min(1),
 });
@@ -25,10 +25,7 @@ export const ZCreatePersonalSheetTransactionInput =
     personalSheetId: z.string().min(1),
   });
 
-export const ZRecurrenceFrequency = z.union([
-  z.literal('WEEKLY'),
-  z.literal('MONTHLY'),
-]);
+export const ZRecurrenceFrequency = z.enum(['WEEKLY', 'MONTHLY']);
 
 export type RecurrenceFrequency = z.infer<typeof ZRecurrenceFrequency>;
 
@@ -42,7 +39,7 @@ export const ZCreatePersonalSheetTransactionScheduleInput =
   ZCreatePersonalSheetTransactionInput.omit({ spentAt: true }).extend({
     // TODO: add Zod type
     /** ISO86001 string with timezone */
-    firstOccurrenceAt: z.string().nonempty(),
+    firstOccurrenceAt: z.string().min(1),
     recurrenceRule: ZRecurrenceRule,
   });
 
@@ -92,21 +89,17 @@ export type CreateGroupSheetSettlementInput = z.infer<
 >;
 
 export const ZCreateGroupSheetSettlementResponse = z.object({
-  id: z.string().nonempty(),
+  id: z.string().min(1),
 });
 
-export const ZTransactionType = z.union([
-  z.literal('EXPENSE'),
-  z.literal('INCOME'),
-  z.literal('TRANSFER'),
-]);
+export const ZTransactionType = z.enum(['EXPENSE', 'INCOME', 'TRANSFER']);
 
 export type TransactionType = z.infer<typeof ZTransactionType>;
 
 export const ZTransactionListItem = z.object({
   id: z.string().min(1),
   money: ZMoney,
-  spentAt: z.string().nonempty(),
+  spentAt: z.string().min(1),
   description: z.string(),
   category: z.string().min(1),
   type: ZTransactionType,

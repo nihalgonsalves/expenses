@@ -53,11 +53,7 @@ type DarkTheme = (typeof DARK_THEMES)[number];
 const LIGHT_THEME_DEFAULT = 'expenses-light';
 const DARK_THEME_DEFAULT = 'expenses-dark';
 
-const ZThemePreference = z.union([
-  z.literal('system'),
-  z.literal('light'),
-  z.literal('dark'),
-]);
+const ZThemePreference = z.enum(['system', 'light', 'dark']);
 
 type ThemePreference = z.infer<typeof ZThemePreference>;
 

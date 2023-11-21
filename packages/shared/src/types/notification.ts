@@ -38,7 +38,7 @@ const ZTransferNotificationPayload = z.object({
     name: z.string().min(1),
   }),
   transaction: ZNotificationTransaction.extend({
-    type: z.union([z.literal('sent'), z.literal('received')]),
+    type: z.enum(['sent', 'received']),
   }),
 });
 

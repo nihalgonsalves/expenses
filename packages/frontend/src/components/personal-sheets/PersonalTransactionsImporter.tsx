@@ -54,11 +54,11 @@ const findCategory = (value: string | undefined) =>
       CategoryId.Other
     : CategoryId.Other;
 
-const ZAmountFormat = z.union([
-  z.literal('decimal-dot'),
-  z.literal('decimal-comma'),
-  z.literal('decimal-dot-inverse'),
-  z.literal('decimal-comma-inverse'),
+const ZAmountFormat = z.enum([
+  'decimal-dot',
+  'decimal-comma',
+  'decimal-dot-inverse',
+  'decimal-comma-inverse',
 ]);
 
 type AmountFormat = z.infer<typeof ZAmountFormat>;

@@ -19,7 +19,7 @@ export const ZParticipant = z.object({
 
 export const ZFullParticipant = ZParticipant.extend({
   email: z.string(),
-  role: z.union([z.literal('ADMIN'), z.literal('MEMBER')]),
+  role: z.enum(['ADMIN', 'MEMBER']),
 });
 
 export const ZGroupSheetWithParticipants = ZSheet.extend({
