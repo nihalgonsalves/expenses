@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import { TransactionType } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
@@ -1095,7 +1096,113 @@ describe('getTransaction', () => {
 });
 
 describe('getAllUserTransactions', () => {
-  it.todo('returns transactions from all sheets');
+  it('returns transactions from all sheets', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const member = await userFactory(prisma);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [member.id],
+    });
+
+    await Promise.all(
+      (['EXPENSE', 'INCOME'] as const).map(async (type) => {
+        await caller.transaction.createPersonalSheetTransaction(
+          createPersonalSheetTransactionInput(
+            personalSheet.id,
+            personalSheet.currencyCode,
+            type,
+          ),
+        );
+
+        await caller.transaction.createGroupSheetTransaction(
+          createGroupSheetTransactionInput(
+            type,
+            groupSheet.id,
+            groupSheet.currencyCode,
+            user.id,
+            member.id,
+          ),
+        );
+      }),
+    );
+
+    expect(
+      await caller.transaction.getAllUserTransactions({
+        fromTimestamp: Temporal.Now.instant()
+          .subtract({ minutes: 1 })
+          .toString(),
+        toTimestamp: Temporal.Now.instant().add({ minutes: 1 }).toString(),
+      }),
+    ).toMatchObject({
+      earnings: [
+        {
+          sheet: {
+            type: 'GROUP',
+          },
+          transaction: {
+            type: 'INCOME',
+            category: 'other',
+            description: 'test group income',
+            money: {
+              amount: 2500,
+              scale: 2,
+            },
+          },
+        },
+        {
+          sheet: {
+            type: 'PERSONAL',
+          },
+          transaction: {
+            type: 'INCOME',
+            category: 'other',
+            description: 'test personal income',
+            money: {
+              amount: 10000,
+              scale: 2,
+            },
+          },
+        },
+      ],
+      expenses: [
+        {
+          sheet: {
+            type: 'GROUP',
+          },
+          transaction: {
+            type: 'EXPENSE',
+            category: 'other',
+            description: 'test group expense',
+            money: {
+              amount: -2500,
+              scale: 2,
+            },
+          },
+        },
+        {
+          sheet: {
+            type: 'PERSONAL',
+          },
+          transaction: {
+            type: 'EXPENSE',
+            category: 'other',
+            description: 'test personal expense',
+            money: {
+              amount: -10000,
+              scale: 2,
+            },
+          },
+        },
+      ],
+    });
+  });
 });
 
 describe('getPersonalSheetTransactions', () => {

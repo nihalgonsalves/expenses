@@ -240,12 +240,12 @@ export const transactionRouter = router({
         });
 
       return {
-        expenses: expenses.map(({ sheet, ...transaction }) => ({
-          transaction: mapTransaction(transaction, sheet),
+        expenses: expenses.map(({ sheet, spentAt, ...transaction }) => ({
+          transaction: { ...transaction, spentAt: spentAt.toISOString() },
           sheet,
         })),
-        earnings: earnings.map(({ sheet, ...transaction }) => ({
-          transaction: mapTransaction(transaction, sheet),
+        earnings: earnings.map(({ sheet, spentAt, ...transaction }) => ({
+          transaction: { ...transaction, spentAt: spentAt.toISOString() },
           sheet,
         })),
       };

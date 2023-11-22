@@ -186,31 +186,47 @@ export class TransactionService {
     });
 
     const expenses = data
-      .map(({ transactionEntries, ...transaction }) => ({
-        ...transaction,
-        money: sumTransactions(
-          transaction.sheet.currencyCode,
-          transactionEntries.filter(
-            ({ amount, userId }) =>
-              transaction.type === 'EXPENSE' &&
-              amount < 0 &&
-              userId === user.id,
+      .map(
+        ({
+          transactionEntries,
+          amount: _amount,
+          scale: _scale,
+          ...transaction
+        }) => ({
+          ...transaction,
+          money: sumTransactions(
+            transaction.sheet.currencyCode,
+            transactionEntries.filter(
+              ({ amount, userId }) =>
+                transaction.type === 'EXPENSE' &&
+                amount < 0 &&
+                userId === user.id,
+            ),
           ),
-        ),
-      }))
+        }),
+      )
       .filter(({ money }) => money.amount !== 0);
 
     const earnings = data
-      .map(({ transactionEntries, ...transaction }) => ({
-        ...transaction,
-        money: sumTransactions(
-          transaction.sheet.currencyCode,
-          transactionEntries.filter(
-            ({ amount, userId }) =>
-              transaction.type === 'INCOME' && amount > 0 && userId === user.id,
+      .map(
+        ({
+          transactionEntries,
+          amount: _amount,
+          scale: _scale,
+          ...transaction
+        }) => ({
+          ...transaction,
+          money: sumTransactions(
+            transaction.sheet.currencyCode,
+            transactionEntries.filter(
+              ({ amount, userId }) =>
+                transaction.type === 'INCOME' &&
+                amount > 0 &&
+                userId === user.id,
+            ),
           ),
-        ),
-      }))
+        }),
+      )
       .filter(({ money }) => money.amount !== 0);
 
     return {
