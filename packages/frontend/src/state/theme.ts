@@ -76,7 +76,7 @@ export const [useLightTheme] = createPreferenceWithDefault<LightTheme>(
 );
 
 export const [useDarkTheme] = createPreferenceWithDefault<DarkTheme>(
-  'light_theme',
+  'dark_theme',
   (v) => ZDarkTheme.catch(DARK_THEME_DEFAULT).parse(v),
   DARK_THEME_DEFAULT,
 );
