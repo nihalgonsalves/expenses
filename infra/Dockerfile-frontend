@@ -9,7 +9,8 @@ COPY ./packages/backend/package.json ./packages/backend/
 COPY ./packages/shared/package.json ./packages/shared/
 COPY yarn.lock .
 
-RUN yarn install --frozen-lockfile && yarn cache clean
+RUN corepack enable
+RUN yarn install --immutable && yarn cache clean
 
 COPY ./tsconfig.json ./tsconfig.base.json ./
 COPY ./packages/frontend/ ./packages/frontend/
