@@ -14,11 +14,11 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "run-p --print-label dev:*",
+    "dev": "run-p --print-label 'dev:*'",
     "build": "tsc --build",
     "clean": "git clean -Xdf",
     "test": "vitest",
-    "lint": "run-p lint:*",
+    "lint": "run-p 'lint:*'",
     "lint:eslint": "eslint --report-unused-disable-directives --ext .js,.jsx,.ts,.tsx ./packages/*",
     "lint:sherif": "sherif",
     "lint:format": "prettier . --check",
