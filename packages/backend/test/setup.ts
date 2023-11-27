@@ -1,9 +1,7 @@
 import "temporal-polyfill/global";
 
-import { vi } from "vitest";
+// must match `bin/bundle.mjs` and `globals.d.ts`
+globalThis.IS_PROD = false;
 
-// must match `bin/bundle.js` and `globals.d.ts`
-vi.stubGlobal("IS_PROD", false);
-
-vi.stubEnv("VAPID_PRIVATE_KEY", "<private-key>");
-vi.stubEnv("VAPID_PUBLIC_KEY", "<public-key>");
+process.env["VAPID_PRIVATE_KEY"] = "<private-key>";
+process.env["VAPID_PUBLIC_KEY"] = "<public-key>";

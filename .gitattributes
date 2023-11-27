@@ -1,2 +1,3 @@
 packages/frontend/public/assets/* linguist-generated
 packages/frontend/src/routeTree.gen.ts linguist-generated
+*.lockb binary diff=lockb

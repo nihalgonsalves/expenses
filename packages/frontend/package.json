@@ -14,7 +14,7 @@
     "chromatic": "chromatic --build-script-name='build:storybook'",
     "preview:vite": "vite preview --port 5173",
     "preview:storybook": "serve --listen 6006 build/storybook",
-    "test": "vitest",
+    "test": "bun test",
     "test:storybook": "test-storybook --coverage"
   },
   "dependencies": {
@@ -82,6 +82,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^17.4.3",
     "@spotlightjs/sidecar": "^1.11.2",
     "@spotlightjs/spotlight": "^2.11.1",
     "@storybook/addon-coverage": "^1.0.5",
