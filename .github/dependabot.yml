@@ -9,9 +9,6 @@ updates:
         patterns:
           - '*'
     ignore:
-      - dependency-name: '@types/node'
-        update-types:
-          - 'version-update:semver-major'
       - dependency-name: '@tanstack/query-async-storage-persister'
         update-types:
           - 'version-update:semver-major'

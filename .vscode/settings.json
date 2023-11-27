@@ -3,9 +3,5 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  },
-  "typescript.preferences.autoImportFileExcludePatterns": [
-    "@types/node/test.d.ts"
-  ],
-  "vitest.commandLine": "yarn test"
+  }
 }

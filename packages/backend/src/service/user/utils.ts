@@ -1,6 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { TRPCError } from '@trpc/server';
-import bcrypt from 'bcrypt';
 import { SignJWT, jwtVerify, errors } from 'jose';
 import { z } from 'zod';
 
@@ -21,12 +20,15 @@ const REISSUE_MIN_AGE_SECS = Temporal.Duration.from({ hours: 1 }).total(
 export class UserServiceError extends TRPCError {}
 
 export const hashPassword = async (password: string): Promise<string> =>
-  bcrypt.hash(password, SALT_ROUNDS);
+  Bun.password.hash(password, {
+    algorithm: 'bcrypt',
+    cost: SALT_ROUNDS,
+  });
 
 export const comparePassword = async (
   password: string,
   hash: string,
-): Promise<boolean> => bcrypt.compare(password, hash);
+): Promise<boolean> => Bun.password.verify(password, hash);
 
 const alg = 'HS256';
 const secret = new TextEncoder().encode(config.JWT_SECRET);
