@@ -1,9 +1,30 @@
 {
   "name": "Node.js",
-  "build": {
-    "dockerfile": "Dockerfile"
+  "dockerComposeFile": ["../compose.dev.yaml", "./compose.extend.yaml"],
+  "service": "workspace",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "zixuanchen.vitest-explorer",
+        "bradlc.vscode-tailwindcss"
+      ]
+    }
   },
-  "extensions": ["esbenp.prettier-vscode", "dbaeumer.vscode-eslint"],
-  "postCreateCommand": "yarn install",
+  "onCreateCommand": "yarn install",
+  "postCreateCommand": "yarn be prisma migrate dev && yarn be prepare:local",
+  "postStartCommand": "yarn dev",
+  "forwardPorts": [5173, 5174],
+  "portsAttributes": {
+    "5173": {
+      "label": "Frontend (+ backend proxy)"
+    },
+    "5174": {
+      "label": "Backend"
+    }
+  },
   "remoteUser": "node"
 }

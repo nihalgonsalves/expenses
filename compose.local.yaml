@@ -1,0 +1,33 @@
+# compose.dev.yaml but with ports exposed for local development without a devcontainer
+version: '3.8'
+name: expenses-dev
+services:
+  postgres:
+    extends:
+      file: compose.dev.yaml
+      service: postgres
+    ports:
+      - '5432:5432'
+
+  redis:
+    extends:
+      file: compose.dev.yaml
+      service: redis
+    ports:
+      - '6379:6379'
+
+  frankfurter-postgres:
+    extends:
+      file: compose.dev.yaml
+      service: frankfurter-postgres
+
+  frankfurter:
+    extends:
+      file: compose.dev.yaml
+      service: frankfurter
+    depends_on: [frankfurter-postgres]
+    ports:
+      - '5200:8080'
+
+volumes:
+  postgresql:

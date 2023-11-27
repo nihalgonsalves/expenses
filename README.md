@@ -5,10 +5,7 @@
 1. Configure local environment variables
 
    ```sh
-   cd packages/backend/
-   yarn web-push generate-vapid-keys
-   cp .env.example .env
-   # edit .env to add the generated keys
+   yarn be node ./bin/prepare-local-env.mjs
    ```
 
 2. Start dev services
