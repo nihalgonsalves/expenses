@@ -13,7 +13,9 @@
     "db:migrate": "prisma migrate dev --name",
     "db:sql-lint": "squawk",
     "db:push": "prisma db push --skip-generate",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "prepare:e2e": "node bin/prepare-ci-e2e.mjs",
+    "prepare:local": "node bin/prepare-local-env.mjs"
   },
   "dependencies": {
     "@bull-board/api": "^5.9.1",
