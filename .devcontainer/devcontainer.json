@@ -16,7 +16,7 @@
   },
   "onCreateCommand": "yarn install",
   "postCreateCommand": "yarn be prisma migrate dev && yarn be prepare:local",
-  "postStartCommand": "yarn dev",
+  "postAttachCommand": "yarn dev",
   "forwardPorts": [5173, 5174],
   "portsAttributes": {
     "5173": {
