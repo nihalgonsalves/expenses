@@ -14,7 +14,7 @@
     "chromatic": "chromatic --build-script-name='build:storybook'",
     "preview:vite": "vite preview --port 5173",
     "preview:storybook": "serve --listen 6006 build/storybook",
-    "test": "vitest",
+    "test": "bun test",
     "test:storybook": "test-storybook --coverage"
   },
   "dependencies": {
@@ -85,6 +85,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^15.7.4",
     "@storybook/addon-coverage": "^1.0.4",
     "@storybook/addon-essentials": "^8.3.6",
     "@storybook/addon-interactions": "^8.3.6",
@@ -112,7 +113,6 @@
     "vite": "^5.4.10",
     "vite-plugin-istanbul": "^6.0.2",
     "vite-plugin-pwa": "^0.20.5",
-    "vitest": "^2.1.3",
     "wait-on": "^8.0.1"
   }
 }

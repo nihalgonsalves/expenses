@@ -4,10 +4,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "typescript.preferences.autoImportFileExcludePatterns": [
-    "@types/node/test.d.ts"
-  ],
-  "vitest.commandLine": "yarn test",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },

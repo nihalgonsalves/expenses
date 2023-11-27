@@ -1,1 +1,2 @@
 packages/frontend/public/assets/* linguist-generated
+*.lockb binary diff=lockb
