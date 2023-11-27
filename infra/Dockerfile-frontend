@@ -7,7 +7,9 @@ COPY package.json .
 COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/backend/package.json ./packages/backend/
 COPY ./packages/shared/package.json ./packages/shared/
-COPY yarn.lock .
+COPY ./packages/e2e/package.json ./packages/e2e/
+COPY ./yarn.lock .
+COPY ./.yarnrc.yml ./
 
 RUN corepack enable
 RUN yarn install --immutable && yarn cache clean
@@ -16,6 +18,7 @@ COPY ./tsconfig.json ./tsconfig.base.json ./
 COPY ./packages/frontend/ ./packages/frontend/
 COPY ./packages/backend/ ./packages/backend/
 COPY ./packages/shared/ ./packages/shared/
+COPY ./packages/e2e/ ./packages/e2e/
 
 RUN yarn fe build
 
