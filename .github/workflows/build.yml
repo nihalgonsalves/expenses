@@ -6,11 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # waiting on: https://github.com/actions/setup-node/issues/531
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: yarn
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn build
       - run: yarn lint
       - uses: hadolint/hadolint-action@v3.1.0
@@ -26,11 +28,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      # waiting on: https://github.com/actions/setup-node/issues/531
+      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: yarn
       # pull so that testcontainers doesn't have to, timing out tests.
       - run: docker compose -f compose.dev.yaml pull postgres redis
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn test

@@ -14,14 +14,18 @@ COPY package.json .
 COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/backend/package.json ./packages/backend/
 COPY ./packages/shared/package.json ./packages/shared/
-COPY yarn.lock .
+COPY ./packages/e2e/package.json ./packages/e2e/
+COPY ./yarn.lock .
+COPY ./.yarnrc.yml ./
 
-RUN yarn install --frozen-lockfile && yarn cache clean
+RUN corepack enable
+RUN yarn install --immutable && yarn cache clean
 
 COPY ./tsconfig.json ./tsconfig.base.json ./
 COPY ./packages/frontend/ ./packages/frontend/
 COPY ./packages/backend/ ./packages/backend/
 COPY ./packages/shared/ ./packages/shared/
+COPY ./packages/e2e/ ./packages/e2e/
 
 ENV NODE_ENV=production
 
@@ -41,6 +45,7 @@ WORKDIR /opt/app
 
 COPY --from=builder /opt/app/packages/backend/prisma ./prisma
 
+COPY ./.yarnrc.yml ./
 RUN yarn install && yarn cache clean
 
 ENV NODE_ENV=production

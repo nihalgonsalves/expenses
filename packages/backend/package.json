@@ -5,6 +5,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
+    "postinstall": "yarn db:generate",
     "dev": "run-p 'build --watch' 'start' 'db:generate --watch'",
     "start": "mkdir -p ./dist/ && touch ./dist/app.js && touch .env && node --enable-source-maps --env-file=.env --watch ./dist/app.js",
     "build": "node bin/bundle.mjs",

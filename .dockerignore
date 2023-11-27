@@ -1,4 +1,5 @@
 .*
+!.yarnrc.yml
 **/build
 **/dist
 **/node_modules
