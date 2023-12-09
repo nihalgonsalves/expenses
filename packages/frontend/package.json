@@ -26,7 +26,7 @@
     "dexie": "^3.2.4",
     "dexie-react-hooks": "^1.1.7",
     "dinero.js": "^2.0.0-alpha.14",
-    "framer-motion": "^10.16.12",
+    "framer-motion": "^10.16.16",
     "immer": "^10.0.3",
     "jotai": "^2.6.0",
     "papaparse": "^5.4.1",
@@ -52,8 +52,8 @@
     "daisyui": "^4.4.19",
     "happy-dom": "^12.10.3",
     "tailwindcss": "^3.3.6",
-    "vite": "^5.0.5",
-    "vite-plugin-pwa": "^0.17.3",
-    "vitest": "~1.0.1"
+    "vite": "^5.0.7",
+    "vite-plugin-pwa": "^0.17.4",
+    "vitest": "~1.0.2"
   }
 }
