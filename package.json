@@ -32,12 +32,12 @@
     "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.6.13",
+    "@nihalgonsalves/esconfig": "^0.6.15",
     "@types/node": "20",
     "@vitest/ui": "^1.0.4",
-    "eslint": "^8.55.0",
+    "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -47,7 +47,7 @@
     "npm-run-all2": "^6.1.1",
     "prettier": "^3.1.1",
     "prettier-plugin-prisma": "^5.0.0",
-    "prettier-plugin-sql": "^0.17.1",
+    "prettier-plugin-sql": "^0.18.0",
     "sherif": "^0.6.1",
     "typescript": "^5.3.3",
     "vitest": "~1.0.4"
