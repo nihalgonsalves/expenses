@@ -1548,6 +1548,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.21.0":
+  version: 7.23.6
+  resolution: "@babel/runtime@npm:7.23.6"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: d886954e985ef8e421222f7a2848884d96a752e0020d3078b920dd104e672fdf23bcc6f51a44313a048796319f1ac9d09c2c88ec8cbb4e1f09174bcd3335b9ff
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:^7.23.5":
   version: 7.23.5
   resolution: "@babel/runtime@npm:7.23.5"
@@ -2470,7 +2479,7 @@ __metadata:
     autoprefixer: "npm:^10.4.16"
     clsx: "npm:^2.0.0"
     daisyui: "npm:^4.4.20"
-    date-fns: "npm:^3.0.0"
+    date-fns: "npm:^2.30.0"
     dexie: "npm:^3.2.4"
     dexie-react-hooks: "npm:^1.1.7"
     dinero.js: "npm:^2.0.0-alpha.14"
@@ -4619,10 +4628,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "date-fns@npm:3.0.0"
-  checksum: 61a2b24df5a963a451fdce729402ba4c4634aa7e758a0f8467c498b46040e7d238591effd7da289ef0d08a57d1100886ca01b40c6cff26faa6daff53c2e91bbd
+"date-fns@npm:^2.30.0":
+  version: 2.30.0
+  resolution: "date-fns@npm:2.30.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.21.0"
+  checksum: e4b521fbf22bc8c3db332bbfb7b094fd3e7627de0259a9d17c7551e2d2702608a7307a449206065916538e384f37b181565447ce2637ae09828427aed9cb5581
   languageName: node
   linkType: hard
 
