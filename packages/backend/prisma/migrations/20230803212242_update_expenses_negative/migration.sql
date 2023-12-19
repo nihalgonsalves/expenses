@@ -4,4 +4,4 @@ UPDATE expenses
 SET
   amount = - amount
 WHERE
-type = 'EXPENSE'::expense_type;
+  type = 'EXPENSE'::expense_type;
