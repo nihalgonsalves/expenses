@@ -11,7 +11,7 @@
 2. Start dev services
 
    ```sh
-   docker compose -f compose.dev.yaml up
+   docker compose -f compose.local.yaml up
    ```
 
 3. Migrate databases
