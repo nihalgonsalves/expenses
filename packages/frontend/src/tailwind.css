@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.alert {
+  @apply rounded;
+}
+
+.card {
+  @apply rounded;
+}
+
+select {
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+}

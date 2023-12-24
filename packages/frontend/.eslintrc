@@ -1,5 +1,8 @@
 {
-  "extends": "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react",
+  "extends": [
+    "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react",
+    "plugin:storybook/recommended"
+  ],
   "rules": {
     "@typescript-eslint/require-await": "off",
     "@typescript-eslint/no-misused-promises": [
@@ -10,5 +13,13 @@
         }
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.stories.@(ts|tsx|js|jsx|mjs|cjs)"],
+      "rules": {
+        "import/no-default-export": "off"
+      }
+    }
+  ]
 }
