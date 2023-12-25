@@ -3860,9 +3860,9 @@ __metadata:
     bullmq: "npm:^5.0.0"
     cookie: "npm:^0.6.0"
     esbuild: "npm:^0.19.10"
-    fastify: "npm:^4.25.1"
+    fastify: "npm:^4.25.2"
     ioredis: "npm:^5.3.2"
-    jose: "npm:^5.1.3"
+    jose: "npm:^5.2.0"
     nanoid: "npm:^5.0.4"
     pem: "npm:^1.14.8"
     prisma: "npm:*"
@@ -3914,7 +3914,7 @@ __metadata:
     autoprefixer: "npm:^10.4.16"
     chromatic: "npm:^10.2.0"
     clsx: "npm:^2.0.0"
-    daisyui: "npm:^4.4.23"
+    daisyui: "npm:^4.4.24"
     date-fns: "npm:^3.0.6"
     dexie: "npm:^3.2.4"
     dexie-react-hooks: "npm:^1.1.7"
@@ -8432,15 +8432,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"daisyui@npm:^4.4.23":
-  version: 4.4.23
-  resolution: "daisyui@npm:4.4.23"
+"daisyui@npm:^4.4.24":
+  version: 4.4.24
+  resolution: "daisyui@npm:4.4.24"
   dependencies:
     css-selector-tokenizer: "npm:^0.8"
     culori: "npm:^3"
     picocolors: "npm:^1"
     postcss-js: "npm:^4"
-  checksum: a972ffd88543e7a9cafe2824abcf1ad8486226990c1c839d89b320231d98e6fbdb9b6af29e0df7138f5d786751c3fae145cf9cc537b3f9b2db650602cc7a3eb7
+  checksum: 2221d7c7b16f09d54aaf2b2c46e49ee11f8cd9ef42848b03e7cba01bf5aa2ee00ca3d67f8c08b0b8c1356990eb2fd96740647e4f260592ef0f3f883c281b7808
   languageName: node
   linkType: hard
 
@@ -10045,9 +10045,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^4.25.1":
-  version: 4.25.1
-  resolution: "fastify@npm:4.25.1"
+"fastify@npm:^4.25.2":
+  version: 4.25.2
+  resolution: "fastify@npm:4.25.2"
   dependencies:
     "@fastify/ajv-compiler": "npm:^3.5.0"
     "@fastify/error": "npm:^3.4.0"
@@ -10065,7 +10065,7 @@ __metadata:
     secure-json-parse: "npm:^2.7.0"
     semver: "npm:^7.5.4"
     toad-cache: "npm:^3.3.0"
-  checksum: a5afe8abf33ce8cee35c1993a21a3fb56f097ed30c12d8d2cb8bdd54b31c9f41e1e241a77343fea6159f5f528f65745456f901a685dc11b07b3fecb0393dd973
+  checksum: 3ae9e8cdfd6ee4ada4b198f33cd6e152ae751f93e31ce628222e17249544ff34057118c8903d43cb1134c8b1614b7ce19768d8c9f3fde5befa6e236376d97f01
   languageName: node
   linkType: hard
 
@@ -11806,10 +11806,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^5.1.3":
-  version: 5.1.3
-  resolution: "jose@npm:5.1.3"
-  checksum: 39b6b5fea0d73b73a9934f6dbf84f0f553c0ea15289d700e6bc80057124e5ebd4e7182868c598df16ed571764fc140a5908bb7fe269fe5b9b83bc769920355cf
+"jose@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "jose@npm:5.2.0"
+  checksum: a5631e9a7148fb56c8feca8e00d1f03de6fa6e18e494fe62428b53bed525a9dba554ff3e860bdfc4aee60574194691015ba991557874ae826509c4c19dba4fea
   languageName: node
   linkType: hard
 
