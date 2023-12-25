@@ -1,4 +1,4 @@
-import { MdDeleteOutline } from 'react-icons/md';
+import { TrashIcon } from '@radix-ui/react-icons';
 
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
@@ -32,7 +32,7 @@ export const TransactionActions = ({
       isLoading={isLoading}
       label={
         <>
-          <MdDeleteOutline /> Delete Transaction
+          <TrashIcon /> Delete Transaction
         </>
       }
       confirmLabel="Confirm Delete (Irreversible)"

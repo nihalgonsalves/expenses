@@ -1,7 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
 import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
-import { MdGroup, MdListAlt } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import type { SheetsResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -40,7 +39,6 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
         className="btn btn-ghost no-animation flex-grow justify-start gap-4 text-start text-xl normal-case text-primary"
         to={link}
       >
-        {sheet.type === 'PERSONAL' ? <MdListAlt /> : <MdGroup />}
         {sheet.name}
       </Link>
       {sheet.type === 'GROUP' && (

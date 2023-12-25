@@ -1,4 +1,4 @@
-import { MdListAlt } from 'react-icons/md';
+import { ListBulletIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 
 import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -57,7 +57,7 @@ export const GroupSheet = ({
                 to={`/groups/${groupSheet.id}/transactions`}
                 className="btn btn-primary btn-outline"
               >
-                <MdListAlt /> All Transactions (
+                <ListBulletIcon /> All Transactions (
                 {groupSheetTransactionsResponse.total})
               </Link>
             </>

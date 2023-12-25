@@ -1,3 +1,4 @@
+import { SymbolIcon } from '@radix-ui/react-icons';
 import type { TRPCClientErrorLike } from '@trpc/client';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
@@ -15,7 +16,6 @@ import {
   MdOutlineSettings,
   MdOutlineTableRows,
 } from 'react-icons/md';
-import { RiRefreshLine } from 'react-icons/ri';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { usePullToRefresh } from '../api/usePullToRefresh';
@@ -211,7 +211,7 @@ export const RootLoader = <
           )}
           {!mobileStandalone && !result.isLoading && onLine && (
             <Button className="btn-ghost" onClick={refetch}>
-              <RiRefreshLine />
+              <SymbolIcon />
             </Button>
           )}
         </>

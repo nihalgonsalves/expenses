@@ -1,4 +1,4 @@
-import { MdMoreVert } from 'react-icons/md';
+import { DotsVerticalIcon } from '@radix-ui/react-icons';
 
 export const DropdownMenu = ({
   icon,
@@ -15,7 +15,7 @@ export const DropdownMenu = ({
       className="btn btn-circle btn-ghost text-3xl"
       aria-label={ariaLabel}
     >
-      {icon ?? <MdMoreVert />}
+      {icon ?? <DotsVerticalIcon />}
     </div>
 
     <ul

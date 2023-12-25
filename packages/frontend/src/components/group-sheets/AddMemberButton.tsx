@@ -1,5 +1,5 @@
+import { CheckIcon, Cross2Icon, PersonIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { MdCheck, MdClear, MdPersonAdd } from 'react-icons/md';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
@@ -70,7 +70,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
           aria-label="Cancel"
           onClick={handleClose}
         >
-          <MdClear />
+          <Cross2Icon />
         </Button>
 
         <Button
@@ -79,7 +79,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
           aria-label="Add"
           disabled={!valid}
         >
-          <MdCheck />
+          <CheckIcon />
         </Button>
       </form>
     </ParticipantListItem>
@@ -91,7 +91,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
         setAddMemberOpen(true);
       }}
     >
-      <MdPersonAdd />
+      <PersonIcon />
       Add Participant
     </Button>
   );

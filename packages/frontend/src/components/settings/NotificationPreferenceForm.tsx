@@ -1,4 +1,4 @@
-import { MdDelete } from 'react-icons/md';
+import { TrashIcon } from '@radix-ui/react-icons';
 import { z } from 'zod';
 
 import { ZPushSubscription } from '@nihalgonsalves/expenses-shared/types/notification';
@@ -152,7 +152,7 @@ export const NotificationPreferenceForm = () => {
                     handleDeleteSubscription(subscription.id)
                   }
                 >
-                  <MdDelete />
+                  <TrashIcon />
                 </Button>
               </li>
             ))}

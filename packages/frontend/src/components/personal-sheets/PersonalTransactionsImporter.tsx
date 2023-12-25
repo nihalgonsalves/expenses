@@ -1,7 +1,7 @@
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { parse as dateFnsParse } from 'date-fns';
 import Papa from 'papaparse';
 import { useCallback, useMemo, useState } from 'react';
-import { MdWarning } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -133,7 +133,7 @@ const SafeDisplay = ({
         } (${value})`}
       >
         <Button className="btn-circle btn-ghost">
-          <MdWarning />
+          <ExclamationTriangleIcon />
         </Button>
       </div>
     );

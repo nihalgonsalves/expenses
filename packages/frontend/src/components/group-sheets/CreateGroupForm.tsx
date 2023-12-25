@@ -1,6 +1,6 @@
+import { PersonIcon, PlusIcon, TrashIcon } from '@radix-ui/react-icons';
 import { produce } from 'immer';
 import { useState } from 'react';
-import { MdAddCircle, MdDeleteOutline, MdPersonAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
@@ -110,7 +110,7 @@ export const CreateGroupForm = ({
               handleDeleteParticipant(i);
             }}
           >
-            <MdDeleteOutline />
+            <TrashIcon />
           </Button>
         </div>
       ))}
@@ -119,7 +119,7 @@ export const CreateGroupForm = ({
         className="btn-primary btn-outline btn-block mt-4"
         onClick={handleAddParticipant}
       >
-        <MdPersonAdd />
+        <PersonIcon />
         Add Participant
       </Button>
 
@@ -131,7 +131,7 @@ export const CreateGroupForm = ({
         disabled={disabled}
         isLoading={isLoading}
       >
-        <MdAddCircle /> Create Group
+        <PlusIcon /> Create Group
       </Button>
     </form>
   );

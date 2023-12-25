@@ -1,4 +1,4 @@
-import { MdAccountCircle } from 'react-icons/md';
+import { PersonIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 
 import { trpc } from '../api/trpc';
@@ -20,7 +20,7 @@ export const NavBarAvatar = () => {
 
   if (status == 'success') {
     return (
-      <DropdownMenu icon={<MdAccountCircle />} aria-label="Account">
+      <DropdownMenu icon={<PersonIcon />} aria-label="Account">
         <li>
           <a onClick={handleSignOut}>Sign out</a>
         </li>

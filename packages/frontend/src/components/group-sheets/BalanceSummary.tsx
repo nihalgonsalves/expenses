@@ -1,5 +1,5 @@
+import { DotsVerticalIcon, ExitIcon, TrashIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { MdDeleteOutline, MdMoreVert } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
@@ -72,7 +72,7 @@ const PersonMenu = ({
         aria-label="more"
         aria-haspopup="true"
       >
-        <MdMoreVert />
+        <DotsVerticalIcon />
       </label>
       <div
         tabIndex={0}
@@ -84,8 +84,15 @@ const PersonMenu = ({
             onClick={handleDelete}
             disabled={balance.amount !== 0 || !onLine}
           >
-            <MdDeleteOutline />
-            {actorInfo.isAdmin ? 'Remove Participant' : 'Leave'}
+            {actorInfo.isAdmin ? (
+              <>
+                <TrashIcon /> Remove Participant
+              </>
+            ) : (
+              <>
+                <ExitIcon /> Leave
+              </>
+            )}
           </Button>
         </div>
       </div>

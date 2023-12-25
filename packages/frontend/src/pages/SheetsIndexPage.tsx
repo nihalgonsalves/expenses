@@ -1,4 +1,4 @@
-import { MdPostAdd } from 'react-icons/md';
+import { PlusIcon } from '@radix-ui/react-icons';
 
 import { trpc } from '../api/trpc';
 import { FloatingActionButton } from '../components/FloatingActionButton';
@@ -17,7 +17,7 @@ export const SheetsIndexPage = () => {
         <FloatingActionButton
           to="/sheets/new"
           label="New Sheet"
-          icon={<MdPostAdd />}
+          icon={<PlusIcon />}
         />
       }
       render={(sheets) => <SheetsList sheets={sheets} />}

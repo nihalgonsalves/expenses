@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
 import {
-  MdCloudUpload,
-  MdDeleteOutline,
-  MdOutlineArchive,
-  MdPlaylistAdd,
-} from 'react-icons/md';
+  ArchiveIcon,
+  PlusIcon,
+  TrashIcon,
+  UploadIcon,
+} from '@radix-ui/react-icons';
+import { useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
@@ -48,7 +48,7 @@ export const SheetDetailPage = () => {
         <FloatingActionButton
           to={`/sheets/${sheetId}/transactions/new`}
           label="Add Transaction"
-          icon={<MdPlaylistAdd />}
+          icon={<PlusIcon />}
         />
       }
       getTitle={(sheet) => sheet.name}
@@ -56,7 +56,7 @@ export const SheetDetailPage = () => {
         <DropdownMenu aria-label="Actions">
           <li>
             <Link to={`/sheets/${sheetId}/import`}>
-              <MdCloudUpload />
+              <UploadIcon />
               Import .csv
             </Link>
           </li>
@@ -72,7 +72,7 @@ export const SheetDetailPage = () => {
             renderButton={(onClick) => (
               <li>
                 <a onClick={onClick}>
-                  <MdOutlineArchive /> Archive Sheet
+                  <ArchiveIcon /> Archive Sheet
                 </a>
               </li>
             )}
@@ -85,7 +85,7 @@ export const SheetDetailPage = () => {
             renderButton={(onClick) => (
               <li>
                 <a onClick={onClick}>
-                  <MdDeleteOutline /> Delete Sheet
+                  <TrashIcon /> Delete Sheet
                 </a>
               </li>
             )}

@@ -1,5 +1,4 @@
-import { CgDarkMode } from 'react-icons/cg';
-import { MdOutlineDarkMode, MdOutlineLightMode } from 'react-icons/md';
+import { MoonIcon, SunIcon, TargetIcon } from '@radix-ui/react-icons';
 
 import { useSupportedCurrencies } from '../../api/currencyConversion';
 import { usePreferredCurrencyCode } from '../../state/preferences';
@@ -47,7 +46,7 @@ export const AppearanceForm = () => {
               value: 'light',
               label: (
                 <>
-                  <MdOutlineLightMode /> Light
+                  <SunIcon /> Light
                 </>
               ),
             },
@@ -55,7 +54,7 @@ export const AppearanceForm = () => {
               value: 'system',
               label: (
                 <>
-                  <CgDarkMode /> System
+                  <TargetIcon /> System
                 </>
               ),
             },
@@ -63,7 +62,7 @@ export const AppearanceForm = () => {
               value: 'dark',
               label: (
                 <>
-                  <MdOutlineDarkMode /> Dark
+                  <MoonIcon /> Dark
                 </>
               ),
             },

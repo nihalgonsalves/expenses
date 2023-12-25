@@ -1,5 +1,5 @@
+import { CardStackIcon, CardStackPlusIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { MdGroup, MdPerson } from 'react-icons/md';
 
 import type { SheetType } from '@nihalgonsalves/expenses-shared/types/sheet';
 
@@ -21,7 +21,7 @@ export const NewSheetPage = () => {
           {
             label: (
               <>
-                <MdPerson /> Personal
+                <CardStackIcon /> Personal
               </>
             ),
             value: 'PERSONAL',
@@ -29,7 +29,7 @@ export const NewSheetPage = () => {
           {
             label: (
               <>
-                <MdGroup /> Shared
+                <CardStackPlusIcon /> Shared
               </>
             ),
             value: 'GROUP',

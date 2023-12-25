@@ -1,3 +1,4 @@
+import { QuestionMarkIcon } from '@radix-ui/react-icons';
 import {
   MdApartment,
   MdAttractions,
@@ -10,7 +11,6 @@ import {
   MdLocalGroceryStore,
   MdMovie,
   MdPayments,
-  MdQuestionMark,
   MdStore,
   MdToll,
   MdTravelExplore,
@@ -54,7 +54,7 @@ export const categories: Category[] = [
   { id: CategoryId.Home,           name: 'Home',           icon: <MdHome /> },
   { id: CategoryId.Rent,           name: 'Rent',           icon: <MdApartment /> },
   { id: CategoryId.Utilities,      name: 'Utilities',      icon: <MdElectricBolt /> },
-  { id: CategoryId.Other,          name: 'Other',          icon: <MdQuestionMark /> },
+  { id: CategoryId.Other,          name: 'Other',          icon: <QuestionMarkIcon /> },
   { id: CategoryId.Transfer,       name: 'Transfer',       icon: <MdPayments /> },
   { id: CategoryId.Income,         name: 'Income',         icon: <MdToll /> },
 ];

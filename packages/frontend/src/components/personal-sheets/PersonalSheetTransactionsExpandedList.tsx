@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { Pencil1Icon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef, useState } from 'react';
-import { MdEdit } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
@@ -70,7 +70,7 @@ const ExpandedTransactionListItem = forwardRef<
                 to={`/sheets/${personalSheetId}/transactions/${transaction.id}`}
                 className="btn btn-outline btn-block"
               >
-                <MdEdit /> Edit
+                <Pencil1Icon /> Edit
               </Link>
 
               <TransactionActions

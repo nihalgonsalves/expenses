@@ -1,5 +1,5 @@
+import { PlusIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { MdAdd } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
@@ -20,7 +20,7 @@ export const QuickCreateTransactionFAB = () => {
           setAddTransactionOpen(true);
         }}
         label="Add Transaction"
-        icon={<MdAdd />}
+        icon={<PlusIcon />}
       />
       <Dialog isOpen={addTransactionOpen} setIsOpen={setAddTransactionOpen}>
         <h2 className="text-xl">Choose a sheet</h2>

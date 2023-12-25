@@ -1,7 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { CircleBackslashIcon, DownloadIcon } from '@radix-ui/react-icons';
 import Papa from 'papaparse';
 import { toast } from 'react-hot-toast';
-import { MdCancel, MdCloudDownload } from 'react-icons/md';
 
 import { Button } from './form/Button';
 
@@ -57,7 +57,7 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
                   toast.dismiss(toastId);
                 }}
               >
-                <MdCancel />
+                <CircleBackslashIcon />
               </Button>
             </>
           );
@@ -83,7 +83,7 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
             void handleRequestDownload('json');
           }}
         >
-          <MdCloudDownload /> Export .json
+          <DownloadIcon /> Export .json
         </a>
       </li>
       <li>
@@ -92,7 +92,7 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
             void handleRequestDownload('csv');
           }}
         >
-          <MdCloudDownload /> Export .csv
+          <DownloadIcon /> Export .csv
         </a>
       </li>
     </>

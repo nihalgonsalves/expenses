@@ -1,4 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill';
+import {
+  CheckIcon,
+  ThickArrowDownIcon,
+  ThickArrowUpIcon,
+} from '@radix-ui/react-icons';
 import { type Dinero, allocate } from 'dinero.js';
 import { produce } from 'immer';
 import {
@@ -8,12 +13,7 @@ import {
   useState,
   useMemo,
 } from 'react';
-import {
-  MdArrowCircleDown,
-  MdArrowCircleUp,
-  MdPayments,
-  MdPlaylistAdd,
-} from 'react-icons/md';
+import { MdPlaylistAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -728,7 +728,7 @@ const TYPE_OPTIONS = [
     label: (
       <>
         <span className="text-xl">
-          <MdArrowCircleUp />
+          <ThickArrowUpIcon />
         </span>{' '}
         Expense
       </>
@@ -739,7 +739,7 @@ const TYPE_OPTIONS = [
     label: (
       <>
         <span className="text-xl">
-          <MdArrowCircleDown />
+          <ThickArrowDownIcon />
         </span>{' '}
         Income
       </>
@@ -750,7 +750,7 @@ const TYPE_OPTIONS = [
     label: (
       <>
         <span className="text-xl">
-          <MdPayments />
+          <CheckIcon />
         </span>
         Settlement
       </>

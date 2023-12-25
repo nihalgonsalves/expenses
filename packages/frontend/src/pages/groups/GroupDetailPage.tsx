@@ -1,10 +1,10 @@
-import { useCallback, useMemo } from 'react';
 import {
-  MdDeleteOutline,
-  MdMoreVert,
-  MdOutlineArchive,
-  MdPlaylistAdd,
-} from 'react-icons/md';
+  ArchiveIcon,
+  DotsVerticalIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@radix-ui/react-icons';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
@@ -68,11 +68,11 @@ export const GroupDetailPage = () => {
         <FloatingActionButton
           to={`/groups/${sheetId}/transactions/new`}
           label="Add Transaction"
-          icon={<MdPlaylistAdd />}
+          icon={<PlusIcon />}
         />
       }
       rightNavBarItems={
-        <DropdownMenu icon={<MdMoreVert />} aria-label="Actions">
+        <DropdownMenu icon={<DotsVerticalIcon />} aria-label="Actions">
           {result.data && (
             <ExportGroupTransactionsDropdown groupSheet={result.data} />
           )}
@@ -85,7 +85,7 @@ export const GroupDetailPage = () => {
                 renderButton={(onClick) => (
                   <li>
                     <a onClick={onClick}>
-                      <MdOutlineArchive /> Archive Sheet
+                      <ArchiveIcon /> Archive Sheet
                     </a>
                   </li>
                 )}
@@ -98,7 +98,7 @@ export const GroupDetailPage = () => {
                 renderButton={(onClick) => (
                   <li>
                     <a onClick={onClick}>
-                      <MdDeleteOutline /> Delete Group
+                      <TrashIcon /> Delete Group
                     </a>
                   </li>
                 )}

@@ -1,7 +1,7 @@
 import type { Temporal } from '@js-temporal/polyfill';
+import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Fragment, useMemo, useState } from 'react';
-import { MdArrowLeft, MdArrowRight } from 'react-icons/md';
 
 import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -163,7 +163,7 @@ export const AllUserTransactionsList = ({
               offsetByDuration({ months: -1 });
             }}
           >
-            <MdArrowLeft />
+            <ArrowLeftIcon />
           </Button>
           <Button className="join-item flex-grow">{displayPeriod}</Button>
           <Button
@@ -172,7 +172,7 @@ export const AllUserTransactionsList = ({
               offsetByDuration({ months: 1 });
             }}
           >
-            <MdArrowRight />
+            <ArrowRightIcon />
           </Button>
         </div>
         <div className="stats w-full shadow">

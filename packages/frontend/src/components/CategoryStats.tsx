@@ -1,6 +1,6 @@
 import type { Temporal } from '@js-temporal/polyfill';
+import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 import { useMemo } from 'react';
-import { MdArrowLeft, MdArrowRight } from 'react-icons/md';
 
 import {
   addMoney,
@@ -67,7 +67,7 @@ export const CategoryStats = ({
             offsetByDuration({ months: -1 });
           }}
         >
-          <MdArrowLeft />
+          <ArrowLeftIcon />
         </Button>
         <Button className="join-item flex-grow">{displayPeriod}</Button>
         <Button
@@ -76,7 +76,7 @@ export const CategoryStats = ({
             offsetByDuration({ months: 1 });
           }}
         >
-          <MdArrowRight />
+          <ArrowRightIcon />
         </Button>
       </div>
       <div

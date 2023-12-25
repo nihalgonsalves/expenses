@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { MdDeleteOutline, MdListAlt } from 'react-icons/md';
+import { ListBulletIcon, TrashIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -65,7 +65,7 @@ const TransactionScheduleDropdownMenu = ({
         renderButton={(onClick) => (
           <li>
             <a onClick={onClick}>
-              <MdDeleteOutline /> Delete
+              <TrashIcon /> Delete
             </a>
           </li>
         )}
@@ -105,7 +105,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             to={`/sheets/${personalSheet.id}/transactions`}
             className="btn btn-primary btn-outline "
           >
-            <MdListAlt /> All Transactions (
+            <ListBulletIcon /> All Transactions (
             {getPersonalSheetTransactionsResponse?.total})
           </Link>
         </div>

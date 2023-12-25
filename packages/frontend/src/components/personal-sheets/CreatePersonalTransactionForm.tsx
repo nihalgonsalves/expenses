@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { MdArrowCircleDown, MdArrowCircleUp } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -33,7 +33,7 @@ const TYPE_OPTIONS = [
     label: (
       <>
         <span className="text-xl">
-          <MdArrowCircleUp />
+          <ThickArrowUpIcon />
         </span>
         Expense
       </>
@@ -44,7 +44,7 @@ const TYPE_OPTIONS = [
     label: (
       <>
         <span className="text-xl">
-          <MdArrowCircleDown />
+          <ThickArrowDownIcon />
         </span>{' '}
         Income
       </>

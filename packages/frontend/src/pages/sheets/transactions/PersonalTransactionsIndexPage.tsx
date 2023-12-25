@@ -1,4 +1,4 @@
-import { MdPlaylistAdd } from 'react-icons/md';
+import { PlusIcon } from '@radix-ui/react-icons';
 
 import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionButton';
@@ -21,7 +21,7 @@ export const PersonalExpensesIndexPage = () => {
         <FloatingActionButton
           to={`/sheets/${sheetId}/transactions/new`}
           label="Add Transaction"
-          icon={<MdPlaylistAdd />}
+          icon={<PlusIcon />}
         />
       }
       render={({ transactions }) => (

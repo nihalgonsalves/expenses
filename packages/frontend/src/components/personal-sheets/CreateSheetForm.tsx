@@ -1,5 +1,5 @@
+import { PlusCircledIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
-import { MdAddCircle } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
@@ -66,7 +66,7 @@ export const CreateSheetForm = ({
         disabled={disabled}
         isLoading={isLoading}
       >
-        <MdAddCircle /> Create Sheet
+        <PlusCircledIcon /> Create Sheet
       </Button>
     </form>
   );
