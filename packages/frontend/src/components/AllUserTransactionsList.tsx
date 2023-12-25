@@ -2,6 +2,7 @@ import type { Temporal } from '@js-temporal/polyfill';
 import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Fragment, useMemo, useState } from 'react';
+import { z } from 'zod';
 
 import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -12,7 +13,6 @@ import { usePreferredCurrencyCode } from '../state/preferences';
 import { fadeInOut } from '../utils/framer';
 import { formatCurrency } from '../utils/money';
 import {
-  clsxtw,
   formatDateTimeRelative,
   getTransactionDescription,
   groupBySpentAt,
@@ -20,7 +20,18 @@ import {
 } from '../utils/utils';
 
 import { CategoryAvatar } from './CategoryAvatar';
-import { Button } from './form/Button';
+import { Button } from './ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './ui/table';
+import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
+
+const MotionTableRow = motion(TableRow);
 
 const TransactionRow = ({
   transaction,
@@ -42,27 +53,27 @@ const TransactionRow = ({
   const dateTime = formatDateTimeRelative(transaction.spentAt);
 
   return (
-    <motion.tr key={transaction.id} {...fadeInOut}>
-      <td>
+    <MotionTableRow key={transaction.id} {...fadeInOut}>
+      <TableCell>
         <div className="flex items-center gap-4">
           <CategoryAvatar category={transaction.category} />
         </div>
-      </td>
+      </TableCell>
 
-      <td className="hidden sm:table-cell">
+      <TableCell className="hidden sm:table-cell">
         <strong>{description}</strong>
-      </td>
-      <td className="hidden sm:table-cell">{dateTime}</td>
+      </TableCell>
+      <TableCell className="hidden sm:table-cell">{dateTime}</TableCell>
 
-      <td className="sm:hidden">
+      <TableCell className="sm:hidden">
         <strong>{description}</strong>
         <br />
         <em>{dateTime}</em>
         <br />
         {sheet.name}
-      </td>
+      </TableCell>
 
-      <td className="text-right">
+      <TableCell className="text-right">
         {convertedMoney == undefined || convertedMoney === money ? (
           <span>{money}</span>
         ) : (
@@ -72,48 +83,34 @@ const TransactionRow = ({
             <span className="text-gray-300">{money}</span>
           </>
         )}
-      </td>
-      <td className="hidden sm:table-cell">{sheet.name}</td>
-    </motion.tr>
+      </TableCell>
+      <TableCell className="hidden sm:table-cell">{sheet.name}</TableCell>
+    </MotionTableRow>
   );
 };
 
 const ButtonStat = ({
   title,
-  desc,
   value,
-  selected,
-  setSelected,
+  amount,
 }: {
   title: string;
-  desc: string;
   value: string;
-  selected: boolean;
-  setSelected: () => void;
+  amount: string;
 }) => (
-  <button
-    aria-selected={selected}
-    className={clsxtw(
-      'stat place-items-center',
-      selected
-        ? 'btn-secondary bg-secondary text-secondary-content'
-        : 'btn-ghost',
-    )}
-    onClick={setSelected}
+  <ToggleGroupItem
+    className="flex h-full grow flex-col place-items-center p-4"
+    value={value}
   >
-    <span
-      className={clsxtw('stat-title', { 'text-secondary-content': selected })}
-    >
-      {title}
-    </span>
-    <span className="stat-value text-xl md:text-4xl">{value}</span>
-    <span
-      className={clsxtw('stat-desc', { 'text-secondary-content': selected })}
-    >
-      {desc}
-    </span>
-  </button>
+    <span>{title}</span>
+    <span className="md:text-4xl">{amount}</span>
+  </ToggleGroupItem>
 );
+
+const MotionTable = motion(Table);
+const MotionTableHeader = motion(TableHeader);
+
+const ZView = z.enum(['EXPENSES', 'INCOME']);
 
 export const AllUserTransactionsList = ({
   data,
@@ -126,9 +123,8 @@ export const AllUserTransactionsList = ({
 }) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
-  const [selectedView, setSelectedView] = useState<'EXPENSES' | 'INCOME'>(
-    'EXPENSES',
-  );
+  const [selectedView, setSelectedView] =
+    useState<z.infer<typeof ZView>>('EXPENSES');
 
   const totalSpent = sumMoney(
     data.expenses
@@ -156,18 +152,18 @@ export const AllUserTransactionsList = ({
   return (
     <>
       <div className="flex flex-col gap-4 p-2 md:mb-2">
-        <div className="join">
+        <div className="flex items-center gap-2 rounded-md bg-muted p-1">
           <Button
-            className="join-item"
+            variant="ghost"
             onClick={() => {
               offsetByDuration({ months: -1 });
             }}
           >
             <ArrowLeftIcon />
           </Button>
-          <Button className="join-item flex-grow">{displayPeriod}</Button>
+          <div className="grow text-center">{displayPeriod}</div>
           <Button
-            className="join-item"
+            variant="ghost"
             onClick={() => {
               offsetByDuration({ months: 1 });
             }}
@@ -175,55 +171,54 @@ export const AllUserTransactionsList = ({
             <ArrowRightIcon />
           </Button>
         </div>
-        <div className="stats w-full shadow">
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          value={selectedView}
+          onValueChange={(value) => {
+            setSelectedView(ZView.parse(value));
+          }}
+        >
           <ButtonStat
             title="Expenses"
-            desc=""
-            value={formatCurrency(totalSpent)}
-            selected={selectedView === 'EXPENSES'}
-            setSelected={() => {
-              setSelectedView('EXPENSES');
-            }}
+            value={'EXPENSES'}
+            amount={formatCurrency(totalSpent)}
           />
           <ButtonStat
             title="Income"
-            desc=""
-            value={formatCurrency(totalEarned)}
-            selected={selectedView === 'INCOME'}
-            setSelected={() => {
-              setSelectedView('INCOME');
-            }}
+            value={'INCOME'}
+            amount={formatCurrency(totalEarned)}
           />
-        </div>
+        </ToggleGroup>
       </div>
 
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.table
-          key={selectedView}
-          className="table table-pin-rows table-auto"
-          {...fadeInOut}
-        >
+        <MotionTable key={selectedView} className="p-4" {...fadeInOut}>
           <AnimatePresence mode="popLayout" initial={false}>
             {[...groupedByDate.keys()].map((date) => (
               <Fragment key={date}>
-                <motion.thead {...fadeInOut}>
-                  <tr>
-                    <th>Category</th>
+                <MotionTableHeader {...fadeInOut}>
+                  <TableRow>
+                    <TableHead>Category</TableHead>
 
-                    <th className="hidden sm:table-cell">Description</th>
-                    <th className="hidden sm:table-cell">
+                    <TableHead className="hidden sm:table-cell">
+                      Description
+                    </TableHead>
+                    <TableHead className="hidden sm:table-cell">
                       Date ({shortDateFormatter.format(date)})
-                    </th>
+                    </TableHead>
 
-                    <th className="sm:hidden">
+                    <TableHead className="sm:hidden">
                       Details ({shortDateFormatter.format(date)})
-                    </th>
+                    </TableHead>
 
-                    <th className="text-right">Amount</th>
-                    <th className="hidden sm:table-cell">Sheet</th>
-                  </tr>
-                </motion.thead>
-                <tbody>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="hidden sm:table-cell">
+                      Sheet
+                    </TableHead>
+                  </TableRow>
+                </MotionTableHeader>
+                <TableBody>
                   {groupedByDate
                     .get(date)
                     ?.map(({ transaction, sheet }) => (
@@ -233,11 +228,11 @@ export const AllUserTransactionsList = ({
                         sheet={sheet}
                       />
                     ))}
-                </tbody>
+                </TableBody>
               </Fragment>
             ))}
           </AnimatePresence>
-        </motion.table>
+        </MotionTable>
       </AnimatePresence>
     </>
   );

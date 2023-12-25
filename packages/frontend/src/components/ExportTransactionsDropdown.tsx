@@ -4,6 +4,7 @@ import Papa from 'papaparse';
 import { toast } from 'react-hot-toast';
 
 import { Button } from './form/Button';
+import { DropdownMenuItem } from './ui/dropdown-menu';
 
 export const ExportTransactionsDropdown = <TData, TOutput>({
   id,
@@ -41,18 +42,19 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
 
           return (
             <>
-              <a
-                className="btn btn-ghost link text-success-content normal-case"
-                href={objectURL}
-                download={filename}
-                onClick={() => {
-                  toast.dismiss(toastId);
-                }}
-              >
-                Click to download .{type} file
-              </a>
+              <Button variant="ghost" asChild>
+                <a
+                  href={objectURL}
+                  download={filename}
+                  onClick={() => {
+                    toast.dismiss(toastId);
+                  }}
+                >
+                  Click to download .{type} file
+                </a>
+              </Button>
               <Button
-                className="btn-ghost"
+                variant="outline"
                 onClick={() => {
                   toast.dismiss(toastId);
                 }}
@@ -77,24 +79,20 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
 
   return (
     <>
-      <li>
-        <a
-          onClick={() => {
-            void handleRequestDownload('json');
-          }}
-        >
-          <DownloadIcon /> Export .json
-        </a>
-      </li>
-      <li>
-        <a
-          onClick={() => {
-            void handleRequestDownload('csv');
-          }}
-        >
-          <DownloadIcon /> Export .csv
-        </a>
-      </li>
+      <DropdownMenuItem
+        onSelect={() => {
+          void handleRequestDownload('json');
+        }}
+      >
+        <DownloadIcon className="mr-2" /> Export .json
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        onSelect={() => {
+          void handleRequestDownload('csv');
+        }}
+      >
+        <DownloadIcon className="mr-2" /> Export .csv
+      </DropdownMenuItem>
     </>
   );
 };

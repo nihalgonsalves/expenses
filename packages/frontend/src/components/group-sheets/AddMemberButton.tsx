@@ -6,7 +6,7 @@ import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { prevalidateEmail } from '../../utils/utils';
 import { Avatar } from '../Avatar';
 import { Button } from '../form/Button';
-import { TextField } from '../form/TextField';
+import { Input } from '../ui/input';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
@@ -44,7 +44,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   return addMemberOpen ? (
     <ParticipantListItem className="items-end" avatar={<Avatar name="" />}>
       <form
-        className="flex flex-grow items-end gap-2"
+        className="flex grow items-end gap-2"
         onSubmit={(e) => {
           if (!valid) {
             return;
@@ -54,18 +54,19 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
           void handleAddMember();
         }}
       >
-        <TextField
-          className="flex-grow"
+        <Input
+          className="grow"
           autoFocus
-          label={null}
           placeholder="Email address"
           disabled={isLoading}
           value={email}
-          setValue={setEmail}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
         />
 
         <Button
-          className="btn-square"
+          variant="outline"
           type="reset"
           aria-label="Cancel"
           onClick={handleClose}
@@ -74,7 +75,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
         </Button>
 
         <Button
-          className="btn-square"
+          variant="outline"
           type="submit"
           aria-label="Add"
           disabled={!valid}
@@ -85,7 +86,8 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
     </ParticipantListItem>
   ) : (
     <Button
-      className="btn-primary btn-outline"
+      className="w-full"
+      variant="outline"
       disabled={!onLine}
       onClick={() => {
         setAddMemberOpen(true);

@@ -93,6 +93,7 @@ export const EditPersonalTransactionForm = ({
 
   return (
     <form
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
         if (disabled) return;
@@ -101,27 +102,31 @@ export const EditPersonalTransactionForm = ({
       }}
     >
       <div className="flex items-start gap-4">
-        <MoneyField
-          className="flex-grow"
-          autoFocus
-          label="Amount"
-          bottomLabel={
-            convertedMoneySnapshot
-              ? formatCurrency(convertedMoneySnapshot)
-              : null
-          }
-          currencyCode={currencyCode}
-          amount={amount}
-          setAmount={setAmount}
-        />
-
-        {supportedCurrencies.includes(personalSheet.currencyCode) && (
-          <CurrencySelect
-            options={supportedCurrencies}
+        <div className="grow">
+          <MoneyField
+            className="grow"
+            autoFocus
+            label="Amount"
+            bottomLabel={
+              convertedMoneySnapshot
+                ? formatCurrency(convertedMoneySnapshot)
+                : null
+            }
             currencyCode={currencyCode}
-            setCurrencyCode={setCurrencyCode}
+            amount={amount}
+            setAmount={setAmount}
           />
-        )}
+        </div>
+
+        <div>
+          {supportedCurrencies.includes(personalSheet.currencyCode) && (
+            <CurrencySelect
+              options={supportedCurrencies}
+              currencyCode={currencyCode}
+              setCurrencyCode={setCurrencyCode}
+            />
+          )}
+        </div>
       </div>
 
       <CategorySelect category={category} setCategory={setCategory} />
@@ -141,7 +146,7 @@ export const EditPersonalTransactionForm = ({
       />
 
       <Button
-        className="btn-primary btn-block mt-4"
+        className="mt-4"
         type="submit"
         disabled={disabled}
         isLoading={isLoading}

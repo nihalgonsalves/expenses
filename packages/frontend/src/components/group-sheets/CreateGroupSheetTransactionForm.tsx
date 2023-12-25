@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill';
 import {
   CheckIcon,
+  PlusIcon,
   ThickArrowDownIcon,
   ThickArrowUpIcon,
 } from '@radix-ui/react-icons';
@@ -13,7 +14,6 @@ import {
   useState,
   useMemo,
 } from 'react';
-import { MdPlaylistAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -39,7 +39,6 @@ import {
   useMoneyValues,
 } from '../../utils/money';
 import {
-  clsxtw,
   dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
 } from '../../utils/utils';
@@ -51,6 +50,9 @@ import { MoneyField } from '../form/MoneyField';
 import { Select } from '../form/Select';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+import { Alert, AlertDescription } from '../ui/alert';
+import { Separator } from '../ui/separator';
+import { Switch } from '../ui/switch';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
@@ -204,16 +206,15 @@ const CalculationHelpText = ({
   const diff = splitConfig.expectedSum(amount) - sumValues(ratios);
 
   return (
-    <div
-      className={clsxtw('alert', 'mt-4', 'text-sm', {
-        'alert-success': diff === 0,
-        'alert-error': diff !== 0,
-      })}
-    >
-      {diff === 0 && 'Splits are valid'}
-      {diff < 0 && splitConfig.formatErrorTooLow(Math.abs(diff), currencyCode)}
-      {diff > 0 && splitConfig.formatErrorTooHigh(Math.abs(diff), currencyCode)}
-    </div>
+    <Alert variant={diff !== 0 ? 'destructive' : 'default'}>
+      <AlertDescription className="text-sm">
+        {diff === 0 && 'Splits are valid'}
+        {diff < 0 &&
+          splitConfig.formatErrorTooLow(Math.abs(diff), currencyCode)}
+        {diff > 0 &&
+          splitConfig.formatErrorTooHigh(Math.abs(diff), currencyCode)}
+      </AlertDescription>
+    </Alert>
   );
 };
 
@@ -327,7 +328,7 @@ const SplitsFormSection = ({
   return (
     <>
       <ToggleButtonGroup<GroupTransactionSplitType>
-        className="join-vertical w-full md:join-horizontal"
+        className="w-full flex-col md:flex-row [&>button]:w-full [&>button]:grow"
         value={splitType}
         setValue={handleChangeSplitType}
         options={SPLIT_OPTIONS}
@@ -346,8 +347,8 @@ const SplitsFormSection = ({
             key={participantId}
             avatar={<Avatar name={participantName} />}
           >
-            <div className="flex flex-grow items-center justify-between">
-              <div className="flex-grow">
+            <div className="flex grow items-center justify-between">
+              <div className="grow">
                 {participantName}
                 <br />
                 <span className="text-gray-500">
@@ -386,25 +387,25 @@ const SplitsFormSection = ({
                 </div>
               )}
               {splitType === GroupTransactionSplitType.Amounts && (
-                <MoneyField
-                  inputClassName="w-full"
-                  currencyCode={currencyCode}
-                  amount={ratios[participantId] ?? 0}
-                  setAmount={(val) => {
-                    handleChangeRatio(participantId, val);
-                  }}
-                  label={null}
-                  aria-label={`Amount for ${participantName}`}
-                />
+                <div>
+                  <MoneyField
+                    inputClassName="w-full"
+                    currencyCode={currencyCode}
+                    amount={ratios[participantId] ?? 0}
+                    setAmount={(val) => {
+                      handleChangeRatio(participantId, val);
+                    }}
+                    label={null}
+                    aria-label={`Amount for ${participantName}`}
+                  />
+                </div>
               )}
               {splitType === GroupTransactionSplitType.Selected && (
-                <input
-                  type="checkbox"
-                  className="checkbox"
+                <Switch
                   aria-label={`Include ${participantName}`}
                   checked={ratios[participantId] === 1}
-                  onChange={(e) => {
-                    handleChangeRatio(participantId, e.target.checked ? 1 : 0);
+                  onCheckedChange={(checked) => {
+                    handleChangeRatio(participantId, checked ? 1 : 0);
                   }}
                 />
               )}
@@ -436,7 +437,7 @@ const ParticipantSelect = ({
       setValue={setSelectedId}
       schema={z.string()}
       options={[
-        { label: 'Please Select...', value: '', disabled: true },
+        { label: 'Please Select...', value: undefined, disabled: true },
         ...options.map(({ id, name }) => ({ value: id, label: name })),
       ]}
     />
@@ -535,6 +536,7 @@ const TransactionForm = ({
 
   return (
     <form
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
 
@@ -546,31 +548,34 @@ const TransactionForm = ({
       }}
     >
       <div className="flex gap-4">
-        <MoneyField
-          className="flex-grow"
-          autoFocus
-          label={
-            type === 'EXPENSE'
-              ? 'How much was spent?'
-              : 'How much was received?'
-          }
-          bottomLabel={
-            convertedMoneySnapshot
-              ? formatCurrency(convertedMoneySnapshot)
-              : null
-          }
-          currencyCode={currencyCode}
-          amount={amount}
-          setAmount={setAmount}
-        />
-
-        {supportedCurrencies.includes(groupSheet.currencyCode) && (
-          <CurrencySelect
-            options={supportedCurrencies}
+        <div className="grow">
+          <MoneyField
+            autoFocus
+            label={
+              type === 'EXPENSE'
+                ? 'How much was spent?'
+                : 'How much was received?'
+            }
+            bottomLabel={
+              convertedMoneySnapshot
+                ? formatCurrency(convertedMoneySnapshot)
+                : null
+            }
             currencyCode={currencyCode}
-            setCurrencyCode={setCurrencyCode}
+            amount={amount}
+            setAmount={setAmount}
           />
-        )}
+        </div>
+
+        <div>
+          {supportedCurrencies.includes(groupSheet.currencyCode) && (
+            <CurrencySelect
+              options={supportedCurrencies}
+              currencyCode={currencyCode}
+              setCurrencyCode={setCurrencyCode}
+            />
+          )}
+        </div>
       </div>
 
       <ParticipantSelect
@@ -600,7 +605,7 @@ const TransactionForm = ({
         setValue={setSpentAt}
       />
 
-      <div className="divider" />
+      <Separator />
 
       <SplitsFormSection
         groupSheet={groupSheet}
@@ -615,12 +620,13 @@ const TransactionForm = ({
       />
 
       <Button
-        className="btn-primary btn-block"
+        className="w-full"
         isLoading={isLoading}
         type="submit"
         disabled={disabled}
       >
-        <MdPlaylistAdd /> Add {type === 'EXPENSE' ? 'Expense' : 'Income'}
+        <PlusIcon className="mr-2" /> Add{' '}
+        {type === 'EXPENSE' ? 'Expense' : 'Income'}
       </Button>
     </form>
   );
@@ -681,6 +687,7 @@ const SettlementForm = ({
 
   return (
     <form
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
         if (disabled) return;
@@ -711,7 +718,7 @@ const SettlementForm = ({
       />
 
       <Button
-        className="btn-primary btn-block mt-4"
+        className=" w-full"
         type="submit"
         disabled={disabled}
         isLoading={isLoading}
@@ -727,9 +734,7 @@ const TYPE_OPTIONS = [
     value: 'EXPENSE',
     label: (
       <>
-        <span className="text-xl">
-          <ThickArrowUpIcon />
-        </span>{' '}
+        <ThickArrowUpIcon className="mr-2 text-xl" />
         Expense
       </>
     ),
@@ -738,9 +743,7 @@ const TYPE_OPTIONS = [
     value: 'INCOME',
     label: (
       <>
-        <span className="text-xl">
-          <ThickArrowDownIcon />
-        </span>{' '}
+        <ThickArrowDownIcon className="mr-2 text-xl" />
         Income
       </>
     ),
@@ -749,9 +752,7 @@ const TYPE_OPTIONS = [
     value: 'TRANSFER',
     label: (
       <>
-        <span className="text-xl">
-          <CheckIcon />
-        </span>
+        <CheckIcon className="mr-2 text-xl" />
         Settlement
       </>
     ),
@@ -770,7 +771,7 @@ export const CreateGroupSheetTransactionForm = ({
   return (
     <div className="flex flex-col gap-4">
       <ToggleButtonGroup
-        className="w-full join-vertical sm:join-horizontal"
+        className="w-full [&>button]:grow"
         value={type}
         setValue={setType}
         options={TYPE_OPTIONS}

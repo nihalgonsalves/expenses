@@ -1,7 +1,11 @@
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ExclamationTriangleIcon,
+} from '@radix-ui/react-icons';
 import { parse as dateFnsParse } from 'date-fns';
 import Papa from 'papaparse';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useId, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -15,6 +19,23 @@ import { dateToISOString } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { Select, type SelectOption } from '../form/Select';
 import { TextField } from '../form/TextField';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table';
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from '../ui/tooltip';
 
 enum ImportStep {
   UPLOAD_FILE,
@@ -126,20 +147,22 @@ const SafeDisplay = ({
     );
   } catch (e) {
     return (
-      <div
-        className="tooltip"
-        data-tip={`${
-          e instanceof Error ? e.message : 'Unknown Error'
-        } (${value})`}
-      >
-        <Button className="btn-circle btn-ghost">
-          <ExclamationTriangleIcon />
-        </Button>
-      </div>
+      <TooltipProvider delayDuration={100}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <ExclamationTriangleIcon />
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>{`${
+              e instanceof Error ? e.message : 'Unknown Error'
+            } (${value})`}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 };
-const unsetFieldOption = { value: '', label: '–' };
+const unsetFieldOption = { value: undefined, label: '–' };
 
 const DataPreview = ({
   data,
@@ -170,19 +193,19 @@ const DataPreview = ({
 
   return (
     <>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Category</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Amount</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Description</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {rows.map((row) => (
-            <tr key={row['id']}>
-              <td>
+            <TableRow key={row['id']}>
+              <TableCell>
                 {amountField ? (
                   <SafeDisplay
                     value={row[amountField]}
@@ -196,8 +219,8 @@ const DataPreview = ({
                 ) : (
                   '–'
                 )}
-              </td>
-              <td>
+              </TableCell>
+              <TableCell>
                 {dateField ? (
                   <SafeDisplay
                     value={row[dateField]}
@@ -206,8 +229,8 @@ const DataPreview = ({
                 ) : (
                   '– set to today –'
                 )}
-              </td>
-              <td>
+              </TableCell>
+              <TableCell>
                 {categoryField ? (
                   <SafeDisplay
                     value={row[categoryField]}
@@ -216,33 +239,35 @@ const DataPreview = ({
                 ) : (
                   '– set to other –'
                 )}
-              </td>
-              <td>{descriptionField ? row[descriptionField] : '–'}</td>
-            </tr>
+              </TableCell>
+              <TableCell>
+                {descriptionField ? row[descriptionField] : '–'}
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-      <div className="join">
+        </TableBody>
+      </Table>
+      <div className="flex flex-row place-items-center justify-between bg-muted">
         <Button
-          className="join-item"
+          variant="ghost"
           disabled={page === 0}
           onClick={() => {
             setPage((prev) => prev - 1);
           }}
         >
-          «
+          <ArrowLeftIcon />
         </Button>
-        <Button className="join-item flex-grow">
+        <div className="text-sm text-muted-foreground">
           Page {page + 1} of {maxPage + 1}
-        </Button>
+        </div>
         <Button
-          className="join-item"
+          variant="ghost"
           disabled={page === maxPage}
           onClick={() => {
             setPage((prev) => prev + 1);
           }}
         >
-          »
+          <ArrowRightIcon />
         </Button>
       </div>
     </>
@@ -282,6 +307,8 @@ export const PersonalTransactionsImporter = ({
   const [descriptionField, setDescriptionField] = useState<string>();
 
   const [activeStep, setActiveStep] = useState(ImportStep.UPLOAD_FILE);
+
+  const fileId = useId();
 
   const validRows = useMemo(
     () =>
@@ -411,86 +438,100 @@ export const PersonalTransactionsImporter = ({
     <div>
       {activeStep === ImportStep.UPLOAD_FILE && (
         <div className="flex flex-col gap-4">
-          <h2 className="semibold text-xl">Upload File</h2>
-          {csvError && <div className="alert alert-warning">{csvError}</div>}
-          Select a CSV file to import transactions from
-          <label className="btn btn-primary">
-            Choose file
-            <input type="file" onChange={handleFileChange} hidden />
-          </label>
+          <h2 className="text-xl font-semibold">Upload File</h2>
+          {csvError && (
+            <Alert variant="destructive">
+              <AlertTitle>CSV Error</AlertTitle>
+              <AlertDescription>{csvError}</AlertDescription>
+            </Alert>
+          )}
+          <Label htmlFor={fileId}>
+            Select a CSV file to import transactions from
+          </Label>
+          <Input id={fileId} type="file" onChange={handleFileChange} />
         </div>
       )}
       {activeStep === ImportStep.CHOOSE_COLUMNS && (
         <div className="flex flex-col gap-4">
-          <h2 className="semibold text-xl">Choose Columns</h2>
+          <h2 className="text-xl font-semibold">Choose Columns</h2>
           Map columns to transaction fields
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '1rem',
-              alignItems: 'center',
-            }}
-          >
-            <Select
-              label="Amount field"
-              options={fieldOptions}
-              value={amountField}
-              setValue={setAmountField}
-              schema={z.string()}
-              small
-            />
-            <Select
-              label="Amount format"
-              options={amountFormatOptions}
-              value={amountFormat}
-              setValue={setAmountFormat}
-              schema={ZAmountFormat}
-              small
-            />
+          <div className="grid grid-cols-1 items-center gap-[1rem] md:grid-cols-2">
+            <div>
+              <Select
+                label="Amount field"
+                options={fieldOptions}
+                value={amountField}
+                setValue={setAmountField}
+                schema={z.string()}
+                small
+              />
+            </div>
 
-            <Select
-              label="Date field"
-              options={fieldOptions}
-              value={dateField}
-              setValue={setDateField}
-              schema={z.string()}
-              small
-            />
-            <TextField
-              label="Date format"
-              labelAlt={
-                <a
-                  className="link"
-                  href="https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Help
-                </a>
-              }
-              value={dateFormat}
-              setValue={setDateFormat}
-            />
+            <div>
+              <Select
+                label="Amount format"
+                options={amountFormatOptions}
+                value={amountFormat}
+                setValue={setAmountFormat}
+                schema={ZAmountFormat}
+                small
+              />
+            </div>
 
-            <Select
-              label="Category field"
-              options={fieldOptions}
-              value={categoryField}
-              setValue={setCategoryField}
-              schema={z.string()}
-              small
-            />
+            <div>
+              <Select
+                label="Date field"
+                options={fieldOptions}
+                value={dateField}
+                setValue={setDateField}
+                schema={z.string()}
+                small
+              />
+            </div>
+
+            <div>
+              <TextField
+                label="Date format"
+                labelAlt={
+                  <Button asChild className="mx-2" variant="ghost">
+                    <a
+                      href="https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Help
+                    </a>
+                  </Button>
+                }
+                value={dateFormat}
+                setValue={setDateFormat}
+              />
+            </div>
+
+            <div>
+              <Select
+                label="Category field"
+                options={fieldOptions}
+                value={categoryField}
+                setValue={setCategoryField}
+                schema={z.string()}
+                small
+              />
+            </div>
+
             <span />
 
-            <Select
-              label="Description field"
-              options={fieldOptions}
-              value={descriptionField}
-              setValue={setDescriptionField}
-              schema={z.string()}
-              small
-            />
+            <div>
+              <Select
+                label="Description field"
+                options={fieldOptions}
+                value={descriptionField}
+                setValue={setDescriptionField}
+                schema={z.string()}
+                small
+              />
+            </div>
+
             <span />
           </div>
           {data && (
@@ -505,9 +546,10 @@ export const PersonalTransactionsImporter = ({
               currencyCode={personalSheet.currencyCode}
             />
           )}
-          <div className="join join-vertical md:join-horizontal">
+          <div className="flex gap-4">
             <Button
-              className="btn-outline join-item flex-grow"
+              className="grow"
+              variant="outline"
               onClick={() => {
                 setActiveStep(ImportStep.UPLOAD_FILE);
               }}
@@ -515,7 +557,7 @@ export const PersonalTransactionsImporter = ({
               Back
             </Button>
             <Button
-              className="btn-primary join-item flex-grow"
+              className="grow"
               disabled={!amountField}
               onClick={handleCreate}
             >

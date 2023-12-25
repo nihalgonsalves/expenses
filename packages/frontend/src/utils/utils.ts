@@ -11,7 +11,7 @@ import { categoryById } from '../data/categories';
 
 import { formatCurrency } from './money';
 
-export const clsxtw = (...classes: ClassValue[]) => twMerge(clsx(...classes));
+export const cn = (...classes: ClassValue[]) => twMerge(clsx(...classes));
 
 export const getUserLanguage = () => globalThis.navigator.languages[0];
 

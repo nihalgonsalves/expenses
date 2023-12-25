@@ -8,9 +8,15 @@ import type { TransactionSummaryResponse } from '@nihalgonsalves/expenses-shared
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency } from '../../utils/money';
-import { clsxtw } from '../../utils/utils';
+import { cn } from '../../utils/utils';
 import { AvatarGroup } from '../Avatar';
-import { Button } from '../form/Button';
+import { Button } from '../ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
@@ -65,38 +71,29 @@ const PersonMenu = ({
   }
 
   return (
-    <div className="dropdown dropdown-left">
-      <label
-        tabIndex={0}
-        className="btn btn-ghost"
-        aria-label="more"
-        aria-haspopup="true"
-      >
-        <DotsVerticalIcon />
-      </label>
-      <div
-        tabIndex={0}
-        className="text-content card dropdown-content card-bordered card-compact z-[1] w-72 bg-base-100 p-2 shadow"
-      >
-        <div className="card-body">
-          <Button
-            className="btn-error btn-outline"
-            onClick={handleDelete}
-            disabled={balance.amount !== 0 || !onLine}
-          >
-            {actorInfo.isAdmin ? (
-              <>
-                <TrashIcon /> Remove Participant
-              </>
-            ) : (
-              <>
-                <ExitIcon /> Leave
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="icon" variant="outline">
+          <DotsVerticalIcon />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent side="left">
+        <DropdownMenuItem
+          onSelect={handleDelete}
+          disabled={balance.amount !== 0 || !onLine}
+        >
+          {actorInfo.isAdmin ? (
+            <>
+              <TrashIcon className="mr-2" /> Remove Participant
+            </>
+          ) : (
+            <>
+              <ExitIcon className="mr-2" /> Leave
+            </>
+          )}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
@@ -129,7 +126,7 @@ const SummaryCard = ({
 
   return (
     <ParticipantListItem
-      className={clsxtw({
+      className={cn({
         'opacity-50': isInvalidating,
       })}
       avatar={<AvatarGroup names={[summary.name]} max={1} />}
@@ -141,7 +138,7 @@ const SummaryCard = ({
         <span>{getBalanceText(summary.balance)}</span>
       </div>
 
-      <div className="flex-grow" />
+      <div className="grow" />
       <PersonMenu
         groupSheetId={groupSheetId}
         setIsInvalidating={setIsInvalidating}

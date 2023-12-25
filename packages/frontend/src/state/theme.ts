@@ -5,53 +5,17 @@ import { useMediaQuery } from '../utils/hooks/useMediaQuery';
 
 import { createPreferenceWithDefault } from './preferences';
 
-// https://github.com/saadeghi/daisyui/blob/c3eed827ab4c3a5e5dec9363ac68be0b1ac5c6a3/src/theming/themes.js
-
-export const LIGHT_THEMES = [
-  'expenses-light',
-  'light',
-  'nord',
-  'cupcake',
-  'bumblebee',
-  'emerald',
-  'corporate',
-  'retro',
-  'cyberpunk',
-  'valentine',
-  'garden',
-  'lofi',
-  'pastel',
-  'fantasy',
-  'wireframe',
-  'cmyk',
-  'autumn',
-  'acid',
-  'lemonade',
-  'winter',
+export const THEMES = [
+  'blue',
+  'slate',
+  'rose',
+  'orange',
+  'green',
+  'yellow',
+  'violet',
 ] as const;
 
-export const DARK_THEMES = [
-  'expenses-dark',
-  'synthwave',
-  'night',
-  'dim',
-  'sunset',
-  'dark',
-  'halloween',
-  'forest',
-  'aqua',
-  'black',
-  'luxury',
-  'dracula',
-  'business',
-  'coffee',
-] as const;
-
-type LightTheme = (typeof LIGHT_THEMES)[number];
-type DarkTheme = (typeof DARK_THEMES)[number];
-
-const LIGHT_THEME_DEFAULT = 'expenses-light';
-const DARK_THEME_DEFAULT = 'expenses-dark';
+const THEME_DEFAULT = 'blue';
 
 const ZThemePreference = z.enum(['system', 'light', 'dark']);
 
@@ -66,19 +30,14 @@ export const [useThemePreference] = createPreferenceWithDefault(
   'system',
 );
 
-export const ZLightTheme = z.enum(LIGHT_THEMES);
-export const ZDarkTheme = z.enum(DARK_THEMES);
+export const ZTheme = z.enum(THEMES);
 
-export const [useLightTheme] = createPreferenceWithDefault<LightTheme>(
-  'light_theme',
-  (v) => ZLightTheme.catch(LIGHT_THEME_DEFAULT).parse(v),
-  LIGHT_THEME_DEFAULT,
-);
+type Theme = z.infer<typeof ZTheme>;
 
-export const [useDarkTheme] = createPreferenceWithDefault<DarkTheme>(
-  'dark_theme',
-  (v) => ZDarkTheme.catch(DARK_THEME_DEFAULT).parse(v),
-  DARK_THEME_DEFAULT,
+export const [useTheme] = createPreferenceWithDefault<Theme>(
+  'theme',
+  (v) => ZTheme.catch('blue').parse(v),
+  THEME_DEFAULT,
 );
 
 const isDarkMode = (pref: ThemePreference) => {
@@ -89,51 +48,21 @@ const isDarkMode = (pref: ThemePreference) => {
   return pref === 'dark';
 };
 
-const themePrimaryColors: Record<LightTheme | DarkTheme, `#${string}`> = {
-  'expenses-light': '#38bdf8',
-  'expenses-dark': '#38bdf8',
-  aqua: '#09ecf3',
-  black: '#343232',
-  bumblebee: '#f9d72f',
-  cmyk: '#45AEEE',
-  corporate: '#4b6bfb',
-  cupcake: '#65c3c8',
-  cyberpunk: '#ff7598',
-  dark: '#661AE6',
-  dracula: '#ff79c6',
-  emerald: '#66cc8a',
-  fantasy: '#6e0b75',
-  forest: '#1eb854',
-  garden: '#F40076',
-  halloween: '#f28c18',
-  light: '#570df8',
-  lofi: '#0D0D0D',
-  luxury: '#ffffff',
-  pastel: '#d1c1d7',
-  retro: '#ef9995',
-  synthwave: '#e779c1',
-  valentine: '#e96d7b',
-  wireframe: '#b8b8b8',
-  autumn: '#8C0327',
-  business: '#1C4E80',
-  acid: '#FF00F4',
-  lemonade: '#519903',
-  night: '#38bdf8',
-  coffee: '#DB924B',
-  winter: '#047AFF',
-  dim: '#9FE88D',
-  sunset: '#FF865B',
-  nord: '#5E81AC',
+const themePrimaryColors: Record<Theme, `#${string}`> = {
+  blue: '#4e80ee',
+  slate: '#111729',
+  rose: '#cf364c',
+  orange: '#d9622b',
+  green: '#5ec269',
+  yellow: '#f3ce49',
+  violet: '#652cd1',
 };
 
-const syncTheme = (
-  themePreference: ThemePreference,
-  darkTheme: DarkTheme,
-  lightTheme: LightTheme,
-) => {
-  const theme = isDarkMode(themePreference) ? darkTheme : lightTheme;
-
-  document.documentElement.setAttribute('data-theme', theme);
+const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
+  document.documentElement.setAttribute(
+    'data-theme',
+    `${theme}-${isDarkMode(themePreference) ? 'dark' : 'light'}`,
+  );
 
   document
     .querySelector('meta[name="theme-color"]')
@@ -142,12 +71,11 @@ const syncTheme = (
 
 export const useThemeSync = () => {
   const [themePreference] = useThemePreference();
-  const [lightTheme] = useLightTheme();
-  const [darkTheme] = useDarkTheme();
+  const [theme] = useTheme();
 
   const systemDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   useEffect(() => {
-    syncTheme(themePreference, darkTheme, lightTheme);
-  }, [themePreference, lightTheme, darkTheme, systemDarkMode]);
+    syncTheme(themePreference, theme);
+  }, [themePreference, theme, systemDarkMode]);
 };

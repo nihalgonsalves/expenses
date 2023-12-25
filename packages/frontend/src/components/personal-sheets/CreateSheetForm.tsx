@@ -39,6 +39,7 @@ export const CreateSheetForm = ({
 
   return (
     <form
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
         if (disabled) return;
@@ -61,12 +62,12 @@ export const CreateSheetForm = ({
       />
 
       <Button
-        className="btn-primary btn-block mt-4"
+        className="mt-4 w-full"
         type="submit"
         disabled={disabled}
         isLoading={isLoading}
       >
-        <PlusCircledIcon /> Create Sheet
+        <PlusCircledIcon className="mr-2" /> Create Sheet
       </Button>
     </form>
   );

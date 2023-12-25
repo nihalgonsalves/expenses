@@ -26,15 +26,14 @@ import { MoneyField } from '../form/MoneyField';
 import { Select, type SelectOption } from '../form/Select';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+import { Separator } from '../ui/separator';
 
 const TYPE_OPTIONS = [
   {
     value: 'EXPENSE',
     label: (
       <>
-        <span className="text-xl">
-          <ThickArrowUpIcon />
-        </span>
+        <ThickArrowUpIcon className="mr-2 text-xl" />
         Expense
       </>
     ),
@@ -43,9 +42,7 @@ const TYPE_OPTIONS = [
     value: 'INCOME',
     label: (
       <>
-        <span className="text-xl">
-          <ThickArrowDownIcon />
-        </span>{' '}
+        <ThickArrowDownIcon className="mr-2 text-xl" />
         Income
       </>
     ),
@@ -154,6 +151,7 @@ export const CreatePersonalTransactionForm = ({
 
   return (
     <form
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
         if (disabled) return;
@@ -162,34 +160,40 @@ export const CreatePersonalTransactionForm = ({
       }}
     >
       <ToggleButtonGroup
-        className="w-full"
+        className="[&>button]:grow"
         options={TYPE_OPTIONS}
         value={type}
         setValue={setType}
       />
 
-      <div className="flex items-start gap-4">
-        <MoneyField
-          className="flex-grow"
-          autoFocus
-          label="Amount"
-          bottomLabel={
-            convertedMoneySnapshot
-              ? formatCurrency(convertedMoneySnapshot)
-              : null
-          }
-          currencyCode={currencyCode}
-          amount={amount}
-          setAmount={setAmount}
-        />
+      <Separator className="my-2" />
 
-        {supportedCurrencies.includes(personalSheet.currencyCode) && (
-          <CurrencySelect
-            options={supportedCurrencies}
+      <div className="flex items-start gap-4">
+        <div className="grow">
+          <MoneyField
+            className="grow"
+            autoFocus
+            label="Amount"
+            bottomLabel={
+              convertedMoneySnapshot
+                ? formatCurrency(convertedMoneySnapshot)
+                : null
+            }
             currencyCode={currencyCode}
-            setCurrencyCode={setCurrencyCode}
+            amount={amount}
+            setAmount={setAmount}
           />
-        )}
+        </div>
+
+        <div>
+          {supportedCurrencies.includes(personalSheet.currencyCode) && (
+            <CurrencySelect
+              options={supportedCurrencies}
+              currencyCode={currencyCode}
+              setCurrencyCode={setCurrencyCode}
+            />
+          )}
+        </div>
       </div>
 
       <CategorySelect category={category} setCategory={setCategory} />
@@ -219,7 +223,7 @@ export const CreatePersonalTransactionForm = ({
       />
 
       <Button
-        className="btn-primary btn-block mt-4"
+        className="mt-4"
         type="submit"
         disabled={disabled}
         isLoading={isLoading}

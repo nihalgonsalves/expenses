@@ -20,7 +20,7 @@ export const ConfirmButton = ({
   return clicked ? (
     <>
       <Button
-        className="btn-outline btn-block"
+        variant="outline"
         onClick={() => {
           setClicked(false);
         }}
@@ -29,7 +29,7 @@ export const ConfirmButton = ({
       </Button>
       <Button
         isLoading={isLoading}
-        className="btn-error btn-block"
+        variant="destructive"
         onClick={handleConfirmed}
       >
         {confirmLabel}
@@ -38,7 +38,7 @@ export const ConfirmButton = ({
   ) : (
     <Button
       disabled={disabled}
-      className="btn-error btn-outline btn-block"
+      variant="outline"
       onClick={() => {
         setClicked(true);
       }}

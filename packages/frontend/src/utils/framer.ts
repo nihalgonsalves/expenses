@@ -1,21 +1,21 @@
 import type { MotionProps } from 'framer-motion';
 
-export const collapse: MotionProps = {
+export const collapse = {
   initial: { height: 0, opacity: 0 },
   animate: { height: 'auto', opacity: 1 },
   exit: { height: 0, opacity: 0 },
   transition: { duration: 0.1 },
-};
+} satisfies MotionProps;
 
-export const scaleOut: MotionProps = {
+export const scaleOut = {
   layout: true,
   initial: { scale: 0.8, opacity: 1 },
   animate: { scale: 1, opacity: 1 },
   exit: { scale: 0.8, opacity: 0 },
-};
+} satisfies MotionProps;
 
-export const fadeInOut: MotionProps = {
+export const fadeInOut = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
   exit: { opacity: 0 },
-};
+} satisfies MotionProps;

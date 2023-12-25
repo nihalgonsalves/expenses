@@ -1,5 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { ListBulletIcon, TrashIcon } from '@radix-ui/react-icons';
+import {
+  DotsVerticalIcon,
+  ListBulletIcon,
+  TrashIcon,
+} from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -12,8 +16,15 @@ import {
   getTransactionDescription,
 } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
-import { DropdownMenu } from '../DropdownMenu';
 import { ConfirmDialog } from '../form/ConfirmDialog';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 const TransactionListItemComponent = ({
   transaction,
@@ -26,7 +37,7 @@ const TransactionListItemComponent = ({
 }) => {
   const descriptionText = getTransactionDescription(transaction);
   return (
-    <div className="flex flex-row gap-4 items-center text-sm">
+    <div className="flex flex-row items-center gap-4 text-sm">
       <CategoryAvatar category={transaction.category} />
       <div className="flex flex-col">
         <span>
@@ -34,7 +45,7 @@ const TransactionListItemComponent = ({
         </span>
         <span>{description}</span>
       </div>
-      <div className="flex-grow" />
+      <div className="grow" />
       {addons}
     </div>
   );
@@ -57,19 +68,29 @@ const TransactionScheduleDropdownMenu = ({
   };
 
   return (
-    <DropdownMenu aria-label="Actions">
-      <ConfirmDialog
-        confirmLabel="Confirm Delete"
-        description="Delete transaction schedule? Existing transactions will not be affected."
-        onConfirm={handleDelete}
-        renderButton={(onClick) => (
-          <li>
-            <a onClick={onClick}>
-              <TrashIcon /> Delete
-            </a>
-          </li>
-        )}
-      />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="icon" variant="outline">
+          <DotsVerticalIcon />
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent side="left">
+        <ConfirmDialog
+          confirmLabel="Confirm Delete"
+          description="Delete transaction schedule? Existing transactions will not be affected."
+          onConfirm={handleDelete}
+          trigger={
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <TrashIcon className="mr-2" /> Delete
+            </DropdownMenuItem>
+          }
+        />
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 };
@@ -86,11 +107,12 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     });
 
   return (
-    <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
-      <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
-        <div className="card-body">
-          <h2 className="card-title">Latest Transactions</h2>
-
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <CardTitle>Latest Transactions</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
           {getPersonalSheetTransactionsResponse?.transactions
             .slice(0, 4)
             .map((transaction) => (
@@ -101,23 +123,23 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
               />
             ))}
 
-          <Link
-            to={`/sheets/${personalSheet.id}/transactions`}
-            className="btn btn-primary btn-outline "
-          >
-            <ListBulletIcon /> All Transactions (
-            {getPersonalSheetTransactionsResponse?.total})
-          </Link>
-        </div>
-      </div>
+          <Button variant="outline" asChild>
+            <Link to={`/sheets/${personalSheet.id}/transactions`}>
+              <ListBulletIcon className="mr-2" /> All Transactions (
+              {getPersonalSheetTransactionsResponse?.total})
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
 
-      <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
-        <div className="card-body">
-          <h2 className="card-title">
+      <Card>
+        <CardHeader>
+          <CardTitle>
             Scheduled Transactions (
             {getPersonalSheetTransactionSchedulesResponse?.length})
-          </h2>
-
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
           {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => (
             <TransactionListItemComponent
               key={schedule.id}
@@ -143,8 +165,8 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
               }
             />
           ))}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

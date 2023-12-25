@@ -16,12 +16,12 @@ export const NewSheetPage = () => {
   return (
     <Root title="Create Sheet" showBackButton>
       <ToggleButtonGroup
-        className="mb-4"
+        className="mb-4 [&>button]:grow"
         options={[
           {
             label: (
               <>
-                <CardStackIcon /> Personal
+                <CardStackIcon className="mr-2" /> Personal
               </>
             ),
             value: 'PERSONAL',
@@ -29,7 +29,7 @@ export const NewSheetPage = () => {
           {
             label: (
               <>
-                <CardStackPlusIcon /> Shared
+                <CardStackPlusIcon className="mr-2" /> Shared
               </>
             ),
             value: 'GROUP',

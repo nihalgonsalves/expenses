@@ -9,6 +9,7 @@ import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { TextField } from '../form/TextField';
+import { Separator } from '../ui/separator';
 
 export const CreateGroupForm = ({
   defaultCurrencyCode,
@@ -67,7 +68,7 @@ export const CreateGroupForm = ({
 
   return (
     <form
-      className="flex flex-col"
+      className="flex flex-col gap-4"
       onSubmit={(e) => {
         e.preventDefault();
 
@@ -92,19 +93,20 @@ export const CreateGroupForm = ({
       {participantEmails.map((participant, i) => (
         // this is a list of inputs without an ID that won't be re-ordered
         // eslint-disable-next-line react/no-array-index-key
-        <div key={i} className="flex items-end">
-          <TextField
-            label={`Participant ${i + 1}'s email`}
-            type="email"
-            autoComplete="email"
-            value={participant}
-            setValue={(val) => {
-              handleChangeParticipant(i, val);
-            }}
-            className="flex-grow"
-          />
+        <div key={i} className="flex items-end gap-2">
+          <div className="grow">
+            <TextField
+              label={`Participant ${i + 1}'s email`}
+              type="email"
+              autoComplete="email"
+              value={participant}
+              setValue={(val) => {
+                handleChangeParticipant(i, val);
+              }}
+            />
+          </div>
           <Button
-            className="btn-square btn-ghost text-xl text-error"
+            variant="outline"
             aria-label="Delete"
             onClick={() => {
               handleDeleteParticipant(i);
@@ -115,23 +117,15 @@ export const CreateGroupForm = ({
         </div>
       ))}
 
-      <Button
-        className="btn-primary btn-outline btn-block mt-4"
-        onClick={handleAddParticipant}
-      >
-        <PersonIcon />
+      <Button className="mt-4" variant="outline" onClick={handleAddParticipant}>
+        <PersonIcon className="mr-2" />
         Add Participant
       </Button>
 
-      <div className="divider" />
+      <Separator className="my-2" />
 
-      <Button
-        type="submit"
-        className="btn-primary"
-        disabled={disabled}
-        isLoading={isLoading}
-      >
-        <PlusIcon /> Create Group
+      <Button type="submit" disabled={disabled} isLoading={isLoading}>
+        <PlusIcon className="mr-2" /> Create Group
       </Button>
     </form>
   );

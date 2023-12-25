@@ -1,6 +1,18 @@
+import type { VariantProps } from 'class-variance-authority';
 import { type MouseEvent, useCallback, useState } from 'react';
 
-import { Dialog } from '../Dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '../ui/alert-dialog';
+import type { buttonVariants } from '../ui/button';
 
 import { Button } from './Button';
 
@@ -8,12 +20,14 @@ export const ConfirmDialog = ({
   description,
   confirmLabel,
   onConfirm,
-  renderButton,
+  trigger,
+  variant,
 }: {
   description: React.ReactNode;
   confirmLabel: React.ReactNode;
   onConfirm: () => Promise<void> | void;
-  renderButton: (onClick: () => void) => React.ReactNode;
+  trigger: React.ReactNode;
+  variant?: VariantProps<typeof buttonVariants>['variant'];
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -34,24 +48,22 @@ export const ConfirmDialog = ({
   );
 
   return (
-    <>
-      <Dialog isOpen={isOpen} setIsOpen={setIsOpen}>
-        <h3 className="font-bold text-lg">Confirm</h3>
-        <p className="py-4">{description}</p>
-        <div className="modal-action">
-          <button className="btn">Cancel</button>
-          <Button
-            className="btn-error"
-            isLoading={isLoading}
-            onClick={handleConfirmed}
-          >
-            {confirmLabel}
-          </Button>
-        </div>
-      </Dialog>
-      {renderButton(() => {
-        setIsOpen(true);
-      })}
-    </>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Confirm</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirmed} asChild>
+            <Button variant={variant} isLoading={isLoading}>
+              {confirmLabel}
+            </Button>
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
