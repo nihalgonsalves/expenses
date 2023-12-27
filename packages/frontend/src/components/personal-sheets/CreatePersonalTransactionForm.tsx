@@ -168,7 +168,7 @@ export const CreatePersonalTransactionForm = ({
 
       <Separator className="my-2" />
 
-      <div className="flex items-start gap-4">
+      <div className="flex gap-4">
         <div className="grow">
           <MoneyField
             className="grow"
@@ -185,7 +185,7 @@ export const CreatePersonalTransactionForm = ({
           />
         </div>
 
-        <div>
+        <div className="mt-0.5 flex flex-col justify-start gap-2">
           {supportedCurrencies.includes(personalSheet.currencyCode) && (
             <CurrencySelect
               options={supportedCurrencies}

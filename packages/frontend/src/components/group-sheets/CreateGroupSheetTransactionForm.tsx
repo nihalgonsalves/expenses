@@ -567,7 +567,7 @@ const TransactionForm = ({
           />
         </div>
 
-        <div>
+        <div className="mt-0.5 flex flex-col justify-start gap-2">
           {supportedCurrencies.includes(groupSheet.currencyCode) && (
             <CurrencySelect
               options={supportedCurrencies}
