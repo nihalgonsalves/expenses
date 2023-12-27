@@ -8,7 +8,7 @@ const schema = z.nativeEnum(CategoryId);
 
 const options: SelectOption<typeof schema>[] = [
   {
-    value: '' as const,
+    value: undefined,
     label: 'No category',
   },
   ...categories.map(({ id, name }) => ({

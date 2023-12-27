@@ -1,15 +1,28 @@
-import { clsxtw, getInitials } from '../utils/utils';
+import { cn, getInitials } from '../utils/utils';
+
+import { Avatar as UIAvatar, AvatarFallback } from './ui/avatar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 
 export const Avatar = ({ name }: { name: string }) => (
-  <div
-    className="avatar placeholder tooltip tooltip-top"
-    aria-label={name}
-    data-tip={name}
-  >
-    <div className="w-12 h-12 rounded-full bg-neutral-focus text-neutral-content">
-      <span className="text-2xl">{getInitials(name)}</span>
-    </div>
-  </div>
+  <TooltipProvider delayDuration={500}>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <UIAvatar className="border-2">
+          <AvatarFallback className="cursor-pointer">
+            {getInitials(name)}
+          </AvatarFallback>
+        </UIAvatar>
+      </TooltipTrigger>
+      <TooltipContent side="left" className="bg-slate-300">
+        <p>{name}</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 );
 
 export const AvatarGroup = ({
@@ -25,16 +38,14 @@ export const AvatarGroup = ({
   const hidden = names.length - visible.length;
 
   return (
-    <div className={clsxtw('avatar-group', className)}>
+    <div className={cn('flex -space-x-4', className)}>
       {visible.map((name) => (
         <Avatar key={name} name={name} />
       ))}
       {hidden !== 0 && (
-        <div className="avatar placeholder tooltip tooltip-top">
-          <div className="w-12 rounded-full bg-neutral-focus  text-neutral-content">
-            <span className="text-xl">+{hidden}</span>
-          </div>
-        </div>
+        <UIAvatar className="border-2">
+          <AvatarFallback className="cursor-pointer">+{hidden}</AvatarFallback>
+        </UIAvatar>
       )}
     </div>
   );

@@ -49,10 +49,9 @@ const DenseTransactionListItem = forwardRef<
       </div>
       <div style={{ flexGrow: 1 }} />
       <AvatarGroup
-        className="-space-x-6"
         max={5}
         names={transaction.participants.map(({ name }) => name)}
-      ></AvatarGroup>
+      />
     </motion.div>
   );
 });

@@ -32,7 +32,7 @@ export const TransactionActions = ({
       isLoading={isLoading}
       label={
         <>
-          <TrashIcon /> Delete Transaction
+          <TrashIcon className="mr-2" /> Delete Transaction
         </>
       }
       confirmLabel="Confirm Delete (Irreversible)"

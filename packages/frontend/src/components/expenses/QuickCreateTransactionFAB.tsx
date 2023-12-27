@@ -1,51 +1,55 @@
 import { PlusIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
-import { Dialog } from '../Dialog';
 import { FloatingActionButton } from '../FloatingActionButton';
+import { Button } from '../ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../ui/dialog';
 
 export const QuickCreateTransactionFAB = () => {
   const { data: sheets } = trpc.sheet.mySheets.useQuery({
     includeArchived: false,
   });
 
-  const [addTransactionOpen, setAddTransactionOpen] = useState(false);
-
   return (
-    <>
-      <FloatingActionButton
-        onClick={() => {
-          setAddTransactionOpen(true);
-        }}
-        label="Add Transaction"
-        icon={<PlusIcon />}
-      />
-      <Dialog isOpen={addTransactionOpen} setIsOpen={setAddTransactionOpen}>
-        <h2 className="text-xl">Choose a sheet</h2>
-        {sheets?.length === 0 && (
-          <div style={{ paddingBlock: '1rem' }}>No unarchived sheets found</div>
-        )}
-        <ul
-          tabIndex={0}
-          className="menu rounded-box z-[2] mt-3 bg-base-200 text-base-content p-2 text-lg shadow"
-        >
-          {sheets?.map((sheet) => (
-            <li key={sheet.id}>
-              <Link
-                to={
-                  sheet.type === 'PERSONAL'
-                    ? `/sheets/${sheet.id}/transactions/new`
-                    : `/groups/${sheet.id}/transactions/new`
-                }
+    <Dialog>
+      <DialogTrigger asChild>
+        <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Choose a sheet</DialogTitle>
+          <DialogDescription className="flex flex-col gap-4">
+            {sheets?.length === 0 && 'No unarchived sheets found'}
+
+            {sheets?.map((sheet) => (
+              <Button
+                key={sheet.id}
+                className="w-full"
+                variant="outline"
+                asChild
               >
-                {sheet.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Dialog>
-    </>
+                <Link
+                  to={
+                    sheet.type === 'PERSONAL'
+                      ? `/sheets/${sheet.id}/transactions/new`
+                      : `/groups/${sheet.id}/transactions/new`
+                  }
+                >
+                  {sheet.name}
+                </Link>
+              </Button>
+            ))}
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   );
 };

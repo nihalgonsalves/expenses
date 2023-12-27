@@ -1,4 +1,4 @@
-import { clsxtw } from '../../utils/utils';
+import { cn } from '../../utils/utils';
 
 export const ParticipantListItem = ({
   children,
@@ -9,7 +9,7 @@ export const ParticipantListItem = ({
   avatar?: React.ReactNode;
   className?: string;
 }) => (
-  <div className={clsxtw('flex items-center gap-4', className)}>
+  <div className={cn('flex items-center gap-4', className)}>
     <div>{avatar}</div>
     {children}
   </div>

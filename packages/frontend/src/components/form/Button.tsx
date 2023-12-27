@@ -1,23 +1,18 @@
-import { type HTMLMotionProps, motion } from 'framer-motion';
-
-import { clsxtw } from '../../utils/utils';
+import { Button as UIButton, type ButtonProps } from '../ui/button';
+import { LoadingSpinner } from '../ui/loading-spinner';
 
 export const Button = ({
   isLoading,
   className,
   children,
+  type = 'button',
   ...buttonProps
-}: Omit<HTMLMotionProps<'button'>, 'type' | 'style'> & {
-  type?: 'submit' | 'reset';
+}: ButtonProps & {
+  type?: 'button' | 'submit' | 'reset';
   isLoading?: boolean;
   className?: string;
 }) => (
-  <motion.button
-    whileTap={{ scale: 0.8 }}
-    type="button"
-    className={clsxtw('btn no-animation', className)}
-    {...buttonProps}
-  >
-    {isLoading ? <span className="loading loading-spinner" /> : children}
-  </motion.button>
+  <UIButton type={type} className={className} {...buttonProps}>
+    {isLoading ? <LoadingSpinner /> : children}
+  </UIButton>
 );

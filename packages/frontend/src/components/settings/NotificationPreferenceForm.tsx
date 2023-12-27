@@ -1,4 +1,7 @@
-import { TrashIcon } from '@radix-ui/react-icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ExclamationTriangleIcon, TrashIcon } from '@radix-ui/react-icons';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { ZPushSubscription } from '@nihalgonsalves/expenses-shared/types/notification';
@@ -7,13 +10,27 @@ import { trpc } from '../../api/trpc';
 import { useSubscriptionEndpoint } from '../../state/preferences';
 import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
-import { Button } from '../form/Button';
-import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '../ui/form';
+import { Switch } from '../ui/switch';
 
 const IS_IOS_AND_NOT_STANDALONE = z.boolean().optional().parse(
   // @ts-expect-error iOS only
   globalThis.navigator.standalone,
 );
+
+const formSchema = z.object({
+  notificationsEnabled: z.boolean(),
+});
 
 export const NotificationPreferenceForm = () => {
   const { permission, request } = useNotificationPermission();
@@ -34,12 +51,16 @@ export const NotificationPreferenceForm = () => {
     (s) => s.endpoint === endpoint,
   );
 
-  const notificationPreference = thisDeviceSubscription != null;
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
 
-  const handleChangeNotificationPreference = async (
-    notificationsEnabled: boolean,
-  ) => {
-    if (!notificationsEnabled) {
+  useEffect(() => {
+    form.reset({ notificationsEnabled: thisDeviceSubscription != null });
+  }, [form, thisDeviceSubscription]);
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    if (!data.notificationsEnabled) {
       if (!thisDeviceSubscription) return;
 
       await deleteSubscription(thisDeviceSubscription.id);
@@ -94,22 +115,33 @@ export const NotificationPreferenceForm = () => {
     !applicationServerKey;
 
   return (
-    <section className="card card-bordered card-compact">
-      <div className="card-body flex flex-col gap-8">
-        <h2 className="card-title">Notifications</h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Notifications</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-8">
         {permission === 'denied' && (
-          <div className="alert alert-warning">
-            You have denied notifications. Please allow them in your browser
-            settings, and make sure that you&rsquo;re not using private
-            browsing, which denies notifications automatically.
-          </div>
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertTitle>You have denied notifications.</AlertTitle>
+            <AlertDescription>
+              Please allow them in your browser settings, and make sure that
+              you&rsquo;re not using private browsing, which denies
+              notifications automatically.
+            </AlertDescription>
+          </Alert>
         )}
+
         {permission === 'not_supported' && (
-          <div className="alert alert-warning">
-            <p>
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertTitle>
               Push notifications are not supported in your browser or
-              environment. Make sure that you&rsquo;re not using private
-              browsing, and that you&rsquo;re accessing this page over https.
+              environment.
+            </AlertTitle>
+            <AlertDescription>
+              Make sure that you&rsquo;re not using private browsing, and that
+              you&rsquo;re accessing this page over https.
               {IS_IOS_AND_NOT_STANDALONE === false &&
                 ' On iOS 16.4 and above, click the share icon and Add to Home Screen for notification support.'}
               {import.meta.env.DEV && (
@@ -119,23 +151,43 @@ export const NotificationPreferenceForm = () => {
                   for service worker support.
                 </b>
               )}
-            </p>
-          </div>
+            </AlertDescription>
+          </Alert>
         )}
-        <ToggleButtonGroup
-          value={notificationPreference}
-          setValue={handleChangeNotificationPreference}
-          disabled={disabled}
-          options={[
-            { value: false, label: 'Off' },
-            { value: true, label: 'On' },
-          ]}
-        />
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+            <FormField
+              control={form.control}
+              name="notificationsEnabled"
+              disabled={disabled}
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                  <div className="space-y-0.5">
+                    <FormLabel>Notifications on this device</FormLabel>
+                    <FormDescription>
+                      Receive push notifications on this device
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={(checked) => {
+                        field.onChange(checked);
+                        void form.handleSubmit(onSubmit)();
+                      }}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
 
         {subscriptions && subscriptions.length > 0 && (
           <ul className="grid gap-4">
             {subscriptions.map((subscription) => (
-              <li key={subscription.id} className="flex items-center">
+              <li key={subscription.id} className="flex items-center text-sm">
                 <div>
                   <span className="font-semibold">
                     {subscription.description}
@@ -144,9 +196,10 @@ export const NotificationPreferenceForm = () => {
                   <br />
                   Notifications enabled
                 </div>
-                <div className="flex-grow" />
+                <div className="grow" />
                 <Button
-                  className="btn-ghost text-error text-2xl"
+                  variant="destructive"
+                  className="text-2xl"
                   aria-label="Delete Subscription"
                   onClick={async () =>
                     handleDeleteSubscription(subscription.id)
@@ -158,7 +211,7 @@ export const NotificationPreferenceForm = () => {
             ))}
           </ul>
         )}
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 };

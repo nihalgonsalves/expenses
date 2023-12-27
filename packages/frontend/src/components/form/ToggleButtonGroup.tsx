@@ -1,10 +1,6 @@
-import { clsxtw } from '../../utils/utils';
+import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 
-import { Button } from './Button';
-
-const booleanKey = (value: boolean) => (value ? 'true' : 'false');
-
-export const ToggleButtonGroup = <T extends boolean | string>({
+export const ToggleButtonGroup = <T extends string>({
   className,
   options,
   value,
@@ -17,26 +13,21 @@ export const ToggleButtonGroup = <T extends boolean | string>({
   setValue: (newValue: T) => void;
   disabled?: boolean;
 }) => (
-  <div className={clsxtw('join', className)}>
+  <ToggleGroup
+    type="single"
+    variant="outline"
+    className={className}
+    value={value}
+    onValueChange={setValue}
+  >
     {options.map((option) => (
-      <Button
+      <ToggleGroupItem
+        key={option.value}
         disabled={disabled}
-        className={clsxtw(
-          'join-item flex-grow',
-          value === option.value && 'btn-primary btn-active',
-        )}
-        aria-checked={value === option.value}
-        onClick={() => {
-          setValue(option.value);
-        }}
-        key={
-          typeof option.value === 'string'
-            ? option.value
-            : booleanKey(option.value)
-        }
+        value={option.value}
       >
         {option.label}
-      </Button>
+      </ToggleGroupItem>
     ))}
-  </div>
+  </ToggleGroup>
 );

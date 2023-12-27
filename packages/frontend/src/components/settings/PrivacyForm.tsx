@@ -1,12 +1,30 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { z } from 'zod';
 
 import { trpc } from '../../api/trpc';
 import { useResetCache } from '../../api/useCacheReset';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
-import { TextField } from '../form/TextField';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
+
+const formSchema = z.object({
+  email: z.string().email({
+    message: 'Invalid email',
+  }),
+  password: z.string().min(1, { message: 'Password is required' }),
+});
 
 export const PrivacyForm = () => {
   const onLine = useNavigatorOnLine();
@@ -14,82 +32,96 @@ export const PrivacyForm = () => {
 
   const [isReconfirming, setIsReconfirming] = useState(false);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
 
   const resetCache = useResetCache();
   const { mutateAsync: anonymizeUser, isLoading } =
     trpc.user.anonymizeUser.useMutation();
 
-  const valid = prevalidateEmail(email) && password.length > 0;
-
-  const handleAnonymize = async () => {
-    if (!valid) return;
-
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!isReconfirming) {
       setIsReconfirming(true);
       return;
     }
 
-    await anonymizeUser({ email, password });
+    await anonymizeUser({ email: values.email, password: values.password });
 
     await resetCache();
     navigate('/');
   };
 
-  const disabled = !valid || !onLine;
+  const disabled = !onLine;
 
   return (
-    <section className="card card-bordered card-compact">
-      <div className="card-body text-justify">
-        <h2 className="card-title">Privacy and Data</h2>
-        <p>
-          Enter your current email and password to delete all personal sheets
-          and transactions, as well as anonymize your name and email address.
-        </p>
-        <p>
-          If you would like to delete or leave any groups, please do this{' '}
-          <strong>before</strong> anonymising your account. Note that the
-          anonymized account will remain linked to any remaining groups as a
-          Deleted User.
-        </p>
-        <p>
-          You can sign up with the same email address at any point in the
-          future, but this action <strong>cannot</strong> be undone.
-        </p>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
+    <Card>
+      <CardHeader>
+        <CardTitle>Privacy and Data</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-5">
+        <div className="flex flex-col gap-2 text-sm">
+          <p>
+            Enter your current email and password to delete all personal sheets
+            and transactions, as well as anonymize your name and email address.
+          </p>
+          <p>
+            If you would like to delete or leave any groups, please do this{' '}
+            <strong>before</strong> anonymising your account. Note that the
+            anonymized account will remain linked to any remaining groups as a
+            Deleted User.
+          </p>
+          <p>
+            You can sign up with the same email address at any point in the
+            future, but this action <strong>cannot</strong> be undone.
+          </p>
+        </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
+                    <Input type="email" autoComplete="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            if (disabled) return;
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="current-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            void handleAnonymize();
-          }}
-        >
-          <TextField
-            label="Email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            setValue={setEmail}
-          />
-          <TextField
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            setValue={setPassword}
-          />
-          <Button
-            isLoading={isLoading}
-            disabled={disabled}
-            type="submit"
-            className="btn-error btn-block mt-4"
-          >
-            {isReconfirming ? 'Are you sure?' : 'Anonymise your account'}
-          </Button>
-        </form>
-      </div>
-    </section>
+            <Button
+              isLoading={isLoading}
+              disabled={disabled}
+              type="submit"
+              variant="destructive"
+              className="w-full"
+            >
+              {isReconfirming ? 'Are you sure?' : 'Anonymise your account'}
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 };

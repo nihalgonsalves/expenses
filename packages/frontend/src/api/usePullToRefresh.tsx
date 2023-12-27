@@ -2,6 +2,7 @@ import { easeIn } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
+import { Progress } from '../components/ui/progress';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 
 const displayThreshold = () => window.innerHeight * 0.05;
@@ -45,26 +46,14 @@ export const usePullToRefresh = (
       ) {
         const ratio = easeIn(touchDiffY / reloadThreshold());
 
-        toast(
-          () => (
-            <div
-              className="radial-progress"
-              style={{
-                // @ts-expect-error DaisyUI property
-                '--value': ratio * 100,
-                '--size': '1rem',
-              }}
-            />
-          ),
-          {
-            id: toastId,
-            className: 'w-48',
-            duration: Infinity,
-            style: {
-              backgroundColor: `rgba(255, 255, 255, ${ratio.toFixed(2)})`,
-            },
+        toast(() => <Progress value={ratio * 100} />, {
+          id: toastId,
+          className: 'w-48',
+          duration: Infinity,
+          style: {
+            backgroundColor: `rgba(255, 255, 255, ${ratio.toFixed(2)})`,
           },
-        );
+        });
       } else {
         toast.dismiss(toastId);
       }

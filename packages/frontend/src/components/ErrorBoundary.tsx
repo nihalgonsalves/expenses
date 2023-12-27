@@ -2,6 +2,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Button } from './ui/button';
+
 type ErrorBoundaryState = {
   hasError: boolean;
   error: unknown;
@@ -13,9 +16,8 @@ const RetryErrorButton = ({ reset }: { reset: () => void }) => {
   const queryClient = useQueryClient();
 
   return (
-    <button
-      type="button"
-      className="btn btn-ghost btn-sm"
+    <Button
+      variant="outline"
       onClick={async () => {
         queryClient.clear();
         await queryClient.invalidateQueries();
@@ -23,7 +25,7 @@ const RetryErrorButton = ({ reset }: { reset: () => void }) => {
       }}
     >
       Reset cache and retry
-    </button>
+    </Button>
   );
 };
 
@@ -60,29 +62,25 @@ export class ErrorBoundary extends React.Component<{
           : 'Unknown Error';
 
       return (
-        <div className="p-4">
-          <div className="alert alert-warning">
-            <h3 className="font-bold">Something went wrong</h3>
-
-            <div className="flex-grow" />
+        <Alert variant="destructive">
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription className="flex gap-2">
             <RetryErrorButton
               reset={() => {
                 this.setState(initialState);
               }}
             />
 
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
+            <Button
+              variant="outline"
               onClick={() => {
                 this.setState({ displayError: true });
               }}
             >
               Display error
-            </button>
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
+            </Button>
+            <Button
+              variant="outline"
               onClick={async () => {
                 await navigator.clipboard.writeText(
                   JSON.stringify(
@@ -99,31 +97,30 @@ export class ErrorBoundary extends React.Component<{
               }}
             >
               Copy to Clipboard
-            </button>
-          </div>
+            </Button>
+          </AlertDescription>
 
           {displayError && (
-            <div className="mockup-code text-xs mt-4">
-              <pre data-prefix={1}>
-                <code>{errorMessage}</code>
-              </pre>
-
-              {componentStack
-                .split('\n')
-                .map((line) => line.trim())
-                .filter((line) => line !== '')
-                .map((line, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <pre key={index} data-prefix={index + 2}>
-                    <code>
+            <div className="mt-4 text-xs">
+              <pre>
+                {errorMessage}
+                <br />
+                {componentStack
+                  .split('\n')
+                  .map((line) => line.trim())
+                  .filter((line) => line !== '')
+                  .map((line, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <React.Fragment key={index}>
                       {'> '}
                       {line}
-                    </code>
-                  </pre>
-                ))}
+                      <br />
+                    </React.Fragment>
+                  ))}
+              </pre>
             </div>
           )}
-        </div>
+        </Alert>
       );
     }
 

@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
+import { Alert, AlertTitle } from '../ui/alert';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 import { AddMemberButton } from './AddMemberButton';
 import { type ActorInfo, BalanceSummary } from './BalanceSummary';
@@ -22,11 +25,12 @@ export const GroupSheet = ({
     });
 
   return (
-    <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
-      <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
-        <div className="card-body">
-          <h2 className="card-title">People</h2>
-
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <CardTitle>People</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
           {actorInfo && (
             <BalanceSummary
               groupSheetId={groupSheet.id}
@@ -37,13 +41,14 @@ export const GroupSheet = ({
           {actorInfo?.isAdmin && (
             <AddMemberButton groupSheetId={groupSheet.id} />
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
-        <div className="card-body">
-          <h2 className="card-title">Latest Transactions</h2>
-
+      <Card>
+        <CardHeader>
+          <CardTitle>Latest Transactions</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
           {groupSheetTransactionsResponse &&
           groupSheetTransactionsResponse.transactions.length > 0 ? (
             <>
@@ -53,19 +58,20 @@ export const GroupSheet = ({
                   4,
                 )}
               />
-              <Link
-                to={`/groups/${groupSheet.id}/transactions`}
-                className="btn btn-primary btn-outline"
-              >
-                <ListBulletIcon /> All Transactions (
-                {groupSheetTransactionsResponse.total})
-              </Link>
+              <Button className="w-full" variant="outline" asChild>
+                <Link to={`/groups/${groupSheet.id}/transactions`}>
+                  <ListBulletIcon className="mr-2" /> All Transactions (
+                  {groupSheetTransactionsResponse.total})
+                </Link>
+              </Button>
             </>
           ) : (
-            <div className="alert">No transactions yet</div>
+            <Alert>
+              <AlertTitle>No transactions yet</AlertTitle>
+            </Alert>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

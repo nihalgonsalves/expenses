@@ -1,4 +1,4 @@
-import { SymbolIcon } from '@radix-ui/react-icons';
+import { ArrowLeftIcon, SymbolIcon } from '@radix-ui/react-icons';
 import type { TRPCClientErrorLike } from '@trpc/client';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import {
-  MdArrowBack,
   MdHome,
   MdPieChart,
   MdSettings,
@@ -22,9 +21,11 @@ import { usePullToRefresh } from '../api/usePullToRefresh';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { NavBarAvatar } from '../components/NavBarAvatar';
 import { Button } from '../components/form/Button';
+import { Alert, AlertTitle } from '../components/ui/alert';
+import { LoadingSpinner } from '../components/ui/loading-spinner';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
-import { clsxtw } from '../utils/utils';
+import { cn } from '../utils/utils';
 
 type RootProps = {
   title: React.ReactNode;
@@ -46,20 +47,21 @@ export const Root = ({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col bg-base-100 max-w-screen-2xl h-[100dvh] m-auto">
-      <header className="navbar bg-primary text-primary-content">
+    <div className="m-auto flex h-dvh max-w-screen-2xl flex-col">
+      <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
         {showBackButton && (
           <Button
-            className="btn-ghost text-2xl"
+            variant="ghost"
+            className="text-primary-foreground"
             onClick={() => {
               navigate(-1);
             }}
           >
-            <MdArrowBack />
+            <ArrowLeftIcon />
           </Button>
         )}
 
-        <div className="ms-2 flex-grow text-2xl font-semibold normal-case">
+        <div className="ms-2 flex grow place-items-center font-semibold normal-case text-primary-foreground">
           {title}
         </div>
 
@@ -69,8 +71,8 @@ export const Root = ({
       </header>
 
       <main
-        className={clsxtw(
-          'flex flex-grow flex-col overflow-y-auto p-3 md:p-5',
+        className={cn(
+          'flex grow flex-col overflow-y-auto p-3 md:p-5',
           mainClassName,
         )}
       >
@@ -79,7 +81,7 @@ export const Root = ({
       {additionalChildren}
 
       <nav
-        className="flex-shrink-0 border-t-2 border-primary flex text-3xl"
+        className="flex shrink-0 border-t-2 border-primary text-3xl"
         style={{}}
       >
         {[
@@ -113,13 +115,13 @@ export const Root = ({
             to={to}
             aria-label={text}
             title={text}
-            className="flex-grow flex flex-col"
+            className="flex grow flex-col"
           >
             {({ isActive }) => (
               <>
                 {isActive ? (
                   <motion.span
-                    className="bg-primary h-1"
+                    className="h-1 bg-primary"
                     layoutId="activeLine"
                     transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
                   />
@@ -129,7 +131,7 @@ export const Root = ({
                 <motion.span
                   animate={{ scale: 1 }}
                   whileTap={{ scale: 0.8 }}
-                  className="flex flex-grow justify-center p-4"
+                  className="flex grow justify-center p-4"
                   style={{
                     paddingBottom:
                       'max(1rem, calc(env(safe-area-inset-bottom) - 1rem))',
@@ -206,11 +208,9 @@ export const RootLoader = <
       title={
         <>
           {result.data != null ? getTitle?.(result.data) ?? title : title}
-          {result.isLoading && (
-            <div className="loading loading-spinner loading-xs ml-4" />
-          )}
+          {result.isLoading && <LoadingSpinner className="ml-4 size-4" />}
           {!mobileStandalone && !result.isLoading && onLine && (
-            <Button className="btn-ghost" onClick={refetch}>
+            <Button variant="ghost" size="icon" onClick={refetch}>
               <SymbolIcon />
             </Button>
           )}
@@ -221,7 +221,9 @@ export const RootLoader = <
       <ErrorBoundary>
         <AnimatePresence mode="wait">
           {result.error != null && (
-            <div className="alert alert-error">{result.error.message}</div>
+            <Alert variant="destructive">
+              <AlertTitle>{result.error.message}</AlertTitle>
+            </Alert>
           )}
           {result.data != null && (
             <motion.div

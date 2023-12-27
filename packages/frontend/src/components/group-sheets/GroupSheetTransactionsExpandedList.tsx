@@ -18,8 +18,15 @@ import { Avatar } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
 import { TransactionActions } from '../TransactionActions';
+import { Alert, AlertTitle } from '../ui/alert';
+import { Badge } from '../ui/badge';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { Separator } from '../ui/separator';
 
 import { ParticipantListItem } from './ParticipantListItem';
+
+const MotionCard = motion(Card);
+const MotionCardContent = motion(CardContent);
 
 const ExpandedTransactionListItem = forwardRef<
   HTMLDivElement,
@@ -41,85 +48,75 @@ const ExpandedTransactionListItem = forwardRef<
   );
 
   return (
-    <motion.div
-      ref={ref}
-      key={transaction.id}
-      className="card card-bordered"
-      {...scaleOut}
-    >
-      <div tabIndex={0} className="card-body collapse p-4">
-        <div className="flex gap-4">
-          <CategoryAvatar category={transaction.category} />
-          <div className="flex-grow">
-            <h2>{title}</h2>
-            {getGroupSheetTransactionSummaryText(transaction)}
-          </div>
-          <ExpandMoreButton
-            expand={expanded}
-            onClick={() => {
-              setExpanded((prev) => !prev);
-            }}
-          />
+    <MotionCard ref={ref} key={transaction.id} {...scaleOut}>
+      <CardHeader className="flex w-full flex-row place-items-center gap-4">
+        <CategoryAvatar category={transaction.category} />
+
+        <div>
+          {title}
+          <br />
+          {getGroupSheetTransactionSummaryText(transaction)}
         </div>
 
-        <AnimatePresence initial={false}>
-          {expanded && (
-            <motion.div className="flex flex-col gap-4 p-0" {...collapse}>
-              <div className="divider mb-0" />
+        <div className="grow"></div>
+        <ExpandMoreButton
+          expand={expanded}
+          onClick={() => {
+            setExpanded((prev) => !prev);
+          }}
+        />
+      </CardHeader>
 
-              {transaction.type !== 'TRANSFER' && (
-                <>
-                  {transaction.participants.map(({ id, name, balance }) => (
-                    <ParticipantListItem
-                      key={id}
-                      avatar={<Avatar name={name} />}
-                    >
-                      <div>
-                        <span className="font-semibold">{name}</span>
-                        {balance.actual.amount !== 0 && (
-                          <>
-                            {transaction.type === 'EXPENSE'
-                              ? ' paid '
-                              : ' received '}
-                            <span className="badge badge-primary">
-                              {formatCurrency(balance.actual, {
-                                signDisplay: 'never',
-                              })}
-                            </span>
-                          </>
-                        )}
-                        <br />
-                        <span className="badge badge-neutral">
-                          {formatCurrency(balance.share, {
-                            signDisplay: 'never',
-                          })}
-                        </span>
-                      </div>
-                    </ParticipantListItem>
-                  ))}
-
-                  <div className="divider m-0" />
-                </>
-              )}
-              <TransactionActions
-                sheetId={groupSheetId}
-                transaction={transaction}
-                onDelete={async () => {
-                  await Promise.all([
-                    utils.transaction.getGroupSheetTransactions.invalidate({
-                      groupSheetId,
-                    }),
-                    utils.transaction.getParticipantSummaries.invalidate(
-                      groupSheetId,
-                    ),
-                  ]);
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <MotionCardContent className="flex flex-col gap-4" {...collapse}>
+            {transaction.type !== 'TRANSFER' && (
+              <>
+                {transaction.participants.map(({ id, name, balance }) => (
+                  <ParticipantListItem key={id} avatar={<Avatar name={name} />}>
+                    <div>
+                      <span className="font-semibold">{name}</span>
+                      {balance.actual.amount !== 0 && (
+                        <>
+                          {transaction.type === 'EXPENSE'
+                            ? ' paid '
+                            : ' received '}
+                          <Badge>
+                            {formatCurrency(balance.actual, {
+                              signDisplay: 'never',
+                            })}
+                          </Badge>
+                        </>
+                      )}
+                      <br />
+                      <Badge variant="secondary">
+                        {formatCurrency(balance.share, {
+                          signDisplay: 'never',
+                        })}
+                      </Badge>
+                    </div>
+                  </ParticipantListItem>
+                ))}
+              </>
+            )}
+            <TransactionActions
+              sheetId={groupSheetId}
+              transaction={transaction}
+              onDelete={async () => {
+                await Promise.all([
+                  utils.transaction.getGroupSheetTransactions.invalidate({
+                    groupSheetId,
+                  }),
+                  utils.transaction.getParticipantSummaries.invalidate(
+                    groupSheetId,
+                  ),
+                ]);
+              }}
+            />
+          </MotionCardContent>
+        )}
+      </AnimatePresence>
+    </MotionCard>
   );
 });
 ExpandedTransactionListItem.displayName = 'ExpandedTransactionListItem';
@@ -136,7 +133,9 @@ export const GroupSheetTransactionsExpandedList = ({
   return (
     <div className="flex flex-col gap-4">
       {transactions.length === 0 && (
-        <div className="alert">No transactions</div>
+        <Alert>
+          <AlertTitle>No transactions</AlertTitle>
+        </Alert>
       )}
       <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => {
@@ -148,11 +147,11 @@ export const GroupSheetTransactionsExpandedList = ({
           return [
             <motion.div
               key={date}
-              className="flex items-center gap-4 px-2"
+              className="flex items-center gap-4 px-2 "
               {...scaleOut}
             >
               {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
-              <div className="divider flex-grow relative top-[1.5px]" />
+              <Separator className="relative top-[1.5px] w-auto grow" />
               {sum ? formatCurrency(sum) : '–'}
             </motion.div>,
             groupedByDate

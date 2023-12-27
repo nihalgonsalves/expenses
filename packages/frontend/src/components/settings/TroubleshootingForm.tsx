@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useResetCache } from '../../api/useCacheReset';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
 import { Button } from '../form/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const TroubleshootingForm = () => {
   const [state, setState] = useState<'initial' | 'loading' | 'done'>('initial');
@@ -26,19 +27,21 @@ export const TroubleshootingForm = () => {
   };
 
   return (
-    <section className="card card-bordered card-compact">
-      <div className="card-body">
-        <h2 className="card-title">Troubleshooting</h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Troubleshooting</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4 text-sm">
         If you are experiencing issues with the app, you can reset the cache
         here. This is safe but you need to be online to reload data.
         <Button
-          className="btn btn-error btn-outline btn-block mt-4"
+          variant="destructive"
           onClick={handleResetCache}
           isLoading={state === 'loading'}
         >
           {state === 'done' ? 'Done, reloading...' : 'Reset Cache'}
         </Button>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 };

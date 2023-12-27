@@ -2,9 +2,15 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button } from './form/Button';
+import { Button } from './ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 
-const MotionLink = motion(Link);
+const MotionButton = motion(Button);
 
 type FloatingActionButtonProps = {
   label: string;
@@ -18,6 +24,10 @@ type FloatingActionButtonProps = {
       to?: undefined;
       onClick: () => void;
     }
+  | {
+      to?: undefined;
+      onClick?: undefined;
+    }
 );
 
 export const FloatingActionButton = ({
@@ -27,31 +37,37 @@ export const FloatingActionButton = ({
   icon,
 }: FloatingActionButtonProps) => (
   <div className="sticky bottom-0 w-full">
-    <span
-      className="absolute bottom-4 right-4 tooltip tooltip-left"
-      data-tip={label}
-    >
-      {to ? (
-        <MotionLink
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.8 }}
-          className="btn-outlined btn btn-circle btn-primary text-2xl"
-          aria-label={label}
-          to={to}
-        >
-          {icon}
-        </MotionLink>
-      ) : (
-        <Button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.8 }}
-          className="btn-outlined btn btn-circle btn-primary text-2xl"
-          aria-label={label}
-          onClick={onClick}
-        >
-          {icon}
-        </Button>
-      )}
-    </span>
+    <TooltipProvider delayDuration={100}>
+      <Tooltip>
+        <TooltipTrigger className="absolute bottom-4 right-4">
+          {to ? (
+            <MotionButton
+              asChild
+              variant="outline"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.8 }}
+              className="size-12 rounded-full text-2xl"
+              aria-label={label}
+            >
+              <Link to={to}>{icon}</Link>
+            </MotionButton>
+          ) : (
+            <MotionButton
+              variant="outline"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.8 }}
+              className="size-12 rounded-full text-2xl"
+              aria-label={label}
+              onClick={onClick}
+            >
+              {icon}
+            </MotionButton>
+          )}
+        </TooltipTrigger>
+        <TooltipContent side="left" className="bg-slate-300">
+          <p>{label}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   </div>
 );

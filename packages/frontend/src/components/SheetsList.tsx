@@ -6,10 +6,13 @@ import { Link } from 'react-router-dom';
 import type { SheetsResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { collapse } from '../utils/framer';
-import { clsxtw } from '../utils/utils';
+import { cn } from '../utils/utils';
 
 import { Avatar } from './Avatar';
 import { ExpandMoreButton } from './ExpandMoreButton';
+import { Alert, AlertTitle } from './ui/alert';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 const partitionSheets = (sheets: SheetsResponse) => {
   const personal: SheetsResponse = [];
@@ -34,15 +37,16 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
     sheet.type === 'PERSONAL' ? `/sheets/${sheet.id}` : `/groups/${sheet.id}`;
 
   return (
-    <div key={sheet.id} className="flex items-center gap-4 h-14">
-      <Link
-        className="btn btn-ghost no-animation flex-grow justify-start gap-4 text-start text-xl normal-case text-primary"
-        to={link}
+    <div key={sheet.id} className="flex h-14 items-center gap-4">
+      <Button
+        variant="ghost"
+        className="grow justify-start gap-4 text-xl text-primary"
+        asChild
       >
-        {sheet.name}
-      </Link>
+        <Link to={link}>{sheet.name}</Link>
+      </Button>
       {sheet.type === 'GROUP' && (
-        <div className="avatar-group -space-x-6">
+        <div className="flex -space-x-4">
           {sheet.participants.map((participant) => (
             <Avatar key={participant.id} name={participant.name} />
           ))}
@@ -51,6 +55,8 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
     </div>
   );
 };
+
+const MotionCardContent = motion(CardContent);
 
 export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
   const { personal, group, archived } = useMemo(
@@ -61,43 +67,46 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
   const [showArchived, setShowArchived] = useState(false);
 
   return sheets.length === 0 ? (
-    <div className="flex flex-col gap-4">
-      <div className="alert">No sheets</div>
-    </div>
+    <Alert>
+      <AlertTitle>No sheets</AlertTitle>
+    </Alert>
   ) : (
-    <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
       {personal.length > 0 && (
-        <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
-          <div className="card-body">
-            <h2 className="card-title">Personal Sheets</h2>
+        <Card>
+          <CardHeader>
+            <CardTitle>Personal Sheets</CardTitle>
+          </CardHeader>
+          <CardContent>
             {personal.map((sheet) => (
               <SheetItem key={sheet.id} sheet={sheet} />
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
       {group.length > 0 && (
-        <div className="flex flex-col flex-grow gap-4 card card-compact card-bordered">
-          <div className="card-body">
-            <h2 className="card-title">Group Sheets</h2>
-
+        <Card>
+          <CardHeader>
+            <CardTitle>Group Sheets</CardTitle>
+          </CardHeader>
+          <CardContent>
             {group.map((sheet) => (
               <SheetItem key={sheet.id} sheet={sheet} />
             ))}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
       {archived.length > 0 && (
-        <div
-          className={clsxtw(
-            'flex flex-col flex-grow gap-4 card card-compact card-bordered',
+        <Card
+          className={cn(
+            'flex grow flex-col gap-4',
             showArchived ? '' : 'opacity-50',
           )}
         >
-          <div className="card-body">
-            <h2 className="card-title flex justify-between">
+          <CardHeader>
+            <CardTitle className="flex place-items-center justify-between">
               Archived Sheets
               <ExpandMoreButton
                 expand={showArchived}
@@ -105,19 +114,18 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
                   setShowArchived((prev) => !prev);
                 }}
               />
-            </h2>
-
-            <AnimatePresence initial={false}>
-              {showArchived && (
-                <motion.div {...collapse}>
-                  {archived.map((sheet) => (
-                    <SheetItem key={sheet.id} sheet={sheet} />
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+            </CardTitle>
+          </CardHeader>
+          <AnimatePresence initial={false}>
+            {showArchived && (
+              <MotionCardContent {...collapse}>
+                {archived.map((sheet) => (
+                  <SheetItem key={sheet.id} sheet={sheet} />
+                ))}
+              </MotionCardContent>
+            )}
+          </AnimatePresence>
+        </Card>
       )}
     </div>
   );

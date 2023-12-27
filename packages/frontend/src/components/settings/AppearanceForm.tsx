@@ -3,24 +3,17 @@ import { MoonIcon, SunIcon, TargetIcon } from '@radix-ui/react-icons';
 import { useSupportedCurrencies } from '../../api/currencyConversion';
 import { usePreferredCurrencyCode } from '../../state/preferences';
 import {
-  LIGHT_THEMES,
-  DARK_THEMES,
+  THEMES,
   useThemePreference,
-  useDarkTheme,
-  useLightTheme,
-  ZLightTheme,
-  ZDarkTheme,
+  ZTheme,
+  useTheme,
 } from '../../state/theme';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { Select } from '../form/Select';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
-const lightThemeOptions = LIGHT_THEMES.map((theme) => ({
-  label: theme,
-  value: theme,
-}));
-
-const darkThemeOptions = DARK_THEMES.map((theme) => ({
+const themeOptions = THEMES.map((theme) => ({
   label: theme,
   value: theme,
 }));
@@ -28,8 +21,7 @@ const darkThemeOptions = DARK_THEMES.map((theme) => ({
 export const AppearanceForm = () => {
   const [themePreference, setThemePreference] = useThemePreference();
 
-  const [lightTheme, setLightTheme] = useLightTheme();
-  const [darkTheme, setDarkTheme] = useDarkTheme();
+  const [theme, setTheme] = useTheme();
 
   const [preferredCurrencyCode, setPreferredCurrencyCode] =
     usePreferredCurrencyCode();
@@ -37,16 +29,19 @@ export const AppearanceForm = () => {
   const { data: supportedCurrencies = [] } = useSupportedCurrencies();
 
   return (
-    <section className="card card-bordered card-compact">
-      <div className="card-body flex flex-col gap-4">
-        <h2 className="card-title">Appearance</h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Appearance</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
         <ToggleButtonGroup
+          className="[&>button]:grow"
           options={[
             {
               value: 'light',
               label: (
                 <>
-                  <SunIcon /> Light
+                  <SunIcon className="mr-2" /> Light
                 </>
               ),
             },
@@ -54,7 +49,7 @@ export const AppearanceForm = () => {
               value: 'system',
               label: (
                 <>
-                  <TargetIcon /> System
+                  <TargetIcon className="mr-2" /> System
                 </>
               ),
             },
@@ -62,7 +57,7 @@ export const AppearanceForm = () => {
               value: 'dark',
               label: (
                 <>
-                  <MoonIcon /> Dark
+                  <MoonIcon className="mr-2" /> Dark
                 </>
               ),
             },
@@ -70,19 +65,13 @@ export const AppearanceForm = () => {
           value={themePreference}
           setValue={setThemePreference}
         />
+
         <Select
-          label="Light Theme"
-          value={lightTheme}
-          setValue={setLightTheme}
-          options={lightThemeOptions}
-          schema={ZLightTheme}
-        />
-        <Select
-          label="Dark Theme"
-          value={darkTheme}
-          setValue={setDarkTheme}
-          options={darkThemeOptions}
-          schema={ZDarkTheme}
+          label="Theme"
+          value={theme}
+          setValue={setTheme}
+          options={themeOptions}
+          schema={ZTheme}
         />
 
         <CurrencySelect
@@ -91,7 +80,7 @@ export const AppearanceForm = () => {
           currencyCode={preferredCurrencyCode}
           setCurrencyCode={setPreferredCurrencyCode}
         />
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 };

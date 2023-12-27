@@ -19,6 +19,13 @@ import {
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
 import { TransactionActions } from '../TransactionActions';
+import { Alert, AlertTitle } from '../ui/alert';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { Separator } from '../ui/separator';
+
+const MotionCard = motion(Card);
+const MotionCardContent = motion(CardContent);
 
 const ExpandedTransactionListItem = forwardRef<
   HTMLDivElement,
@@ -40,19 +47,16 @@ const ExpandedTransactionListItem = forwardRef<
   );
 
   return (
-    <motion.div
-      ref={ref}
-      key={transaction.id}
-      {...scaleOut}
-      className="card card-bordered"
-    >
-      <div tabIndex={0} className="card-body p-4">
-        <div className="flex gap-4">
+    <MotionCard ref={ref} key={transaction.id} {...scaleOut}>
+      <CardHeader>
+        <div className="flex w-full gap-4">
           <CategoryAvatar category={transaction.category} />
-          <div className="flex-grow">
-            <h2>{title}</h2>
+          <div>
+            {title}
+            <br />
             {formatDateTimeRelative(transaction.spentAt)}
           </div>
+          <div className="grow"></div>
           <ExpandMoreButton
             expand={expanded}
             onClick={() => {
@@ -60,35 +64,34 @@ const ExpandedTransactionListItem = forwardRef<
             }}
           />
         </div>
+      </CardHeader>
 
-        <AnimatePresence initial={false}>
-          {expanded && (
-            <motion.div className="flex flex-col gap-4 p-0" {...collapse}>
-              <div className="divider mb-0" />
-
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <MotionCardContent className="flex flex-col gap-4" {...collapse}>
+            <Button variant="outline" asChild>
               <Link
                 to={`/sheets/${personalSheetId}/transactions/${transaction.id}`}
-                className="btn btn-outline btn-block"
               >
-                <Pencil1Icon /> Edit
+                <Pencil1Icon className="mr-2" /> Edit
               </Link>
+            </Button>
 
-              <TransactionActions
-                sheetId={personalSheetId}
-                transaction={transaction}
-                onDelete={async () => {
-                  await utils.transaction.getPersonalSheetTransactions.invalidate(
-                    {
-                      personalSheetId,
-                    },
-                  );
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.div>
+            <TransactionActions
+              sheetId={personalSheetId}
+              transaction={transaction}
+              onDelete={async () => {
+                await utils.transaction.getPersonalSheetTransactions.invalidate(
+                  {
+                    personalSheetId,
+                  },
+                );
+              }}
+            />
+          </MotionCardContent>
+        )}
+      </AnimatePresence>
+    </MotionCard>
   );
 });
 ExpandedTransactionListItem.displayName = 'ExpandedTransactionListItem';
@@ -105,7 +108,9 @@ export const PersonalSheetTransactionsExpandedList = ({
   return (
     <div className="flex flex-col gap-4">
       {transactions.length === 0 && (
-        <div className="alert">No transactions</div>
+        <Alert>
+          <AlertTitle>No transactions</AlertTitle>
+        </Alert>
       )}
       <AnimatePresence mode="popLayout" initial={false}>
         {[...groupedByDate.keys()].flatMap((date) => {
@@ -121,7 +126,7 @@ export const PersonalSheetTransactionsExpandedList = ({
               {...scaleOut}
             >
               {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
-              <div className="divider flex-grow relative top-[1.5px]" />
+              <Separator className="relative top-[1.5px] w-auto grow" />
               {sum ? formatCurrency(sum) : '–'}
             </motion.div>,
             dateTransactions.map((transaction) => (

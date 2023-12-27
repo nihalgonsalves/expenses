@@ -14,9 +14,9 @@ import type {
 } from '../api/useAllUserTransactions';
 import { categoryById } from '../data/categories';
 import { formatCurrency } from '../utils/money';
-import { clsxtw } from '../utils/utils';
+import { cn } from '../utils/utils';
 
-import { Button } from './form/Button';
+import { Button } from './ui/button';
 
 const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
   const categorySums: Record<string, Money> = {};
@@ -60,18 +60,18 @@ export const CategoryStats = ({
 
   return (
     <>
-      <div className="join w-full mb-4">
+      <div className="mb-4 flex items-center gap-2 rounded-md bg-muted p-1">
         <Button
-          className="join-item"
+          variant="ghost"
           onClick={() => {
             offsetByDuration({ months: -1 });
           }}
         >
           <ArrowLeftIcon />
         </Button>
-        <Button className="join-item flex-grow">{displayPeriod}</Button>
+        <div className="grow text-center">{displayPeriod}</div>
         <Button
-          className="join-item"
+          variant="ghost"
           onClick={() => {
             offsetByDuration({ months: 1 });
           }}
@@ -80,7 +80,7 @@ export const CategoryStats = ({
         </Button>
       </div>
       <div
-        className={clsxtw(
+        className={cn(
           'grid gap-2 md:gap-4',
           categoryExpenseSumEntries.length > 0 &&
             categoryIncomeSumEntries.length > 0
@@ -91,16 +91,22 @@ export const CategoryStats = ({
         {categoryExpenseSumEntries.length > 0 && (
           <div className="flex flex-col gap-2 md:gap-4">
             {categoryExpenseSumEntries.map(([category, sum]) => (
-              <div className="stat shadow rounded-lg" key={category}>
-                <div className="stat-figure text-secondary">
-                  {categoryById[category]?.icon}
+              <div
+                className="flex place-items-center content-between justify-between rounded-lg p-6 shadow"
+                key={category}
+              >
+                <div>
+                  <div className="text-sm capitalize text-neutral-500 md:text-lg">
+                    {categoryById[category]?.name}
+                  </div>
+
+                  <div className="text-base font-bold md:text-3xl">
+                    {formatCurrency(sum)}
+                  </div>
                 </div>
 
-                <div className="stat-title text-sm md:text-lg">
-                  {categoryById[category]?.name}
-                </div>
-                <div className="stat-value text-base md:text-3xl">
-                  {formatCurrency(sum)}
+                <div className="text-primary">
+                  {categoryById[category]?.icon}
                 </div>
               </div>
             ))}
@@ -109,16 +115,22 @@ export const CategoryStats = ({
         {categoryIncomeSumEntries.length > 0 && (
           <div className="flex flex-col gap-2 md:gap-4">
             {categoryIncomeSumEntries.map(([category, sum]) => (
-              <div className="stat shadow rounded-lg" key={category}>
-                <div className="stat-figure text-secondary">
-                  {categoryById[category]?.icon}
+              <div
+                className="flex place-items-center content-between justify-between rounded-lg p-6 shadow"
+                key={category}
+              >
+                <div>
+                  <div className="text-sm capitalize text-neutral-500 md:text-lg">
+                    {categoryById[category]?.name}
+                  </div>
+
+                  <div className="text-base font-bold md:text-3xl">
+                    {formatCurrency(sum)}
+                  </div>
                 </div>
 
-                <div className="stat-title text-sm md:text-lg">
-                  {categoryById[category]?.name}
-                </div>
-                <div className="stat-value text-base md:text-3xl">
-                  {formatCurrency(sum)}
+                <div className="text-primary">
+                  {categoryById[category]?.icon}
                 </div>
               </div>
             ))}
