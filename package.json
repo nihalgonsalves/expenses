@@ -32,7 +32,7 @@
     "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.6.15",
+    "@nihalgonsalves/esconfig": "^0.6.16",
     "@types/node": "20",
     "@vitest/ui": "^1.1.0",
     "eslint": "^8.56.0",
