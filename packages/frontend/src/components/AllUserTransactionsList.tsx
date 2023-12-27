@@ -1,8 +1,12 @@
-import { CalendarIcon } from '@radix-ui/react-icons';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@radix-ui/react-collapsible';
+import { CalendarIcon, MixerHorizontalIcon } from '@radix-ui/react-icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Fragment, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
-import { z } from 'zod';
 
 import type { CategoryId } from 'src/data/categories';
 
@@ -34,7 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from './ui/table';
-import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group';
+import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 
 const MotionTableRow = motion(TableRow);
 
@@ -94,28 +98,8 @@ const TransactionRow = ({
   );
 };
 
-const ButtonStat = ({
-  title,
-  value,
-  amount,
-}: {
-  title: string;
-  value: string;
-  amount: string;
-}) => (
-  <ToggleGroupItem
-    className="flex h-full grow flex-col place-items-center p-4"
-    value={value}
-  >
-    <span>{title}</span>
-    <span className="md:text-4xl">{amount}</span>
-  </ToggleGroupItem>
-);
-
 const MotionTable = motion(Table);
 const MotionTableHeader = motion(TableHeader);
-
-const ZView = z.enum(['EXPENSES', 'INCOME']);
 
 export const AllUserTransactionsList = ({
   data,
@@ -132,8 +116,9 @@ export const AllUserTransactionsList = ({
 }) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
-  const [selectedView, setSelectedView] =
-    useState<z.infer<typeof ZView>>('EXPENSES');
+  const [selectedView, setSelectedView] = useState<'EXPENSES' | 'INCOME'>(
+    'EXPENSES',
+  );
 
   const totalSpent = sumMoney(
     data.expenses
@@ -161,60 +146,75 @@ export const AllUserTransactionsList = ({
   return (
     <>
       <div className="flex flex-col gap-4 p-2 md:mb-2">
-        <div className="flex gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant="outline"
-                className="justify-start text-left font-normal"
-              >
-                <CalendarIcon className="mr-2 size-4" />
-                {dateRange?.from && dateRange.to ? (
-                  <>
-                    {shortDateFormatter.format(dateRange.from)} -{' '}
-                    {shortDateFormatter.format(dateRange.to)}
-                  </>
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                selected={dateRange}
-                onSelect={setDateRange}
-              />
-            </PopoverContent>
-          </Popover>
+        <Collapsible defaultOpen className="flex flex-col gap-2 md:flex-row">
+          <CollapsibleContent className="flex flex-col gap-2 md:flex-row">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant="outline"
+                  className="justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 size-4" />
+                  {dateRange?.from && dateRange.to ? (
+                    <>
+                      {shortDateFormatter.format(dateRange.from)} -{' '}
+                      {shortDateFormatter.format(dateRange.to)}
+                    </>
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  selected={dateRange}
+                  onSelect={setDateRange}
+                />
+              </PopoverContent>
+            </Popover>
 
-          <CategorySelect
-            category={category}
-            setCategory={setCategory}
-            className="max-w-48 bg-card"
-          />
-        </div>
-        <ToggleGroup
-          type="single"
-          variant="outline"
-          value={selectedView}
-          onValueChange={(value) => {
-            setSelectedView(ZView.parse(value));
-          }}
-        >
-          <ButtonStat
-            title="Expenses"
-            value={'EXPENSES'}
-            amount={formatCurrency(totalSpent)}
-          />
-          <ButtonStat
-            title="Income"
-            value={'INCOME'}
-            amount={formatCurrency(totalEarned)}
-          />
-        </ToggleGroup>
+            <CategorySelect
+              category={category}
+              setCategory={setCategory}
+              placeholder="All categories"
+              className="bg-card md:max-w-48"
+            />
+          </CollapsibleContent>
+
+          <div className="hidden grow md:block">&nbsp;</div>
+
+          <Tabs value={selectedView} className="flex flex-row gap-2">
+            <TabsList className="w-full md:w-auto">
+              <TabsTrigger
+                className="grow"
+                value="EXPENSES"
+                onClick={() => {
+                  setSelectedView('EXPENSES');
+                }}
+              >
+                Expenses ({formatCurrency(totalSpent)})
+              </TabsTrigger>
+              <TabsTrigger
+                className="grow"
+                value="INCOME"
+                onClick={() => {
+                  setSelectedView('INCOME');
+                }}
+              >
+                Income ({formatCurrency(totalEarned)})
+              </TabsTrigger>
+            </TabsList>
+
+            <CollapsibleTrigger className="md:hidden" asChild>
+              <Button size="icon" variant="outline">
+                <MixerHorizontalIcon />
+              </Button>
+            </CollapsibleTrigger>
+          </Tabs>
+        </Collapsible>
       </div>
 
       <AnimatePresence mode="popLayout" initial={false}>

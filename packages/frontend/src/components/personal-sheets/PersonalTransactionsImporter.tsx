@@ -458,7 +458,7 @@ export const PersonalTransactionsImporter = ({
           <div className="grid grid-cols-1 items-center gap-[1rem] md:grid-cols-2">
             <div>
               <Select
-                label="Amount field"
+                placeholder="Amount field"
                 options={fieldOptions}
                 value={amountField}
                 setValue={setAmountField}
@@ -469,7 +469,7 @@ export const PersonalTransactionsImporter = ({
 
             <div>
               <Select
-                label="Amount format"
+                placeholder="Amount format"
                 options={amountFormatOptions}
                 value={amountFormat}
                 setValue={setAmountFormat}
@@ -480,7 +480,7 @@ export const PersonalTransactionsImporter = ({
 
             <div>
               <Select
-                label="Date field"
+                placeholder="Date field"
                 options={fieldOptions}
                 value={dateField}
                 setValue={setDateField}
@@ -510,7 +510,7 @@ export const PersonalTransactionsImporter = ({
 
             <div>
               <Select
-                label="Category field"
+                placeholder="Category field"
                 options={fieldOptions}
                 value={categoryField}
                 setValue={setCategoryField}
@@ -523,7 +523,7 @@ export const PersonalTransactionsImporter = ({
 
             <div>
               <Select
-                label="Description field"
+                placeholder="Description field"
                 options={fieldOptions}
                 value={descriptionField}
                 setValue={setDescriptionField}

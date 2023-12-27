@@ -431,7 +431,7 @@ const ParticipantSelect = ({
 
   return (
     <Select
-      label="Please Select..."
+      placeholder="Please Select..."
       value={selectedId ?? ''}
       setValue={setSelectedId}
       schema={z.string()}

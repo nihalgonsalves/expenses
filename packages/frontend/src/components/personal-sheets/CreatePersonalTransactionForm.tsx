@@ -226,7 +226,7 @@ export const CreatePersonalTransactionForm = ({
       <Label className="flex flex-col gap-2">
         Recurring?
         <Select
-          label="Recurring?"
+          placeholder="Recurring?"
           options={RECURRENCE_OPTIONS}
           value={recurrence}
           setValue={setRecurrence}

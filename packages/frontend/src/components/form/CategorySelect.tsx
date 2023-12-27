@@ -30,13 +30,15 @@ export const CategorySelect = ({
   category,
   setCategory,
   className,
+  placeholder = 'Select Category',
 }: {
   category: CategoryId | undefined;
   setCategory: (newCategory: CategoryId | undefined) => void;
   className?: string;
+  placeholder?: string;
 }) => (
   <Select
-    label="Category"
+    placeholder={placeholder}
     value={category}
     setValue={setCategory}
     schema={schema}

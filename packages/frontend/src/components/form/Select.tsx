@@ -17,14 +17,14 @@ export type SelectOption<T extends z.Schema<string | undefined>> = {
 const UNSET = 'unset' as const;
 
 export const Select = <T extends z.Schema<string | undefined>>({
-  label,
+  placeholder,
   options,
   value,
   setValue,
   schema,
   className,
 }: {
-  label: string;
+  placeholder: string;
   options: SelectOption<T>[];
   value: z.infer<T> | undefined;
   setValue: (newValue: z.infer<T>) => void;
@@ -43,7 +43,7 @@ export const Select = <T extends z.Schema<string | undefined>>({
     }}
   >
     <SelectTrigger className={className}>
-      <SelectValue placeholder={label} />
+      <SelectValue placeholder={placeholder} />
     </SelectTrigger>
     <SelectContent>
       {options.map(({ label: display, value: optValue, disabled }) => (

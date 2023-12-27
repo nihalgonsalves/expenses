@@ -70,7 +70,7 @@ export const AppearanceForm = () => {
         <Label className="flex flex-col gap-2">
           Theme
           <Select
-            label="Theme"
+            placeholder="Theme"
             value={theme}
             setValue={setTheme}
             options={themeOptions}

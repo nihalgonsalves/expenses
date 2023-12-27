@@ -47,7 +47,7 @@ export const Root = ({
   const navigate = useNavigate();
 
   return (
-    <div className="m-auto flex h-dvh max-w-screen-2xl flex-col">
+    <div className="m-auto flex h-dvh flex-col">
       <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
         {showBackButton && (
           <Button
