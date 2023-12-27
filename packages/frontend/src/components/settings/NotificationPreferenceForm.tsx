@@ -160,7 +160,6 @@ export const NotificationPreferenceForm = () => {
             <FormField
               control={form.control}
               name="notificationsEnabled"
-              disabled={disabled}
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                   <div className="space-y-0.5">
@@ -171,6 +170,7 @@ export const NotificationPreferenceForm = () => {
                   </div>
                   <FormControl>
                     <Switch
+                      disabled={disabled}
                       checked={field.value}
                       onCheckedChange={(checked) => {
                         field.onChange(checked);
