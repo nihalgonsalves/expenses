@@ -87,7 +87,6 @@ export const CategoryStats = ({
               mode="range"
               selected={dateRange}
               onSelect={setDateRange}
-              numberOfMonths={2}
             />
           </PopoverContent>
         </Popover>
