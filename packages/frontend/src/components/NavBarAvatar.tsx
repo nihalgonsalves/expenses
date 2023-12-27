@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { trpc } from '../api/trpc';
 import { useResetCache } from '../api/useCacheReset';
 import { useCurrentUser } from '../api/useCurrentUser';
+import { cn } from '../utils/utils';
 
 import { Button } from './ui/button';
 import {
@@ -12,13 +13,28 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { Separator } from './ui/separator';
 
-export const LoggedOutNavBarAvatar = () => (
-  <div className="flex gap-2">
-    <Button variant="outline" asChild>
+export const LoggedOutNavBarAvatar = ({
+  className,
+}: {
+  className?: string | undefined;
+}) => (
+  <div className={cn('flex place-items-center gap-4', className)}>
+    <Separator orientation="vertical">&nbsp;</Separator>
+
+    <Button
+      variant="outline"
+      className="bg-transparent text-primary-foreground"
+      asChild
+    >
       <Link to="/auth/sign-in">Sign in</Link>
     </Button>
-    <Button variant="outline" asChild>
+    <Button
+      variant="outline"
+      className="bg-transparent text-primary-foreground"
+      asChild
+    >
       <Link to="/auth/sign-up">Sign up</Link>
     </Button>
   </div>
@@ -26,12 +42,14 @@ export const LoggedOutNavBarAvatar = () => (
 
 export const LoggedInNavBarAvatar = ({
   handleSignOut,
+  className,
 }: {
   handleSignOut: () => void;
+  className?: string | undefined;
 }) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant="ghost" size="icon">
+      <Button className={className} variant="ghost" size="icon">
         <AvatarIcon className="size-5 text-primary-foreground" />
       </Button>
     </DropdownMenuTrigger>
@@ -41,7 +59,7 @@ export const LoggedInNavBarAvatar = ({
   </DropdownMenu>
 );
 
-export const NavBarAvatar = () => {
+export const NavBarAvatar = ({ className }: { className?: string }) => {
   const resetCache = useResetCache();
 
   const { status, error } = useCurrentUser();
@@ -53,14 +71,19 @@ export const NavBarAvatar = () => {
   };
 
   if (status == 'success') {
-    return <LoggedInNavBarAvatar handleSignOut={handleSignOut} />;
+    return (
+      <LoggedInNavBarAvatar
+        className={className}
+        handleSignOut={handleSignOut}
+      />
+    );
   }
 
   if (
     status === 'error' &&
     (error.data?.httpStatus === 401 || error.data?.httpStatus === 403)
   ) {
-    return <LoggedOutNavBarAvatar />;
+    return <LoggedOutNavBarAvatar className={className} />;
   }
 
   return null;

@@ -23,6 +23,12 @@ import { NavBarAvatar } from '../components/NavBarAvatar';
 import { Button } from '../components/form/Button';
 import { Alert, AlertTitle } from '../components/ui/alert';
 import { LoadingSpinner } from '../components/ui/loading-spinner';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from '../components/ui/navigation-menu';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 import { cn } from '../utils/utils';
@@ -32,16 +38,41 @@ type RootProps = {
   children?: React.ReactNode;
   rightNavBarItems?: React.ReactNode;
   showBackButton?: boolean;
-  mainClassName?: string;
   additionalChildren?: React.ReactNode;
 };
+
+const navItems = [
+  {
+    to: '/',
+    text: 'Home',
+    activeIcon: <MdHome />,
+    icon: <MdOutlineHome />,
+  },
+  {
+    to: '/sheets',
+    text: 'Sheets',
+    activeIcon: <MdTableRows />,
+    icon: <MdOutlineTableRows />,
+  },
+  {
+    to: '/stats',
+    text: 'Stats',
+    activeIcon: <MdPieChart />,
+    icon: <MdOutlinePieChart />,
+  },
+  {
+    to: '/settings',
+    text: 'Settings',
+    activeIcon: <MdSettings />,
+    icon: <MdOutlineSettings />,
+  },
+];
 
 export const Root = ({
   title,
   children,
   rightNavBarItems,
   showBackButton,
-  mainClassName,
   additionalChildren,
 }: RootProps) => {
   const navigate = useNavigate();
@@ -52,7 +83,7 @@ export const Root = ({
         {showBackButton && (
           <Button
             variant="ghost"
-            className="text-primary-foreground"
+            className="text-primary-foreground md:hidden"
             onClick={() => {
               navigate(-1);
             }}
@@ -61,55 +92,81 @@ export const Root = ({
           </Button>
         )}
 
-        <div className="ms-2 flex grow place-items-center font-semibold normal-case text-primary-foreground">
+        <div className="ms-2 flex place-items-center font-semibold normal-case text-primary-foreground ">
           {title}
         </div>
 
         {rightNavBarItems}
 
-        <NavBarAvatar />
+        <div className="grow">&nbsp;</div>
+
+        <NavigationMenu className="hidden md:block">
+          <NavigationMenuList>
+            {navItems.map(({ to, text }) => (
+              <NavigationMenuItem key={to}>
+                <NavLink to={to} aria-label={text} title={text}>
+                  {({ isActive }) => (
+                    <div
+                      className={navigationMenuTriggerStyle({
+                        className: cn(
+                          'relative',
+                          'bg-transparent',
+                          'underline',
+                          'hover:bg-inherit',
+                          'hover:no-underline',
+                          'hover:text-primary-foreground',
+                          isActive
+                            ? 'text-primary underline hover:text-primary'
+                            : 'text-primary-foreground',
+                        ),
+                      })}
+                    >
+                      {text}
+                      <motion.span
+                        className={navigationMenuTriggerStyle({
+                          className: cn(
+                            'absolute',
+                            'top-0',
+                            'left-0',
+                            '-z-10',
+                            'text-transparent',
+                            'hover:bg-transparent',
+                            isActive
+                              ? 'bg-primary-foreground'
+                              : 'bg-transparent',
+                          ),
+                        })}
+                        layoutId={isActive ? 'active' : to}
+                        transition={{
+                          type: 'spring',
+                          bounce: 0.2,
+                          duration: 0.5,
+                        }}
+                      >
+                        {text}
+                      </motion.span>
+                    </div>
+                  )}
+                </NavLink>
+              </NavigationMenuItem>
+            ))}
+          </NavigationMenuList>
+        </NavigationMenu>
+
+        <NavBarAvatar className="ml-4" />
       </header>
 
-      <main
-        className={cn(
-          'flex grow flex-col overflow-y-auto p-3 md:p-5',
-          mainClassName,
-        )}
-      >
+      <main className="flex grow flex-col overflow-y-auto p-3 md:p-5">
         {children}
       </main>
+
       {additionalChildren}
 
       <nav
-        className="flex shrink-0 border-t-2 border-primary text-3xl"
+        className="flex shrink-0 border-t-2 border-primary text-3xl md:hidden"
         style={{}}
       >
-        {[
-          {
-            to: '/',
-            text: 'Home',
-            activeIcon: <MdHome />,
-            icon: <MdOutlineHome />,
-          },
-          {
-            to: '/sheets',
-            text: 'Sheets',
-            activeIcon: <MdTableRows />,
-            icon: <MdOutlineTableRows />,
-          },
-          {
-            to: '/stats',
-            text: 'Stats',
-            activeIcon: <MdPieChart />,
-            icon: <MdOutlinePieChart />,
-          },
-          {
-            to: '/settings',
-            text: 'Settings',
-            activeIcon: <MdSettings />,
-            icon: <MdOutlineSettings />,
-          },
-        ].map(({ to, text, activeIcon, icon }) => (
+        {navItems.map(({ to, text, activeIcon, icon }) => (
           <NavLink
             key={to}
             to={to}
@@ -210,7 +267,12 @@ export const RootLoader = <
           {result.data != null ? getTitle?.(result.data) ?? title : title}
           {result.isLoading && <LoadingSpinner className="ml-4 size-4" />}
           {!mobileStandalone && !result.isLoading && onLine && (
-            <Button variant="ghost" size="icon" onClick={refetch}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="ml-2"
+              onClick={refetch}
+            >
               <SymbolIcon />
             </Button>
           )}

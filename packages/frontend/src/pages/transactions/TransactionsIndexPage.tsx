@@ -27,7 +27,6 @@ export const TransactionsIndexPage = () => {
     <RootLoader
       result={result}
       title="Transactions"
-      mainClassName="p-0 md:p-0"
       additionalChildren={<QuickCreateTransactionFAB />}
       render={(data) => (
         <AllUserTransactionsList

@@ -40,7 +40,7 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
     <div key={sheet.id} className="flex h-14 items-center gap-4">
       <Button
         variant="outline"
-        className="grow justify-start gap-4 text-xl text-primary"
+        className="grow justify-start gap-4 text-xl font-normal text-primary"
         asChild
       >
         <Link to={link}>{sheet.name}</Link>
