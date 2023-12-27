@@ -1,40 +1,18 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { useCallback, useMemo, useState } from 'react';
+import { endOfMonth, startOfMonth } from 'date-fns';
+import { useState } from 'react';
+import type { DateRange } from 'react-day-picker';
 
 import { useAllUserTransactions } from '../../api/useAllUserTransactions';
 import { CategoryStats } from '../../components/CategoryStats';
-import { shortDateFormatter } from '../../utils/utils';
 import { RootLoader } from '../Root';
 
 export const StatsIndexPage = () => {
-  const [from, setFrom] = useState(
-    Temporal.Now.zonedDateTimeISO()
-      .with({ day: 1 })
-      .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
-  );
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: startOfMonth(new Date()),
+    to: endOfMonth(new Date()),
+  });
 
-  const [to, setTo] = useState(
-    Temporal.Now.zonedDateTimeISO()
-      .add({ months: 1 })
-      .with({ day: 1 })
-      .round({ smallestUnit: 'day', roundingMode: 'trunc' }),
-  );
-
-  const offsetByDuration = useCallback((duration: Temporal.DurationLike) => {
-    setFrom((prev) => prev.add(duration));
-    setTo((prev) => prev.add(duration));
-  }, []);
-
-  const displayPeriod = useMemo(
-    () =>
-      `${shortDateFormatter.format(from.toInstant().epochMilliseconds)} -
-        ${shortDateFormatter.format(
-          to.subtract({ seconds: 1 }).toInstant().epochMilliseconds,
-        )}`,
-    [from, to],
-  );
-
-  const result = useAllUserTransactions(from, to.subtract({ seconds: 1 }));
+  const result = useAllUserTransactions(dateRange?.from, dateRange?.to);
 
   return (
     <RootLoader
@@ -43,8 +21,8 @@ export const StatsIndexPage = () => {
       render={(data) => (
         <CategoryStats
           data={data}
-          offsetByDuration={offsetByDuration}
-          displayPeriod={displayPeriod}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
         />
       )}
     />
