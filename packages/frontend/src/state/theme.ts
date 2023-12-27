@@ -48,16 +48,6 @@ const isDarkMode = (pref: ThemePreference) => {
   return pref === 'dark';
 };
 
-const themePrimaryColors: Record<Theme, `#${string}`> = {
-  blue: '#4e80ee',
-  slate: '#111729',
-  rose: '#cf364c',
-  orange: '#d9622b',
-  green: '#5ec269',
-  yellow: '#f3ce49',
-  violet: '#652cd1',
-};
-
 const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
   document.documentElement.setAttribute(
     'data-theme',
@@ -66,7 +56,12 @@ const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
 
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute('content', themePrimaryColors[theme]);
+    ?.setAttribute(
+      'content',
+      getComputedStyle(document.documentElement).getPropertyValue(
+        '--theme-color',
+      ),
+    );
 };
 
 export const useThemeSync = () => {
