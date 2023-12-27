@@ -1,6 +1,6 @@
-import type { Temporal } from '@js-temporal/polyfill';
-import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
+import { CalendarIcon } from '@radix-ui/react-icons';
 import { useMemo } from 'react';
+import type { DateRange } from 'react-day-picker';
 
 import {
   addMoney,
@@ -14,9 +14,11 @@ import type {
 } from '../api/useAllUserTransactions';
 import { categoryById } from '../data/categories';
 import { formatCurrency } from '../utils/money';
-import { cn } from '../utils/utils';
+import { cn, shortDateFormatter } from '../utils/utils';
 
 import { Button } from './ui/button';
+import { Calendar } from './ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
   const categorySums: Record<string, Money> = {};
@@ -36,12 +38,12 @@ const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
 
 export const CategoryStats = ({
   data,
-  offsetByDuration,
-  displayPeriod,
+  dateRange,
+  setDateRange,
 }: {
   data: AllConvertedUserTransactions;
-  offsetByDuration: (duration: Temporal.DurationLike) => void;
-  displayPeriod: string;
+  dateRange: DateRange | undefined;
+  setDateRange: (dateRange: DateRange | undefined) => void;
 }) => {
   const categoryExpenseSumEntries = useMemo(
     () =>
@@ -60,24 +62,35 @@ export const CategoryStats = ({
 
   return (
     <>
-      <div className="mb-4 flex items-center gap-2 rounded-md bg-muted p-1">
-        <Button
-          variant="ghost"
-          onClick={() => {
-            offsetByDuration({ months: -1 });
-          }}
-        >
-          <ArrowLeftIcon />
-        </Button>
-        <div className="grow text-center">{displayPeriod}</div>
-        <Button
-          variant="ghost"
-          onClick={() => {
-            offsetByDuration({ months: 1 });
-          }}
-        >
-          <ArrowRightIcon />
-        </Button>
+      <div className="mb-4 rounded-md bg-muted p-1 text-center">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id="date"
+              variant="outline"
+              className="justify-start text-left font-normal"
+            >
+              <CalendarIcon className="mr-2 size-4" />
+              {dateRange?.from && dateRange.to ? (
+                <>
+                  {shortDateFormatter.format(dateRange.from)} -{' '}
+                  {shortDateFormatter.format(dateRange.to)}
+                </>
+              ) : (
+                <span>Pick a date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              initialFocus
+              mode="range"
+              selected={dateRange}
+              onSelect={setDateRange}
+              numberOfMonths={2}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
       <div
         className={cn(

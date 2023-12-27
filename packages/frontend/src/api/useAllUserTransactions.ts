@@ -1,4 +1,3 @@
-import type { Temporal } from '@js-temporal/polyfill';
 import { useMemo } from 'react';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
@@ -26,59 +25,57 @@ type AllConvertedUserTransactionsQueryResult = Pick<
 };
 
 export const useAllUserTransactions = (
-  from: Temporal.ZonedDateTime,
-  to: Temporal.ZonedDateTime,
+  from: Date | undefined,
+  to: Date | undefined,
 ): AllConvertedUserTransactionsQueryResult => {
-  const { data, isLoading, error, refetch } =
-    trpc.transaction.getAllUserTransactions.useQuery(
-      {
-        fromTimestamp: from.toInstant().toString(),
-        toTimestamp: to.toInstant().toString(),
-      },
-      {},
-    );
+  const enabled = from != null && to != null;
+
+  const {
+    data = { expenses: [], earnings: [] },
+    isLoading,
+    error,
+    refetch,
+  } = trpc.transaction.getAllUserTransactions.useQuery(
+    {
+      fromTimestamp: from?.toISOString() ?? '',
+      toTimestamp: to?.toISOString() ?? '',
+    },
+    { enabled },
+  );
 
   const [convertCurrency] = useConvertToPreferredCurrency([
-    ...(data?.expenses.map(
-      ({ transaction }) => transaction.money.currencyCode,
-    ) ?? []),
-    ...(data?.earnings.map(
-      ({ transaction }) => transaction.money.currencyCode,
-    ) ?? []),
+    ...data.expenses.map(({ transaction }) => transaction.money.currencyCode),
+    ...data.earnings.map(({ transaction }) => transaction.money.currencyCode),
   ]);
 
   const convertedExpenses = useMemo(
     () =>
-      data?.expenses.map(({ sheet, transaction }) => ({
+      data.expenses.map(({ sheet, transaction }) => ({
         sheet,
         transaction: {
           ...transaction,
           convertedMoney: convertCurrency(transaction.money),
         },
       })),
-    [data?.expenses, convertCurrency],
+    [data.expenses, convertCurrency],
   );
 
   const convertedEarnings = useMemo(
     () =>
-      data?.earnings.map(({ sheet, transaction }) => ({
+      data.earnings.map(({ sheet, transaction }) => ({
         sheet,
         transaction: {
           ...transaction,
           convertedMoney: convertCurrency(transaction.money),
         },
       })),
-    [data?.earnings, convertCurrency],
+    [data.earnings, convertCurrency],
   );
 
-  if (convertedExpenses && convertedEarnings) {
-    return {
-      data: { expenses: convertedExpenses, earnings: convertedEarnings },
-      isLoading,
-      error,
-      refetch,
-    };
-  }
-
-  return { data: undefined, isLoading, error, refetch };
+  return {
+    data: { expenses: convertedExpenses, earnings: convertedEarnings },
+    isLoading: enabled ? isLoading : false,
+    error,
+    refetch,
+  };
 };
