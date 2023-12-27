@@ -9,7 +9,7 @@ import {
 } from './ui/tooltip';
 
 export const Avatar = ({ name }: { name: string }) => (
-  <TooltipProvider delayDuration={500}>
+  <TooltipProvider delayDuration={100}>
     <Tooltip>
       <TooltipTrigger asChild>
         <UIAvatar className="border-2">
