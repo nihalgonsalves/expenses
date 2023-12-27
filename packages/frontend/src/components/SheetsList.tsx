@@ -39,7 +39,7 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
   return (
     <div key={sheet.id} className="flex h-14 items-center gap-4">
       <Button
-        variant="ghost"
+        variant="outline"
         className="grow justify-start gap-4 text-xl text-primary"
         asChild
       >
