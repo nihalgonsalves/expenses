@@ -4,6 +4,7 @@ import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback } from 'react';
+import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 import {
   MdHome,
@@ -34,7 +35,8 @@ import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 import { cn } from '../utils/utils';
 
 type RootProps = {
-  title: React.ReactNode;
+  title: string | undefined;
+  additionalTitleItems?: React.ReactNode;
   children?: React.ReactNode;
   rightNavBarItems?: React.ReactNode;
   showBackButton?: boolean;
@@ -70,6 +72,7 @@ const navItems = [
 
 export const Root = ({
   title,
+  additionalTitleItems,
   children,
   rightNavBarItems,
   showBackButton,
@@ -78,132 +81,142 @@ export const Root = ({
   const navigate = useNavigate();
 
   return (
-    <div className="m-auto flex h-dvh flex-col">
-      <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
-        {showBackButton && (
-          <Button
-            variant="ghost"
-            className="text-primary-foreground md:hidden"
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
-            <ArrowLeftIcon />
-          </Button>
-        )}
+    <>
+      <Helmet>
+        <title>{title}</title>
+      </Helmet>
+      <div className="m-auto flex h-dvh flex-col">
+        <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
+          {showBackButton && (
+            <Button
+              variant="ghost"
+              className="text-primary-foreground md:hidden"
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              <ArrowLeftIcon />
+            </Button>
+          )}
 
-        <div className="ms-2 flex place-items-center font-semibold normal-case text-primary-foreground ">
-          {title}
-        </div>
+          <div className="ms-2 flex place-items-center font-semibold normal-case text-primary-foreground ">
+            {title}
+            {additionalTitleItems}
+          </div>
 
-        {rightNavBarItems}
+          {rightNavBarItems}
 
-        <div className="grow">&nbsp;</div>
+          <div className="grow">&nbsp;</div>
 
-        <NavigationMenu className="hidden md:block">
-          <NavigationMenuList>
-            {navItems.map(({ to, text }) => (
-              <NavigationMenuItem key={to}>
-                <NavLink to={to} aria-label={text} title={text}>
-                  {({ isActive }) => (
-                    <div
-                      className={navigationMenuTriggerStyle({
-                        className: cn(
-                          'relative',
-                          'bg-transparent',
-                          'underline',
-                          'hover:bg-inherit',
-                          'hover:no-underline',
-                          'hover:text-primary-foreground',
-                          isActive
-                            ? 'text-primary underline hover:text-primary'
-                            : 'text-primary-foreground',
-                        ),
-                      })}
-                    >
-                      {text}
-                      <motion.span
+          <NavigationMenu className="hidden md:block">
+            <NavigationMenuList>
+              {navItems.map(({ to, text }) => (
+                <NavigationMenuItem key={to}>
+                  <NavLink to={to} aria-label={text} title={text}>
+                    {({ isActive }) => (
+                      <div
                         className={navigationMenuTriggerStyle({
                           className: cn(
-                            'absolute',
-                            'top-0',
-                            'left-0',
-                            '-z-10',
-                            'text-transparent',
-                            'hover:bg-transparent',
+                            'relative',
+                            'bg-transparent',
+                            'underline',
+                            'hover:bg-inherit',
+                            'hover:no-underline',
+                            'hover:text-primary-foreground',
                             isActive
-                              ? 'bg-primary-foreground'
-                              : 'bg-transparent',
+                              ? 'text-primary underline hover:text-primary'
+                              : 'text-primary-foreground',
                           ),
                         })}
-                        layoutId={isActive ? 'active' : to}
-                        transition={{
-                          type: 'spring',
-                          bounce: 0.2,
-                          duration: 0.5,
-                        }}
                       >
                         {text}
-                      </motion.span>
-                    </div>
+                        <motion.span
+                          className={navigationMenuTriggerStyle({
+                            className: cn(
+                              'absolute',
+                              'top-0',
+                              'left-0',
+                              '-z-10',
+                              'text-transparent',
+                              'hover:bg-transparent',
+                              isActive
+                                ? 'bg-primary-foreground'
+                                : 'bg-transparent',
+                            ),
+                          })}
+                          layoutId={isActive ? 'active' : to}
+                          transition={{
+                            type: 'spring',
+                            bounce: 0.2,
+                            duration: 0.5,
+                          }}
+                        >
+                          {text}
+                        </motion.span>
+                      </div>
+                    )}
+                  </NavLink>
+                </NavigationMenuItem>
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          <NavBarAvatar className="ml-4" />
+        </header>
+
+        <main className="flex grow flex-col overflow-y-auto p-3 md:p-5">
+          {children}
+        </main>
+
+        {additionalChildren}
+
+        <nav
+          className="flex shrink-0 border-t-2 border-primary text-3xl md:hidden"
+          style={{}}
+        >
+          {navItems.map(({ to, text, activeIcon, icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              aria-label={text}
+              title={text}
+              className="flex grow flex-col"
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive ? (
+                    <motion.span
+                      className="h-1 bg-primary"
+                      layoutId="activeLine"
+                      transition={{
+                        type: 'spring',
+                        bounce: 0.2,
+                        duration: 0.5,
+                      }}
+                    />
+                  ) : (
+                    <span className="h-1" />
                   )}
-                </NavLink>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
-
-        <NavBarAvatar className="ml-4" />
-      </header>
-
-      <main className="flex grow flex-col overflow-y-auto p-3 md:p-5">
-        {children}
-      </main>
-
-      {additionalChildren}
-
-      <nav
-        className="flex shrink-0 border-t-2 border-primary text-3xl md:hidden"
-        style={{}}
-      >
-        {navItems.map(({ to, text, activeIcon, icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            aria-label={text}
-            title={text}
-            className="flex grow flex-col"
-          >
-            {({ isActive }) => (
-              <>
-                {isActive ? (
                   <motion.span
-                    className="h-1 bg-primary"
-                    layoutId="activeLine"
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
-                  />
-                ) : (
-                  <span className="h-1" />
-                )}
-                <motion.span
-                  animate={{ scale: 1 }}
-                  whileTap={{ scale: 0.8 }}
-                  className="flex grow justify-center p-4"
-                  style={{
-                    paddingBottom:
-                      'max(1rem, calc(env(safe-area-inset-bottom) - 1rem))',
-                  }}
-                >
-                  <span />
-                  {isActive ? activeIcon : icon}
-                  <span />
-                </motion.span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </nav>
-    </div>
+                    animate={{ scale: 1 }}
+                    whileTap={{ scale: 0.8 }}
+                    className="flex grow justify-center p-4"
+                    style={{
+                      paddingBottom:
+                        'max(1rem, calc(env(safe-area-inset-bottom) - 1rem))',
+                    }}
+                  >
+                    <span />
+                    {isActive ? activeIcon : icon}
+                    <span />
+                  </motion.span>
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+    </>
   );
 };
 
@@ -231,9 +244,9 @@ export const RootLoader = <
 } & (
     | {
         title?: undefined;
-        getTitle: (data: TData) => React.ReactNode;
+        getTitle: (data: TData) => string;
       }
-    | { title: React.ReactNode; getTitle?: undefined }
+    | { title: string; getTitle?: undefined }
   )) => {
   const onLine = useNavigatorOnLine();
   const isStandalone = useIsStandalone();
@@ -262,9 +275,9 @@ export const RootLoader = <
 
   return (
     <Root
-      title={
+      title={result.data != null ? getTitle?.(result.data) ?? title : title}
+      additionalTitleItems={
         <>
-          {result.data != null ? getTitle?.(result.data) ?? title : title}
           {result.isLoading && <LoadingSpinner className="ml-4 size-4" />}
           {!mobileStandalone && !result.isLoading && onLine && (
             <Button
