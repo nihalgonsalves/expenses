@@ -25,6 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { ScrollArea } from '../ui/scroll-area';
 
 const TransactionListItemComponent = ({
   transaction,
@@ -113,16 +114,17 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
           <CardTitle>Latest Transactions</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {getPersonalSheetTransactionsResponse?.transactions
-            .slice(0, 4)
-            .map((transaction) => (
-              <TransactionListItemComponent
-                key={transaction.id}
-                transaction={transaction}
-                description={formatDateTimeRelative(transaction.spentAt)}
-              />
-            ))}
-
+          <ScrollArea className="max-h-96 overflow-y-auto">
+            {getPersonalSheetTransactionsResponse?.transactions.map(
+              (transaction) => (
+                <TransactionListItemComponent
+                  key={transaction.id}
+                  transaction={transaction}
+                  description={formatDateTimeRelative(transaction.spentAt)}
+                />
+              ),
+            )}
+          </ScrollArea>
           <Button variant="outline" asChild>
             <Link to={`/sheets/${personalSheet.id}/transactions`}>
               <ListBulletIcon className="mr-2" /> All Transactions (

@@ -7,6 +7,7 @@ import { trpc } from '../../api/trpc';
 import { Alert, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { ScrollArea } from '../ui/scroll-area';
 
 import { AddMemberButton } from './AddMemberButton';
 import { type ActorInfo, BalanceSummary } from './BalanceSummary';
@@ -52,12 +53,11 @@ export const GroupSheet = ({
           {groupSheetTransactionsResponse &&
           groupSheetTransactionsResponse.transactions.length > 0 ? (
             <>
-              <GroupSheetTransactionsDenseList
-                transactions={groupSheetTransactionsResponse.transactions.slice(
-                  0,
-                  4,
-                )}
-              />
+              <ScrollArea className="max-h-96 overflow-y-auto">
+                <GroupSheetTransactionsDenseList
+                  transactions={groupSheetTransactionsResponse.transactions}
+                />
+              </ScrollArea>
               <Button className="w-full" variant="outline" asChild>
                 <Link to={`/groups/${groupSheet.id}/transactions`}>
                   <ListBulletIcon className="mr-2" /> All Transactions (

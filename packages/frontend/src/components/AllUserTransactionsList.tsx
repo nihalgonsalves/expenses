@@ -30,6 +30,7 @@ import { CategorySelect } from './form/CategorySelect';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { ScrollArea } from './ui/scroll-area';
 import {
   Table,
   TableBody,
@@ -219,44 +220,46 @@ export const AllUserTransactionsList = ({
 
       <AnimatePresence mode="popLayout" initial={false}>
         <MotionTable key={selectedView} className="p-4" {...fadeInOut}>
-          <AnimatePresence mode="popLayout" initial={false}>
-            {[...groupedByDate.keys()].map((date) => (
-              <Fragment key={date}>
-                <MotionTableHeader {...fadeInOut}>
-                  <TableRow>
-                    <TableHead>Category</TableHead>
+          <ScrollArea>
+            <AnimatePresence mode="popLayout" initial={false}>
+              {[...groupedByDate.keys()].map((date) => (
+                <Fragment key={date}>
+                  <MotionTableHeader {...fadeInOut}>
+                    <TableRow>
+                      <TableHead>Category</TableHead>
 
-                    <TableHead className="hidden sm:table-cell">
-                      Description
-                    </TableHead>
-                    <TableHead className="hidden sm:table-cell">
-                      Date ({shortDateFormatter.format(date)})
-                    </TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Description
+                      </TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Date ({shortDateFormatter.format(date)})
+                      </TableHead>
 
-                    <TableHead className="sm:hidden">
-                      Details ({shortDateFormatter.format(date)})
-                    </TableHead>
+                      <TableHead className="sm:hidden">
+                        Details ({shortDateFormatter.format(date)})
+                      </TableHead>
 
-                    <TableHead className="text-right">Amount</TableHead>
-                    <TableHead className="hidden sm:table-cell">
-                      Sheet
-                    </TableHead>
-                  </TableRow>
-                </MotionTableHeader>
-                <TableBody>
-                  {groupedByDate
-                    .get(date)
-                    ?.map(({ transaction, sheet }) => (
-                      <TransactionRow
-                        key={transaction.id}
-                        transaction={transaction}
-                        sheet={sheet}
-                      />
-                    ))}
-                </TableBody>
-              </Fragment>
-            ))}
-          </AnimatePresence>
+                      <TableHead className="text-right">Amount</TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Sheet
+                      </TableHead>
+                    </TableRow>
+                  </MotionTableHeader>
+                  <TableBody>
+                    {groupedByDate
+                      .get(date)
+                      ?.map(({ transaction, sheet }) => (
+                        <TransactionRow
+                          key={transaction.id}
+                          transaction={transaction}
+                          sheet={sheet}
+                        />
+                      ))}
+                  </TableBody>
+                </Fragment>
+              ))}
+            </AnimatePresence>
+          </ScrollArea>
         </MotionTable>
       </AnimatePresence>
     </>

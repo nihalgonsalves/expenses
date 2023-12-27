@@ -2491,6 +2491,7 @@ __metadata:
     "@radix-ui/react-navigation-menu": "npm:^1.1.4"
     "@radix-ui/react-popover": "npm:^1.0.7"
     "@radix-ui/react-progress": "npm:^1.0.3"
+    "@radix-ui/react-scroll-area": "npm:^1.0.5"
     "@radix-ui/react-select": "npm:^2.0.0"
     "@radix-ui/react-separator": "npm:^1.0.3"
     "@radix-ui/react-slot": "npm:^1.0.2"
@@ -3567,6 +3568,34 @@ __metadata:
     "@types/react-dom":
       optional: true
   checksum: 61e3ddfd1647e64fba855434ff41e8e7ba707244fe8841f78c450fbdce525383b64259279475615d030dbf1625cbffd8eeebee72d91bf6978794f5dbcf887fc0
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-scroll-area@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "@radix-ui/react-scroll-area@npm:1.0.5"
+  dependencies:
+    "@babel/runtime": "npm:^7.13.10"
+    "@radix-ui/number": "npm:1.0.1"
+    "@radix-ui/primitive": "npm:1.0.1"
+    "@radix-ui/react-compose-refs": "npm:1.0.1"
+    "@radix-ui/react-context": "npm:1.0.1"
+    "@radix-ui/react-direction": "npm:1.0.1"
+    "@radix-ui/react-presence": "npm:1.0.1"
+    "@radix-ui/react-primitive": "npm:1.0.3"
+    "@radix-ui/react-use-callback-ref": "npm:1.0.1"
+    "@radix-ui/react-use-layout-effect": "npm:1.0.1"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: a08818aeeb15920a02e708699a8bdc85c26eab0579ab741129b464a799b5d9a04f81810a2d200f1cf4aef03452067770e87b0f81593a689350fcd7e51819e4cb
   languageName: node
   linkType: hard
 
@@ -5515,12 +5544,12 @@ __metadata:
   linkType: hard
 
 "@types/node-fetch@npm:^2.6.4":
-  version: 2.6.9
-  resolution: "@types/node-fetch@npm:2.6.9"
+  version: 2.6.10
+  resolution: "@types/node-fetch@npm:2.6.10"
   dependencies:
     "@types/node": "npm:*"
     form-data: "npm:^4.0.0"
-  checksum: b15b6d518ea4dd4a21cf328e9df0a88b2e5b76f3455ddfeb9063a3b97087c50b15ab195a869dadbbeb09d08dcc915557fb6a4f72b4fe79ee42e215fce3d9b0db
+  checksum: beeadfb31eb097c49a63cb2be21dcb83aa2e988f36b411edfa879a32f0497b509d65eec19d76f869895b3ef87199b21d4e13e9139d3ee38a70b437dc65ba1075
   languageName: node
   linkType: hard
 
@@ -7052,8 +7081,8 @@ __metadata:
   linkType: hard
 
 "bullmq@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "bullmq@npm:5.0.0"
+  version: 5.1.0
+  resolution: "bullmq@npm:5.1.0"
   dependencies:
     cron-parser: "npm:^4.6.0"
     glob: "npm:^8.0.3"
@@ -7064,7 +7093,7 @@ __metadata:
     semver: "npm:^7.5.4"
     tslib: "npm:^2.0.0"
     uuid: "npm:^9.0.0"
-  checksum: 09c0b6346b37bf1ac29bd1aa392573a5a724c80cb3c69854e2606171b810e57edbbc524e4fb8e1f261eee4c0ce6b4d00e32d25864fe6844e816ab52bf0f80484
+  checksum: 7ebafc0a991e498c94fd1ed652ae24ea19af06cabf463a57ee4ef83ae16e19c4626e5c025457f1083d894e6c4316cc9134bc6701551fe94297b7a404997be41a
   languageName: node
   linkType: hard
 
@@ -7149,9 +7178,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001538, caniuse-lite@npm:^1.0.30001565":
-  version: 1.0.30001571
-  resolution: "caniuse-lite@npm:1.0.30001571"
-  checksum: 632f476e39febbfb5dc91c236981f3d518dc0cf55c42cc2bba431a6b6f4cceae3f9cd74d26312f30e9de65a3cc92ccf80d964ba8de061e25f37b7f0518303dad
+  version: 1.0.30001572
+  resolution: "caniuse-lite@npm:1.0.30001572"
+  checksum: 7d02570fa576b158d96739f2c65ea3ad22e90a8b028a343902de1f13b7db8512144870f1d29ec5e9ae7189d96158d9643871b6e902e6680a06b27a9afe556da2
   languageName: node
   linkType: hard
 
@@ -15542,9 +15571,9 @@ __metadata:
   linkType: hard
 
 "type-fest@npm:^4.2.0":
-  version: 4.8.3
-  resolution: "type-fest@npm:4.8.3"
-  checksum: 978edf5d00651e944b8c4d50f765a4cc09126e7fb90b46ed157265012e2f8aeb178c0ca493a175213ffa1705a795e4b5579c2ef4bc27bdd3462cdceccbf386f7
+  version: 4.9.0
+  resolution: "type-fest@npm:4.9.0"
+  checksum: 7e6423f7337928a7323ce8a68cfbbaf30ecb70b9c635207899e58297d219c71be4a8c50b52afb9fe09c9f44b2c4276d0a44bb95acabab7bc942455f980aad267
   languageName: node
   linkType: hard
 
