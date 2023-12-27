@@ -7,6 +7,7 @@ import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { TextField } from '../form/TextField';
+import { Label } from '../ui/label';
 
 export const CreateSheetForm = ({
   defaultCurrencyCode,
@@ -47,19 +48,24 @@ export const CreateSheetForm = ({
         void handleCreateSheet();
       }}
     >
-      <TextField
-        label="Sheet name"
-        autoFocus
-        placeholder="Personal Expenses"
-        required
-        value={name}
-        setValue={setName}
-      />
+      <div className="flex flex-col gap-2">
+        <TextField
+          label="Sheet name"
+          autoFocus
+          placeholder="Personal Expenses"
+          required
+          value={name}
+          setValue={setName}
+        />
+      </div>
 
-      <CurrencySelect
-        currencyCode={currencyCode}
-        setCurrencyCode={setCurrencyCode}
-      />
+      <Label className="flex flex-col gap-2">
+        Sheet currency
+        <CurrencySelect
+          currencyCode={currencyCode}
+          setCurrencyCode={setCurrencyCode}
+        />
+      </Label>
 
       <Button
         className="mt-4 w-full"

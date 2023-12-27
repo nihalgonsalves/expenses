@@ -26,6 +26,7 @@ import { MoneyField } from '../form/MoneyField';
 import { Select, type SelectOption } from '../form/Select';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 
 const TYPE_OPTIONS = [
@@ -185,7 +186,8 @@ export const CreatePersonalTransactionForm = ({
           />
         </div>
 
-        <div className="mt-0.5 flex flex-col justify-start gap-2">
+        <Label className="mt-0.5 flex flex-col justify-start gap-2">
+          Currency
           {supportedCurrencies.includes(personalSheet.currencyCode) && (
             <CurrencySelect
               options={supportedCurrencies}
@@ -193,34 +195,44 @@ export const CreatePersonalTransactionForm = ({
               setCurrencyCode={setCurrencyCode}
             />
           )}
-        </div>
+        </Label>
       </div>
 
-      <CategorySelect category={category} setCategory={setCategory} />
+      <Label className="flex flex-col gap-2">
+        Category
+        <CategorySelect category={category} setCategory={setCategory} />
+      </Label>
 
-      <TextField
-        label="Description"
-        value={description}
-        setValue={setDescription}
-      />
+      <div className="flex flex-col gap-2">
+        <TextField
+          label="Description"
+          value={description}
+          setValue={setDescription}
+        />
+      </div>
 
-      <TextField
-        label={
-          recurrence === 'NO_RRULE' ? 'Date & Time' : 'Starting Date & Time'
-        }
-        type="datetime-local"
-        inputClassName="appearance-none"
-        value={dateTime}
-        setValue={setDateTime}
-      />
+      <div className="flex flex-col gap-2">
+        <TextField
+          label={
+            recurrence === 'NO_RRULE' ? 'Date & Time' : 'Starting Date & Time'
+          }
+          type="datetime-local"
+          inputClassName="appearance-none"
+          value={dateTime}
+          setValue={setDateTime}
+        />
+      </div>
 
-      <Select
-        label="Recurring?"
-        options={RECURRENCE_OPTIONS}
-        value={recurrence}
-        setValue={setRecurrence}
-        schema={ZRecurrence}
-      />
+      <Label className="flex flex-col gap-2">
+        Recurring?
+        <Select
+          label="Recurring?"
+          options={RECURRENCE_OPTIONS}
+          value={recurrence}
+          setValue={setRecurrence}
+          schema={ZRecurrence}
+        />
+      </Label>
 
       <Button
         className="mt-4"

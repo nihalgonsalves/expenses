@@ -12,13 +12,11 @@ import {
   CommandInput,
   CommandItem,
 } from '../ui/command';
-import { Label } from '../ui/label';
 import { PopoverContent, PopoverTrigger } from '../ui/popover';
 
 export const CurrencySelect = ({
   currencyCode,
   setCurrencyCode,
-  label = 'Currency',
   options = CURRENCY_CODES,
 }: {
   currencyCode: string;
@@ -40,52 +38,47 @@ export const CurrencySelect = ({
   );
 
   return (
-    <>
-      <Label htmlFor={id}>{label}</Label>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            id={id}
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="min-w-48 justify-between"
-          >
-            {currencyCode
-              ? optionObjects.find((opt) => opt.value === currencyCode)?.label
-              : 'Select'}
-            <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-          <Command className="max-h-80">
-            <CommandInput placeholder="Search" />
-            <CommandEmpty>No currency code found.</CommandEmpty>
-            <CommandGroup className="h-full overflow-y-auto">
-              {optionObjects.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.value}
-                  onSelect={() => {
-                    setCurrencyCode(option.value);
-                    setOpen(false);
-                  }}
-                >
-                  <CheckIcon
-                    className={cn(
-                      'mr-2 size-4',
-                      currencyCode === option.value
-                        ? 'opacity-100'
-                        : 'opacity-0',
-                    )}
-                  />
-                  {option.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          id={id}
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="min-w-48 justify-between"
+        >
+          {currencyCode
+            ? optionObjects.find((opt) => opt.value === currencyCode)?.label
+            : 'Select'}
+          <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+        <Command className="max-h-80">
+          <CommandInput placeholder="Search" />
+          <CommandEmpty>No currency code found.</CommandEmpty>
+          <CommandGroup className="h-full overflow-y-auto">
+            {optionObjects.map((option) => (
+              <CommandItem
+                key={option.value}
+                value={option.value}
+                onSelect={() => {
+                  setCurrencyCode(option.value);
+                  setOpen(false);
+                }}
+              >
+                <CheckIcon
+                  className={cn(
+                    'mr-2 size-4',
+                    currencyCode === option.value ? 'opacity-100' : 'opacity-0',
+                  )}
+                />
+                {option.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };

@@ -51,6 +51,7 @@ import { Select } from '../form/Select';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Alert, AlertDescription } from '../ui/alert';
+import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 import { Switch } from '../ui/switch';
 
@@ -419,12 +420,10 @@ const SplitsFormSection = ({
 
 const ParticipantSelect = ({
   groupSheet,
-  label,
   selectedId,
   setSelectedId,
 }: {
   groupSheet: GroupSheetByIdResponse;
-  label: string;
   selectedId: string | undefined;
   setSelectedId: (val: string) => void;
 }) => {
@@ -432,7 +431,7 @@ const ParticipantSelect = ({
 
   return (
     <Select
-      label={label}
+      label="Please Select..."
       value={selectedId ?? ''}
       setValue={setSelectedId}
       schema={z.string()}
@@ -548,7 +547,7 @@ const TransactionForm = ({
       }}
     >
       <div className="flex gap-4">
-        <div className="grow">
+        <div className="flex grow flex-col gap-2">
           <MoneyField
             autoFocus
             label={
@@ -567,7 +566,8 @@ const TransactionForm = ({
           />
         </div>
 
-        <div className="mt-0.5 flex flex-col justify-start gap-2">
+        <Label className="mt-0.5 flex flex-col justify-start gap-2">
+          Currency
           {supportedCurrencies.includes(groupSheet.currencyCode) && (
             <CurrencySelect
               options={supportedCurrencies}
@@ -575,35 +575,45 @@ const TransactionForm = ({
               setCurrencyCode={setCurrencyCode}
             />
           )}
-        </div>
+        </Label>
       </div>
 
-      <ParticipantSelect
-        groupSheet={groupSheet}
-        label={type === 'EXPENSE' ? 'Who paid?' : 'Who received money?'}
-        selectedId={paidOrReceivedById}
-        setSelectedId={(newId) => {
-          if (!newId) return;
+      <Label className="flex flex-col gap-2">
+        {type === 'EXPENSE' ? 'Who paid?' : 'Who received money?'}
 
-          setPaidOrReceivedById(newId);
-        }}
-      />
+        <ParticipantSelect
+          groupSheet={groupSheet}
+          selectedId={paidOrReceivedById}
+          setSelectedId={(newId) => {
+            if (!newId) return;
 
-      <CategorySelect category={category} setCategory={setCategory} />
+            setPaidOrReceivedById(newId);
+          }}
+        />
+      </Label>
 
-      <TextField
-        label="Description"
-        value={description}
-        setValue={setDescription}
-      />
+      <Label className="flex flex-col gap-2">
+        Category
+        <CategorySelect category={category} setCategory={setCategory} />
+      </Label>
 
-      <TextField
-        label="When?"
-        type="datetime-local"
-        inputClassName="appearance-none"
-        value={spentAt}
-        setValue={setSpentAt}
-      />
+      <div className="flex flex-col gap-2">
+        <TextField
+          label="Description"
+          value={description}
+          setValue={setDescription}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <TextField
+          label="When?"
+          type="datetime-local"
+          inputClassName="appearance-none"
+          value={spentAt}
+          setValue={setSpentAt}
+        />
+      </div>
 
       <Separator />
 
@@ -695,27 +705,33 @@ const SettlementForm = ({
         void handleCreateSettlement();
       }}
     >
-      <ParticipantSelect
-        groupSheet={groupSheet}
-        label="From"
-        selectedId={fromId}
-        setSelectedId={setFromId}
-      />
+      <Label className="flex flex-col gap-2">
+        From
+        <ParticipantSelect
+          groupSheet={groupSheet}
+          selectedId={fromId}
+          setSelectedId={setFromId}
+        />
+      </Label>
 
-      <ParticipantSelect
-        groupSheet={groupSheet}
-        label="To"
-        selectedId={toId}
-        setSelectedId={setToId}
-      />
+      <Label className="flex flex-col gap-2">
+        To
+        <ParticipantSelect
+          groupSheet={groupSheet}
+          selectedId={toId}
+          setSelectedId={setToId}
+        />
+      </Label>
 
-      <MoneyField
-        autoFocus
-        label="How much was given"
-        currencyCode={groupSheet.currencyCode}
-        amount={amount}
-        setAmount={setAmount}
-      />
+      <div className="flex flex-col gap-2">
+        <MoneyField
+          autoFocus
+          label="How much was given"
+          currencyCode={groupSheet.currencyCode}
+          amount={amount}
+          setAmount={setAmount}
+        />
+      </div>
 
       <Button
         className=" w-full"

@@ -9,6 +9,7 @@ import { prevalidateEmail } from '../../utils/utils';
 import { Button } from '../form/Button';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { TextField } from '../form/TextField';
+import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 
 export const CreateGroupForm = ({
@@ -77,18 +78,23 @@ export const CreateGroupForm = ({
         void handleCreateGroupSheet();
       }}
     >
-      <TextField
-        label="Group name"
-        placeholder="WG Expenses"
-        autoFocus
-        value={groupSheetName}
-        setValue={setGroupSheetName}
-      />
+      <div className="flex flex-col gap-2">
+        <TextField
+          label="Group name"
+          placeholder="WG Expenses"
+          autoFocus
+          value={groupSheetName}
+          setValue={setGroupSheetName}
+        />
+      </div>
 
-      <CurrencySelect
-        currencyCode={currencyCode}
-        setCurrencyCode={setCurrencyCode}
-      />
+      <Label className="flex flex-col gap-2">
+        Group currency
+        <CurrencySelect
+          currencyCode={currencyCode}
+          setCurrencyCode={setCurrencyCode}
+        />
+      </Label>
 
       {participantEmails.map((participant, i) => (
         // this is a list of inputs without an ID that won't be re-ordered

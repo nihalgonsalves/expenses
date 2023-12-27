@@ -12,6 +12,7 @@ import { CurrencySelect } from '../form/CurrencySelect';
 import { Select } from '../form/Select';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Label } from '../ui/label';
 
 const themeOptions = THEMES.map((theme) => ({
   label: theme,
@@ -66,20 +67,25 @@ export const AppearanceForm = () => {
           setValue={setThemePreference}
         />
 
-        <Select
-          label="Theme"
-          value={theme}
-          setValue={setTheme}
-          options={themeOptions}
-          schema={ZTheme}
-        />
+        <Label className="flex flex-col gap-2">
+          Theme
+          <Select
+            label="Theme"
+            value={theme}
+            setValue={setTheme}
+            options={themeOptions}
+            schema={ZTheme}
+          />
+        </Label>
 
-        <CurrencySelect
-          label="Preferred display currency"
-          options={supportedCurrencies}
-          currencyCode={preferredCurrencyCode}
-          setCurrencyCode={setPreferredCurrencyCode}
-        />
+        <Label className="flex flex-col gap-2">
+          Preferred Display Currency
+          <CurrencySelect
+            options={supportedCurrencies}
+            currencyCode={preferredCurrencyCode}
+            setCurrencyCode={setPreferredCurrencyCode}
+          />
+        </Label>
       </CardContent>
     </Card>
   );
