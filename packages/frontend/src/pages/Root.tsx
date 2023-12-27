@@ -1,4 +1,11 @@
-import { ArrowLeftIcon, SymbolIcon } from '@radix-ui/react-icons';
+import {
+  ArrowLeftIcon,
+  GearIcon,
+  HomeIcon,
+  ListBulletIcon,
+  PieChartIcon,
+  SymbolIcon,
+} from '@radix-ui/react-icons';
 import type { TRPCClientErrorLike } from '@trpc/client';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
@@ -6,16 +13,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
-import {
-  MdHome,
-  MdPieChart,
-  MdSettings,
-  MdTableRows,
-  MdOutlineHome,
-  MdOutlinePieChart,
-  MdOutlineSettings,
-  MdOutlineTableRows,
-} from 'react-icons/md';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 import { usePullToRefresh } from '../api/usePullToRefresh';
@@ -47,26 +44,22 @@ const navItems = [
   {
     to: '/',
     text: 'Home',
-    activeIcon: <MdHome />,
-    icon: <MdOutlineHome />,
+    icon: <HomeIcon className="size-5" />,
   },
   {
     to: '/sheets',
     text: 'Sheets',
-    activeIcon: <MdTableRows />,
-    icon: <MdOutlineTableRows />,
+    icon: <ListBulletIcon className="size-5" />,
   },
   {
     to: '/stats',
     text: 'Stats',
-    activeIcon: <MdPieChart />,
-    icon: <MdOutlinePieChart />,
+    icon: <PieChartIcon className="size-5" />,
   },
   {
     to: '/settings',
     text: 'Settings',
-    activeIcon: <MdSettings />,
-    icon: <MdOutlineSettings />,
+    icon: <GearIcon className="size-5" />,
   },
 ];
 
@@ -174,7 +167,7 @@ export const Root = ({
           className="flex shrink-0 border-t-2 border-primary text-3xl md:hidden"
           style={{}}
         >
-          {navItems.map(({ to, text, activeIcon, icon }) => (
+          {navItems.map(({ to, text, icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -199,7 +192,6 @@ export const Root = ({
                   )}
                   <motion.span
                     animate={{ scale: 1 }}
-                    whileTap={{ scale: 0.8 }}
                     className="flex grow justify-center p-4"
                     style={{
                       paddingBottom:
@@ -207,7 +199,7 @@ export const Root = ({
                     }}
                   >
                     <span />
-                    {isActive ? activeIcon : icon}
+                    {icon}
                     <span />
                   </motion.span>
                 </>

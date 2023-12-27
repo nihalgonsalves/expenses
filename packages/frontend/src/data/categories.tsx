@@ -1,21 +1,3 @@
-import { QuestionMarkIcon } from '@radix-ui/react-icons';
-import {
-  MdApartment,
-  MdAttractions,
-  MdAutoAwesome,
-  MdCommute,
-  MdElectricBolt,
-  MdHome,
-  MdLocalBar,
-  MdLocalDining,
-  MdLocalGroceryStore,
-  MdMovie,
-  MdPayments,
-  MdStore,
-  MdToll,
-  MdTravelExplore,
-} from 'react-icons/md';
-
 type Category = {
   id: CategoryId;
   name: string;
@@ -42,21 +24,21 @@ export enum CategoryId {
 
 // prettier-ignore
 export const categories: Category[] = [
-  { id: CategoryId.Groceries,      name: 'Groceries',      icon: <MdLocalGroceryStore /> },
-  { id: CategoryId.Restaurants,    name: 'Restaurants',    icon: <MdLocalDining /> },
-  { id: CategoryId.Bars,           name: 'Bars',           icon: <MdLocalBar /> },
-  { id: CategoryId.Entertainment,  name: 'Entertainment',  icon: <MdAttractions />, },
-  { id: CategoryId.Cinema,         name: 'Cinema',         icon: <MdMovie /> },
-  { id: CategoryId.Shopping,       name: 'Shopping',       icon: <MdStore /> },
-  { id: CategoryId.Travel,         name: 'Travel',         icon: <MdTravelExplore /> },
-  { id: CategoryId.Transportation, name: 'Transportation', icon: <MdCommute /> },
-  { id: CategoryId.Hobbies,        name: 'Hobbies',        icon: <MdAutoAwesome /> },
-  { id: CategoryId.Home,           name: 'Home',           icon: <MdHome /> },
-  { id: CategoryId.Rent,           name: 'Rent',           icon: <MdApartment /> },
-  { id: CategoryId.Utilities,      name: 'Utilities',      icon: <MdElectricBolt /> },
-  { id: CategoryId.Other,          name: 'Other',          icon: <QuestionMarkIcon /> },
-  { id: CategoryId.Transfer,       name: 'Transfer',       icon: <MdPayments /> },
-  { id: CategoryId.Income,         name: 'Income',         icon: <MdToll /> },
+  { id: CategoryId.Groceries,      name: 'Groceries',      icon: '🛒' },
+  { id: CategoryId.Restaurants,    name: 'Restaurants',    icon: '🍽️' },
+  { id: CategoryId.Bars,           name: 'Bars',           icon: '🍺' },
+  { id: CategoryId.Entertainment,  name: 'Entertainment',  icon: '🎡', },
+  { id: CategoryId.Cinema,         name: 'Cinema',         icon: '🎬'},
+  { id: CategoryId.Shopping,       name: 'Shopping',       icon: '🛍️' },
+  { id: CategoryId.Travel,         name: 'Travel',         icon: '🌍' },
+  { id: CategoryId.Transportation, name: 'Transportation', icon: '🚇' },
+  { id: CategoryId.Hobbies,        name: 'Hobbies',        icon: '✨'},
+  { id: CategoryId.Home,           name: 'Home',           icon: '🏠'},
+  { id: CategoryId.Rent,           name: 'Rent',           icon: '💶'},
+  { id: CategoryId.Utilities,      name: 'Utilities',      icon: '⚡️'},
+  { id: CategoryId.Other,          name: 'Other',          icon: '❓'},
+  { id: CategoryId.Transfer,       name: 'Transfer',       icon: '💳' },
+  { id: CategoryId.Income,         name: 'Income',         icon: '🏦' },
 ];
 
 export const categoryById = Object.fromEntries(

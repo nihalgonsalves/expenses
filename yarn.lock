@@ -2539,7 +2539,6 @@ __metadata:
     react-helmet: "npm:^6.1.0"
     react-hook-form: "npm:^7.49.2"
     react-hot-toast: "npm:^2.4.1"
-    react-icons: "npm:^4.12.0"
     react-router-dom: "npm:^6.21.1"
     storybook: "npm:^7.6.6"
     tailwind-merge: "npm:^2.2.0"
@@ -13461,15 +13460,6 @@ __metadata:
     react: ">=16"
     react-dom: ">=16"
   checksum: 591ecec3c6adc1cdb70f00165a57baa3d7f75d0d30fa767213c36496bdcc6be2b2e6a3edbf7c04f7d726a1b17dcfb5e7feb2136b04b17c9ccb769894b970f365
-  languageName: node
-  linkType: hard
-
-"react-icons@npm:^4.12.0":
-  version: 4.12.0
-  resolution: "react-icons@npm:4.12.0"
-  peerDependencies:
-    react: "*"
-  checksum: 2170f43031ee7365539f72d4075cbe6c7fbf9a66d6cf4494aa9393b194272da0564f5b19d1b24dbfc567c0ac89f5fe5b8974d92dd83f61e252388dde6a226fb8
   languageName: node
   linkType: hard
 
