@@ -27,13 +27,13 @@ export const App = () => (
       toastOptions={{
         success: {
           iconTheme: {
-            primary: 'hsl(var(--su))',
+            primary: 'hsl(var(--primary))',
             secondary: '#ffffff',
           },
         },
         error: {
           iconTheme: {
-            primary: 'hsl(var(--er))',
+            primary: 'hsl(var(--destructive))',
             secondary: '#ffffff',
           },
         },
