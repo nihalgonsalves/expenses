@@ -64,7 +64,10 @@ export const FloatingActionButton = ({
             </MotionButton>
           )}
         </TooltipTrigger>
-        <TooltipContent side="left" className="bg-slate-300">
+        <TooltipContent
+          side="left"
+          className="bg-primary text-primary-foreground"
+        >
           <p>{label}</p>
         </TooltipContent>
       </Tooltip>

@@ -18,7 +18,7 @@ export const Avatar = ({ name }: { name: string }) => (
           </AvatarFallback>
         </UIAvatar>
       </TooltipTrigger>
-      <TooltipContent side="left" className="bg-slate-300">
+      <TooltipContent side="left" className="bg-muted text-muted-foreground">
         <p>{name}</p>
       </TooltipContent>
     </Tooltip>
