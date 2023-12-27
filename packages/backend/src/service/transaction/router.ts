@@ -229,6 +229,7 @@ export const transactionRouter = router({
       z.object({
         fromTimestamp: z.string().datetime(),
         toTimestamp: z.string().datetime(),
+        category: z.string().optional(),
       }),
     )
     .output(ZGetAllUserTransactionsResponse)
@@ -237,6 +238,7 @@ export const transactionRouter = router({
         await ctx.transactionService.getAllUserTransactions(ctx.user, {
           from: Temporal.Instant.from(input.fromTimestamp),
           to: Temporal.Instant.from(input.toTimestamp),
+          category: input.category,
         });
 
       return {

@@ -1,3 +1,4 @@
+import { Cross1Icon } from '@radix-ui/react-icons';
 import { z } from 'zod';
 
 import { CategoryId, categories } from '../../data/categories';
@@ -9,20 +10,30 @@ const schema = z.nativeEnum(CategoryId);
 const options: SelectOption<typeof schema>[] = [
   {
     value: undefined,
-    label: 'No category',
+    label: (
+      <span className="flex items-center gap-2 text-muted-foreground">
+        <Cross1Icon /> Clear selection
+      </span>
+    ),
   },
-  ...categories.map(({ id, name }) => ({
+  ...categories.map(({ id, name, icon }) => ({
     value: id,
-    label: name,
+    label: (
+      <span className="flex items-center gap-2">
+        {icon} {name}
+      </span>
+    ),
   })),
 ];
 
 export const CategorySelect = ({
   category,
   setCategory,
+  className,
 }: {
   category: CategoryId | undefined;
   setCategory: (newCategory: CategoryId | undefined) => void;
+  className?: string;
 }) => (
   <Select
     label="Category"
@@ -30,5 +41,6 @@ export const CategorySelect = ({
     setValue={setCategory}
     schema={schema}
     options={options}
+    className={className}
   />
 );

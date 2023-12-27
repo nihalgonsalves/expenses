@@ -4,6 +4,8 @@ import { Fragment, useMemo, useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 import { z } from 'zod';
 
+import type { CategoryId } from 'src/data/categories';
+
 import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
@@ -20,6 +22,7 @@ import {
 } from '../utils/utils';
 
 import { CategoryAvatar } from './CategoryAvatar';
+import { CategorySelect } from './form/CategorySelect';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -118,10 +121,14 @@ export const AllUserTransactionsList = ({
   data,
   dateRange,
   setDateRange,
+  category,
+  setCategory,
 }: {
   data: AllConvertedUserTransactions;
   dateRange: DateRange | undefined;
   setDateRange: (dateRange: DateRange | undefined) => void;
+  category: CategoryId | undefined;
+  setCategory: (category: CategoryId | undefined) => void;
 }) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
@@ -154,7 +161,7 @@ export const AllUserTransactionsList = ({
   return (
     <>
       <div className="flex flex-col gap-4 p-2 md:mb-2">
-        <div className="rounded-md bg-muted p-1 ">
+        <div className="flex gap-2">
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -182,6 +189,12 @@ export const AllUserTransactionsList = ({
               />
             </PopoverContent>
           </Popover>
+
+          <CategorySelect
+            category={category}
+            setCategory={setCategory}
+            className="max-w-48 bg-card"
+          />
         </div>
         <ToggleGroup
           type="single"

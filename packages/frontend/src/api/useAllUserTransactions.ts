@@ -4,6 +4,8 @@ import type { Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
+import type { CategoryId } from '../data/categories';
+
 import { useConvertToPreferredCurrency } from './currencyConversion';
 import { trpc } from './trpc';
 
@@ -27,6 +29,7 @@ type AllConvertedUserTransactionsQueryResult = Pick<
 export const useAllUserTransactions = (
   from: Date | undefined,
   to: Date | undefined,
+  category?: CategoryId,
 ): AllConvertedUserTransactionsQueryResult => {
   const enabled = from != null && to != null;
 
@@ -39,6 +42,7 @@ export const useAllUserTransactions = (
     {
       fromTimestamp: from?.toISOString() ?? '',
       toTimestamp: to?.toISOString() ?? '',
+      category,
     },
     { enabled },
   );

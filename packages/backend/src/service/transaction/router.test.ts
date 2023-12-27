@@ -1203,6 +1203,65 @@ describe('getAllUserTransactions', () => {
       ],
     });
   });
+
+  it('filters by category', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    await caller.transaction.createPersonalSheetTransaction(
+      createPersonalSheetTransactionInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        'EXPENSE',
+      ),
+    );
+
+    const fromTimestamp = Temporal.Now.instant()
+      .subtract({ minutes: 1 })
+      .toString();
+    const toTimestamp = Temporal.Now.instant().add({ minutes: 1 }).toString();
+
+    expect(
+      await caller.transaction.getAllUserTransactions({
+        fromTimestamp,
+        toTimestamp,
+        category: 'other',
+      }),
+    ).toMatchObject({
+      earnings: [],
+      expenses: [
+        {
+          sheet: {
+            type: 'PERSONAL',
+          },
+          transaction: {
+            type: 'EXPENSE',
+            category: 'other',
+            description: 'test personal expense',
+            money: {
+              amount: -10000,
+              scale: 2,
+            },
+          },
+        },
+      ],
+    });
+
+    expect(
+      await caller.transaction.getAllUserTransactions({
+        fromTimestamp,
+        toTimestamp,
+        category: 'groceries',
+      }),
+    ).toMatchObject({
+      earnings: [],
+      expenses: [],
+    });
+  });
 });
 
 describe('getPersonalSheetTransactions', () => {

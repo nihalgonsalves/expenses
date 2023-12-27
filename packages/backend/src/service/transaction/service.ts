@@ -163,7 +163,15 @@ export class TransactionService {
 
   async getAllUserTransactions(
     user: User,
-    { from, to }: { from: Temporal.Instant; to: Temporal.Instant },
+    {
+      from,
+      to,
+      category,
+    }: {
+      from: Temporal.Instant;
+      to: Temporal.Instant;
+      category: string | undefined;
+    },
   ) {
     const data = await this.prismaClient.transaction.findMany({
       where: {
@@ -173,6 +181,7 @@ export class TransactionService {
           gte: from.toString(),
           lte: to.toString(),
         },
+        ...(category ? { category } : undefined),
       },
       include: {
         sheet: true,

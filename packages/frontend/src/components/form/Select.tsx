@@ -22,6 +22,7 @@ export const Select = <T extends z.Schema<string | undefined>>({
   value,
   setValue,
   schema,
+  className,
 }: {
   label: string;
   options: SelectOption<T>[];
@@ -29,6 +30,7 @@ export const Select = <T extends z.Schema<string | undefined>>({
   setValue: (newValue: z.infer<T>) => void;
   schema: T;
   small?: boolean;
+  className?: string | undefined;
 }) => (
   <UISelect
     value={value ?? ''}
@@ -40,7 +42,7 @@ export const Select = <T extends z.Schema<string | undefined>>({
       );
     }}
   >
-    <SelectTrigger>
+    <SelectTrigger className={className}>
       <SelectValue placeholder={label} />
     </SelectTrigger>
     <SelectContent>
