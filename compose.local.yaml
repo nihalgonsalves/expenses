@@ -16,16 +16,13 @@ services:
     ports:
       - '6379:6379'
 
-  frankfurter-postgres:
-    extends:
-      file: compose.dev.yaml
-      service: frankfurter-postgres
-
   frankfurter:
     extends:
       file: compose.dev.yaml
       service: frankfurter
-    depends_on: [frankfurter-postgres]
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - '5200:8080'
 
