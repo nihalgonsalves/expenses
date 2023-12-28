@@ -7,5 +7,11 @@
   "typescript.preferences.autoImportFileExcludePatterns": [
     "@types/node/test.d.ts"
   ],
-  "vitest.commandLine": "yarn test"
+  "vitest.commandLine": "yarn test",
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+  }
 }

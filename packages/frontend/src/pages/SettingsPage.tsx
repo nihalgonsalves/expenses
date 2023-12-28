@@ -1,5 +1,6 @@
 import { useCurrentUser } from '../api/useCurrentUser';
 import { AppearanceForm } from '../components/settings/AppearanceForm';
+import { CategoryForm } from '../components/settings/CategoryForm';
 import { NotificationPreferenceForm } from '../components/settings/NotificationPreferenceForm';
 import { PrivacyForm } from '../components/settings/PrivacyForm';
 import { ProfileForm } from '../components/settings/ProfileForm';
@@ -17,6 +18,7 @@ export const SettingsPage = () => {
         {status === 'success' && (
           <>
             <ProfileForm me={data} />
+            <CategoryForm />
             <NotificationPreferenceForm />
             <PrivacyForm />
           </>

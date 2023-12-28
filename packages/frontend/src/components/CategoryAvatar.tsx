@@ -1,6 +1,6 @@
 import { QuestionMarkIcon } from '@radix-ui/react-icons';
 
-import { categoryById } from '../data/categories';
+import { useCategoryEmojiShortCode } from '../data/useCategoryEmojiShortCode';
 
 import {
   Tooltip,
@@ -9,15 +9,21 @@ import {
   TooltipTrigger,
 } from './ui/tooltip';
 
+export const CategoryIcon = ({ category }: { category: string }) => {
+  const shortCode = useCategoryEmojiShortCode(category);
+
+  return shortCode ? <em-emoji shortcodes={shortCode} /> : <QuestionMarkIcon />;
+};
+
 export const CategoryAvatar = ({ category }: { category: string }) => (
   <TooltipProvider delayDuration={100}>
     <Tooltip>
       <TooltipTrigger>
         <div
-          className="flex size-12 items-center justify-center rounded-md border text-xl text-primary-foreground"
-          aria-label={categoryById[category]?.name ?? category}
+          className="flex size-12 items-center justify-center rounded-md border text-xl"
+          aria-label={category}
         >
-          {categoryById[category]?.icon ?? <QuestionMarkIcon />}
+          <CategoryIcon category={category} />
         </div>
       </TooltipTrigger>
       <TooltipContent side="left" className="bg-muted text-muted-foreground">

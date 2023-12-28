@@ -7,8 +7,6 @@ import type {
   TransactionListItem,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
-import { categoryById } from '../data/categories';
-
 import { formatCurrency } from './money';
 
 export const cn = (...classes: ClassValue[]) => twMerge(clsx(...classes));
@@ -123,7 +121,7 @@ export const getTransactionDescription = ({
   description,
   category,
 }: Pick<TransactionListItem, 'category' | 'description'>): string =>
-  (description || undefined) ?? categoryById[category]?.name ?? category;
+  (description || undefined) ?? category;
 
 export const getGroupSheetTransactionSummaryText = ({
   type,

@@ -1,7 +1,8 @@
 // https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["nativeDistinct", "relationJoins"]
 }
 
 datasource db {
@@ -21,6 +22,7 @@ model User {
   sheets                    SheetMemberships[]
   transactionEntries        TransactionEntry[]
   notificationSubscriptions NotificationSubscription[]
+  categories                Category[]
 
   @@map("users")
 }
@@ -118,6 +120,21 @@ model Transaction {
 
   @@unique([transactionScheduleId, spentAt])
   @@map("transactions")
+}
+
+model Category {
+  id        String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  emojiShortCode String @map("emoji_short_code")
+
+  @@id([id, userId])
+  @@index([userId])
+  @@map("categories")
 }
 
 model TransactionSchedule {

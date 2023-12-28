@@ -21,7 +21,10 @@ import {
 
 export class UserService {
   constructor(
-    private prismaClient: Pick<PrismaClient, '$transaction' | 'user' | 'sheet'>,
+    private prismaClient: Pick<
+      PrismaClient,
+      '$transaction' | 'user' | 'sheet' | 'category'
+    >,
   ) {}
 
   async exchangeToken(
@@ -164,6 +167,33 @@ export class UserService {
     ]);
 
     return deletedId;
+  }
+
+  async getCategories(user: User) {
+    return this.prismaClient.category.findMany({
+      where: { userId: user.id },
+    });
+  }
+
+  async setCategoryEmojiShortCode(
+    user: User,
+    id: string,
+    emojiShortCode: string | undefined,
+  ) {
+    const where = { id_userId: { id, userId: user.id } };
+
+    if (emojiShortCode !== undefined) {
+      return this.prismaClient.category.upsert({
+        where,
+        update: { emojiShortCode },
+        create: { id, emojiShortCode, userId: user.id },
+      });
+    } else {
+      await this.prismaClient.category.delete({
+        where,
+      });
+      return undefined;
+    }
   }
 
   private async findByEmail(email: string) {

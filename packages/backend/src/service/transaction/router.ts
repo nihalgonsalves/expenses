@@ -21,6 +21,7 @@ import {
   ZTransactionWithSheet,
   ZUpdatePersonalSheetTransactionInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
+import { ZCategoryEmoji } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { protectedProcedure, router } from '../../trpc';
 
@@ -373,5 +374,36 @@ export const transactionRouter = router({
       return summaries.sort(({ participantId }) =>
         participantId === ctx.user.id ? -1 : 1,
       );
+    }),
+
+  getCategories: protectedProcedure
+    .output(z.array(ZCategoryEmoji))
+    .query(async ({ ctx }) => {
+      const [allCategoryIds, userCategories] = await Promise.all([
+        ctx.transactionService.getCategories(ctx.user),
+        ctx.userService.getCategories(ctx.user),
+      ]);
+
+      const emojisById = Object.fromEntries(
+        userCategories.map((c) => [c.id, c.emojiShortCode]),
+      );
+
+      return allCategoryIds.map((id) => ({
+        id,
+        emojiShortCode: emojisById[id],
+      }));
+    }),
+
+  setCategoryEmojiShortCode: protectedProcedure
+    .input(ZCategoryEmoji)
+    .output(ZCategoryEmoji)
+    .mutation(async ({ input, ctx }) => {
+      const result = await ctx.userService.setCategoryEmojiShortCode(
+        ctx.user,
+        input.id,
+        input.emojiShortCode,
+      );
+
+      return result ?? { id: input.id, emojiShortCode: undefined };
     }),
 });

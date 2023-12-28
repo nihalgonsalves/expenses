@@ -71,7 +71,7 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
       <AlertTitle>No sheets</AlertTitle>
     </Alert>
   ) : (
-    <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 xl:grid-cols-3">
       {personal.length > 0 && (
         <Card>
           <CardHeader>

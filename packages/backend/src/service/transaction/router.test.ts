@@ -1494,3 +1494,34 @@ describe('getParticipantSummaries', () => {
     ).rejects.toThrow('Sheet not found');
   });
 });
+
+describe('getCategories / setCategoryEmojiShortCode', () => {
+  it('returns all transaction categories with user-set emoji', async () => {
+    const user = await userFactory(prisma);
+    const caller = useProtectedCaller(user);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+    });
+
+    await caller.transaction.createPersonalSheetTransaction(
+      createPersonalSheetTransactionInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        'EXPENSE',
+      ),
+    );
+
+    await caller.transaction.setCategoryEmojiShortCode({
+      id: 'other',
+      emojiShortCode: ':+1:',
+    });
+
+    expect(await caller.transaction.getCategories()).toMatchObject([
+      {
+        id: 'other',
+        emojiShortCode: ':+1:',
+      },
+    ]);
+  });
+});

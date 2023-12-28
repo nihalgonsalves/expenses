@@ -1,6 +1,6 @@
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
 import { Popover } from '@radix-ui/react-popover';
-import { useId, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { CURRENCY_CODES } from '../../utils/money';
 import { cn } from '../../utils/utils';
@@ -24,8 +24,6 @@ export const CurrencySelect = ({
   label?: string;
   options?: string[];
 }) => {
-  const id = useId();
-
   const [open, setOpen] = useState(false);
 
   const optionObjects = useMemo(
@@ -41,7 +39,6 @@ export const CurrencySelect = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          id={id}
           variant="outline"
           role="combobox"
           aria-expanded={open}

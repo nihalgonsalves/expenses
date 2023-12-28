@@ -2,8 +2,6 @@ import { endOfMonth, startOfMonth } from 'date-fns';
 import { useState } from 'react';
 import type { DateRange } from 'react-day-picker';
 
-import type { CategoryId } from 'src/data/categories';
-
 import { useAllUserTransactions } from '../../api/useAllUserTransactions';
 import { AllUserTransactionsList } from '../../components/AllUserTransactionsList';
 import { QuickCreateTransactionFAB } from '../../components/expenses/QuickCreateTransactionFAB';
@@ -15,7 +13,7 @@ export const TransactionsIndexPage = () => {
     to: endOfMonth(new Date()),
   });
 
-  const [category, setCategory] = useState<CategoryId | undefined>();
+  const [category, setCategory] = useState<string | undefined>();
 
   const result = useAllUserTransactions(
     dateRange?.from,

@@ -727,4 +727,24 @@ export class TransactionService {
 
     return balance;
   }
+
+  async getCategories(user: User) {
+    const data = await this.prismaClient.transaction.findMany({
+      where: {
+        sheet: {
+          participants: {
+            some: {
+              participant: user,
+            },
+          },
+        },
+      },
+      distinct: ['category'],
+      select: {
+        category: true,
+      },
+    });
+
+    return data.map(({ category }) => category);
+  }
 }

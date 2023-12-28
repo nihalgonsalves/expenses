@@ -13,7 +13,6 @@ import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 import type { CreateSheetTransactionInput } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
-import { CategoryId } from '../../data/categories';
 import { formatCurrency } from '../../utils/money';
 import { dateToISOString } from '../../utils/utils';
 import { Button } from '../form/Button';
@@ -48,6 +47,24 @@ const fieldMatchers = {
   category: /(category|type)/i,
   description: /(description|note)/i,
 };
+
+export enum CategoryId {
+  Groceries = 'groceries',
+  Restaurants = 'restaurants',
+  Bars = 'bars',
+  Entertainment = 'entertainment',
+  Cinema = 'cinema',
+  Shopping = 'shopping',
+  Travel = 'travel',
+  Transportation = 'transportation',
+  Hobbies = 'hobbies',
+  Home = 'home',
+  Rent = 'rent',
+  Utilities = 'utilities',
+  Other = 'other',
+  Transfer = 'transfer',
+  Income = 'income',
+}
 
 const categoryMatchers: [CategoryId, RegExp][] = [
   [CategoryId.Groceries, /(groceries)/i],
