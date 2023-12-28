@@ -12,7 +12,6 @@ import {
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
-import { CategoryId } from '../../data/categories';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency, useMoneyValues } from '../../utils/money';
 import {
@@ -20,7 +19,7 @@ import {
   nowForDateTimeInput,
 } from '../../utils/utils';
 import { Button } from '../form/Button';
-import { CategorySelect } from '../form/CategorySelect';
+import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
 import { Select, type SelectOption } from '../form/Select';
@@ -80,7 +79,7 @@ export const CreatePersonalTransactionForm = ({
 
   const [amount, setAmount] = useState(0);
   const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
-  const [category, setCategory] = useState<CategoryId>();
+  const [category, setCategory] = useState<string>();
   const [description, setDescription] = useState('');
   const [dateTime, setDateTime] = useState(nowForDateTimeInput());
 
@@ -120,7 +119,7 @@ export const CreatePersonalTransactionForm = ({
         type,
         personalSheetId: personalSheet.id,
         money,
-        category: category ?? CategoryId.Other,
+        category: category ?? OTHER_CATEGORY,
         description,
         spentAt: dateTimeLocalToZonedISOString(dateTime),
       });
@@ -130,7 +129,7 @@ export const CreatePersonalTransactionForm = ({
         type,
         personalSheetId: personalSheet.id,
         money,
-        category: category ?? CategoryId.Other,
+        category: category ?? OTHER_CATEGORY,
         description,
         firstOccurrenceAt: dateTimeLocalToZonedISOString(dateTime),
         recurrenceRule: {
@@ -200,7 +199,7 @@ export const CreatePersonalTransactionForm = ({
 
       <Label className="flex flex-col gap-2">
         Category
-        <CategorySelect category={category} setCategory={setCategory} />
+        <CategorySelect categoryId={category} setCategoryId={setCategory} />
       </Label>
 
       <div className="flex flex-col gap-2">

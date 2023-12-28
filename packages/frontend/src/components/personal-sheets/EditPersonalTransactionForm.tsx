@@ -8,7 +8,6 @@ import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
-import { CategoryId } from '../../data/categories';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency, useMoneyValues } from '../../utils/money';
 import {
@@ -16,10 +15,11 @@ import {
   isoToTemporalZonedDateTime,
 } from '../../utils/utils';
 import { Button } from '../form/Button';
-import { CategorySelect } from '../form/CategorySelect';
+import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
 import { TextField } from '../form/TextField';
+import { Label } from '../ui/label';
 
 export const EditPersonalTransactionForm = ({
   transaction,
@@ -33,12 +33,8 @@ export const EditPersonalTransactionForm = ({
 
   const [amount, setAmount] = useState(Math.abs(transaction.money.amount));
   const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
-  const [category, setCategory] = useState<CategoryId | undefined>(
-    z
-      .nativeEnum(CategoryId)
-      .optional()
-      .catch(undefined)
-      .parse(transaction.category),
+  const [category, setCategory] = useState<string | undefined>(
+    transaction.category,
   );
   const [description, setDescription] = useState(transaction.description);
   const [dateTime, setDateTime] = useState(
@@ -72,7 +68,7 @@ export const EditPersonalTransactionForm = ({
       type: z.enum(['EXPENSE', 'INCOME']).parse(transaction.type),
       personalSheetId: personalSheet.id,
       money,
-      category: category ?? CategoryId.Other,
+      category: category ?? OTHER_CATEGORY,
       description,
       spentAt: dateTimeLocalToZonedISOString(dateTime),
     });
@@ -102,7 +98,7 @@ export const EditPersonalTransactionForm = ({
       }}
     >
       <div className="flex items-start gap-4">
-        <div className="grow">
+        <div className="flex grow flex-col gap-2">
           <MoneyField
             className="grow"
             autoFocus
@@ -118,7 +114,8 @@ export const EditPersonalTransactionForm = ({
           />
         </div>
 
-        <div>
+        <Label className="mt-0.5 flex flex-col gap-2">
+          Currency
           {supportedCurrencies.includes(personalSheet.currencyCode) && (
             <CurrencySelect
               options={supportedCurrencies}
@@ -126,31 +123,33 @@ export const EditPersonalTransactionForm = ({
               setCurrencyCode={setCurrencyCode}
             />
           )}
-        </div>
+        </Label>
       </div>
 
-      <CategorySelect category={category} setCategory={setCategory} />
+      <Label className="flex flex-col gap-2">
+        Category
+        <CategorySelect categoryId={category} setCategoryId={setCategory} />
+      </Label>
 
-      <TextField
-        label="Description"
-        value={description}
-        setValue={setDescription}
-      />
+      <div className="flex flex-col gap-2">
+        <TextField
+          label="Description"
+          value={description}
+          setValue={setDescription}
+        />
+      </div>
 
-      <TextField
-        label="Date & Time"
-        type="datetime-local"
-        inputClassName="appearance-none"
-        value={dateTime}
-        setValue={setDateTime}
-      />
+      <div className="flex flex-col gap-2">
+        <TextField
+          label="Date & Time"
+          type="datetime-local"
+          inputClassName="appearance-none"
+          value={dateTime}
+          setValue={setDateTime}
+        />
+      </div>
 
-      <Button
-        className="mt-4"
-        type="submit"
-        disabled={disabled}
-        isLoading={isLoading}
-      >
+      <Button type="submit" disabled={disabled} isLoading={isLoading}>
         Update
       </Button>
     </form>

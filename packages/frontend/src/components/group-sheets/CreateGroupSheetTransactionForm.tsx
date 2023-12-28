@@ -29,7 +29,6 @@ import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
-import { CategoryId } from '../../data/categories';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import {
   convertCurrency,
@@ -44,7 +43,7 @@ import {
 } from '../../utils/utils';
 import { Avatar } from '../Avatar';
 import { Button } from '../form/Button';
-import { CategorySelect } from '../form/CategorySelect';
+import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
 import { Select } from '../form/Select';
@@ -462,7 +461,7 @@ const TransactionForm = ({
   const [paidOrReceivedById, setPaidOrReceivedById] = useState(me.id);
   const [currencyCode, setCurrencyCode] = useState(groupSheet.currencyCode);
   const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState<CategoryId>();
+  const [category, setCategory] = useState<string>();
   const [description, setDescription] = useState('');
   const [spentAt, setSpentAt] = useState(nowForDateTimeInput());
 
@@ -499,7 +498,7 @@ const TransactionForm = ({
       groupSheetId: groupSheet.id,
       paidOrReceivedById,
       description,
-      category: category ?? CategoryId.Other,
+      category: category ?? OTHER_CATEGORY,
       spentAt: dateTimeLocalToZonedISOString(spentAt),
     };
 
@@ -594,7 +593,7 @@ const TransactionForm = ({
 
       <Label className="flex flex-col gap-2">
         Category
-        <CategorySelect category={category} setCategory={setCategory} />
+        <CategorySelect categoryId={category} setCategoryId={setCategory} />
       </Label>
 
       <div className="flex flex-col gap-2">

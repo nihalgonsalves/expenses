@@ -3,6 +3,7 @@ module.exports = {
   ignorePatterns: ['**/build/', '**/dist/', '*.config.ts'],
   plugins: ['unused-imports'],
   parserOptions: { tsconfigRootDir: __dirname },
+  reportUnusedDisableDirectives: true,
   settings: {
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],

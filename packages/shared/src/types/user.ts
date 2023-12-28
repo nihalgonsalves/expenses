@@ -30,3 +30,8 @@ export const ZAuthorizeUserInput = z.object({
   password: z.string(),
 });
 export type AuthorizeUserInput = z.infer<typeof ZAuthorizeUserInput>;
+
+export const ZCategoryEmoji = z.object({
+  id: z.string(),
+  emojiShortCode: z.string().optional(),
+});

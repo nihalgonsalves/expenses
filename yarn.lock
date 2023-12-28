@@ -1582,6 +1582,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emoji-mart/data@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@emoji-mart/data@npm:1.1.2"
+  checksum: 595032fbbd7b646a75490729488f654085b1a80dfb52aa4ec355ec1be304f3fbb3fa7d2b9d6da7b4b609fbf1bcd34df5d9031d9db294d7bf651108df96c0ecd2
+  languageName: node
+  linkType: hard
+
+"@emoji-mart/react@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@emoji-mart/react@npm:1.1.1"
+  peerDependencies:
+    emoji-mart: ^5.2
+    react: ^16.8 || ^17 || ^18
+  checksum: 88a9c8c24bbc5695f0ed2458734c9982c965a16db1999bc731c7cce77f9bf228f1871e899744f9a3f9fdd36a11db7ad6c0e049d710cb91c66c69a2cd4d2ee40a
+  languageName: node
+  linkType: hard
+
 "@emotion/is-prop-valid@npm:^0.8.2":
   version: 0.8.8
   resolution: "@emotion/is-prop-valid@npm:0.8.8"
@@ -2477,6 +2494,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nihalgonsalves/expenses-frontend@workspace:packages/frontend"
   dependencies:
+    "@emoji-mart/data": "npm:^1.1.2"
+    "@emoji-mart/react": "npm:^1.1.1"
     "@hookform/resolvers": "npm:^3.3.2"
     "@js-temporal/polyfill": "npm:^0.4.4"
     "@nihalgonsalves/expenses-backend": "npm:*"
@@ -2528,6 +2547,7 @@ __metadata:
     dexie: "npm:^3.2.4"
     dexie-react-hooks: "npm:^1.1.7"
     dinero.js: "npm:^2.0.0-alpha.14"
+    emoji-mart: "npm:^5.5.2"
     framer-motion: "npm:^10.16.16"
     happy-dom: "npm:^12.10.3"
     immer: "npm:^10.0.3"
@@ -8156,6 +8176,13 @@ __metadata:
   version: 1.4.616
   resolution: "electron-to-chromium@npm:1.4.616"
   checksum: a02416f3293d28120d5132546a6aea614ebd2d820a684f41b1c20138331922ddc672c4a59bfc4b91bb5aee1ba608f6c10cd3f69c344cd434397e7f14a4c97348
+  languageName: node
+  linkType: hard
+
+"emoji-mart@npm:^5.5.2":
+  version: 5.5.2
+  resolution: "emoji-mart@npm:5.5.2"
+  checksum: 398a7d7f27930d39487648beb0c79d1e1424223bbd5985b0159188dadb90c2188022a3fa06afdf7ae9fb293b8cf7cbe3b46e60426b1edc7cf0f7ddf3b33cb01e
   languageName: node
   linkType: hard
 

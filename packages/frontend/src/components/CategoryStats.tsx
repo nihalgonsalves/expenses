@@ -12,10 +12,10 @@ import type {
   AllConvertedUserTransactions,
   ConvertedTransactionWithSheet,
 } from '../api/useAllUserTransactions';
-import { categoryById } from '../data/categories';
 import { formatCurrency } from '../utils/money';
 import { cn, shortDateFormatter } from '../utils/utils';
 
+import { CategoryIcon } from './CategoryAvatar';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -109,7 +109,7 @@ export const CategoryStats = ({
               >
                 <div>
                   <div className="text-sm capitalize text-neutral-500 md:text-lg">
-                    {categoryById[category]?.name}
+                    {category}
                   </div>
 
                   <div className="text-base font-bold md:text-3xl">
@@ -118,7 +118,7 @@ export const CategoryStats = ({
                 </div>
 
                 <div className="text-primary">
-                  {categoryById[category]?.icon}
+                  <CategoryIcon category={category} />
                 </div>
               </div>
             ))}
@@ -133,7 +133,7 @@ export const CategoryStats = ({
               >
                 <div>
                   <div className="text-sm capitalize text-neutral-500 md:text-lg">
-                    {categoryById[category]?.name}
+                    {category}
                   </div>
 
                   <div className="text-base font-bold md:text-3xl">
@@ -142,7 +142,7 @@ export const CategoryStats = ({
                 </div>
 
                 <div className="text-primary">
-                  {categoryById[category]?.icon}
+                  <CategoryIcon category={category} />
                 </div>
               </div>
             ))}

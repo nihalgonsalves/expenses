@@ -1,3 +1,5 @@
+import emojiMartData from '@emoji-mart/data';
+import { init as initEmojiMart } from 'emoji-mart';
 import { Toaster } from 'react-hot-toast';
 
 import { TrpcProvider } from './api/TrpcProvider';
@@ -9,6 +11,9 @@ import { useThemeSync } from './state/theme';
 import { useHydrateState } from './state/useHydrateState';
 
 void registerSW();
+
+// TODO: Use a react-query client instead of baked-in data
+await initEmojiMart({ data: emojiMartData });
 
 const GlobalHookContainer = () => {
   useOffLineToaster();
