@@ -2561,6 +2561,7 @@ __metadata:
     react-hook-form: "npm:^7.49.2"
     react-hot-toast: "npm:^2.4.1"
     react-router-dom: "npm:^6.21.1"
+    react-twc: "npm:^1.2.2"
     storybook: "npm:^7.6.6"
     tailwind-merge: "npm:^2.2.0"
     tailwindcss: "npm:^3.4.0"
@@ -13655,6 +13656,16 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 6d66f3bdb65e1ec79089f80314da97c9a005087a04ee034255a5de129a4c0d9fd0bf99fa7bf642781ac2dc745ca687aae3de082bd8afdd0d117bc953241e15ad
+  languageName: node
+  linkType: hard
+
+"react-twc@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "react-twc@npm:1.2.2"
+  dependencies:
+    "@radix-ui/react-slot": "npm:^1.0.2"
+    clsx: "npm:^2.0.0"
+  checksum: aa1837d9eefd679f2d5a05dae94ab5338270b95a1ab69be911be33cff6a3dc309842baf17be4f5c3d694e1e34be06ab029a80ef38fb7e6dd52fbec6f108490c1
   languageName: node
   linkType: hard
 

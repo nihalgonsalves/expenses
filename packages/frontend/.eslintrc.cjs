@@ -11,6 +11,7 @@ module.exports = {
   settings: {
     tailwindcss: {
       callees: ['cn', 'cva'],
+      tags: ['twx'],
       config: path.join(__dirname, './tailwind.config.js'),
       whitelist: [
         '(bg|text|border)-(primary|secondary|muted|destructive|popover)(-(foreground|content))?',
