@@ -18,8 +18,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { usePullToRefresh } from '../api/usePullToRefresh';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { NavBarAvatar } from '../components/NavBarAvatar';
-import { Button } from '../components/form/Button';
 import { Alert, AlertTitle } from '../components/ui/alert';
+import { Button } from '../components/ui/button';
 import { LoadingSpinner } from '../components/ui/loading-spinner';
 import {
   NavigationMenu,

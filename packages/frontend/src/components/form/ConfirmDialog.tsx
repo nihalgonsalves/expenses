@@ -12,9 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog';
-import type { buttonVariants } from '../ui/button';
-
-import { Button } from './Button';
+import { Button, type buttonVariants } from '../ui/button';
 
 export const ConfirmDialog = ({
   description,

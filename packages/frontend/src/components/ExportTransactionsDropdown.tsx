@@ -3,7 +3,7 @@ import { CircleBackslashIcon, DownloadIcon } from '@radix-ui/react-icons';
 import Papa from 'papaparse';
 import { toast } from 'react-hot-toast';
 
-import { Button } from './form/Button';
+import { Button } from './ui/button';
 import { DropdownMenuItem } from './ui/dropdown-menu';
 
 export const ExportTransactionsDropdown = <TData, TOutput>({

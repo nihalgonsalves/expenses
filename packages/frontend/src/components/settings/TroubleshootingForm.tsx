@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { useResetCache } from '../../api/useCacheReset';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
-import { Button } from '../form/Button';
+import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 export const TroubleshootingForm = () => {
