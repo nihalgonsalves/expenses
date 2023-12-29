@@ -42,6 +42,10 @@ module.exports = {
       files: ['*.stories.@(ts|tsx|js|jsx|mjs|cjs)'],
       rules: {
         'import/no-default-export': 'off',
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: true },
+        ],
       },
     },
   ],

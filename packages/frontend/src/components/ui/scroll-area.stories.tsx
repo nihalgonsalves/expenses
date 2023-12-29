@@ -15,8 +15,9 @@ const tags = Array.from({ length: 50 }).map(
 );
 
 export const Base: Story = {
-  render: () => (
+  render: (props) => (
     <ScrollArea
+      {...props}
       viewportClassName="max-h-96"
       rootClassName="rounded-md border w-48"
     >
