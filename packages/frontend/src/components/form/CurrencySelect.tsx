@@ -43,7 +43,7 @@ export const CurrencySelect = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="min-w-48 justify-between"
+          className="min-w-24 justify-between md:min-w-48"
         >
           {currencyCode
             ? optionObjects.find((opt) => opt.value === currencyCode)?.label
@@ -55,7 +55,10 @@ export const CurrencySelect = ({
         <Command>
           <CommandInput placeholder="Search" />
           <CommandList>
-            <CommandEmpty>No currency code found.</CommandEmpty>
+            <CommandEmpty>
+              <span className="visible md:hidden">Not found</span>
+              <span className="hidden md:inline">No currency code found</span>
+            </CommandEmpty>
             <CommandGroup className="h-full overflow-y-auto">
               {optionObjects.map((option) => (
                 <CommandItem
