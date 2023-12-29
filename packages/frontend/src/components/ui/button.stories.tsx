@@ -37,7 +37,7 @@ export const Icon: Story = {
 
 export const Loading: Story = {
   args: {
-    loading: true,
+    isLoading: true,
   },
 };
 

@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { z } from 'zod';
+import type { z } from 'zod';
 
+import { ZUpdateUserInput } from '@nihalgonsalves/expenses-shared/types/user';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { trpc } from '../../api/trpc';
@@ -20,47 +21,14 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 
-const formSchema = z
-  .object({
-    name: z.string().min(1, {
-      message: 'Name cannot be empty',
-    }),
-    email: z.string().email({
-      message: 'Invalid email',
-    }),
-    password: z.string(),
-    newPassword: z.string(),
-  })
-  .refine(
-    (data) => {
-      if (
-        data.password &&
-        data.newPassword &&
-        data.password !== data.newPassword
-      ) {
-        return true;
-      }
-
-      if (!data.password && !data.newPassword) {
-        return true;
-      }
-
-      return false;
-    },
-    {
-      message: 'The new password cannot be the same',
-      path: ['newPassword'],
-    },
-  );
-
 export const ProfileForm = ({ me }: { me: User }) => {
   const onLine = useNavigatorOnLine();
   const utils = trpc.useUtils();
   const { mutateAsync: updateUser, isLoading } =
     trpc.user.updateUser.useMutation();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof ZUpdateUserInput>>({
+    resolver: zodResolver(ZUpdateUserInput),
     defaultValues: {
       name: me.name,
       email: me.email,
@@ -71,7 +39,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
   const disabled = !onLine || !form.formState.isDirty;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof ZUpdateUserInput>) => {
     const { name: newName, email: newEmail } = await updateUser({
       name: values.name,
       email: values.email,

@@ -1,12 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import type { z } from 'zod';
+
+import {
+  ZAuthorizeUserInput,
+  ZCreateUserInput,
+} from '@nihalgonsalves/expenses-shared/types/user';
 
 import { trpc } from '../api/trpc';
 import { useResetCache } from '../api/useCacheReset';
 
-import { Button } from './form/Button';
+import { Button } from './ui/button';
 import {
   Form,
   FormControl,
@@ -17,56 +21,20 @@ import {
 } from './ui/form';
 import { Input } from './ui/input';
 
-const formSchema = z.object({
-  name: z.string(),
-  email: z.string().email({
-    message: 'Invalid email',
-  }),
-  password: z.string().min(1, {
-    message: 'Password cannot be empty',
-  }),
-});
+const SignInForm = () => {
+  const signInMutation = trpc.user.authorizeUser.useMutation();
 
-export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
-  const schema = useMemo(
-    () =>
-      isSignUp
-        ? formSchema.refine(({ name }) => name, {
-            message: 'Name cannot be empty',
-            path: ['name'],
-          })
-        : formSchema,
-    [isSignUp],
-  );
-
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      name: '',
-    },
+  const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
+    resolver: zodResolver(ZAuthorizeUserInput),
   });
 
   const resetCache = useResetCache();
 
-  const signUpMutation = trpc.user.createUser.useMutation();
-  const signInMutation = trpc.user.authorizeUser.useMutation();
-
-  const isLoading = signUpMutation.isLoading || signInMutation.isLoading;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log('??');
-    if (isSignUp) {
-      await signUpMutation.mutateAsync({
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      });
-    } else {
-      await signInMutation.mutateAsync({
-        email: values.email,
-        password: values.password,
-      });
-    }
+  const onSubmit = async (values: z.infer<typeof ZAuthorizeUserInput>) => {
+    await signInMutation.mutateAsync({
+      email: values.email,
+      password: values.password,
+    });
 
     await resetCache();
   };
@@ -74,22 +42,6 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {isSignUp && (
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input autoComplete="name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
         <FormField
           control={form.control}
           name="email"
@@ -122,10 +74,94 @@ export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) => {
           )}
         />
 
-        <Button className="w-full" type="submit" isLoading={isLoading}>
-          {isSignUp ? 'Sign Up' : 'Sign In'}
+        <Button
+          className="w-full"
+          type="submit"
+          isLoading={signInMutation.isLoading}
+        >
+          Sign In
         </Button>
       </form>
     </Form>
   );
 };
+
+const SignUpForm = () => {
+  const signUpMutation = trpc.user.createUser.useMutation();
+
+  const form = useForm<z.infer<typeof ZCreateUserInput>>({
+    resolver: zodResolver(ZCreateUserInput),
+  });
+
+  const resetCache = useResetCache();
+
+  const onSubmit = async (values: z.infer<typeof ZCreateUserInput>) => {
+    await signUpMutation.mutateAsync({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    });
+
+    await resetCache();
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input autoComplete="name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email address</FormLabel>
+              <FormControl>
+                <Input type="email" autoComplete="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  type="password"
+                  autoComplete="current-password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          className="w-full"
+          type="submit"
+          isLoading={signUpMutation.isLoading}
+        >
+          Sign Up
+        </Button>
+      </form>
+    </Form>
+  );
+};
+
+export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) =>
+  isSignUp ? <SignUpForm /> : <SignInForm />;

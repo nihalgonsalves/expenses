@@ -2,7 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { z } from 'zod';
+import type { z } from 'zod';
+
+import { ZAuthorizeUserInput } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { trpc } from '../../api/trpc';
 import { useResetCache } from '../../api/useCacheReset';
@@ -19,28 +21,21 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 
-const formSchema = z.object({
-  email: z.string().email({
-    message: 'Invalid email',
-  }),
-  password: z.string().min(1, { message: 'Password is required' }),
-});
-
 export const PrivacyForm = () => {
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const [isReconfirming, setIsReconfirming] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
+    resolver: zodResolver(ZAuthorizeUserInput),
   });
 
   const resetCache = useResetCache();
   const { mutateAsync: anonymizeUser, isLoading } =
     trpc.user.anonymizeUser.useMutation();
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof ZAuthorizeUserInput>) => {
     if (!isReconfirming) {
       setIsReconfirming(true);
       return;

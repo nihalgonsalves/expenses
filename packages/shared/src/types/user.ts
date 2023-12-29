@@ -11,23 +11,59 @@ export const ZJWTToken = z.string().brand<'JWTToken'>();
 export type JWTToken = z.infer<typeof ZJWTToken>;
 
 export const ZCreateUserInput = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
+  name: z.string().min(1, {
+    message: 'Name cannot be empty',
+  }),
+  email: z.string().email({
+    message: 'Invalid email',
+  }),
   password: z.string().min(1),
 });
 export type CreateUserInput = z.infer<typeof ZCreateUserInput>;
 
-export const ZUpdateUserInput = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(1).optional(),
-  newPassword: z.string().min(1).optional(),
-});
+export const ZUpdateUserInput = z
+  .object({
+    name: z.string().min(1, {
+      message: 'Name cannot be empty',
+    }),
+    email: z.string().email({
+      message: 'Invalid email',
+    }),
+    password: z.string().min(1).optional(),
+    newPassword: z.string().min(1).optional(),
+  })
+  .refine(
+    (data) => {
+      if (
+        data.password &&
+        data.newPassword &&
+        data.password !== data.newPassword
+      ) {
+        return true;
+      }
+
+      if (!data.password && !data.newPassword) {
+        return true;
+      }
+
+      if (!data.password && data.newPassword) {
+        return true;
+      }
+
+      return false;
+    },
+    {
+      message: 'The new password cannot be the same',
+      path: ['newPassword'],
+    },
+  );
 export type UpdateUserInput = z.infer<typeof ZUpdateUserInput>;
 
 export const ZAuthorizeUserInput = z.object({
-  email: z.string().email(),
-  password: z.string(),
+  email: z.string().email({
+    message: 'Invalid email',
+  }),
+  password: z.string().min(1, { message: 'Password is required' }),
 });
 export type AuthorizeUserInput = z.infer<typeof ZAuthorizeUserInput>;
 
