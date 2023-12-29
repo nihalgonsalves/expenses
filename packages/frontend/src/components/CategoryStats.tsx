@@ -13,12 +13,13 @@ import type {
   ConvertedTransactionWithSheet,
 } from '../api/useAllUserTransactions';
 import { formatCurrency } from '../utils/money';
-import { cn, shortDateFormatter } from '../utils/utils';
+import { shortDateFormatter } from '../utils/utils';
 
 import { CategoryIcon } from './CategoryAvatar';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { cn } from './ui/utils';
 
 const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
   const categorySums: Record<string, Money> = {};

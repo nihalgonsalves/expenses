@@ -1,4 +1,4 @@
-import { cn, getInitials } from '../utils/utils';
+import { getInitials } from '../utils/utils';
 
 import { Avatar as UIAvatar, AvatarFallback } from './ui/avatar';
 import {
@@ -7,6 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from './ui/tooltip';
+import { cn } from './ui/utils';
 
 export const Avatar = ({ name }: { name: string }) => (
   <TooltipProvider delayDuration={100}>

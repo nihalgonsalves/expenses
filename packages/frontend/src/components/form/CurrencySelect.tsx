@@ -3,7 +3,6 @@ import { Popover } from '@radix-ui/react-popover';
 import { useMemo, useState } from 'react';
 
 import { CURRENCY_CODES } from '../../utils/money';
-import { cn } from '../../utils/utils';
 import { Button } from '../ui/button';
 import {
   Command,
@@ -13,6 +12,7 @@ import {
   CommandItem,
 } from '../ui/command';
 import { PopoverContent, PopoverTrigger } from '../ui/popover';
+import { cn } from '../ui/utils';
 
 export const CurrencySelect = ({
   currencyCode,

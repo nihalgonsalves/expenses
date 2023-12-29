@@ -1,4 +1,4 @@
-import { cn } from '../../utils/utils';
+import { cn } from '../ui/utils';
 
 export const ParticipantListItem = ({
   children,

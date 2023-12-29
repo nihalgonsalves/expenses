@@ -6,13 +6,13 @@ import { Link } from 'react-router-dom';
 import type { SheetsResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { collapse } from '../utils/framer';
-import { cn } from '../utils/utils';
 
 import { Avatar } from './Avatar';
 import { ExpandMoreButton } from './ExpandMoreButton';
 import { Alert, AlertTitle } from './ui/alert';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { cn } from './ui/utils';
 
 const partitionSheets = (sheets: SheetsResponse) => {
   const personal: SheetsResponse = [];

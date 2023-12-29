@@ -27,9 +27,9 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '../components/ui/navigation-menu';
+import { cn } from '../components/ui/utils';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
-import { cn } from '../utils/utils';
 
 type RootProps = {
   title: string | undefined;

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { trpc } from '../api/trpc';
 import { useResetCache } from '../api/useCacheReset';
 import { useCurrentUser } from '../api/useCurrentUser';
-import { cn } from '../utils/utils';
 
 import { Button } from './ui/button';
 import {
@@ -14,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
 import { Separator } from './ui/separator';
+import { cn } from './ui/utils';
 
 export const LoggedOutNavBarAvatar = ({
   className,

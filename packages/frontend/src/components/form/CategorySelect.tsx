@@ -4,7 +4,6 @@ import { Popover } from '@radix-ui/react-popover';
 import { useState } from 'react';
 
 import { trpc } from '../../api/trpc';
-import { cn } from '../../utils/utils';
 import { CategoryIcon } from '../CategoryAvatar';
 import { Button } from '../ui/button';
 import {
@@ -15,6 +14,7 @@ import {
   CommandItem,
 } from '../ui/command';
 import { PopoverContent, PopoverTrigger } from '../ui/popover';
+import { cn } from '../ui/utils';
 
 export const OTHER_CATEGORY = 'other' as const;
 

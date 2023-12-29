@@ -8,7 +8,6 @@ import type { TransactionSummaryResponse } from '@nihalgonsalves/expenses-shared
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency } from '../../utils/money';
-import { cn } from '../../utils/utils';
 import { AvatarGroup } from '../Avatar';
 import { Button } from '../ui/button';
 import {
@@ -17,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { cn } from '../ui/utils';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
