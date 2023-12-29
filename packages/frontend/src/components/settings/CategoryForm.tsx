@@ -1,6 +1,5 @@
 import Picker from '@emoji-mart/react';
 import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 
@@ -8,6 +7,7 @@ import { trpc } from '../../api/trpc';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
+import { ScrollArea } from '../ui/scroll-area';
 
 const ZEmojiData = z.object({
   id: z.string(),
@@ -56,34 +56,36 @@ export const CategoryForm = () => {
           You can add icons to your categories here. To create more categories,
           add a new category when adding a transaction.
         </div>
-        <ScrollArea className="flex max-h-96 flex-col gap-4 overflow-y-auto">
-          {categories?.map(({ id, emojiShortCode }) => (
-            <div
-              key={id}
-              className="flex items-center gap-2 text-sm tracking-tight"
-            >
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    {emojiShortCode ? (
-                      <em-emoji shortcodes={emojiShortCode} />
-                    ) : (
-                      <QuestionMarkCircledIcon />
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Picker
-                    onEmojiSelect={(emojiData: unknown) => {
-                      void handleEmojiSelect(id, emojiData);
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
+        <ScrollArea viewportClassName="max-h-96">
+          <div className="flex flex-col gap-4">
+            {categories?.map(({ id, emojiShortCode }) => (
+              <div
+                key={id}
+                className="flex items-center gap-2 text-sm tracking-tight"
+              >
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      {emojiShortCode ? (
+                        <em-emoji shortcodes={emojiShortCode} />
+                      ) : (
+                        <QuestionMarkCircledIcon />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Picker
+                      onEmojiSelect={(emojiData: unknown) => {
+                        void handleEmojiSelect(id, emojiData);
+                      }}
+                    />
+                  </PopoverContent>
+                </Popover>
 
-              {id}
-            </div>
-          ))}
+                {id}
+              </div>
+            ))}
+          </div>
         </ScrollArea>
       </CardContent>
     </Card>

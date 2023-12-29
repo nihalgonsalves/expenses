@@ -27,6 +27,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '../components/ui/navigation-menu';
+import { ScrollArea } from '../components/ui/scroll-area';
 import { cn } from '../components/ui/utils';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
@@ -157,9 +158,12 @@ export const Root = ({
           <NavBarAvatar className="ml-4" />
         </header>
 
-        <main className="flex grow flex-col overflow-y-auto p-3 md:p-5">
-          {children}
-        </main>
+        <ScrollArea
+          viewportClassName="p-3 md:p-5"
+          rootClassName="flex grow flex-col"
+        >
+          <main>{children}</main>
+        </ScrollArea>
 
         {additionalChildren}
 

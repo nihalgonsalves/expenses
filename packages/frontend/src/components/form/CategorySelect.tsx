@@ -12,6 +12,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '../ui/command';
 import { PopoverContent, PopoverTrigger } from '../ui/popover';
 import { cn } from '../ui/utils';
@@ -52,46 +53,48 @@ export const CategorySelect = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command className="max-h-80">
+        <Command>
           <CommandInput
             placeholder="Search"
             value={searchValue}
             onValueChange={setSearchValue}
           />
-          {/* Only displayed when allowCreate=false, as otherwise there's always a CommandItem */}
-          <CommandEmpty>No category found</CommandEmpty>
-          <CommandGroup className="h-full overflow-y-auto">
-            {allowCreate &&
-              normalizedSearchValue.length > 2 &&
-              !categories?.some((c) => c.id === normalizedSearchValue) && (
+          <CommandList>
+            {/* Only displayed when allowCreate=false, as otherwise there's always a CommandItem */}
+            <CommandEmpty>No category found</CommandEmpty>
+            <CommandGroup>
+              {allowCreate &&
+                normalizedSearchValue.length > 2 &&
+                !categories?.some((c) => c.id === normalizedSearchValue) && (
+                  <CommandItem
+                    value={normalizedSearchValue}
+                    onSelect={() => {
+                      setCategoryId(normalizedSearchValue);
+                      setOpen(false);
+                    }}
+                  >
+                    <PlusIcon className="mr-2 size-4" />
+                    Create {`'${normalizedSearchValue}'`}
+                  </CommandItem>
+                )}
+
+              {categories?.map((category) => (
                 <CommandItem
-                  value={normalizedSearchValue}
+                  key={category.id}
+                  value={category.id}
                   onSelect={() => {
-                    setCategoryId(normalizedSearchValue);
+                    setCategoryId(category.id);
                     setOpen(false);
                   }}
                 >
-                  <PlusIcon className="mr-2 size-4" />
-                  Create {`'${normalizedSearchValue}'`}
+                  <div className="mr-2">
+                    <CategoryIcon category={category.id} />
+                  </div>
+                  {category.id}
                 </CommandItem>
-              )}
-
-            {categories?.map((category) => (
-              <CommandItem
-                key={category.id}
-                value={category.id}
-                onSelect={() => {
-                  setCategoryId(category.id);
-                  setOpen(false);
-                }}
-              >
-                <div className="mr-2">
-                  <CategoryIcon category={category.id} />
-                </div>
-                {category.id}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+              ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>

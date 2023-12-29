@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '../ui/command';
 import { PopoverContent, PopoverTrigger } from '../ui/popover';
 import { cn } from '../ui/utils';
@@ -51,29 +52,33 @@ export const CurrencySelect = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-        <Command className="max-h-80">
+        <Command>
           <CommandInput placeholder="Search" />
-          <CommandEmpty>No currency code found.</CommandEmpty>
-          <CommandGroup className="h-full overflow-y-auto">
-            {optionObjects.map((option) => (
-              <CommandItem
-                key={option.value}
-                value={option.value}
-                onSelect={() => {
-                  setCurrencyCode(option.value);
-                  setOpen(false);
-                }}
-              >
-                <CheckIcon
-                  className={cn(
-                    'mr-2 size-4',
-                    currencyCode === option.value ? 'opacity-100' : 'opacity-0',
-                  )}
-                />
-                {option.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <CommandList>
+            <CommandEmpty>No currency code found.</CommandEmpty>
+            <CommandGroup className="h-full overflow-y-auto">
+              {optionObjects.map((option) => (
+                <CommandItem
+                  key={option.value}
+                  value={option.value}
+                  onSelect={() => {
+                    setCurrencyCode(option.value);
+                    setOpen(false);
+                  }}
+                >
+                  <CheckIcon
+                    className={cn(
+                      'mr-2 size-4',
+                      currencyCode === option.value
+                        ? 'opacity-100'
+                        : 'opacity-0',
+                    )}
+                  />
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>

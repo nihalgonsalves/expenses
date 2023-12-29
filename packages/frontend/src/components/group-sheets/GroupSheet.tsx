@@ -53,7 +53,7 @@ export const GroupSheet = ({
           {groupSheetTransactionsResponse &&
           groupSheetTransactionsResponse.transactions.length > 0 ? (
             <>
-              <ScrollArea className="max-h-96 overflow-y-auto">
+              <ScrollArea viewportClassName="max-h-96">
                 <GroupSheetTransactionsDenseList
                   transactions={groupSheetTransactionsResponse.transactions}
                 />

@@ -114,7 +114,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
           <CardTitle>Latest Transactions</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <ScrollArea className="max-h-96 overflow-y-auto">
+          <ScrollArea viewportClassName="max-h-96">
             {getPersonalSheetTransactionsResponse?.transactions.map(
               (transaction) => (
                 <TransactionListItemComponent
