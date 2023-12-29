@@ -4,17 +4,12 @@ import { Fragment } from 'react';
 import { ScrollArea } from './scroll-area';
 import { Separator } from './separator';
 
-const meta: Meta<typeof ScrollArea> = {
-  component: ScrollArea,
-};
-
-type Story = StoryObj<typeof ScrollArea>;
-
 const tags = Array.from({ length: 50 }).map(
   (_, i, a) => `v1.2.0-beta.${a.length - i}`,
 );
 
-export const Base: Story = {
+const meta: Meta<typeof ScrollArea> = {
+  component: ScrollArea,
   render: (props) => (
     <ScrollArea
       {...props}
@@ -33,5 +28,9 @@ export const Base: Story = {
     </ScrollArea>
   ),
 };
+
+type Story = StoryObj<typeof ScrollArea>;
+
+export const Base: Story = {};
 
 export default meta;

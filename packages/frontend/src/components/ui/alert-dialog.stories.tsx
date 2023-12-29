@@ -15,11 +15,6 @@ import {
 
 const meta: Meta<typeof AlertDialog> = {
   component: AlertDialog,
-};
-
-type Story = StoryObj<typeof AlertDialog>;
-
-export const Base: Story = {
   render: (props) => (
     <AlertDialog {...props}>
       <AlertDialogTrigger>Open</AlertDialogTrigger>
@@ -45,7 +40,6 @@ export const Base: Story = {
     await userEvent.click(canvas.getByRole('button'));
 
     await waitFor(async () => {
-      //👇 This assertion will pass if a DOM element with the matching id exists
       await expect(
         within(screen.getByRole('alertdialog')).getByText(
           'Are you absolutely sure?',
@@ -54,5 +48,9 @@ export const Base: Story = {
     });
   },
 };
+
+type Story = StoryObj<typeof AlertDialog>;
+
+export const Base: Story = {};
 
 export default meta;
