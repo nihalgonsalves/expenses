@@ -37,6 +37,24 @@ const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
   return categorySums;
 };
 
+const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
+  <div className="flex place-items-center content-between justify-between rounded-lg bg-card p-6 shadow">
+    <div>
+      <div className="text-sm capitalize text-neutral-500 md:text-lg">
+        {category}
+      </div>
+
+      <div className="text-base font-bold md:text-3xl">
+        {formatCurrency(sum)}
+      </div>
+    </div>
+
+    <div className="text-primary">
+      <CategoryIcon category={category} />
+    </div>
+  </div>
+);
+
 export const CategoryStats = ({
   data,
   dateRange,
@@ -104,48 +122,14 @@ export const CategoryStats = ({
         {categoryExpenseSumEntries.length > 0 && (
           <div className="flex flex-col gap-2 md:gap-4">
             {categoryExpenseSumEntries.map(([category, sum]) => (
-              <div
-                className="flex place-items-center content-between justify-between rounded-lg p-6 shadow"
-                key={category}
-              >
-                <div>
-                  <div className="text-sm capitalize text-neutral-500 md:text-lg">
-                    {category}
-                  </div>
-
-                  <div className="text-base font-bold md:text-3xl">
-                    {formatCurrency(sum)}
-                  </div>
-                </div>
-
-                <div className="text-primary">
-                  <CategoryIcon category={category} />
-                </div>
-              </div>
+              <CategoryStat key={category} category={category} sum={sum} />
             ))}
           </div>
         )}
         {categoryIncomeSumEntries.length > 0 && (
           <div className="flex flex-col gap-2 md:gap-4">
             {categoryIncomeSumEntries.map(([category, sum]) => (
-              <div
-                className="flex place-items-center content-between justify-between rounded-lg p-6 shadow"
-                key={category}
-              >
-                <div>
-                  <div className="text-sm capitalize text-neutral-500 md:text-lg">
-                    {category}
-                  </div>
-
-                  <div className="text-base font-bold md:text-3xl">
-                    {formatCurrency(sum)}
-                  </div>
-                </div>
-
-                <div className="text-primary">
-                  <CategoryIcon category={category} />
-                </div>
-              </div>
+              <CategoryStat key={category} category={category} sum={sum} />
             ))}
           </div>
         )}

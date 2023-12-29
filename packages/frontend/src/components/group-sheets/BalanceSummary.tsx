@@ -73,7 +73,7 @@ const PersonMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline">
+        <Button size="icon" variant="outline" className="bg-inherit">
           <DotsVerticalIcon />
         </Button>
       </DropdownMenuTrigger>

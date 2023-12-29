@@ -151,7 +151,7 @@ export const AllUserTransactionsList = ({
                 <Button
                   id="date"
                   variant="outline"
-                  className="justify-start text-left font-normal"
+                  className="justify-start bg-card text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 size-4" />
                   {dateRange?.from && dateRange.to ? (

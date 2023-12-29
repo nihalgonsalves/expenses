@@ -43,7 +43,7 @@ export const CurrencySelect = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="min-w-24 justify-between md:min-w-48"
+          className="min-w-24 justify-between bg-inherit md:min-w-48"
         >
           {currencyCode
             ? optionObjects.find((opt) => opt.value === currencyCode)?.label

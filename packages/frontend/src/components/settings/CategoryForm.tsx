@@ -65,7 +65,11 @@ export const CategoryForm = () => {
               >
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" size="icon">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="bg-inherit"
+                    >
                       {emojiShortCode ? (
                         <em-emoji shortcodes={emojiShortCode} />
                       ) : (
