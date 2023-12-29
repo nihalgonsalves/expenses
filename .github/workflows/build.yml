@@ -25,6 +25,8 @@ jobs:
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           storybookBuildDir: ./packages/frontend/build/storybook/
+          autoAcceptChanges: main
+          exitOnceUploaded: true
 
       - run: yarn lint
       - uses: hadolint/hadolint-action@v3.1.0
