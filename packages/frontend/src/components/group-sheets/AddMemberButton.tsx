@@ -5,7 +5,7 @@ import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { prevalidateEmail } from '../../utils/utils';
 import { Avatar } from '../Avatar';
-import { Button } from '../form/Button';
+import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 import { ParticipantListItem } from './ParticipantListItem';

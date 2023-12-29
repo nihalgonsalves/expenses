@@ -14,11 +14,11 @@ import {
   dateTimeLocalToZonedISOString,
   isoToTemporalZonedDateTime,
 } from '../../utils/utils';
-import { Button } from '../form/Button';
 import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
 import { TextField } from '../form/TextField';
+import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 
 export const EditPersonalTransactionForm = ({

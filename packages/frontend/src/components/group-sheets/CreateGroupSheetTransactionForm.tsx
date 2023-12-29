@@ -42,7 +42,6 @@ import {
   nowForDateTimeInput,
 } from '../../utils/utils';
 import { Avatar } from '../Avatar';
-import { Button } from '../form/Button';
 import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
@@ -50,6 +49,7 @@ import { Select } from '../form/Select';
 import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Alert, AlertDescription } from '../ui/alert';
+import { Button } from '../ui/button';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 import { Switch } from '../ui/switch';

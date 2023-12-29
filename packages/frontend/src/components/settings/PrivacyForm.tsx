@@ -9,7 +9,7 @@ import { ZAuthorizeUserInput } from '@nihalgonsalves/expenses-shared/types/user'
 import { trpc } from '../../api/trpc';
 import { useResetCache } from '../../api/useCacheReset';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { Button } from '../form/Button';
+import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import {
   Form,
