@@ -5,8 +5,6 @@
 @layer base {
   :root,
   [data-theme='blue-light'] {
-    --theme-color: #3662e3;
-
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -30,8 +28,6 @@
   }
 
   [data-theme='blue-dark'] {
-    --theme-color: #4e80ee;
-
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -53,8 +49,6 @@
     --ring: 224.3 76.3% 48%;
   }
   [data-theme='slate-light'] {
-    --theme-color: #111729;
-
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -77,8 +71,6 @@
   }
 
   [data-theme='slate-dark'] {
-    --theme-color: #f8fafc;
-
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -101,8 +93,6 @@
   }
 
   [data-theme='rose-light'] {
-    --theme-color: #cf364c;
-
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -125,8 +115,6 @@
   }
 
   [data-theme='rose-dark'] {
-    --theme-color: #cf364c;
-
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
     --card: 24 9.8% 10%;
@@ -149,8 +137,6 @@
   }
 
   [data-theme='green-light'] {
-    --theme-color: #4ca154;
-
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -173,8 +159,6 @@
   }
 
   [data-theme='green-dark'] {
-    --theme-color: #5ec269;
-
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
     --card: 24 9.8% 10%;
@@ -197,8 +181,6 @@
   }
 
   [data-theme='orange-light'] {
-    --theme-color: #e87b35;
-
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
@@ -221,8 +203,6 @@
   }
 
   [data-theme='orange-dark'] {
-    --theme-color: #d9622b;
-
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
     --card: 20 14.3% 4.1%;
@@ -245,8 +225,6 @@
   }
 
   [data-theme='yellow-light'] {
-    --theme-color: #f3ce49;
-
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
@@ -269,8 +247,6 @@
   }
 
   [data-theme='yellow-dark'] {
-    --theme-color: #f3ce49;
-
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
     --card: 20 14.3% 4.1%;
@@ -293,8 +269,6 @@
   }
 
   [data-theme='violet-light'] {
-    --theme-color: #743ee4;
-
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
@@ -317,8 +291,6 @@
   }
 
   [data-theme='violet-dark'] {
-    --theme-color: #652cd1;
-
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
     --card: 224 71.4% 4.1%;

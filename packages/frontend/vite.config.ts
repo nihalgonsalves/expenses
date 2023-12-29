@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => ({
         name: 'Expenses',
         short_name: 'Expenses',
         description: 'Expenses App',
-        theme_color: '#3662e3',
+        theme_color: 'hsl(221.2 83.2% 53.3%)',
         // prettier-ignore
         icons: [
           { src: '/favicon.ico',                type: 'image/x-icon',  sizes: '256x256'                        },

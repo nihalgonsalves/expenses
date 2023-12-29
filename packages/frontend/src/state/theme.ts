@@ -58,9 +58,9 @@ const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
     .querySelector('meta[name="theme-color"]')
     ?.setAttribute(
       'content',
-      getComputedStyle(document.documentElement).getPropertyValue(
-        '--theme-color',
-      ),
+      `hsl(${getComputedStyle(document.documentElement).getPropertyValue(
+        '--primary',
+      )})`,
     );
 };
 
