@@ -2,7 +2,7 @@ import { easeIn } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { Progress } from '../components/ui/progress';
+import { CircularProgress } from '../components/ui/circular-progress';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 
 const displayThreshold = () => window.innerHeight * 0.05;
@@ -46,7 +46,7 @@ export const usePullToRefresh = (
       ) {
         const ratio = easeIn(touchDiffY / reloadThreshold());
 
-        toast(() => <Progress value={ratio * 100} />, {
+        toast(() => <CircularProgress size={24} value={ratio * 100} />, {
           id: toastId,
           className: 'w-48',
           duration: Infinity,

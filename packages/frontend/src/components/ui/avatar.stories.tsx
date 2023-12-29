@@ -4,11 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from './avatar';
 
 const meta: Meta<typeof Avatar> = {
   component: Avatar,
-};
-
-type Story = StoryObj<typeof Avatar>;
-
-export const Base: Story = {
   render: (props) => (
     <Avatar {...props}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -16,6 +11,10 @@ export const Base: Story = {
     </Avatar>
   ),
 };
+
+type Story = StoryObj<typeof Avatar>;
+
+export const Base: Story = {};
 
 export const Fallback: Story = {
   render: (props) => (

@@ -186,10 +186,9 @@ export const AllUserTransactionsList = ({
 
           <div className="hidden grow md:block">&nbsp;</div>
 
-          <Tabs value={selectedView} className="flex flex-row gap-2">
-            <TabsList className="w-full md:w-auto">
+          <Tabs value={selectedView} className="grid gap-2">
+            <TabsList className="grid w-full grid-cols-2 md:w-auto">
               <TabsTrigger
-                className="grow"
                 value="EXPENSES"
                 onClick={() => {
                   setSelectedView('EXPENSES');
@@ -198,7 +197,6 @@ export const AllUserTransactionsList = ({
                 Expenses ({formatCurrency(totalSpent)})
               </TabsTrigger>
               <TabsTrigger
-                className="grow"
                 value="INCOME"
                 onClick={() => {
                   setSelectedView('INCOME');
