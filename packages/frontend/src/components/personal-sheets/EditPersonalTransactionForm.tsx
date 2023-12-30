@@ -1,10 +1,14 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import {
+  ZUpdatePersonalSheetTransactionInput,
+  type TransactionListItem,
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
 import { trpc } from '../../api/trpc';
@@ -14,12 +18,30 @@ import {
   dateTimeLocalToZonedISOString,
   isoToTemporalZonedDateTime,
 } from '../../utils/utils';
-import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
+import { CategorySelect } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
-import { TextField } from '../form/TextField';
 import { Button } from '../ui/button';
-import { Label } from '../ui/label';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
+
+const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
+  id: true,
+  type: true,
+  personalSheetId: true,
+  money: true,
+}).extend({
+  currencyCode: z.string().min(1),
+  amount: z.number().positive({ message: 'Amount is required' }),
+});
 
 export const EditPersonalTransactionForm = ({
   transaction,
@@ -31,23 +53,27 @@ export const EditPersonalTransactionForm = ({
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
-  const [amount, setAmount] = useState(Math.abs(transaction.money.amount));
-  const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
-  const [category, setCategory] = useState<string | undefined>(
-    transaction.category,
-  );
-  const [description, setDescription] = useState(transaction.description);
-  const [dateTime, setDateTime] = useState(
-    isoToTemporalZonedDateTime(transaction.spentAt)
-      .toPlainDateTime()
-      .toString(),
-  );
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      currencyCode: personalSheet.currencyCode,
+      category: transaction.category,
+      amount: Math.abs(transaction.money.amount),
+      description: transaction.description,
+      spentAt: isoToTemporalZonedDateTime(transaction.spentAt)
+        .toPlainDateTime()
+        .toString(),
+    },
+  });
+  const amount = form.watch('amount');
+  const currencyCode = form.watch('currencyCode');
+  const spentAt = form.watch('spentAt');
 
   const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
   const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
     useCurrencyConversion(
-      Temporal.PlainDate.from(dateTime),
+      Temporal.PlainDate.from(spentAt),
       currencyCode,
       personalSheet.currencyCode,
       moneySnapshot,
@@ -57,9 +83,7 @@ export const EditPersonalTransactionForm = ({
   const { mutateAsync: updatePersonalSheetTransaction, isLoading } =
     trpc.transaction.updatePersonalSheetTransaction.useMutation();
 
-  const valid = amount > 0;
-
-  const handleCreateTransaction = async () => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const money = convertedMoneySnapshot ?? moneySnapshot;
 
     await updatePersonalSheetTransaction({
@@ -68,9 +92,9 @@ export const EditPersonalTransactionForm = ({
       type: z.enum(['EXPENSE', 'INCOME']).parse(transaction.type),
       personalSheetId: personalSheet.id,
       money,
-      category: category ?? OTHER_CATEGORY,
-      description,
-      spentAt: dateTimeLocalToZonedISOString(dateTime),
+      category: values.category,
+      description: values.description,
+      spentAt: dateTimeLocalToZonedISOString(values.spentAt),
     });
     navigate(`/sheets/${personalSheet.id}/transactions`, { replace: true });
 
@@ -85,73 +109,120 @@ export const EditPersonalTransactionForm = ({
     ]);
   };
 
-  const disabled = !valid || !onLine;
+  const disabled = !onLine;
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (disabled) return;
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex gap-4">
+          <div className="grow">
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <MoneyField
+                      className="grow"
+                      autoFocus
+                      currencyCode={currencyCode}
+                      amount={field.value}
+                      setAmount={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    {convertedMoneySnapshot
+                      ? formatCurrency(convertedMoneySnapshot)
+                      : null}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-        void handleCreateTransaction();
-      }}
-    >
-      <div className="flex items-start gap-4">
-        <div className="flex grow flex-col gap-2">
-          <Label>Amount</Label>
-          <MoneyField
-            className="grow"
-            autoFocus
-            currencyCode={currencyCode}
-            amount={amount}
-            setAmount={setAmount}
+          <FormField
+            control={form.control}
+            name="currencyCode"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Currency</FormLabel>
+                <FormControl>
+                  {supportedCurrencies.includes(personalSheet.currencyCode) && (
+                    <CurrencySelect
+                      options={supportedCurrencies}
+                      currencyCode={field.value}
+                      setCurrencyCode={field.onChange}
+                    />
+                  )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          <Label>
-            {convertedMoneySnapshot
-              ? formatCurrency(convertedMoneySnapshot)
-              : null}
-          </Label>
         </div>
 
-        <Label className="mt-0.5 flex flex-col gap-2">
-          Currency
-          {supportedCurrencies.includes(personalSheet.currencyCode) && (
-            <CurrencySelect
-              options={supportedCurrencies}
-              currencyCode={currencyCode}
-              setCurrencyCode={setCurrencyCode}
-            />
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <CategorySelect
+                  className="w-full"
+                  placeholder="Select a category"
+                  categoryId={field.value}
+                  setCategoryId={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </Label>
-      </div>
-
-      <Label className="flex flex-col gap-2">
-        Category
-        <CategorySelect categoryId={category} setCategoryId={setCategory} />
-      </Label>
-
-      <div className="flex flex-col gap-2">
-        <TextField
-          label="Description"
-          value={description}
-          setValue={setDescription}
         />
-      </div>
 
-      <div className="flex flex-col gap-2">
-        <TextField
-          label="Date & Time"
-          type="datetime-local"
-          inputClassName="appearance-none"
-          value={dateTime}
-          setValue={setDateTime}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <Button type="submit" disabled={disabled} isLoading={isLoading}>
-        Update
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name="spentAt"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Date & Time</FormLabel>
+              <FormControl>
+                <Input
+                  type="datetime-local"
+                  className="appearance-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          className="w-full"
+          type="submit"
+          disabled={disabled}
+          isLoading={isLoading}
+        >
+          Update
+        </Button>
+      </form>
+    </Form>
   );
 };

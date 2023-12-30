@@ -49,7 +49,7 @@ const ExpandedTransactionListItem = forwardRef<
   );
 
   return (
-    <MotionCard ref={ref} key={transaction.id} {...scaleOut}>
+    <MotionCard ref={ref} key={transaction.id} {...scaleOut} role="listitem">
       <Collapsible open={expanded}>
         <CardHeader className="flex w-full flex-row place-items-center gap-4">
           <CategoryAvatar category={transaction.category} />
@@ -61,7 +61,7 @@ const ExpandedTransactionListItem = forwardRef<
 
           <div className="grow"></div>
 
-          <CollapsibleTrigger>
+          <CollapsibleTrigger asChild>
             <ExpandMoreButton
               expand={expanded}
               onClick={() => {
@@ -134,7 +134,7 @@ export const GroupSheetTransactionsExpandedList = ({
   const groupedByDate = groupBySpentAt(transactions, ({ spentAt }) => spentAt);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" role="list">
       {transactions.length === 0 && (
         <Alert>
           <AlertTitle>No transactions</AlertTitle>

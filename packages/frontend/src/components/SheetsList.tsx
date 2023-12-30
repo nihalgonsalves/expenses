@@ -103,7 +103,7 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
             <CardHeader>
               <CardTitle className="flex place-items-center justify-between">
                 Archived Sheets
-                <CollapsibleTrigger>
+                <CollapsibleTrigger asChild>
                   <ExpandMoreButton
                     expand={showArchived}
                     onClick={() => {
