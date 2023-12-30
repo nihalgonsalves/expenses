@@ -115,15 +115,17 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <ScrollArea viewportClassName="max-h-96">
-            {getPersonalSheetTransactionsResponse?.transactions.map(
-              (transaction) => (
-                <TransactionListItemComponent
-                  key={transaction.id}
-                  transaction={transaction}
-                  description={formatDateTimeRelative(transaction.spentAt)}
-                />
-              ),
-            )}
+            <div className="flex flex-col gap-4">
+              {getPersonalSheetTransactionsResponse?.transactions.map(
+                (transaction) => (
+                  <TransactionListItemComponent
+                    key={transaction.id}
+                    transaction={transaction}
+                    description={formatDateTimeRelative(transaction.spentAt)}
+                  />
+                ),
+              )}
+            </div>
           </ScrollArea>
           <Button variant="outline" asChild>
             <Link to={`/sheets/${personalSheet.id}/transactions`}>

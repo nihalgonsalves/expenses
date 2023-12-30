@@ -6,8 +6,8 @@ export type SheetType = z.infer<typeof ZSheetType>;
 export const ZSheet = z.object({
   id: z.string().min(1),
   type: ZSheetType,
-  name: z.string(),
-  currencyCode: z.string(),
+  name: z.string().min(1),
+  currencyCode: z.string().length(3),
   isArchived: z.boolean(),
 });
 export type Sheet = z.infer<typeof ZSheet>;
@@ -30,9 +30,11 @@ export type GroupSheetWithParticipants = z.infer<
 >;
 
 export const ZCreateGroupSheetInput = z.object({
-  name: z.string(),
-  currencyCode: z.string(),
-  additionalParticipantEmailAddresses: z.array(z.string()),
+  name: z.string().min(1, { message: 'Name is required' }),
+  currencyCode: z.string().length(3, { message: 'Currency code is required' }),
+  additionalParticipantEmailAddresses: z.array(
+    z.object({ email: z.string().email({ message: 'Invalid email address' }) }),
+  ),
 });
 export type CreateGroupSheetInput = z.infer<typeof ZCreateGroupSheetInput>;
 
@@ -53,8 +55,8 @@ export const ZSheetsResponse = z.array(
 export type SheetsResponse = z.infer<typeof ZSheetsResponse>;
 
 export const ZCreatePersonalSheetInput = z.object({
-  name: z.string(),
-  currencyCode: z.string(),
+  name: z.string().min(1, { message: 'Name is required' }),
+  currencyCode: z.string().length(3, { message: 'Currency code is required' }),
 });
 export type CreatePersonalSheetInput = z.infer<
   typeof ZCreatePersonalSheetInput

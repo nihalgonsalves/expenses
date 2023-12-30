@@ -26,6 +26,10 @@ const SignInForm = () => {
 
   const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
     resolver: zodResolver(ZAuthorizeUserInput),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   });
 
   const resetCache = useResetCache();

@@ -13,6 +13,7 @@ import { NotificationSubscriptionService } from '../src/service/notification/ser
 import { SheetService } from '../src/service/sheet/service';
 import { TransactionService } from '../src/service/transaction/service';
 import { UserService } from '../src/service/user/service';
+import { t } from '../src/trpc';
 
 import { getPrisma } from './getPrisma';
 import { FakeNotificationDispatchService } from './webPushUtils';
@@ -55,7 +56,9 @@ export const getTRPCCaller = async () => {
       setJwtToken,
     };
 
-    return appRouter.createCaller(context);
+    const createCaller = t.createCallerFactory(appRouter);
+
+    return createCaller(context);
   };
 
   return {

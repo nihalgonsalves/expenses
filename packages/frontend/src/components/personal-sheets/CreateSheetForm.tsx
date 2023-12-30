@@ -1,13 +1,24 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import type { z } from 'zod';
+
+import { ZCreatePersonalSheetInput } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { CurrencySelect } from '../form/CurrencySelect';
-import { TextField } from '../form/TextField';
 import { Button } from '../ui/button';
-import { Label } from '../ui/label';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
 
 export const CreateSheetForm = ({
   defaultCurrencyCode,
@@ -21,60 +32,69 @@ export const CreateSheetForm = ({
   const { mutateAsync: createSheet, isLoading } =
     trpc.sheet.createPersonalSheet.useMutation();
 
-  const [name, setName] = useState('');
-  const [currencyCode, setCurrencyCode] = useState(defaultCurrencyCode);
+  const form = useForm<z.infer<typeof ZCreatePersonalSheetInput>>({
+    resolver: zodResolver(ZCreatePersonalSheetInput),
+    defaultValues: {
+      name: '',
+      currencyCode: defaultCurrencyCode,
+    },
+  });
 
-  const handleCreateSheet = async () => {
-    const { id } = await createSheet({
-      name,
-      currencyCode,
-    });
+  const onSubmit = async (
+    values: z.infer<typeof ZCreatePersonalSheetInput>,
+  ) => {
+    const { id } = await createSheet(values);
 
     navigate(`/sheets/${id}`, { replace: true });
 
     await utils.sheet.mySheets.invalidate();
   };
 
-  const valid = name !== '';
-  const disabled = !valid || !onLine;
+  const disabled = !onLine;
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (disabled) return;
-
-        void handleCreateSheet();
-      }}
-    >
-      <div className="flex flex-col gap-2">
-        <TextField
-          label="Sheet name"
-          autoFocus
-          placeholder="Personal Expenses"
-          required
-          value={name}
-          setValue={setName}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Sheet name</FormLabel>
+              <FormControl>
+                <Input placeholder="Personal Expenses" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <Label className="flex flex-col gap-2">
-        Sheet currency
-        <CurrencySelect
-          currencyCode={currencyCode}
-          setCurrencyCode={setCurrencyCode}
+        <FormField
+          control={form.control}
+          name="currencyCode"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Sheet currency</FormLabel>
+              <FormControl>
+                <CurrencySelect
+                  currencyCode={field.value}
+                  setCurrencyCode={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </Label>
 
-      <Button
-        className="mt-4 w-full"
-        type="submit"
-        disabled={disabled}
-        isLoading={isLoading}
-      >
-        <PlusCircledIcon className="mr-2" /> Create Sheet
-      </Button>
-    </form>
+        <Button
+          className="mt-4 w-full"
+          type="submit"
+          disabled={disabled}
+          isLoading={isLoading}
+        >
+          <PlusCircledIcon className="mr-2" /> Create Sheet
+        </Button>
+      </form>
+    </Form>
   );
 };

@@ -2,6 +2,7 @@
   "name": "@nihalgonsalves/expenses-shared",
   "description": "",
   "version": "0.0.1",
+  "type": "module",
   "exports": {
     "./money": "./src/money.ts",
     "./types/transaction": "./src/types/transaction.ts",

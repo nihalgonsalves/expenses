@@ -13,6 +13,7 @@ export const EditPersonalSheetTransactionPage = () => {
   return (
     <RootLoader
       title="Edit Transaction"
+      className="m-auto max-w-[1200px]"
       showBackButton
       render={({ transaction, sheet }) => (
         <EditPersonalTransactionForm

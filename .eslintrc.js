@@ -30,7 +30,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.test.ts', './packages/*/test/**/*'],
+      files: ['*.test.ts', './packages/*/test/**/*', './packages/e2e/**/*'],
       rules: {
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',

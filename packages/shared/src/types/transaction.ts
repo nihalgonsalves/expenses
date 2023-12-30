@@ -11,9 +11,9 @@ export const ZMoney = z.object({
 const ZCreateSheetTransactionInput = z.object({
   type: z.enum(['EXPENSE', 'INCOME']),
   money: ZMoney,
-  spentAt: z.string().min(1),
+  spentAt: z.string().min(1, { message: 'Spent at is required' }),
   description: z.string(),
-  category: z.string().min(1),
+  category: z.string().min(1, { message: 'Category is required' }),
 });
 
 export type CreateSheetTransactionInput = z.infer<
@@ -42,7 +42,7 @@ export const ZRecurrenceFrequency = z.enum(['WEEKLY', 'MONTHLY']);
 
 export type RecurrenceFrequency = z.infer<typeof ZRecurrenceFrequency>;
 
-const ZRecurrenceRule = z.object({
+export const ZRecurrenceRule = z.object({
   freq: ZRecurrenceFrequency,
 });
 

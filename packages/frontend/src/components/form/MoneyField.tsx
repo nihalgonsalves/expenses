@@ -6,8 +6,7 @@ import {
 } from '@nihalgonsalves/expenses-shared/money';
 
 import { formatCurrency, toDinero } from '../../utils/money';
-
-import { TextField, type TextFieldProps } from './TextField';
+import { Input, type InputProps } from '../ui/input';
 
 /**
  * this is not Number.MAX_SAFE_INTEGER since we'd have to use a BIGINT in postgres
@@ -24,8 +23,8 @@ export const MoneyField = ({
   currencyCode,
   ...textFieldProps
 }: Omit<
-  TextFieldProps,
-  'inputMode' | 'inputRef' | 'onKeyDown' | 'setValue' | 'value'
+  InputProps,
+  'inputMode' | 'ref' | 'onKeyDown' | 'setValue' | 'value'
 > & {
   amount: number;
   currencyCode: string;
@@ -98,14 +97,11 @@ export const MoneyField = ({
   const moneySnapshot: Money = dineroToMoney(toDinero(amount, currencyCode));
 
   return (
-    <TextField
+    <Input
       {...textFieldProps}
-      inputRef={inputRef}
+      ref={inputRef}
       inputMode="numeric"
       value={formatCurrency(moneySnapshot)}
-      setValue={() => {
-        // noop
-      }}
       onKeyDown={handleAmountKeyDown}
     />
   );

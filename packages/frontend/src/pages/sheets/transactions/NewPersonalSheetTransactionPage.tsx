@@ -13,7 +13,11 @@ export const NewPersonalSheetTransactionPage = () => {
   }
 
   return (
-    <Root title="Add Transaction" showBackButton>
+    <Root
+      title="Add Transaction"
+      className="m-auto max-w-[1200px]"
+      showBackButton
+    >
       <CreatePersonalTransactionForm personalSheet={personalSheet} />
     </Root>
   );

@@ -39,6 +39,7 @@ type RootProps = {
   rightNavBarItems?: React.ReactNode;
   showBackButton?: boolean;
   additionalChildren?: React.ReactNode;
+  className?: string;
 };
 
 const navItems = [
@@ -71,6 +72,7 @@ export const Root = ({
   rightNavBarItems,
   showBackButton,
   additionalChildren,
+  className,
 }: RootProps) => {
   const navigate = useNavigate();
 
@@ -159,7 +161,7 @@ export const Root = ({
         </header>
 
         <ScrollArea
-          viewportClassName="p-3 md:p-5"
+          viewportClassName={cn('p-3 md:p-5', className)}
           rootClassName="flex grow flex-col"
         >
           <main>{children}</main>

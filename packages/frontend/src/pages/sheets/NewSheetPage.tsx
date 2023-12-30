@@ -14,9 +14,9 @@ export const NewSheetPage = () => {
   const [defaultCurrencyCode] = usePreferredCurrencyCode();
 
   return (
-    <Root title="Create Sheet" showBackButton>
+    <Root title="Create Sheet" className="m-auto max-w-[1200px]" showBackButton>
       <ToggleButtonGroup
-        className="mb-4 [&>button]:grow"
+        className="mb-4 grid grid-cols-2"
         options={[
           {
             label: (
