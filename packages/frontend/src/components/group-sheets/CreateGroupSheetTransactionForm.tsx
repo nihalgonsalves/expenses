@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
 import {
   CheckIcon,
@@ -14,6 +15,7 @@ import {
   useState,
   useMemo,
 } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -24,7 +26,10 @@ import {
   zeroMoney,
 } from '@nihalgonsalves/expenses-shared/money';
 import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { TransactionType } from '@nihalgonsalves/expenses-shared/types/transaction';
+import {
+  ZCreateGroupSheetTransactionInput,
+  type TransactionType,
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
@@ -50,6 +55,16 @@ import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Button } from '../ui/button';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 import { Switch } from '../ui/switch';
@@ -440,6 +455,16 @@ const ParticipantSelect = ({
   );
 };
 
+const formSchema = ZCreateGroupSheetTransactionInput.omit({
+  money: true,
+  groupSheetId: true,
+  splits: true,
+}).extend({
+  currencyCode: z.string().min(1),
+  amount: z.number().positive({ message: 'Amount is required' }),
+  splitType: z.nativeEnum(GroupTransactionSplitType),
+});
+
 const TransactionForm = ({
   groupSheet,
   me,
@@ -453,21 +478,30 @@ const TransactionForm = ({
   const { mutateAsync: createGroupSheetTransaction, isLoading } =
     trpc.transaction.createGroupSheetTransaction.useMutation();
 
-  const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
+  const onLine = useNavigatorOnLine();
 
-  const [paidOrReceivedById, setPaidOrReceivedById] = useState(me.id);
-  const [currencyCode, setCurrencyCode] = useState(groupSheet.currencyCode);
-  const [amount, setAmount] = useState(0);
-  const [category, setCategory] = useState<string>();
-  const [description, setDescription] = useState('');
-  const [spentAt, setSpentAt] = useState(nowForDateTimeInput());
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      type,
+      currencyCode: groupSheet.currencyCode,
+      category: OTHER_CATEGORY,
+      amount: 0,
+      description: '',
+      spentAt: nowForDateTimeInput(),
+      paidOrReceivedById: me.id,
+      splitType: GroupTransactionSplitType.Evenly,
+    },
+  });
+
+  const amount = form.watch('amount');
+  const currencyCode = form.watch('currencyCode');
+  const spentAt = form.watch('spentAt');
+  const splitType = form.watch('splitType');
 
   const [dineroValue, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
-  const [splitType, setSplitType] = useState<GroupTransactionSplitType>(
-    GroupTransactionSplitType.Evenly,
-  );
   const [ratios, setRatios] = useState(getDefaultRatios(groupSheet));
   const splits = calcSplits(groupSheet, currencyCode, dineroValue, ratios);
 
@@ -482,11 +516,10 @@ const TransactionForm = ({
     moneySnapshot,
   );
 
-  const valid =
-    moneySnapshot.amount > 0 && validateSplit(splitType, ratios, amount);
+  const valid = validateSplit(splitType, ratios, amount);
   const disabled = !valid || !onLine;
 
-  const handleCreateTransaction = async () => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (disabled) {
       return;
     }
@@ -494,10 +527,10 @@ const TransactionForm = ({
     const basePayload = {
       type,
       groupSheetId: groupSheet.id,
-      paidOrReceivedById,
-      description,
-      category: category ?? OTHER_CATEGORY,
-      spentAt: dateTimeLocalToZonedISOString(spentAt),
+      paidOrReceivedById: values.paidOrReceivedById,
+      description: values.description,
+      category: values.category,
+      spentAt: dateTimeLocalToZonedISOString(values.spentAt),
     };
 
     if (groupSheet.currencyCode === currencyCode) {
@@ -531,111 +564,172 @@ const TransactionForm = ({
   };
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex gap-4">
+          <div className="grow">
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>
+                    {type === 'EXPENSE'
+                      ? 'How much was spent?'
+                      : 'How much was received?'}
+                  </FormLabel>
+                  <FormControl>
+                    <MoneyField
+                      className="grow"
+                      autoFocus
+                      currencyCode={currencyCode}
+                      amount={field.value}
+                      setAmount={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    {convertedMoneySnapshot
+                      ? formatCurrency(convertedMoneySnapshot)
+                      : null}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-        if (!valid || !onLine) {
-          return;
-        }
-
-        void handleCreateTransaction();
-      }}
-    >
-      <div className="flex gap-4">
-        <div className="flex grow flex-col gap-2">
-          <Label>
-            {type === 'EXPENSE'
-              ? 'How much was spent?'
-              : 'How much was received?'}
-          </Label>
-          <MoneyField
-            autoFocus
-            currencyCode={currencyCode}
-            amount={amount}
-            setAmount={setAmount}
+          <FormField
+            control={form.control}
+            name="currencyCode"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Currency</FormLabel>
+                <FormControl>
+                  {supportedCurrencies.includes(groupSheet.currencyCode) && (
+                    <CurrencySelect
+                      options={supportedCurrencies}
+                      currencyCode={field.value}
+                      setCurrencyCode={field.onChange}
+                    />
+                  )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          <Label>
-            {convertedMoneySnapshot
-              ? formatCurrency(convertedMoneySnapshot)
-              : null}
-          </Label>
         </div>
 
-        <Label className="mt-0.5 flex flex-col justify-start gap-2">
-          Currency
-          {supportedCurrencies.includes(groupSheet.currencyCode) && (
-            <CurrencySelect
-              options={supportedCurrencies}
-              currencyCode={currencyCode}
-              setCurrencyCode={setCurrencyCode}
-            />
+        <FormField
+          control={form.control}
+          name="paidOrReceivedById"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>
+                {type === 'EXPENSE' ? 'Who paid?' : 'Who received money?'}
+              </FormLabel>
+              <FormControl>
+                <ParticipantSelect
+                  groupSheet={groupSheet}
+                  selectedId={field.value}
+                  setSelectedId={(newId) => {
+                    if (!newId) return;
+
+                    field.onChange(newId);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </Label>
-      </div>
-
-      <Label className="flex flex-col gap-2">
-        {type === 'EXPENSE' ? 'Who paid?' : 'Who received money?'}
-
-        <ParticipantSelect
-          groupSheet={groupSheet}
-          selectedId={paidOrReceivedById}
-          setSelectedId={(newId) => {
-            if (!newId) return;
-
-            setPaidOrReceivedById(newId);
-          }}
         />
-      </Label>
 
-      <Label className="flex flex-col gap-2">
-        Category
-        <CategorySelect categoryId={category} setCategoryId={setCategory} />
-      </Label>
-
-      <div className="flex flex-col gap-2">
-        <TextField
-          label="Description"
-          value={description}
-          setValue={setDescription}
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <CategorySelect
+                  className="w-full"
+                  placeholder="Select a category"
+                  categoryId={field.value}
+                  setCategoryId={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <div className="flex flex-col gap-2">
-        <TextField
-          label="When?"
-          type="datetime-local"
-          inputClassName="appearance-none"
-          value={spentAt}
-          setValue={setSpentAt}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <Separator />
+        <FormField
+          control={form.control}
+          name="spentAt"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>When?</FormLabel>
+              <FormControl>
+                <Input
+                  type="datetime-local"
+                  className="appearance-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <SplitsFormSection
-        groupSheet={groupSheet}
-        amount={amount}
-        currencyCode={currencyCode}
-        splits={splits}
-        splitType={splitType}
-        setSplitType={setSplitType}
-        ratios={ratios}
-        setRatios={setRatios}
-        rate={rate}
-      />
+        <Separator />
 
-      <Button
-        className="w-full"
-        isLoading={isLoading}
-        type="submit"
-        disabled={disabled}
-      >
-        <PlusIcon className="mr-2" /> Add{' '}
-        {type === 'EXPENSE' ? 'Expense' : 'Income'}
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name="splitType"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormControl>
+                <SplitsFormSection
+                  groupSheet={groupSheet}
+                  amount={amount}
+                  currencyCode={currencyCode}
+                  splits={splits}
+                  splitType={field.value}
+                  setSplitType={field.onChange}
+                  ratios={ratios}
+                  setRatios={setRatios}
+                  rate={rate}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          className="w-full"
+          isLoading={isLoading}
+          type="submit"
+          disabled={disabled}
+        >
+          <PlusIcon className="mr-2" /> Add{' '}
+          {type === 'EXPENSE' ? 'Expense' : 'Income'}
+        </Button>
+      </form>
+    </Form>
   );
 };
 
