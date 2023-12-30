@@ -99,19 +99,19 @@ export const EditPersonalTransactionForm = ({
     >
       <div className="flex items-start gap-4">
         <div className="flex grow flex-col gap-2">
+          <Label>Amount</Label>
           <MoneyField
             className="grow"
             autoFocus
-            label="Amount"
-            bottomLabel={
-              convertedMoneySnapshot
-                ? formatCurrency(convertedMoneySnapshot)
-                : null
-            }
             currencyCode={currencyCode}
             amount={amount}
             setAmount={setAmount}
           />
+          <Label>
+            {convertedMoneySnapshot
+              ? formatCurrency(convertedMoneySnapshot)
+              : null}
+          </Label>
         </div>
 
         <Label className="mt-0.5 flex flex-col gap-2">

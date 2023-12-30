@@ -21,6 +21,7 @@
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
+    "@radix-ui/react-accessible-icon": "^1.0.3",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-collapsible": "^1.0.3",

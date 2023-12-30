@@ -1,15 +1,25 @@
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
 import { PersonIcon, PlusIcon, TrashIcon } from '@radix-ui/react-icons';
-import { produce } from 'immer';
-import { useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import type { z } from 'zod';
+
+import { ZCreateGroupSheetInput } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { prevalidateEmail } from '../../utils/utils';
 import { CurrencySelect } from '../form/CurrencySelect';
-import { TextField } from '../form/TextField';
 import { Button } from '../ui/button';
-import { Label } from '../ui/label';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
 import { Separator } from '../ui/separator';
 
 export const CreateGroupForm = ({
@@ -24,115 +34,121 @@ export const CreateGroupForm = ({
   const { mutateAsync: createGroupSheet, isLoading } =
     trpc.sheet.createGroupSheet.useMutation();
 
-  const [groupSheetName, setGroupSheetName] = useState('');
-  const [currencyCode, setCurrencyCode] = useState(defaultCurrencyCode);
+  const form = useForm<z.infer<typeof ZCreateGroupSheetInput>>({
+    resolver: zodResolver(ZCreateGroupSheetInput),
+    defaultValues: {
+      name: '',
+      currencyCode: defaultCurrencyCode,
+      additionalParticipantEmailAddresses: [],
+    },
+  });
 
-  const [participantEmails, setParticipantEmails] = useState<string[]>([]);
+  const { fields, append, remove } = useFieldArray({
+    name: 'additionalParticipantEmailAddresses',
+    control: form.control,
+  });
 
   const handleAddParticipant = () => {
-    setParticipantEmails((prev) => [...prev, '']);
-  };
-
-  const handleChangeParticipant = (index: number, value: string) => {
-    setParticipantEmails(
-      produce((draft) => {
-        draft[index] = value;
-      }),
-    );
+    append({ email: '' });
   };
 
   const handleDeleteParticipant = (index: number) => {
-    setParticipantEmails(
-      produce((draft) => {
-        draft.splice(index, 1);
-      }),
-    );
+    remove(index);
   };
 
-  const handleCreateGroupSheet = async () => {
-    const { id } = await createGroupSheet({
-      name: groupSheetName,
-      currencyCode,
-      additionalParticipantEmailAddresses: participantEmails,
-    });
+  const onSubmit = async (values: z.infer<typeof ZCreateGroupSheetInput>) => {
+    const { id } = await createGroupSheet(values);
 
     navigate(`/groups/${id}`, { replace: true });
 
     await utils.sheet.mySheets.invalidate();
   };
 
-  const valid =
-    groupSheetName !== '' &&
-    participantEmails.every((e) => prevalidateEmail(e));
-
-  const disabled = !valid || !onLine;
+  const disabled = !onLine;
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-
-        if (disabled) return;
-
-        void handleCreateGroupSheet();
-      }}
-    >
-      <div className="flex flex-col gap-2">
-        <TextField
-          label="Group name"
-          placeholder="WG Expenses"
-          autoFocus
-          value={groupSheetName}
-          setValue={setGroupSheetName}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Group sheet name</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g.: Flat Expenses" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <Label className="flex flex-col gap-2">
-        Group currency
-        <CurrencySelect
-          currencyCode={currencyCode}
-          setCurrencyCode={setCurrencyCode}
+        <FormField
+          control={form.control}
+          name="currencyCode"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Group sheet currency</FormLabel>
+              <FormControl>
+                <CurrencySelect
+                  currencyCode={field.value}
+                  setCurrencyCode={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </Label>
 
-      {participantEmails.map((participant, i) => (
-        // this is a list of inputs without an ID that won't be re-ordered
-        // eslint-disable-next-line react/no-array-index-key
-        <div key={i} className="flex items-end gap-2">
-          <div className="grow">
-            <TextField
-              label={`Participant ${i + 1}'s email`}
-              type="email"
-              autoComplete="email"
-              value={participant}
-              setValue={(val) => {
-                handleChangeParticipant(i, val);
-              }}
-            />
-          </div>
-          <Button
-            variant="outline"
-            aria-label="Delete"
-            onClick={() => {
-              handleDeleteParticipant(i);
-            }}
-          >
-            <TrashIcon />
-          </Button>
-        </div>
-      ))}
+        {fields.map(({ id }, i) => (
+          <FormField
+            key={id}
+            control={form.control}
+            name={`additionalParticipantEmailAddresses.${i}.email`}
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>{`Participant ${i + 1}'s email`}</FormLabel>
+                <FormControl>
+                  <div className="flex flex-row gap-2">
+                    <Input type="email" autoComplete="email" {...field} />
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        handleDeleteParticipant(i);
+                      }}
+                    >
+                      <AccessibleIcon label="Delete Participant">
+                        <TrashIcon />
+                      </AccessibleIcon>
+                    </Button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
 
-      <Button className="mt-4" variant="outline" onClick={handleAddParticipant}>
-        <PersonIcon className="mr-2" />
-        Add Participant
-      </Button>
+        <Button
+          className="mt-4 w-full"
+          variant="outline"
+          onClick={handleAddParticipant}
+        >
+          <PersonIcon className="mr-2" />
+          Add Participant
+        </Button>
 
-      <Separator className="my-2" />
+        <Separator className="my-2" />
 
-      <Button type="submit" disabled={disabled} isLoading={isLoading}>
-        <PlusIcon className="mr-2" /> Create Group
-      </Button>
-    </form>
+        <Button
+          className="w-full"
+          type="submit"
+          disabled={disabled}
+          isLoading={isLoading}
+        >
+          <PlusIcon className="mr-2" /> Create Group
+        </Button>
+      </form>
+    </Form>
   );
 };

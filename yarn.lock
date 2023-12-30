@@ -2486,7 +2486,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nihalgonsalves/expenses-e2e@workspace:packages/e2e"
   dependencies:
+    "@nihalgonsalves/expenses-backend": "npm:*"
+    "@nihalgonsalves/expenses-shared": "npm:*"
     "@playwright/test": "npm:^1.40.1"
+    "@trpc/client": "npm:^10.45.0"
+    nanoid: "npm:^5.0.4"
   languageName: unknown
   linkType: soft
 
@@ -2500,6 +2504,7 @@ __metadata:
     "@js-temporal/polyfill": "npm:^0.4.4"
     "@nihalgonsalves/expenses-backend": "npm:*"
     "@nihalgonsalves/expenses-shared": "npm:*"
+    "@radix-ui/react-accessible-icon": "npm:^1.0.3"
     "@radix-ui/react-alert-dialog": "npm:^1.0.5"
     "@radix-ui/react-avatar": "npm:^1.0.4"
     "@radix-ui/react-collapsible": "npm:^1.0.3"
@@ -2780,6 +2785,26 @@ __metadata:
   dependencies:
     "@babel/runtime": "npm:^7.13.10"
   checksum: 912216455537db3ca77f3e7f70174fb2b454fbd4a37a0acb7cfadad9ab6131abdfb787472242574460a3c301edf45738340cc84f6717982710082840fde7d916
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-accessible-icon@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@radix-ui/react-accessible-icon@npm:1.0.3"
+  dependencies:
+    "@babel/runtime": "npm:^7.13.10"
+    "@radix-ui/react-visually-hidden": "npm:1.0.3"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: e4350c7b3f670f1bc928462cb7492ddd00e393c03ca0fd5e42e7de1fc9c1563ecd61dff27ff6caef86e54c1b0898efb210d36badb32e5f5a31a7a0963f03abde
   languageName: node
   linkType: hard
 

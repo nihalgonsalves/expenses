@@ -100,7 +100,7 @@ export class SheetService {
                 role: SheetParticipantRole.ADMIN,
                 participant: { connect: { id: owner.id } },
               },
-              ...input.additionalParticipantEmailAddresses.map((email) => ({
+              ...input.additionalParticipantEmailAddresses.map(({ email }) => ({
                 role: SheetParticipantRole.MEMBER,
                 participant: {
                   connectOrCreate: participantConnectOrCreate(email),

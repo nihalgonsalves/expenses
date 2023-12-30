@@ -2,12 +2,17 @@
   "name": "@nihalgonsalves/expenses-e2e",
   "description": "",
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "test": "playwright test",
     "prepare": "playwright install",
     "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.1"
+    "@nihalgonsalves/expenses-backend": "*",
+    "@nihalgonsalves/expenses-shared": "*",
+    "@playwright/test": "^1.40.1",
+    "@trpc/client": "^10.45.0",
+    "nanoid": "^5.0.4"
   }
 }

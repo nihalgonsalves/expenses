@@ -389,13 +389,11 @@ const SplitsFormSection = ({
               {splitType === GroupTransactionSplitType.Amounts && (
                 <div>
                   <MoneyField
-                    inputClassName="w-full"
                     currencyCode={currencyCode}
                     amount={ratios[participantId] ?? 0}
                     setAmount={(val) => {
                       handleChangeRatio(participantId, val);
                     }}
-                    label={null}
                     aria-label={`Amount for ${participantName}`}
                   />
                 </div>
@@ -547,22 +545,22 @@ const TransactionForm = ({
     >
       <div className="flex gap-4">
         <div className="flex grow flex-col gap-2">
+          <Label>
+            {type === 'EXPENSE'
+              ? 'How much was spent?'
+              : 'How much was received?'}
+          </Label>
           <MoneyField
             autoFocus
-            label={
-              type === 'EXPENSE'
-                ? 'How much was spent?'
-                : 'How much was received?'
-            }
-            bottomLabel={
-              convertedMoneySnapshot
-                ? formatCurrency(convertedMoneySnapshot)
-                : null
-            }
             currencyCode={currencyCode}
             amount={amount}
             setAmount={setAmount}
           />
+          <Label>
+            {convertedMoneySnapshot
+              ? formatCurrency(convertedMoneySnapshot)
+              : null}
+          </Label>
         </div>
 
         <Label className="mt-0.5 flex flex-col justify-start gap-2">
@@ -723,9 +721,9 @@ const SettlementForm = ({
       </Label>
 
       <div className="flex flex-col gap-2">
+        <Label>How much was given?</Label>
         <MoneyField
           autoFocus
-          label="How much was given"
           currencyCode={groupSheet.currencyCode}
           amount={amount}
           setAmount={setAmount}
@@ -786,7 +784,7 @@ export const CreateGroupSheetTransactionForm = ({
   return (
     <div className="flex flex-col gap-4">
       <ToggleButtonGroup
-        className="w-full [&>button]:grow"
+        className="grid w-full grid-cols-3"
         value={type}
         setValue={setType}
         options={TYPE_OPTIONS}

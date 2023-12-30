@@ -43,7 +43,7 @@ describe('createGroupSheet', () => {
     const groupSheet = await caller.sheet.createGroupSheet({
       name: 'WG Expenses',
       currencyCode: 'EUR',
-      additionalParticipantEmailAddresses: [otherMember.email],
+      additionalParticipantEmailAddresses: [{ email: otherMember.email }],
     });
 
     expect(groupSheet).toEqual({
@@ -72,7 +72,7 @@ describe('createGroupSheet', () => {
     await caller.sheet.createGroupSheet({
       name: 'WG Expenses',
       currencyCode: 'EUR',
-      additionalParticipantEmailAddresses: [otherEmail],
+      additionalParticipantEmailAddresses: [{ email: otherEmail }],
     });
 
     expect(

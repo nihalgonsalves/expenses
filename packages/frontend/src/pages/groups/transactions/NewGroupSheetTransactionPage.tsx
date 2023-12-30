@@ -15,7 +15,11 @@ export const NewGroupSheetTransactionPage = () => {
   }
 
   return (
-    <Root title="Add Transaction" showBackButton>
+    <Root
+      title="Add Transaction"
+      className="m-auto max-w-[1200px]"
+      showBackButton
+    >
       <CreateGroupSheetTransactionForm groupSheet={groupSheet} me={me} />
     </Root>
   );

@@ -1,13 +1,16 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
 import { ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
 import {
   ZRecurrenceFrequency,
-  type TransactionType,
+  ZCreatePersonalSheetTransactionScheduleInput,
+  ZCreatePersonalSheetTransactionInput,
+  ZRecurrenceRule,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useCurrencyConversion } from '../../api/currencyConversion';
@@ -22,10 +25,18 @@ import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
 import { Select, type SelectOption } from '../form/Select';
-import { TextField } from '../form/TextField';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Button } from '../ui/button';
-import { Label } from '../ui/label';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { Input } from '../ui/input';
 import { Separator } from '../ui/separator';
 
 const TYPE_OPTIONS = [
@@ -49,11 +60,9 @@ const TYPE_OPTIONS = [
   },
 ] as const;
 
-const ZRecurrence = z.union([z.literal('NO_RRULE'), ZRecurrenceFrequency]);
-
 const RECURRENCE_OPTIONS = [
   {
-    value: 'NO_RRULE',
+    value: undefined,
     label: 'No',
   },
   {
@@ -64,7 +73,24 @@ const RECURRENCE_OPTIONS = [
     value: 'WEEKLY',
     label: 'Every week',
   },
-] satisfies SelectOption<typeof ZRecurrence>[];
+] satisfies SelectOption<typeof ZRecurrenceFrequency>[];
+
+const formSchema = ZCreatePersonalSheetTransactionInput.merge(
+  ZCreatePersonalSheetTransactionScheduleInput,
+)
+  .omit({
+    money: true,
+    personalSheetId: true,
+    // replace these differing parameters with `dateTime`
+    spentAt: true,
+    firstOccurrenceAt: true,
+  })
+  .extend({
+    recurrenceRule: ZRecurrenceRule.partial().optional(),
+    currencyCode: z.string().min(1),
+    amount: z.number().positive({ message: 'Amount is required' }),
+    dateTime: z.string().min(1),
+  });
 
 export const CreatePersonalTransactionForm = ({
   personalSheet,
@@ -74,17 +100,22 @@ export const CreatePersonalTransactionForm = ({
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
-  const [type, setType] =
-    useState<Exclude<TransactionType, 'TRANSFER'>>('EXPENSE');
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      type: 'EXPENSE',
+      currencyCode: personalSheet.currencyCode,
+      category: OTHER_CATEGORY,
+      amount: 0,
+      description: '',
+      dateTime: nowForDateTimeInput(),
+    },
+  });
 
-  const [amount, setAmount] = useState(0);
-  const [currencyCode, setCurrencyCode] = useState(personalSheet.currencyCode);
-  const [category, setCategory] = useState<string>();
-  const [description, setDescription] = useState('');
-  const [dateTime, setDateTime] = useState(nowForDateTimeInput());
-
-  const [recurrence, setRecurrence] =
-    useState<(typeof RECURRENCE_OPTIONS)[number]['value']>('NO_RRULE');
+  const amount = form.watch('amount');
+  const currencyCode = form.watch('currencyCode');
+  const dateTime = form.watch('dateTime');
+  const recurrenceRule = form.watch('recurrenceRule');
 
   const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
@@ -109,34 +140,30 @@ export const CreatePersonalTransactionForm = ({
 
   const isLoading = noScheduleMutationIsLoading || scheduleMutationIsLoading;
 
-  const valid = amount > 0;
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const commonValues = {
+      type: values.type,
+      personalSheetId: personalSheet.id,
+      money: convertedMoneySnapshot ?? moneySnapshot,
+      category: values.category,
+      description: values.description,
+    };
 
-  const handleCreateTransaction = async () => {
-    const money = convertedMoneySnapshot ?? moneySnapshot;
-
-    if (recurrence == 'NO_RRULE') {
-      await createPersonalSheetTransaction({
-        type,
-        personalSheetId: personalSheet.id,
-        money,
-        category: category ?? OTHER_CATEGORY,
-        description,
-        spentAt: dateTimeLocalToZonedISOString(dateTime),
-      });
-      navigate(`/sheets/${personalSheet.id}/transactions`, { replace: true });
-    } else {
+    if (values.recurrenceRule?.freq) {
       await createPersonalSheetTransactionSchedule({
-        type,
-        personalSheetId: personalSheet.id,
-        money,
-        category: category ?? OTHER_CATEGORY,
-        description,
+        ...commonValues,
         firstOccurrenceAt: dateTimeLocalToZonedISOString(dateTime),
         recurrenceRule: {
-          freq: recurrence,
+          freq: values.recurrenceRule.freq,
         },
       });
       navigate(`/sheets/${personalSheet.id}`, { replace: true });
+    } else {
+      await createPersonalSheetTransaction({
+        ...commonValues,
+        spentAt: dateTimeLocalToZonedISOString(dateTime),
+      });
+      navigate(`/sheets/${personalSheet.id}/transactions`, { replace: true });
     }
 
     await Promise.all([
@@ -147,100 +174,162 @@ export const CreatePersonalTransactionForm = ({
     ]);
   };
 
-  const disabled = !valid || !onLine;
+  const disabled = !onLine;
 
   return (
-    <form
-      className="flex flex-col gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (disabled) return;
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormControl>
+                <ToggleButtonGroup
+                  className="grid grid-cols-2"
+                  options={TYPE_OPTIONS}
+                  value={field.value}
+                  setValue={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-        void handleCreateTransaction();
-      }}
-    >
-      <ToggleButtonGroup
-        className="[&>button]:grow"
-        options={TYPE_OPTIONS}
-        value={type}
-        setValue={setType}
-      />
+        <Separator className="my-2" />
 
-      <Separator className="my-2" />
+        <div className="flex gap-4">
+          <div className="grow">
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <MoneyField
+                      className="grow"
+                      autoFocus
+                      currencyCode={currencyCode}
+                      amount={field.value}
+                      setAmount={field.onChange}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    {convertedMoneySnapshot
+                      ? formatCurrency(convertedMoneySnapshot)
+                      : null}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-      <div className="flex gap-4">
-        <div className="grow">
-          <MoneyField
-            className="grow"
-            autoFocus
-            label="Amount"
-            bottomLabel={
-              convertedMoneySnapshot
-                ? formatCurrency(convertedMoneySnapshot)
-                : null
-            }
-            currencyCode={currencyCode}
-            amount={amount}
-            setAmount={setAmount}
+          <FormField
+            control={form.control}
+            name="currencyCode"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Currency</FormLabel>
+                <FormControl>
+                  {supportedCurrencies.includes(personalSheet.currencyCode) && (
+                    <CurrencySelect
+                      options={supportedCurrencies}
+                      currencyCode={field.value}
+                      setCurrencyCode={field.onChange}
+                    />
+                  )}
+                </FormControl>{' '}
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
 
-        <Label className="mt-0.5 flex flex-col justify-start gap-2">
-          Currency
-          {supportedCurrencies.includes(personalSheet.currencyCode) && (
-            <CurrencySelect
-              options={supportedCurrencies}
-              currencyCode={currencyCode}
-              setCurrencyCode={setCurrencyCode}
-            />
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <CategorySelect
+                  className="w-full"
+                  placeholder="Select a category"
+                  categoryId={field.value}
+                  setCategoryId={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-        </Label>
-      </div>
-
-      <Label className="flex flex-col gap-2">
-        Category
-        <CategorySelect categoryId={category} setCategoryId={setCategory} />
-      </Label>
-
-      <div className="flex flex-col gap-2">
-        <TextField
-          label="Description"
-          value={description}
-          setValue={setDescription}
         />
-      </div>
 
-      <div className="flex flex-col gap-2">
-        <TextField
-          label={
-            recurrence === 'NO_RRULE' ? 'Date & Time' : 'Starting Date & Time'
-          }
-          type="datetime-local"
-          inputClassName="appearance-none"
-          value={dateTime}
-          setValue={setDateTime}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
 
-      <Label className="flex flex-col gap-2">
-        Recurring?
-        <Select
-          placeholder="Recurring?"
-          options={RECURRENCE_OPTIONS}
-          value={recurrence}
-          setValue={setRecurrence}
-          schema={ZRecurrence}
+        <FormField
+          control={form.control}
+          name="dateTime"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                {recurrenceRule?.freq ? 'Starting Date & Time' : 'Date & Time'}
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="datetime-local"
+                  className="appearance-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </Label>
 
-      <Button
-        className="mt-4"
-        type="submit"
-        disabled={disabled}
-        isLoading={isLoading}
-      >
-        Create
-      </Button>
-    </form>
+        <FormField
+          control={form.control}
+          name="recurrenceRule.freq"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Recurring?</FormLabel>
+              <FormControl>
+                <Select
+                  placeholder="Recurring?"
+                  options={RECURRENCE_OPTIONS}
+                  value={field.value}
+                  setValue={field.onChange}
+                  schema={ZRecurrenceFrequency}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          className="w-full"
+          type="submit"
+          disabled={disabled}
+          isLoading={isLoading}
+        >
+          Create
+        </Button>
+      </form>
+    </Form>
   );
 };

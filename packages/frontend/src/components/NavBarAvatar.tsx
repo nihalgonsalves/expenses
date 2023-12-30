@@ -1,3 +1,4 @@
+import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
 import { AvatarIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 
@@ -50,7 +51,9 @@ export const LoggedInNavBarAvatar = ({
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <Button className={className} variant="ghost" size="icon">
-        <AvatarIcon className="size-5 text-primary-foreground" />
+        <AccessibleIcon label="Profile and Settings menu">
+          <AvatarIcon className="size-5 text-primary-foreground" />
+        </AccessibleIcon>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent>

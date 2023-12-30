@@ -1,13 +1,14 @@
+import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
 import { motion } from 'framer-motion';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { Button } from './ui/button';
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
+  Tooltip,
   TooltipTrigger,
+  TooltipContent,
 } from './ui/tooltip';
 
 const MotionButton = motion(Button);
@@ -39,28 +40,28 @@ export const FloatingActionButton = ({
   <div className="sticky bottom-0 w-full">
     <TooltipProvider delayDuration={100}>
       <Tooltip>
-        <TooltipTrigger className="absolute bottom-4 right-4">
+        <TooltipTrigger className="absolute bottom-4 right-4" asChild>
           {to ? (
             <MotionButton
               asChild
               variant="outline"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
-              className="size-12 rounded-full text-2xl"
-              aria-label={label}
+              className="absolute bottom-4 right-4 size-12 rounded-full text-2xl"
             >
-              <Link to={to}>{icon}</Link>
+              <Link to={to}>
+                <AccessibleIcon label={label}>{icon}</AccessibleIcon>
+              </Link>
             </MotionButton>
           ) : (
             <MotionButton
               variant="outline"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
-              className="size-12 rounded-full text-2xl"
-              aria-label={label}
+              className="absolute bottom-4 right-4 size-12 rounded-full text-2xl"
               onClick={onClick}
             >
-              {icon}
+              <AccessibleIcon label={label}>{icon}</AccessibleIcon>
             </MotionButton>
           )}
         </TooltipTrigger>

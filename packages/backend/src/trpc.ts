@@ -3,7 +3,7 @@ import { ZodError } from 'zod';
 
 import type { ContextFn } from './context';
 
-const t = initTRPC.context<ContextFn>().create({
+export const t = initTRPC.context<ContextFn>().create({
   errorFormatter({ shape, error }) {
     return {
       ...shape,
