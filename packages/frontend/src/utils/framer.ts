@@ -8,10 +8,10 @@ export const collapse = {
 } satisfies MotionProps;
 
 export const scaleOut = {
-  layout: true,
   initial: { scale: 0.8, opacity: 1 },
   animate: { scale: 1, opacity: 1 },
   exit: { scale: 0.8, opacity: 0 },
+  transition: { duration: 0.3 },
 } satisfies MotionProps;
 
 export const fadeInOut = {

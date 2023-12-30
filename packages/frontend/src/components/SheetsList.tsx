@@ -1,17 +1,18 @@
-import { AnimatePresence } from 'framer-motion';
-import { motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import type { SheetsResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
-
-import { collapse } from '../utils/framer';
 
 import { Avatar } from './Avatar';
 import { ExpandMoreButton } from './ExpandMoreButton';
 import { Alert, AlertTitle } from './ui/alert';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from './ui/collapsible';
 import { cn } from './ui/utils';
 
 const partitionSheets = (sheets: SheetsResponse) => {
@@ -56,8 +57,6 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
   );
 };
 
-const MotionCardContent = motion(CardContent);
-
 export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
   const { personal, group, archived } = useMemo(
     () => partitionSheets(sheets),
@@ -99,32 +98,29 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
       )}
 
       {archived.length > 0 && (
-        <Card
-          className={cn(
-            'flex grow flex-col gap-4',
-            showArchived ? '' : 'opacity-50',
-          )}
-        >
-          <CardHeader>
-            <CardTitle className="flex place-items-center justify-between">
-              Archived Sheets
-              <ExpandMoreButton
-                expand={showArchived}
-                onClick={() => {
-                  setShowArchived((prev) => !prev);
-                }}
-              />
-            </CardTitle>
-          </CardHeader>
-          <AnimatePresence initial={false}>
-            {showArchived && (
-              <MotionCardContent {...collapse}>
+        <Card className={cn(showArchived ? '' : 'opacity-50')}>
+          <Collapsible open={showArchived}>
+            <CardHeader>
+              <CardTitle className="flex place-items-center justify-between">
+                Archived Sheets
+                <CollapsibleTrigger>
+                  <ExpandMoreButton
+                    expand={showArchived}
+                    onClick={() => {
+                      setShowArchived((prev) => !prev);
+                    }}
+                  />
+                </CollapsibleTrigger>
+              </CardTitle>
+            </CardHeader>
+            <CollapsibleContent>
+              <CardContent>
                 {archived.map((sheet) => (
                   <SheetItem key={sheet.id} sheet={sheet} />
                 ))}
-              </MotionCardContent>
-            )}
-          </AnimatePresence>
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
         </Card>
       )}
     </div>

@@ -76,7 +76,7 @@ export const CreateGroupForm = ({
             <FormItem className="flex flex-col">
               <FormLabel>Group sheet name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g.: Flat Expenses" {...field} />
+                <Input autoFocus placeholder="e.g.: Flat Expenses" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -110,7 +110,12 @@ export const CreateGroupForm = ({
                 <FormLabel>{`Participant ${i + 1}'s email`}</FormLabel>
                 <FormControl>
                   <div className="flex flex-row gap-2">
-                    <Input type="email" autoComplete="email" {...field} />
+                    <Input
+                      type="email"
+                      autoFocus
+                      autoComplete="email"
+                      {...field}
+                    />
                     <Button
                       variant="outline"
                       onClick={() => {

@@ -18,7 +18,13 @@ export const ToggleButtonGroup = <T extends string>({
     variant="outline"
     className={className}
     value={value}
-    onValueChange={setValue}
+    onValueChange={(newVal) => {
+      // https://www.radix-ui.com/primitives/docs/components/toggle-group#ensuring-there-is-always-a-value
+      if (newVal) {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        setValue(newVal as T);
+      }
+    }}
   >
     {options.map((option) => (
       <ToggleGroupItem

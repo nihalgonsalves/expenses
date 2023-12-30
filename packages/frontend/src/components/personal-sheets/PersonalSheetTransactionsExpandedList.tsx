@@ -8,7 +8,7 @@ import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
-import { collapse, scaleOut } from '../../utils/framer';
+import { scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
 import {
   formatDateRelative,
@@ -22,10 +22,14 @@ import { TransactionActions } from '../TransactionActions';
 import { Alert, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader } from '../ui/card';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '../ui/collapsible';
 import { Separator } from '../ui/separator';
 
 const MotionCard = motion(Card);
-const MotionCardContent = motion(CardContent);
 
 const ExpandedTransactionListItem = forwardRef<
   HTMLDivElement,
@@ -48,27 +52,28 @@ const ExpandedTransactionListItem = forwardRef<
 
   return (
     <MotionCard ref={ref} key={transaction.id} {...scaleOut}>
-      <CardHeader>
-        <div className="flex w-full gap-4">
-          <CategoryAvatar category={transaction.category} />
-          <div>
-            {title}
-            <br />
-            {formatDateTimeRelative(transaction.spentAt)}
+      <Collapsible open={expanded}>
+        <CardHeader>
+          <div className="flex w-full gap-4">
+            <CategoryAvatar category={transaction.category} />
+            <div>
+              {title}
+              <br />
+              {formatDateTimeRelative(transaction.spentAt)}
+            </div>
+            <div className="grow"></div>
+            <CollapsibleTrigger>
+              <ExpandMoreButton
+                expand={expanded}
+                onClick={() => {
+                  setExpanded((prev) => !prev);
+                }}
+              />
+            </CollapsibleTrigger>
           </div>
-          <div className="grow"></div>
-          <ExpandMoreButton
-            expand={expanded}
-            onClick={() => {
-              setExpanded((prev) => !prev);
-            }}
-          />
-        </div>
-      </CardHeader>
-
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <MotionCardContent className="flex flex-col gap-4" {...collapse}>
+        </CardHeader>
+        <CollapsibleContent>
+          <CardContent className="flex flex-col gap-4">
             <Button variant="outline" asChild>
               <Link
                 to={`/sheets/${personalSheetId}/transactions/${transaction.id}`}
@@ -88,9 +93,9 @@ const ExpandedTransactionListItem = forwardRef<
                 );
               }}
             />
-          </MotionCardContent>
-        )}
-      </AnimatePresence>
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </MotionCard>
   );
 });

@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { Collapsible } from '@radix-ui/react-collapsible';
 import { motion, AnimatePresence } from 'framer-motion';
 import { forwardRef, useState } from 'react';
 
@@ -6,7 +7,7 @@ import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
 import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { trpc } from '../../api/trpc';
-import { collapse, scaleOut } from '../../utils/framer';
+import { scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
 import {
   getTransactionDescription,
@@ -21,12 +22,12 @@ import { TransactionActions } from '../TransactionActions';
 import { Alert, AlertTitle } from '../ui/alert';
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardHeader } from '../ui/card';
+import { CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 import { Separator } from '../ui/separator';
 
 import { ParticipantListItem } from './ParticipantListItem';
 
 const MotionCard = motion(Card);
-const MotionCardContent = motion(CardContent);
 
 const ExpandedTransactionListItem = forwardRef<
   HTMLDivElement,
@@ -49,27 +50,29 @@ const ExpandedTransactionListItem = forwardRef<
 
   return (
     <MotionCard ref={ref} key={transaction.id} {...scaleOut}>
-      <CardHeader className="flex w-full flex-row place-items-center gap-4">
-        <CategoryAvatar category={transaction.category} />
+      <Collapsible open={expanded}>
+        <CardHeader className="flex w-full flex-row place-items-center gap-4">
+          <CategoryAvatar category={transaction.category} />
 
-        <div>
-          {title}
-          <br />
-          {getGroupSheetTransactionSummaryText(transaction)}
-        </div>
+          <div className="flex flex-col">
+            <span>{title}</span>
+            <span>{getGroupSheetTransactionSummaryText(transaction)}</span>
+          </div>
 
-        <div className="grow"></div>
-        <ExpandMoreButton
-          expand={expanded}
-          onClick={() => {
-            setExpanded((prev) => !prev);
-          }}
-        />
-      </CardHeader>
+          <div className="grow"></div>
 
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <MotionCardContent className="flex flex-col gap-4" {...collapse}>
+          <CollapsibleTrigger>
+            <ExpandMoreButton
+              expand={expanded}
+              onClick={() => {
+                setExpanded((prev) => !prev);
+              }}
+            />
+          </CollapsibleTrigger>
+        </CardHeader>
+
+        <CollapsibleContent>
+          <CardContent className="flex flex-col gap-4">
             {transaction.type !== 'TRANSFER' && (
               <>
                 {transaction.participants.map(({ id, name, balance }) => (
@@ -113,9 +116,9 @@ const ExpandedTransactionListItem = forwardRef<
                 ]);
               }}
             />
-          </MotionCardContent>
-        )}
-      </AnimatePresence>
+          </CardContent>
+        </CollapsibleContent>
+      </Collapsible>
     </MotionCard>
   );
 });
