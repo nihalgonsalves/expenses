@@ -175,8 +175,8 @@ export const AllUserTransactionsList = ({
             </Popover>
 
             <CategorySelect
-              categoryId={category}
-              setCategoryId={setCategory}
+              value={category}
+              onChange={setCategory}
               placeholder="All categories"
               className="bg-card md:max-w-48"
               allowCreate={false}

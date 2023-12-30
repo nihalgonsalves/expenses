@@ -54,19 +54,18 @@ export const convertCurrency = (
 export const formatDecimalCurrency = (amount: number, currencyCode: string) =>
   formatCurrency(dineroToMoney(toDinero(amount, currencyCode)));
 
-export const useMoneyValues = (rawAmount: number, currencyCode: string) => {
-  const dineroValue = useMemo(
-    () => toDinero(rawAmount, currencyCode),
-    [rawAmount, currencyCode],
-  );
-
-  const moneySnapshot = useMemo(
-    () => dineroToMoney(dineroValue),
-    [dineroValue],
-  );
+export const toMoneyValues = (rawAmount: number, currencyCode: string) => {
+  const dineroValue = toDinero(rawAmount, currencyCode);
+  const moneySnapshot = dineroToMoney(dineroValue);
 
   return [dineroValue, moneySnapshot] as const;
 };
+
+export const useMoneyValues = (rawAmount: number, currencyCode: string) =>
+  useMemo(
+    () => toMoneyValues(rawAmount, currencyCode),
+    [rawAmount, currencyCode],
+  );
 
 export const moneyToString = ({ currencyCode, amount, scale }: Money) => {
   const unsigned = toUnits(

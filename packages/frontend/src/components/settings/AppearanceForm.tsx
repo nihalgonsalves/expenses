@@ -82,8 +82,8 @@ export const AppearanceForm = () => {
           Preferred Display Currency
           <CurrencySelect
             options={supportedCurrencies}
-            currencyCode={preferredCurrencyCode}
-            setCurrencyCode={setPreferredCurrencyCode}
+            value={preferredCurrencyCode}
+            onChange={setPreferredCurrencyCode}
           />
         </Label>
       </CardContent>

@@ -90,10 +90,7 @@ export const CreateGroupForm = ({
             <FormItem className="flex flex-col">
               <FormLabel>Group sheet currency</FormLabel>
               <FormControl>
-                <CurrencySelect
-                  currencyCode={field.value}
-                  setCurrencyCode={field.onChange}
-                />
+                <CurrencySelect value={field.value} onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

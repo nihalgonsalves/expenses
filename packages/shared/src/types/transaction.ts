@@ -11,9 +11,9 @@ export const ZMoney = z.object({
 const ZCreateSheetTransactionInput = z.object({
   type: z.enum(['EXPENSE', 'INCOME']),
   money: ZMoney,
-  spentAt: z.string().min(1, { message: 'Spent at is required' }),
+  spentAt: z.string().min(1, { message: 'Required' }),
   description: z.string(),
-  category: z.string().min(1, { message: 'Category is required' }),
+  category: z.string().min(1, { message: 'Required' }),
 });
 
 export type CreateSheetTransactionInput = z.infer<
@@ -88,8 +88,8 @@ export const ZCreateSheetTransactionResponse = z.object({
 
 export const ZCreateGroupSheetSettlementInput = z.object({
   groupSheetId: z.string().min(1),
-  fromId: z.string().min(1),
-  toId: z.string().min(1),
+  fromId: z.string().min(1, { message: 'Sender is required' }),
+  toId: z.string().min(1, { message: 'Recipient is required' }),
   money: ZMoney,
 });
 
