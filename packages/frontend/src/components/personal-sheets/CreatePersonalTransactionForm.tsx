@@ -241,7 +241,7 @@ export const CreatePersonalTransactionForm = ({
                       setCurrencyCode={field.onChange}
                     />
                   )}
-                </FormControl>{' '}
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

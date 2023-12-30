@@ -20,12 +20,14 @@ import { cn } from '../ui/utils';
 export const OTHER_CATEGORY = 'other' as const;
 
 export const CategorySelect = ({
+  id,
   categoryId,
   setCategoryId,
   className,
   placeholder = 'Select a category',
   allowCreate = true,
 }: {
+  id?: string;
   categoryId: string | undefined;
   setCategoryId: (newCategory: string | undefined) => void;
   className?: string;
@@ -43,6 +45,7 @@ export const CategorySelect = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          id={id}
           variant="outline"
           role="combobox"
           aria-expanded={open}
