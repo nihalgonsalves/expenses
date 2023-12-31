@@ -87,11 +87,7 @@ export const SettlementForm = ({
             <FormItem className="flex flex-col">
               <FormLabel>From</FormLabel>
               <FormControl>
-                <ParticipantSelect
-                  groupSheet={groupSheet}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
+                <ParticipantSelect groupSheet={groupSheet} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

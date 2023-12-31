@@ -81,6 +81,10 @@ export const AppearanceForm = () => {
         <Label className="flex flex-col gap-2">
           Preferred Display Currency
           <CurrencySelect
+            name="Currency"
+            onBlur={() => {
+              /* noop */
+            }}
             options={supportedCurrencies}
             value={preferredCurrencyCode}
             onChange={setPreferredCurrencyCode}

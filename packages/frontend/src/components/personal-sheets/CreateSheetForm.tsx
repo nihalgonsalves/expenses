@@ -76,7 +76,7 @@ export const CreateSheetForm = ({
             <FormItem className="flex flex-col">
               <FormLabel>Sheet currency</FormLabel>
               <FormControl>
-                <CurrencySelect value={field.value} onChange={field.onChange} />
+                <CurrencySelect {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

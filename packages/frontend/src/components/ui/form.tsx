@@ -1,6 +1,6 @@
 import { DevTool } from '@hookform/devtools';
 import { Slot } from '@radix-ui/react-slot';
-import { motion, AnimatePresence, type HTMLMotionProps } from 'framer-motion';
+import { motion, type HTMLMotionProps } from 'framer-motion';
 import * as React from 'react';
 import {
   Controller,
@@ -88,8 +88,7 @@ const FormItem = React.forwardRef<
   return (
     <FormItemContext.Provider value={{ id }}>
       <div ref={ref} className={cn('space-y-2', className)} {...props}>
-        {/* for animating descriptions in and out */}
-        <AnimatePresence>{children}</AnimatePresence>
+        {children}
       </div>
     </FormItemContext.Provider>
   );
@@ -143,6 +142,7 @@ const FormDescription = React.forwardRef<
   return (
     <motion.p
       ref={ref}
+      key={formDescriptionId}
       id={formDescriptionId}
       className={cn('text-[0.8rem] text-muted-foreground', className)}
       {...fadeInOut}

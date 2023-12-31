@@ -175,6 +175,10 @@ export const AllUserTransactionsList = ({
             </Popover>
 
             <CategorySelect
+              name="category"
+              onBlur={() => {
+                // noop
+              }}
               value={category}
               onChange={setCategory}
               placeholder="All categories"

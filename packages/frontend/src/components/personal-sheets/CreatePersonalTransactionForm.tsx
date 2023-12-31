@@ -242,11 +242,7 @@ export const CreatePersonalTransactionForm = ({
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
                   {supportedCurrencies.includes(personalSheet.currencyCode) && (
-                    <CurrencySelect
-                      options={supportedCurrencies}
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                    <CurrencySelect options={supportedCurrencies} {...field} />
                   )}
                 </FormControl>
                 <FormMessage />
@@ -265,8 +261,7 @@ export const CreatePersonalTransactionForm = ({
                 <CategorySelect
                   className="w-full"
                   placeholder="Select a category"
-                  value={field.value}
-                  onChange={field.onChange}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />

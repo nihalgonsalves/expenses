@@ -1,27 +1,28 @@
+import { forwardRef } from 'react';
+import type { ControllerRenderProps } from 'react-hook-form';
 import { z } from 'zod';
 
 import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
 
 import { Select } from '../form/Select';
 
-export const ParticipantSelect = ({
-  id,
-  groupSheet,
-  value,
-  onChange,
-  onBlur,
-}: {
+type ParticipantSelectProps = {
   id?: string;
   groupSheet: GroupSheetByIdResponse;
   value: string | undefined;
   onChange: (val: string) => void;
-  onBlur?: () => void;
-}) => {
+} & Omit<ControllerRenderProps, 'value' | 'onChange'>;
+
+export const ParticipantSelect = forwardRef<
+  HTMLButtonElement,
+  ParticipantSelectProps
+>(({ id, groupSheet, value, onChange, onBlur }, ref) => {
   const options = Object.values(groupSheet.participants);
 
   return (
     <Select
       id={id}
+      ref={ref}
       placeholder="Please Select..."
       value={value ?? ''}
       setValue={onChange}
@@ -36,4 +37,5 @@ export const ParticipantSelect = ({
       ]}
     />
   );
-};
+});
+ParticipantSelect.displayName = 'ParticipantSelect';
