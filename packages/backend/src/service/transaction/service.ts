@@ -15,7 +15,9 @@ import {
   zeroMoney,
   negateMoney,
   equalMoney,
+  addMoney,
 } from '@nihalgonsalves/expenses-shared/money';
+import { simplifyBalances } from '@nihalgonsalves/expenses-shared/simplifyBalances';
 import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
 import type {
   GroupSheetWithParticipants,
@@ -29,6 +31,7 @@ import type {
   GroupSheetParticipantItem,
   CreatePersonalSheetTransactionScheduleInput,
   UpdatePersonalSheetTransactionInput,
+  BalanceSimplificationResponse,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
@@ -651,7 +654,7 @@ export class TransactionService {
   async getParticipantSummaries(
     groupSheet: GroupSheetWithParticipants,
   ): Promise<TransactionSummaryResponse> {
-    const mapSummary = (
+    const mapTotalSummary = (
       summary: {
         userId: string;
         scale: number;
@@ -690,12 +693,10 @@ export class TransactionService {
       this.prismaClient.transactionEntry
         .groupBy({
           by: ['userId', 'scale'],
-          where: {
-            transaction: { sheetId: groupSheet.id },
-          },
+          where: { transaction: { sheetId: groupSheet.id } },
           _sum: { amount: true },
         })
-        .then(mapSummary),
+        .then(mapTotalSummary),
       // TODO: access via sheetService
       this.prismaClient.sheetMemberships.findMany({
         where: { sheetId: groupSheet.id },
@@ -704,10 +705,77 @@ export class TransactionService {
     ]);
 
     return participants.map(({ participant: { name, id } }) => ({
+      id,
       name,
-      participantId: id,
       balance: balanceMap[id] ?? zeroMoney(groupSheet.currencyCode),
     }));
+  }
+
+  async simplifyBalances(
+    groupSheet: Sheet,
+  ): Promise<BalanceSimplificationResponse> {
+    // TODO: this could probably use less back and forth between records and { id, ... } arrays
+    // Perhaps always work with records and convert it to an array in the frontend when needed
+
+    // TODO: access via sheetService
+    const participants = await this.prismaClient.sheetMemberships.findMany({
+      where: { sheetId: groupSheet.id },
+      include: { participant: true },
+    });
+
+    const participantById = Object.fromEntries(
+      participants.map(({ participant }) => [participant.id, participant]),
+    );
+
+    const transactions = await this.prismaClient.transactionEntry.findMany({
+      where: { transaction: { sheetId: groupSheet.id } },
+    });
+
+    const balances = Object.fromEntries(
+      participants.map(({ participant }) => [
+        participant.id,
+        zeroMoney(groupSheet.currencyCode),
+      ]),
+    );
+
+    transactions.forEach((entry) => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      balances[entry.userId] = addMoney(balances[entry.userId]!, {
+        currencyCode: groupSheet.currencyCode,
+        amount: entry.amount,
+        scale: entry.scale,
+      });
+    });
+
+    const transfers = simplifyBalances(groupSheet.currencyCode, balances);
+    const participantTransfers: Record<string, { to: string; money: Money }[]> =
+      {};
+
+    transfers.forEach(({ from, to, money }) => {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      participantTransfers[from] ??= [];
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      participantTransfers[from]!.push({ to, money });
+    });
+
+    return {
+      byParticipant: Object.entries(participantTransfers).map(([id, tfs]) => ({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        ...participantById[id]!,
+        otherParticipants: tfs.map(({ to, money }) => ({
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          ...participantById[to]!,
+          balance: money,
+        })),
+      })),
+      transfers: transfers.map(({ from, to, money }) => ({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        from: participantById[from]!,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        to: participantById[to]!,
+        money,
+      })),
+    };
   }
 
   async getParticipantBalance(groupSheet: Sheet, userId: string) {

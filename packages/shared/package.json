@@ -5,14 +5,22 @@
   "type": "module",
   "exports": {
     "./money": "./src/money.ts",
+    "./simplifyBalances": "./src/simplifyBalances.ts",
     "./types/transaction": "./src/types/transaction.ts",
     "./types/notification": "./src/types/notification.ts",
     "./types/sheet": "./src/types/sheet.ts",
     "./types/user": "./src/types/user.ts"
   },
+  "scripts": {
+    "test": "vitest"
+  },
   "dependencies": {
     "@dinero.js/currencies": "^2.0.0-alpha.14",
     "dinero.js": "^2.0.0-alpha.14",
+    "fastpriorityqueue": "^0.7.4",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "vitest": "~1.1.0"
   }
 }

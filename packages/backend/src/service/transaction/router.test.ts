@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill';
 import { TransactionType } from '@prisma/client';
+import type { DeepPartial } from '@trpc/server';
 import { describe, expect, it } from 'vitest';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -1518,15 +1519,15 @@ describe('getParticipantSummaries', () => {
       groupSheet.id,
     );
 
-    expect(summary).toMatchObject([
+    expect(summary).toMatchObject<DeepPartial<typeof summary>>([
       {
         balance: { amount: -62_00, scale: 2 },
-        participantId: user.id,
+        id: user.id,
         name: user.name,
       },
       {
         balance: { amount: 62_00, scale: 2 },
-        participantId: member.id,
+        id: member.id,
         name: member.name,
       },
     ]);

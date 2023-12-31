@@ -2755,6 +2755,8 @@ __metadata:
   dependencies:
     "@dinero.js/currencies": "npm:^2.0.0-alpha.14"
     dinero.js: "npm:^2.0.0-alpha.14"
+    fastpriorityqueue: "npm:^0.7.4"
+    vitest: "npm:~1.1.0"
     zod: "npm:^3.22.4"
   languageName: unknown
   linkType: soft
@@ -9492,6 +9494,13 @@ __metadata:
     semver: "npm:^7.5.4"
     toad-cache: "npm:^3.3.0"
   checksum: 3ae9e8cdfd6ee4ada4b198f33cd6e152ae751f93e31ce628222e17249544ff34057118c8903d43cb1134c8b1614b7ce19768d8c9f3fde5befa6e236376d97f01
+  languageName: node
+  linkType: hard
+
+"fastpriorityqueue@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "fastpriorityqueue@npm:0.7.4"
+  checksum: 90ea79ab319c9797d244f3c8da354928033e0ffcaf7bfb5728dcc8b7e650fe508bf8b5c15a46f85cf5cbe3eab5948dcfab43dd3aacf8adf1714044d6f5a5d21a
   languageName: node
   linkType: hard
 
