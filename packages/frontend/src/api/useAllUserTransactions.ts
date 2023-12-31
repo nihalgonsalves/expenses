@@ -1,8 +1,12 @@
 import { useMemo } from 'react';
+import type { UndefinedOnPartialDeep } from 'type-fest';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type {
+  GetAllUserTransactionsInput,
+  TransactionListItem,
+} from '@nihalgonsalves/expenses-shared/types/transaction';
 
 import { useConvertToPreferredCurrency } from './currencyConversion';
 import { trpc } from './trpc';
@@ -25,11 +29,9 @@ type AllConvertedUserTransactionsQueryResult = Pick<
 };
 
 export const useAllUserTransactions = (
-  from: Date | undefined,
-  to: Date | undefined,
-  category?: string,
+  input: UndefinedOnPartialDeep<Partial<GetAllUserTransactionsInput>>,
 ): AllConvertedUserTransactionsQueryResult => {
-  const enabled = from != null && to != null;
+  const enabled = input.fromTimestamp != null && input.toTimestamp != null;
 
   const {
     data = { expenses: [], earnings: [] },
@@ -38,9 +40,9 @@ export const useAllUserTransactions = (
     refetch,
   } = trpc.transaction.getAllUserTransactions.useQuery(
     {
-      fromTimestamp: from?.toISOString() ?? '',
-      toTimestamp: to?.toISOString() ?? '',
-      category,
+      ...input,
+      fromTimestamp: input.fromTimestamp ?? '',
+      toTimestamp: input.toTimestamp ?? '',
     },
     { enabled },
   );

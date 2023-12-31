@@ -20,11 +20,13 @@ import {
   formatDateTimeRelative,
   getTransactionDescription,
   groupBySpentAt,
+  noop,
   shortDateFormatter,
 } from '../utils/utils';
 
 import { CategoryAvatar } from './CategoryAvatar';
 import { CategorySelect } from './form/CategorySelect';
+import { SheetSelect } from './form/SheetSelect';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -105,12 +107,16 @@ export const AllUserTransactionsList = ({
   setDateRange,
   category,
   setCategory,
+  sheetId,
+  setSheetId,
 }: {
   data: AllConvertedUserTransactions;
   dateRange: DateRange | undefined;
   setDateRange: (dateRange: DateRange | undefined) => void;
   category: string | undefined;
   setCategory: (category: string | undefined) => void;
+  sheetId: string | undefined;
+  setSheetId: (sheetId: string | undefined) => void;
 }) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
@@ -143,9 +149,9 @@ export const AllUserTransactionsList = ({
 
   return (
     <>
-      <div className="flex flex-col gap-4 p-2 md:mb-2">
-        <Collapsible defaultOpen className="flex flex-col gap-2 md:flex-row">
-          <CollapsibleContent className="flex flex-col gap-2 md:flex-row">
+      <div className="flex flex-col gap-4 p-2 lg:mb-2">
+        <Collapsible defaultOpen className="flex flex-col gap-2 lg:flex-row">
+          <CollapsibleContent className="flex flex-col gap-2 lg:flex-row">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -174,23 +180,30 @@ export const AllUserTransactionsList = ({
               </PopoverContent>
             </Popover>
 
+            <SheetSelect
+              name="sheet"
+              className="w-full bg-card lg:w-48"
+              placeholder="All sheets"
+              onBlur={noop}
+              value={sheetId}
+              onChange={setSheetId}
+            />
+
             <CategorySelect
               name="category"
-              onBlur={() => {
-                // noop
-              }}
+              onBlur={noop}
               value={category}
               onChange={setCategory}
               placeholder="All categories"
-              className="bg-card md:max-w-48"
+              className="bg-card lg:max-w-48"
               allowCreate={false}
             />
           </CollapsibleContent>
 
-          <div className="hidden grow md:block">&nbsp;</div>
+          <div className="hidden grow lg:block">&nbsp;</div>
 
           <Tabs value={selectedView} className="flex gap-2">
-            <TabsList className="grid w-full grid-cols-2 md:w-auto">
+            <TabsList className="grid w-full grid-cols-2 lg:w-auto">
               <TabsTrigger
                 value="EXPENSES"
                 onClick={() => {

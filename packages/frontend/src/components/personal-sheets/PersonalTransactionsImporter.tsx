@@ -14,7 +14,7 @@ import type { CreateSheetTransactionInput } from '@nihalgonsalves/expenses-share
 
 import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';
-import { dateToISOString } from '../../utils/utils';
+import { dateToISOString, noop } from '../../utils/utils';
 import { Select, type SelectOption } from '../form/Select';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
@@ -475,35 +475,38 @@ export const PersonalTransactionsImporter = ({
             <Label className="flex flex-col gap-2">
               Amount
               <Select
+                name="amount-field"
+                onBlur={noop}
                 placeholder="Amount field"
                 options={fieldOptions}
                 value={amountField}
-                setValue={setAmountField}
+                onChange={setAmountField}
                 schema={z.string()}
-                small
               />
             </Label>
             <Label className="flex flex-col gap-2">
               Amount format
               <Select
+                name="amount-format"
+                onBlur={noop}
                 placeholder="Amount format"
                 options={amountFormatOptions}
                 value={amountFormat}
-                setValue={setAmountFormat}
+                onChange={setAmountFormat}
                 schema={ZAmountFormat}
-                small
               />
             </Label>
 
             <Label className="flex flex-col gap-2">
               Date field
               <Select
+                name="date-field"
+                onBlur={noop}
                 placeholder="Date field"
                 options={fieldOptions}
                 value={dateField}
-                setValue={setDateField}
+                onChange={setDateField}
                 schema={z.string()}
-                small
               />
             </Label>
 
@@ -534,12 +537,13 @@ export const PersonalTransactionsImporter = ({
             <Label className="flex flex-col gap-2">
               Category field
               <Select
+                name="category-field"
+                onBlur={noop}
                 placeholder="Category field"
                 options={fieldOptions}
                 value={categoryField}
-                setValue={setCategoryField}
+                onChange={setCategoryField}
                 schema={z.string()}
-                small
               />
             </Label>
 
@@ -548,12 +552,13 @@ export const PersonalTransactionsImporter = ({
             <Label className="flex flex-col gap-2">
               Description field
               <Select
+                name="description-field"
+                onBlur={noop}
                 placeholder="Description field"
                 options={fieldOptions}
                 value={descriptionField}
-                setValue={setDescriptionField}
+                onChange={setDescriptionField}
                 schema={z.string()}
-                small
               />
             </Label>
 

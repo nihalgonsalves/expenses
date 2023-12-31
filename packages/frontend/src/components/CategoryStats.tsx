@@ -38,7 +38,7 @@ const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
 };
 
 const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
-  <div className="flex place-items-center content-between justify-between rounded-lg bg-card p-6 shadow">
+  <div className="flex place-items-center content-between justify-between rounded-lg border bg-card p-6 shadow">
     <div>
       <div className="text-sm capitalize text-neutral-500 md:text-lg">
         {category}

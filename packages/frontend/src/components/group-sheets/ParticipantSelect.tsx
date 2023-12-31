@@ -11,23 +11,23 @@ type ParticipantSelectProps = {
   groupSheet: GroupSheetByIdResponse;
   value: string | undefined;
   onChange: (val: string) => void;
-} & Omit<ControllerRenderProps, 'value' | 'onChange'>;
+} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
 
 export const ParticipantSelect = forwardRef<
   HTMLButtonElement,
   ParticipantSelectProps
->(({ id, groupSheet, value, onChange, onBlur }, ref) => {
+>(({ id, groupSheet, value, onChange, ...controllerProps }, ref) => {
   const options = Object.values(groupSheet.participants);
 
   return (
     <Select
+      {...controllerProps}
       id={id}
       ref={ref}
       placeholder="Please Select..."
       value={value ?? ''}
-      setValue={onChange}
+      onChange={onChange}
       schema={z.string()}
-      onBlur={onBlur}
       options={[
         { label: 'Please Select...', value: undefined, disabled: true },
         ...options.map(({ id: optValue, name: label }) => ({

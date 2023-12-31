@@ -314,9 +314,8 @@ export const CreatePersonalTransactionForm = ({
                 <Select
                   placeholder="Recurring?"
                   options={RECURRENCE_OPTIONS}
-                  value={field.value}
-                  setValue={field.onChange}
                   schema={ZRecurrenceFrequency}
+                  {...field}
                 />
               </FormControl>
               <FormMessage />

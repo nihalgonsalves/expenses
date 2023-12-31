@@ -132,6 +132,16 @@ export const ZTransactionWithSheet = z.object({
   sheet: ZSheet,
 });
 
+export const ZGetAllUserTransactionsInput = z.object({
+  fromTimestamp: z.string().datetime(),
+  toTimestamp: z.string().datetime(),
+  category: z.string().optional(),
+  sheetId: z.string().optional(),
+});
+export type GetAllUserTransactionsInput = z.infer<
+  typeof ZGetAllUserTransactionsInput
+>;
+
 export const ZGetAllUserTransactionsResponse = z.object({
   expenses: z.array(ZTransactionWithSheet),
   earnings: z.array(ZTransactionWithSheet),

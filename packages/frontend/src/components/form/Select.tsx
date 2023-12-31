@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import type { ControllerRenderProps } from 'react-hook-form';
 import type { z } from 'zod';
 
 import {
@@ -22,12 +23,10 @@ type SelectProps<T extends z.Schema<string | undefined>> = {
   placeholder: string;
   options: SelectOption<T>[];
   value: z.infer<T> | undefined;
-  setValue: (newValue: z.infer<T>) => void;
+  onChange: (newValue: z.infer<T>) => void;
   schema: T;
-  small?: boolean;
   className?: string | undefined;
-  onBlur?: (() => void) | undefined;
-};
+} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
 
 const SelectInner = <T extends z.Schema<string | undefined>>(
   {
@@ -35,17 +34,18 @@ const SelectInner = <T extends z.Schema<string | undefined>>(
     placeholder,
     options,
     value,
-    setValue,
+    onChange: setValue,
     schema,
     className,
     onBlur,
+    ...controllerProps
   }: SelectProps<T>,
   ref: React.ForwardedRef<HTMLButtonElement>,
 ) => (
   <UISelect
     value={value ?? ''}
     onValueChange={(newValue) => {
-      onBlur?.();
+      onBlur();
       setValue(
         newValue !== '' && newValue !== UNSET
           ? schema.parse(newValue)
@@ -53,17 +53,17 @@ const SelectInner = <T extends z.Schema<string | undefined>>(
       );
     }}
   >
-    <SelectTrigger id={id} ref={ref} className={className}>
+    <SelectTrigger {...controllerProps} id={id} ref={ref} className={className}>
       <SelectValue placeholder={placeholder} />
     </SelectTrigger>
     <SelectContent>
-      {options.map(({ label: display, value: optValue, disabled }) => (
+      {options.map((opt) => (
         <SelectItem
-          key={optValue ?? UNSET}
-          value={optValue ?? UNSET}
-          disabled={disabled ?? false}
+          key={opt.value ?? UNSET}
+          value={opt.value ?? UNSET}
+          disabled={opt.disabled ?? false}
         >
-          {display}
+          {opt.label}
         </SelectItem>
       ))}
     </SelectContent>

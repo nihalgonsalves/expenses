@@ -8,6 +8,7 @@ import {
   ZTheme,
   useTheme,
 } from '../../state/theme';
+import { noop } from '../../utils/utils';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { Select } from '../form/Select';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
@@ -70,9 +71,11 @@ export const AppearanceForm = () => {
         <Label className="flex flex-col gap-2">
           Theme
           <Select
+            name="theme"
+            onBlur={noop}
             placeholder="Theme"
             value={theme}
-            setValue={setTheme}
+            onChange={setTheme}
             options={themeOptions}
             schema={ZTheme}
           />
@@ -82,9 +85,7 @@ export const AppearanceForm = () => {
           Preferred Display Currency
           <CurrencySelect
             name="Currency"
-            onBlur={() => {
-              /* noop */
-            }}
+            onBlur={noop}
             options={supportedCurrencies}
             value={preferredCurrencyCode}
             onChange={setPreferredCurrencyCode}

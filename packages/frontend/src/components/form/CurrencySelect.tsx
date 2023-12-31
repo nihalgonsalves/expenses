@@ -20,16 +20,22 @@ type CurrencySelectProps = {
   id?: string;
   value: string;
   onChange: (newCode: string) => void;
-  label?: string;
   options?: string[];
-} & Omit<ControllerRenderProps, 'value' | 'onChange'>;
+} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
 
 export const CurrencySelect = forwardRef<
   HTMLButtonElement,
   CurrencySelectProps
 >(
   (
-    { id, value, onChange, options = CURRENCY_CODES, onBlur, disabled, name },
+    {
+      id,
+      value,
+      onChange,
+      options = CURRENCY_CODES,
+      onBlur,
+      ...controllerProps
+    },
     ref,
   ) => {
     const [open, setOpen] = useState(false);
@@ -47,14 +53,13 @@ export const CurrencySelect = forwardRef<
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            {...controllerProps}
             id={id}
-            name={name}
             ref={ref}
             variant="outline"
             role="combobox"
             aria-expanded={open}
             className="min-w-24 justify-between bg-inherit md:min-w-48"
-            disabled={disabled}
           >
             {value
               ? optionObjects.find((opt) => opt.value === value)?.label

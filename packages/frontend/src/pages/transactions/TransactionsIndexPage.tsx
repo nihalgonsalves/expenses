@@ -13,13 +13,16 @@ export const TransactionsIndexPage = () => {
     to: endOfMonth(new Date()),
   });
 
+  const [sheetId, setSheetId] = useState<string | undefined>(undefined);
+
   const [category, setCategory] = useState<string | undefined>();
 
-  const result = useAllUserTransactions(
-    dateRange?.from,
-    dateRange?.to,
+  const result = useAllUserTransactions({
+    fromTimestamp: dateRange?.from?.toISOString(),
+    toTimestamp: dateRange?.to?.toISOString(),
+    sheetId,
     category,
-  );
+  });
 
   return (
     <RootLoader
@@ -33,6 +36,8 @@ export const TransactionsIndexPage = () => {
           setDateRange={setDateRange}
           category={category}
           setCategory={setCategory}
+          sheetId={sheetId}
+          setSheetId={setSheetId}
         />
       )}
     />

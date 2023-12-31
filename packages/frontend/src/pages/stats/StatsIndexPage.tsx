@@ -12,7 +12,10 @@ export const StatsIndexPage = () => {
     to: endOfMonth(new Date()),
   });
 
-  const result = useAllUserTransactions(dateRange?.from, dateRange?.to);
+  const result = useAllUserTransactions({
+    fromTimestamp: dateRange?.from?.toISOString(),
+    toTimestamp: dateRange?.to?.toISOString(),
+  });
 
   return (
     <RootLoader

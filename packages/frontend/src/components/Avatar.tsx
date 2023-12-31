@@ -13,13 +13,16 @@ export const Avatar = ({ name }: { name: string }) => (
   <TooltipProvider delayDuration={100}>
     <Tooltip>
       <TooltipTrigger asChild>
-        <UIAvatar className="border-2">
+        <UIAvatar className="border border-primary">
           <AvatarFallback className="cursor-pointer">
             {getInitials(name)}
           </AvatarFallback>
         </UIAvatar>
       </TooltipTrigger>
-      <TooltipContent side="left" className="bg-muted text-muted-foreground">
+      <TooltipContent
+        side="left"
+        className="bg-primary text-primary-foreground"
+      >
         <p>{name}</p>
       </TooltipContent>
     </Tooltip>

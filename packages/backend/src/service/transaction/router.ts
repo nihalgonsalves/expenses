@@ -20,6 +20,7 @@ import {
   ZRecurrenceFrequency,
   ZTransactionWithSheet,
   ZUpdatePersonalSheetTransactionInput,
+  ZGetAllUserTransactionsInput,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 import { ZCategoryEmoji } from '@nihalgonsalves/expenses-shared/types/user';
 
@@ -226,13 +227,7 @@ export const transactionRouter = router({
     }),
 
   getAllUserTransactions: protectedProcedure
-    .input(
-      z.object({
-        fromTimestamp: z.string().datetime(),
-        toTimestamp: z.string().datetime(),
-        category: z.string().optional(),
-      }),
-    )
+    .input(ZGetAllUserTransactionsInput)
     .output(ZGetAllUserTransactionsResponse)
     .query(async ({ ctx, input }) => {
       const { expenses, earnings } =
@@ -240,6 +235,7 @@ export const transactionRouter = router({
           from: Temporal.Instant.from(input.fromTimestamp),
           to: Temporal.Instant.from(input.toTimestamp),
           category: input.category,
+          sheetId: input.sheetId,
         });
 
       return {

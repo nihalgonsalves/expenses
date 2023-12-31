@@ -166,3 +166,7 @@ export const groupBySpentAt = <T>(
 
   return groupedByDate;
 };
+
+export const noop = () => {
+  // do nothing
+};

@@ -14,6 +14,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from '../ui/command';
 import { PopoverContent, PopoverTrigger } from '../ui/popover';
 import { cn } from '../ui/utils';
@@ -27,7 +28,7 @@ type CategorySelectProps = {
   className?: string;
   placeholder?: string;
   allowCreate?: boolean;
-} & Omit<ControllerRenderProps, 'value' | 'onChange'>;
+} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
 
 export const CategorySelect = forwardRef<
   HTMLButtonElement,
@@ -39,18 +40,15 @@ export const CategorySelect = forwardRef<
       value,
       onChange,
       onBlur,
-      name,
-      disabled,
       className,
       placeholder = 'Select a category',
       allowCreate = true,
+      ...controllerProps
     },
     ref,
   ) => {
     const [open, setOpen] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-
-    const normalizedSearchValue = searchValue.toLowerCase();
 
     const { data: categories } = trpc.transaction.getCategories.useQuery();
 
@@ -58,12 +56,11 @@ export const CategorySelect = forwardRef<
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            {...controllerProps}
             id={id}
-            name={name}
             ref={ref}
             variant="outline"
             role="combobox"
-            disabled={disabled}
             className={cn('min-w-48 justify-between', className)}
           >
             {value ?? placeholder}
@@ -81,19 +78,35 @@ export const CategorySelect = forwardRef<
               {/* Only displayed when allowCreate=false, as otherwise there's always a CommandItem */}
               <CommandEmpty>No category found</CommandEmpty>
               <CommandGroup>
-                {allowCreate &&
-                  normalizedSearchValue.length > 2 &&
-                  !categories?.some((c) => c.id === normalizedSearchValue) && (
+                {value && (
+                  <>
                     <CommandItem
-                      value={normalizedSearchValue}
+                      className="opacity-80"
+                      value="unset"
                       onSelect={() => {
-                        onChange(normalizedSearchValue);
+                        onChange(undefined);
+                        setOpen(false);
+                        onBlur();
+                      }}
+                    >
+                      Clear Selection
+                    </CommandItem>
+                    <CommandSeparator />
+                  </>
+                )}
+                {allowCreate &&
+                  searchValue.length > 2 &&
+                  !categories?.some((c) => c.id === searchValue) && (
+                    <CommandItem
+                      value={searchValue}
+                      onSelect={() => {
+                        onChange(searchValue);
                         setOpen(false);
                         onBlur();
                       }}
                     >
                       <PlusIcon className="mr-2 size-4" />
-                      Create {`'${normalizedSearchValue}'`}
+                      Create {`'${searchValue}'`}
                     </CommandItem>
                   )}
 

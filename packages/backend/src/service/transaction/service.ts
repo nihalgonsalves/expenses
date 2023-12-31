@@ -167,10 +167,12 @@ export class TransactionService {
       from,
       to,
       category,
+      sheetId,
     }: {
       from: Temporal.Instant;
       to: Temporal.Instant;
       category: string | undefined;
+      sheetId: string | undefined;
     },
   ) {
     const data = await this.prismaClient.transaction.findMany({
@@ -182,6 +184,7 @@ export class TransactionService {
           lte: to.toString(),
         },
         ...(category ? { category } : undefined),
+        ...(sheetId ? { sheetId } : undefined),
       },
       include: {
         sheet: true,
