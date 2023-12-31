@@ -10,7 +10,7 @@ import {
   TokensIcon,
 } from '@radix-ui/react-icons';
 import { type Dinero, allocate } from 'dinero.js';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   useFieldArray,
   useForm,
@@ -341,8 +341,16 @@ const SplitsFormSection = ({
 
   const splitValid = splitErrorMessage == null;
 
+  const [ratioFocused, setRatioFocused] = useState(false);
+
+  const handleRatioFocus = useCallback(() => {
+    setRatioFocused(true);
+  }, []);
+
   const handleRatioBlur = useCallback(
     (changedIndex: number) => {
+      setRatioFocused(false);
+
       if (splitConfig.isRedistributable) {
         let dirtyRatioSum = 0;
         const otherParticipants: { id: string }[] = [];
@@ -561,6 +569,7 @@ const SplitsFormSection = ({
                             onChange={(e) => {
                               field.onChange(getNewRatioValue(e.target.value));
                             }}
+                            onFocus={handleRatioFocus}
                             onBlur={() => {
                               handleRatioBlur(i);
                               field.onBlur();
@@ -589,6 +598,7 @@ const SplitsFormSection = ({
                             {...field}
                             mode="onBlur"
                             value={field.value}
+                            onFocus={handleRatioFocus}
                             onChange={(newAmount) => {
                               field.onChange(getNewRatioValue(newAmount));
                               handleRatioBlur(i);
@@ -617,7 +627,7 @@ const SplitsFormSection = ({
           );
         })}
       </div>
-      {splitErrorMessage && (
+      {splitErrorMessage && !ratioFocused && (
         <Alert variant="destructive">
           <AlertTitle>{splitErrorMessage}</AlertTitle>
         </Alert>
