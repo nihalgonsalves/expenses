@@ -41,6 +41,7 @@ export const SettlementForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: 'onTouched',
     defaultValues: {
       groupSheetId: groupSheet.id,
       fromId: me.id,

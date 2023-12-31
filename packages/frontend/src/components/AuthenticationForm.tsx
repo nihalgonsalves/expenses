@@ -26,6 +26,7 @@ const SignInForm = () => {
 
   const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
     resolver: zodResolver(ZAuthorizeUserInput),
+    mode: 'onTouched',
     defaultValues: {
       email: '',
       password: '',
@@ -95,6 +96,12 @@ const SignUpForm = () => {
 
   const form = useForm<z.infer<typeof ZCreateUserInput>>({
     resolver: zodResolver(ZCreateUserInput),
+    mode: 'onTouched',
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
   });
 
   const resetCache = useResetCache();

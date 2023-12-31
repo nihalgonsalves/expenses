@@ -36,6 +36,7 @@ export const CreateGroupForm = ({
 
   const form = useForm<z.infer<typeof ZCreateGroupSheetInput>>({
     resolver: zodResolver(ZCreateGroupSheetInput),
+    mode: 'onTouched',
     defaultValues: {
       name: '',
       currencyCode: defaultCurrencyCode,
@@ -132,6 +133,7 @@ export const CreateGroupForm = ({
         ))}
 
         <Button
+          type="button"
           className="mt-4 w-full"
           variant="outline"
           onClick={handleAddParticipant}

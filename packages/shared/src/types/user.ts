@@ -17,7 +17,7 @@ export const ZCreateUserInput = z.object({
   email: z.string().email({
     message: 'Invalid email',
   }),
-  password: z.string().min(1),
+  password: z.string().min(1, { message: 'Password is required' }),
 });
 export type CreateUserInput = z.infer<typeof ZCreateUserInput>;
 
@@ -29,8 +29,8 @@ export const ZUpdateUserInput = z
     email: z.string().email({
       message: 'Invalid email',
     }),
-    password: z.string().min(1).optional(),
-    newPassword: z.string().min(1).optional(),
+    password: z.string().optional(),
+    newPassword: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -46,15 +46,27 @@ export const ZUpdateUserInput = z
         return true;
       }
 
-      if (!data.password && data.newPassword) {
-        return true;
-      }
-
       return false;
     },
-    {
-      message: 'The new password cannot be the same',
-      path: ['newPassword'],
+    (data) => {
+      if (!data.password && data.newPassword) {
+        return {
+          message: 'The old password is required to set a new password',
+          path: ['password'],
+        };
+      }
+
+      if (data.password && !data.newPassword) {
+        return {
+          message: 'You must set both your old and new password, or neither',
+          path: ['password'],
+        };
+      }
+
+      return {
+        message: 'The new password cannot be the same',
+        path: ['newPassword'],
+      };
     },
   );
 export type UpdateUserInput = z.infer<typeof ZUpdateUserInput>;

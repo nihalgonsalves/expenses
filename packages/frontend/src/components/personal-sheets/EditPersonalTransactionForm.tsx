@@ -55,6 +55,7 @@ export const EditPersonalTransactionForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: 'onTouched',
     defaultValues: {
       currencyCode: personalSheet.currencyCode,
       category: transaction.category,

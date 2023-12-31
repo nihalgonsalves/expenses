@@ -53,6 +53,7 @@ export const NotificationPreferenceForm = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: 'onTouched',
   });
 
   useEffect(() => {

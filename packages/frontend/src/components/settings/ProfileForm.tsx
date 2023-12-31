@@ -29,6 +29,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
   const form = useForm<z.infer<typeof ZUpdateUserInput>>({
     resolver: zodResolver(ZUpdateUserInput),
+    mode: 'onTouched',
     defaultValues: {
       name: me.name,
       email: me.email,

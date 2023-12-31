@@ -29,6 +29,7 @@ export const PrivacyForm = () => {
 
   const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
     resolver: zodResolver(ZAuthorizeUserInput),
+    mode: 'onTouched',
   });
 
   const resetCache = useResetCache();

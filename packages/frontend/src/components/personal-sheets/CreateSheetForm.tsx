@@ -34,6 +34,7 @@ export const CreateSheetForm = ({
 
   const form = useForm<z.infer<typeof ZCreatePersonalSheetInput>>({
     resolver: zodResolver(ZCreatePersonalSheetInput),
+    mode: 'onTouched',
     defaultValues: {
       name: '',
       currencyCode: defaultCurrencyCode,

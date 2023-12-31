@@ -654,7 +654,7 @@ export const TransactionForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onBlur',
+    mode: 'onTouched',
     defaultValues: {
       type,
       currencyCode: groupSheet.currencyCode,
