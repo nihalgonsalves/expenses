@@ -1,4 +1,3 @@
-import { DevTool } from '@hookform/devtools';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
 import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
@@ -729,7 +728,6 @@ export const TransactionForm = ({
 
   return (
     <Form {...form}>
-      <DevTool control={form.control} />
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="flex gap-4">
           <div className="grow">

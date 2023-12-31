@@ -1,3 +1,4 @@
+import { DevTool } from '@hookform/devtools';
 import { Slot } from '@radix-ui/react-slot';
 import { motion, AnimatePresence, type HTMLMotionProps } from 'framer-motion';
 import * as React from 'react';
@@ -15,7 +16,12 @@ import { fadeInOut } from '../../utils/framer';
 import { Label } from './label';
 import { cn } from './utils';
 
-const Form = FormProvider;
+const Form: typeof FormProvider = ({ children, ...props }) => (
+  <>
+    {import.meta.env.DEV && <DevTool control={props.control} />}
+    <FormProvider {...props}>{children}</FormProvider>
+  </>
+);
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
