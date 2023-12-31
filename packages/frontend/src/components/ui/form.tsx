@@ -17,10 +17,25 @@ import { Label } from './label';
 import { cn } from './utils';
 
 const Form: typeof FormProvider = ({ children, ...props }) => (
-  <>
-    {import.meta.env.DEV && <DevTool control={props.control} />}
-    <FormProvider {...props}>{children}</FormProvider>
-  </>
+  <div className="relative">
+    {import.meta.env.DEV && (
+      <DevTool
+        control={props.control}
+        placement="bottom-left"
+        styles={{
+          button: {
+            opacity: 0.5,
+            position: 'absolute',
+            top: 0,
+            bottom: 'unset',
+            left: 'unset',
+            right: 0,
+          },
+        }}
+      />
+    )}
+    <FormProvider {...props}>{children}</FormProvider>{' '}
+  </div>
 );
 
 type FormFieldContextValue<
