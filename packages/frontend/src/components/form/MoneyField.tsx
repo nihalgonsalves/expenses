@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   dineroToMoney,
@@ -18,19 +18,43 @@ import { Input, type InputProps } from '../ui/input';
 const MAX_ALLOWED = 20_000_000_00;
 
 export const MoneyField = ({
-  amount,
-  setAmount,
+  value,
+  onChange: setAmount,
   currencyCode,
+  mode = 'onChange',
   ...textFieldProps
 }: Omit<
   InputProps,
-  'inputMode' | 'ref' | 'onKeyDown' | 'setValue' | 'value'
+  'inputMode' | 'ref' | 'onKeyDown' | 'onChange' | 'value'
 > & {
-  amount: number;
+  value: number;
   currencyCode: string;
-  setAmount: (newAmount: number) => void;
+  mode?: 'onChange' | 'onBlur';
+  onChange: (newAmount: number) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const [localAmount, setLocalAmount] = useState(value);
+
+  useEffect(() => {
+    setLocalAmount(value);
+  }, [value]);
+
+  const onChange = useCallback(
+    (newAmount: number) => {
+      setLocalAmount(newAmount);
+      if (mode === 'onChange') {
+        setAmount(newAmount);
+      }
+    },
+    [mode, setAmount],
+  );
+
+  const onBlur = useCallback(() => {
+    if (mode === 'onBlur') {
+      setAmount(localAmount);
+    }
+  }, [mode, localAmount, setAmount]);
 
   /**
    * This solves the problem of displaying a formatted currency value while
@@ -47,7 +71,7 @@ export const MoneyField = ({
           return;
         }
 
-        const amountAsString = amount.toFixed(0);
+        const amountAsString = localAmount.toFixed(0);
 
         const newValue: string = (() => {
           const {
@@ -88,13 +112,15 @@ export const MoneyField = ({
         const newValueInt = parseInt(newValue, 10);
 
         if (newValueInt <= MAX_ALLOWED) {
-          setAmount(newValueInt);
+          onChange(newValueInt);
         }
       },
-      [amount, setAmount],
+      [localAmount, onChange],
     );
 
-  const moneySnapshot: Money = dineroToMoney(toDinero(amount, currencyCode));
+  const moneySnapshot: Money = dineroToMoney(
+    toDinero(localAmount, currencyCode),
+  );
 
   return (
     <Input
@@ -102,6 +128,16 @@ export const MoneyField = ({
       ref={inputRef}
       inputMode="numeric"
       value={formatCurrency(moneySnapshot)}
+      onBlur={(e) => {
+        onBlur();
+        textFieldProps.onBlur?.(e);
+      }}
+      onChange={() => {
+        // noop: not required with onKeyDown, but:
+        // Warning: You provided a `value` prop to a form field without an `onChange` handler.
+        // This will render a read-only field. If the field should be mutable use `defaultValue`.
+        // Otherwise, set either `onChange` or `readOnly`.
+      }}
       onKeyDown={handleAmountKeyDown}
     />
   );

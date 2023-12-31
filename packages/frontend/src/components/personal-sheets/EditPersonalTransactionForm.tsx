@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -65,9 +65,12 @@ export const EditPersonalTransactionForm = ({
         .toString(),
     },
   });
-  const amount = form.watch('amount');
-  const currencyCode = form.watch('currencyCode');
-  const spentAt = form.watch('spentAt');
+  const amount = useWatch({ name: 'amount', control: form.control });
+  const currencyCode = useWatch({
+    name: 'currencyCode',
+    control: form.control,
+  });
+  const spentAt = useWatch({ name: 'spentAt', control: form.control });
 
   const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
@@ -127,8 +130,7 @@ export const EditPersonalTransactionForm = ({
                       className="grow"
                       autoFocus
                       currencyCode={currencyCode}
-                      amount={field.value}
-                      setAmount={field.onChange}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -152,8 +154,8 @@ export const EditPersonalTransactionForm = ({
                   {supportedCurrencies.includes(personalSheet.currencyCode) && (
                     <CurrencySelect
                       options={supportedCurrencies}
-                      currencyCode={field.value}
-                      setCurrencyCode={field.onChange}
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   )}
                 </FormControl>
@@ -173,8 +175,8 @@ export const EditPersonalTransactionForm = ({
                 <CategorySelect
                   className="w-full"
                   placeholder="Select a category"
-                  categoryId={field.value}
-                  setCategoryId={field.onChange}
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
 import { ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
@@ -112,10 +112,16 @@ export const CreatePersonalTransactionForm = ({
     },
   });
 
-  const amount = form.watch('amount');
-  const currencyCode = form.watch('currencyCode');
-  const dateTime = form.watch('dateTime');
-  const recurrenceRule = form.watch('recurrenceRule');
+  const amount = useWatch({ name: 'amount', control: form.control });
+  const currencyCode = useWatch({
+    name: 'currencyCode',
+    control: form.control,
+  });
+  const dateTime = useWatch({ name: 'dateTime', control: form.control });
+  const recurrenceRule = useWatch({
+    name: 'recurrenceRule',
+    control: form.control,
+  });
 
   const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
@@ -212,8 +218,7 @@ export const CreatePersonalTransactionForm = ({
                       className="grow"
                       autoFocus
                       currencyCode={currencyCode}
-                      amount={field.value}
-                      setAmount={field.onChange}
+                      {...field}
                     />
                   </FormControl>
                   <FormDescription>
@@ -237,8 +242,8 @@ export const CreatePersonalTransactionForm = ({
                   {supportedCurrencies.includes(personalSheet.currencyCode) && (
                     <CurrencySelect
                       options={supportedCurrencies}
-                      currencyCode={field.value}
-                      setCurrencyCode={field.onChange}
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   )}
                 </FormControl>
@@ -258,8 +263,8 @@ export const CreatePersonalTransactionForm = ({
                 <CategorySelect
                   className="w-full"
                   placeholder="Select a category"
-                  categoryId={field.value}
-                  setCategoryId={field.onChange}
+                  value={field.value}
+                  onChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />

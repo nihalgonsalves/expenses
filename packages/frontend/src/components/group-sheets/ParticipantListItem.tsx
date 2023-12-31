@@ -9,7 +9,7 @@ export const ParticipantListItem = ({
   avatar?: React.ReactNode;
   className?: string;
 }) => (
-  <div className={cn('flex items-center gap-4', className)}>
+  <div className={cn('flex items-center gap-4', className)} role="listitem">
     <div>{avatar}</div>
     {children}
   </div>

@@ -21,15 +21,17 @@ export const OTHER_CATEGORY = 'other' as const;
 
 export const CategorySelect = ({
   id,
-  categoryId,
-  setCategoryId,
+  value,
+  onChange,
+  onBlur,
   className,
   placeholder = 'Select a category',
   allowCreate = true,
 }: {
   id?: string;
-  categoryId: string | undefined;
-  setCategoryId: (newCategory: string | undefined) => void;
+  value: string | undefined;
+  onChange: (newCategory: string | undefined) => void;
+  onBlur?: () => void;
   className?: string;
   placeholder?: string;
   allowCreate?: boolean;
@@ -51,7 +53,7 @@ export const CategorySelect = ({
           aria-expanded={open}
           className={cn('min-w-48 justify-between', className)}
         >
-          {categoryId ?? placeholder}
+          {value ?? placeholder}
           <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -72,8 +74,9 @@ export const CategorySelect = ({
                   <CommandItem
                     value={normalizedSearchValue}
                     onSelect={() => {
-                      setCategoryId(normalizedSearchValue);
+                      onChange(normalizedSearchValue);
                       setOpen(false);
+                      onBlur?.();
                     }}
                   >
                     <PlusIcon className="mr-2 size-4" />
@@ -86,7 +89,7 @@ export const CategorySelect = ({
                   key={category.id}
                   value={category.id}
                   onSelect={() => {
-                    setCategoryId(category.id);
+                    onChange(category.id);
                     setOpen(false);
                   }}
                 >
