@@ -1,5 +1,5 @@
-import type * as LabelPrimitive from '@radix-ui/react-label';
 import { Slot } from '@radix-ui/react-slot';
+import { motion, AnimatePresence, type HTMLMotionProps } from 'framer-motion';
 import * as React from 'react';
 import {
   Controller,
@@ -9,6 +9,8 @@ import {
   FormProvider,
   useFormContext,
 } from 'react-hook-form';
+
+import { fadeInOut } from '../../utils/framer';
 
 import { Label } from './label';
 import { cn } from './utils';
@@ -74,20 +76,23 @@ const useFormField = () => {
 const FormItem = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   const id = React.useId();
 
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn('space-y-2', className)} {...props} />
+      <div ref={ref} className={cn('space-y-2', className)} {...props}>
+        {/* for animating descriptions in and out */}
+        <AnimatePresence>{children}</AnimatePresence>
+      </div>
     </FormItemContext.Provider>
   );
 });
 FormItem.displayName = 'FormItem';
 
 const FormLabel = React.forwardRef<
-  React.ElementRef<typeof LabelPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
+  React.ElementRef<typeof Label>,
+  React.ComponentPropsWithoutRef<typeof Label>
 >(({ className, ...props }, ref) => {
   const { error, formItemId } = useFormField();
 
@@ -125,15 +130,16 @@ FormControl.displayName = 'FormControl';
 
 const FormDescription = React.forwardRef<
   HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  HTMLMotionProps<'div'>
 >(({ className, ...props }, ref) => {
   const { formDescriptionId } = useFormField();
 
   return (
-    <p
+    <motion.p
       ref={ref}
       id={formDescriptionId}
       className={cn('text-[0.8rem] text-muted-foreground', className)}
+      {...fadeInOut}
       {...props}
     />
   );

@@ -221,11 +221,13 @@ export const CreatePersonalTransactionForm = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    {convertedMoneySnapshot
-                      ? formatCurrency(convertedMoneySnapshot)
-                      : null}
-                  </FormDescription>
+
+                  {convertedMoneySnapshot && (
+                    <FormDescription>
+                      {formatCurrency(convertedMoneySnapshot)}
+                    </FormDescription>
+                  )}
+
                   <FormMessage />
                 </FormItem>
               )}

@@ -16,7 +16,6 @@ import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';
 import { dateToISOString } from '../../utils/utils';
 import { Select, type SelectOption } from '../form/Select';
-import { TextField } from '../form/TextField';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -473,7 +472,8 @@ export const PersonalTransactionsImporter = ({
           <h2 className="text-xl font-semibold">Choose Columns</h2>
           Map columns to transaction fields
           <div className="grid grid-cols-1 items-center gap-[1rem] md:grid-cols-2">
-            <div>
+            <Label className="flex flex-col gap-2">
+              Amount
               <Select
                 placeholder="Amount field"
                 options={fieldOptions}
@@ -482,9 +482,9 @@ export const PersonalTransactionsImporter = ({
                 schema={z.string()}
                 small
               />
-            </div>
-
-            <div>
+            </Label>
+            <Label className="flex flex-col gap-2">
+              Amount format
               <Select
                 placeholder="Amount format"
                 options={amountFormatOptions}
@@ -493,9 +493,10 @@ export const PersonalTransactionsImporter = ({
                 schema={ZAmountFormat}
                 small
               />
-            </div>
+            </Label>
 
-            <div>
+            <Label className="flex flex-col gap-2">
+              Date field
               <Select
                 placeholder="Date field"
                 options={fieldOptions}
@@ -504,28 +505,34 @@ export const PersonalTransactionsImporter = ({
                 schema={z.string()}
                 small
               />
-            </div>
+            </Label>
 
-            <div>
-              <TextField
-                label="Date format"
-                labelAlt={
-                  <Button asChild className="mx-2" variant="ghost">
-                    <a
-                      href="https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Help
-                    </a>
-                  </Button>
-                }
+            <Label className="flex flex-col gap-2">
+              <span className="flex justify-between">
+                <span>Date format</span>
+                <span>
+                  (
+                  <a
+                    href="https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table"
+                    target="_blank"
+                    className="underline hover:no-underline"
+                    rel="noopener noreferrer"
+                  >
+                    Help
+                  </a>
+                  )
+                </span>
+              </span>
+              <Input
                 value={dateFormat}
-                setValue={setDateFormat}
+                onChange={(e) => {
+                  setDateFormat(e.target.value);
+                }}
               />
-            </div>
+            </Label>
 
-            <div>
+            <Label className="flex flex-col gap-2">
+              Category field
               <Select
                 placeholder="Category field"
                 options={fieldOptions}
@@ -534,11 +541,12 @@ export const PersonalTransactionsImporter = ({
                 schema={z.string()}
                 small
               />
-            </div>
+            </Label>
 
             <span />
 
-            <div>
+            <Label className="flex flex-col gap-2">
+              Description field
               <Select
                 placeholder="Description field"
                 options={fieldOptions}
@@ -547,7 +555,7 @@ export const PersonalTransactionsImporter = ({
                 schema={z.string()}
                 small
               />
-            </div>
+            </Label>
 
             <span />
           </div>
