@@ -21,6 +21,7 @@ import {
   ZTransactionWithSheet,
   ZUpdatePersonalSheetTransactionInput,
   ZGetAllUserTransactionsInput,
+  ZBalanceSimplificationResponse,
 } from '@nihalgonsalves/expenses-shared/types/transaction';
 import { ZCategoryEmoji } from '@nihalgonsalves/expenses-shared/types/user';
 
@@ -367,9 +368,19 @@ export const transactionRouter = router({
       const summaries =
         await ctx.transactionService.getParticipantSummaries(sheet);
 
-      return summaries.sort(({ participantId }) =>
-        participantId === ctx.user.id ? -1 : 1,
+      return summaries.sort(({ id }) => (id === ctx.user.id ? -1 : 1));
+    }),
+
+  getSimplifiedBalances: protectedProcedure
+    .input(z.string().min(1))
+    .output(ZBalanceSimplificationResponse)
+    .query(async ({ input, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(
+        input,
+        ctx.user.id,
       );
+
+      return ctx.transactionService.simplifyBalances(sheet);
     }),
 
   getCategories: protectedProcedure

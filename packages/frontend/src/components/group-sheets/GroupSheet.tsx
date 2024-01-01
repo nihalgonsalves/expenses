@@ -12,6 +12,7 @@ import { ScrollArea } from '../ui/scroll-area';
 import { AddMemberButton } from './AddMemberButton';
 import { type ActorInfo, BalanceSummary } from './BalanceSummary';
 import { GroupSheetTransactionsDenseList } from './GroupSheetTransactionsDenseList';
+import { SettleUpView } from './SettleUpView';
 
 export const GroupSheet = ({
   groupSheet,
@@ -26,25 +27,7 @@ export const GroupSheet = ({
     });
 
   return (
-    <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-      <Card>
-        <CardHeader>
-          <CardTitle>People</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {actorInfo && (
-            <BalanceSummary
-              groupSheetId={groupSheet.id}
-              actorInfo={actorInfo}
-            />
-          )}
-
-          {actorInfo?.isAdmin && (
-            <AddMemberButton groupSheetId={groupSheet.id} />
-          )}
-        </CardContent>
-      </Card>
-
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader>
           <CardTitle>Latest Transactions</CardTitle>
@@ -70,6 +53,33 @@ export const GroupSheet = ({
               <AlertTitle>No transactions yet</AlertTitle>
             </Alert>
           )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>People</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          {actorInfo && (
+            <BalanceSummary
+              groupSheetId={groupSheet.id}
+              actorInfo={actorInfo}
+            />
+          )}
+
+          {actorInfo?.isAdmin && (
+            <AddMemberButton groupSheetId={groupSheet.id} />
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Settle up</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SettleUpView groupSheetId={groupSheet.id} />
         </CardContent>
       </Card>
     </div>

@@ -31,20 +31,20 @@ export const Avatar = ({ name }: { name: string }) => (
 
 export const AvatarGroup = ({
   className,
-  names,
+  users,
   max,
 }: {
   className?: string;
-  names: string[];
+  users: { id: string; name: string }[];
   max: number;
 }) => {
-  const visible = names.slice(0, max);
-  const hidden = names.length - visible.length;
+  const visible = users.slice(0, max);
+  const hidden = users.length - visible.length;
 
   return (
     <div className={cn('flex -space-x-4', className)}>
-      {visible.map((name) => (
-        <Avatar key={name} name={name} />
+      {visible.map(({ id, name }) => (
+        <Avatar key={id} name={name} />
       ))}
       {hidden !== 0 && (
         <UIAvatar className="border-2">

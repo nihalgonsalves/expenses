@@ -23,8 +23,8 @@ import { ParticipantListItem } from './ParticipantListItem';
 export type ActorInfo = { id: string; isAdmin: boolean };
 
 const PersonMenu = ({
+  id,
   groupSheetId,
-  participantId,
   balance,
   setIsInvalidating,
   actorInfo,
@@ -46,7 +46,7 @@ const PersonMenu = ({
     try {
       await deleteGroupSheetMember({
         groupSheetId,
-        participantId,
+        participantId: id,
       });
 
       await Promise.all([
@@ -54,7 +54,7 @@ const PersonMenu = ({
         utils.transaction.getParticipantSummaries.invalidate(groupSheetId),
       ]);
 
-      if (actorInfo.id === participantId) {
+      if (actorInfo.id === id) {
         navigate('/groups');
       }
     } catch {
@@ -62,9 +62,7 @@ const PersonMenu = ({
     }
   };
 
-  const visible = actorInfo.isAdmin
-    ? actorInfo.id !== participantId
-    : actorInfo.id === participantId;
+  const visible = actorInfo.isAdmin ? actorInfo.id !== id : actorInfo.id === id;
 
   if (!visible) {
     return null;
@@ -129,7 +127,7 @@ const SummaryCard = ({
       className={cn({
         'opacity-50': isInvalidating,
       })}
-      avatar={<AvatarGroup names={[summary.name]} max={1} />}
+      avatar={<AvatarGroup users={[summary]} max={1} />}
     >
       <div className="flex flex-col">
         <span>
@@ -163,7 +161,7 @@ export const BalanceSummary = ({
     <div className="flex flex-col gap-4">
       {summaries?.map((summary) => (
         <SummaryCard
-          key={summary.participantId}
+          key={summary.id}
           groupSheetId={groupSheetId}
           summary={summary}
           actorInfo={actorInfo}

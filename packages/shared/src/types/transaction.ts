@@ -194,14 +194,31 @@ export const ZGetGroupSheetTransactionsResponse = z.object({
   total: z.number().nonnegative(),
 });
 
-export const ZTransactionSummaryResponse = z.array(
-  z.object({
-    participantId: z.string().min(1),
-    name: z.string(),
-    balance: ZMoney,
-  }),
-);
+const ZParticipantBalance = ZParticipant.extend({
+  balance: ZMoney,
+});
+
+export const ZTransactionSummaryResponse = z.array(ZParticipantBalance);
 
 export type TransactionSummaryResponse = z.infer<
   typeof ZTransactionSummaryResponse
+>;
+
+export const ZBalanceSimplificationResponse = z.object({
+  transfers: z.array(
+    z.object({
+      from: ZParticipant,
+      to: ZParticipant,
+      money: ZMoney,
+    }),
+  ),
+  byParticipant: z.array(
+    ZParticipant.extend({
+      otherParticipants: z.array(ZParticipantBalance),
+    }),
+  ),
+});
+
+export type BalanceSimplificationResponse = z.infer<
+  typeof ZBalanceSimplificationResponse
 >;
