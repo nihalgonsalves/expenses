@@ -1,6 +1,8 @@
 import cookie from 'cookie';
 import { vi, describe, it, expect } from 'vitest';
 
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+
 import { AUTH_COOKIE_NAME, getMaybeUser } from './context';
 import { UserServiceError } from './service/user/utils';
 
@@ -17,16 +19,18 @@ describe('getMaybeUser', () => {
             id: 'id',
             name: `name (${token})`,
             email: 'email',
+            theme: null,
           },
           newToken: undefined,
         }),
       },
     );
 
-    expect(result).toEqual({
+    expect(result).toEqual<User>({
       id: 'id',
       name: 'name (<jwt-token>)',
       email: 'email',
+      theme: null,
     });
   });
 

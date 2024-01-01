@@ -4,7 +4,9 @@ export const ZUser = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   email: z.string().email(),
+  theme: z.string().nullable(),
 });
+
 export type User = z.infer<typeof ZUser>;
 
 export const ZJWTToken = z.string().brand<'JWTToken'>();

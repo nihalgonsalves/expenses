@@ -1,21 +1,17 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { z } from 'zod';
 
+import {
+  type Theme,
+  THEME_DEFAULT,
+  ZTheme,
+} from '@nihalgonsalves/expenses-shared/types/theme';
+
+import { trpc } from '../api/trpc';
+import { useCurrentUser } from '../api/useCurrentUser';
 import { useMediaQuery } from '../utils/hooks/useMediaQuery';
 
 import { createPreferenceWithDefault } from './preferences';
-
-export const THEMES = [
-  'blue',
-  'slate',
-  'rose',
-  'orange',
-  'green',
-  'yellow',
-  'violet',
-] as const;
-
-const THEME_DEFAULT = 'blue';
 
 const ZThemePreference = z.enum(['system', 'light', 'dark']);
 
@@ -30,15 +26,37 @@ export const [useThemePreference] = createPreferenceWithDefault(
   'system',
 );
 
-export const ZTheme = z.enum(THEMES);
+export const useTheme = () => {
+  const utils = trpc.useUtils();
 
-type Theme = z.infer<typeof ZTheme>;
+  const { data } = useCurrentUser();
+  const { mutateAsync: updateTheme } = trpc.user.updateTheme.useMutation();
 
-export const [useTheme] = createPreferenceWithDefault<Theme>(
-  'theme',
-  (v) => ZTheme.catch('blue').parse(v),
-  THEME_DEFAULT,
-);
+  const parsedTheme = ZTheme.safeParse(
+    data?.theme ?? localStorage.getItem('theme'),
+  );
+
+  // cache preference locally to avoid flickering on load
+  useEffect(() => {
+    if (parsedTheme.success) {
+      localStorage.setItem('theme', parsedTheme.data);
+    }
+  }, [parsedTheme]);
+
+  const setTheme = useCallback(
+    async (theme: Theme) => {
+      await updateTheme(theme);
+      await utils.user.me.invalidate();
+    },
+    [updateTheme, utils.user.me],
+  );
+
+  if (parsedTheme.success) {
+    return [parsedTheme.data, setTheme] as const;
+  }
+
+  return [THEME_DEFAULT, setTheme] as const;
+};
 
 const isDarkMode = (pref: ThemePreference) => {
   if (pref === 'system') {
@@ -48,10 +66,15 @@ const isDarkMode = (pref: ThemePreference) => {
   return pref === 'dark';
 };
 
+export const getThemeDataAttribute = (
+  themePreference: ThemePreference,
+  theme: Theme,
+) => `${theme}-${isDarkMode(themePreference) ? 'dark' : 'light'}`;
+
 const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
   document.documentElement.setAttribute(
     'data-theme',
-    `${theme}-${isDarkMode(themePreference) ? 'dark' : 'light'}`,
+    getThemeDataAttribute(themePreference, theme),
   );
 
   document

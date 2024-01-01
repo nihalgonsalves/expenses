@@ -36,19 +36,7 @@ export default defineConfig(({ mode }) => ({
         type: 'module',
         resolveTempFolder: () => relativePath('./dist/vite-pwa-dev/'),
       },
-      manifest: {
-        name: 'Expenses',
-        short_name: 'Expenses',
-        description: 'Expenses App',
-        theme_color: 'hsl(221.2 83.2% 53.3%)',
-        // prettier-ignore
-        icons: [
-          { src: '/favicon.ico',                type: 'image/x-icon',  sizes: '256x256'                        },
-          { src: '/assets/icon.svg',            type: 'image/svg+xml', sizes: '512x512'                        },
-          { src: '/assets/icon-maskable.svg',   type: 'image/svg+xml', sizes: '512x512', purpose: 'maskable'   },
-          { src: '/assets/icon-monochrome.svg', type: 'image/svg+xml', sizes: '16x16',   purpose: 'monochrome' },
-        ],
-      },
+      manifest: false,
     }),
     ...(process.env.VITE_COVERAGE
       ? [

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { ZTheme } from '@nihalgonsalves/expenses-shared/types/theme';
 import {
   ZAuthorizeUserInput,
   ZUser,
@@ -49,4 +50,11 @@ export const userRouter = router({
   }),
 
   me: protectedProcedure.output(ZUser).query(({ ctx }) => ctx.user),
+
+  updateTheme: protectedProcedure
+    .input(ZTheme)
+    .output(z.void())
+    .mutation(async ({ input, ctx }) => {
+      await ctx.userService.updateTheme(ctx.user.id, input);
+    }),
 });

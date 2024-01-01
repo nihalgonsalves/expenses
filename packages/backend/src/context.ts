@@ -6,7 +6,6 @@ import { UAParser } from 'ua-parser-js';
 import {
   type JWTToken,
   ZJWTToken,
-  type User,
 } from '@nihalgonsalves/expenses-shared/types/user';
 
 import { config } from './config';
@@ -24,7 +23,7 @@ export const getMaybeUser = async (
   cookieHeader: string | undefined,
   setJwtToken: (value: JWTToken | null) => Promise<void>,
   userServiceImpl: Pick<UserService, 'exchangeToken'>,
-): Promise<User | undefined> => {
+) => {
   if (!cookieHeader) {
     return undefined;
   }
@@ -72,13 +71,16 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
 
   return async ({ req, res }: CreateFastifyContextOptions) => {
     const setJwtToken = async (value: JWTToken | null) => {
-      // await res.header() hangs for whatever reason
-      res.raw.setHeader(
+      if (!value) {
+        void res.header('clear-site-data', '"*"');
+      }
+      void res.header(
         'Set-Cookie',
         cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
+          path: '/',
           httpOnly: true,
           secure: config.SECURE,
-          maxAge: config.JWT_EXPIRY_SECONDS,
+          maxAge: value ? config.JWT_EXPIRY_SECONDS : -1,
         }),
       );
     };

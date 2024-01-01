@@ -8,6 +8,7 @@ import IORedis from 'ioredis';
 
 import { config } from './config';
 import { makeCreateContext } from './context';
+import { makePWARouter } from './pwaRouter';
 import { appRouter } from './router';
 import { startWorkers } from './startWorkers';
 
@@ -23,13 +24,17 @@ void (async () => {
   try {
     const workers = await startWorkers(prisma, redis);
 
+    const createContext = makeCreateContext(prisma, workers);
+
     await server.register(fastifyTRPCPlugin, {
       prefix: '/trpc',
       trpcOptions: {
         router: appRouter,
-        createContext: makeCreateContext(prisma, workers),
+        createContext,
       },
     });
+
+    await server.register(makePWARouter(createContext));
 
     if (config.ENABLE_ADMIN) {
       const serverAdapter = new FastifyAdapter();
