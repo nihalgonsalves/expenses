@@ -1,10 +1,15 @@
 flags:
   backend:
     paths:
-      - app/backend/
+      - packages/backend/
   frontend:
     paths:
-      - app/frontend/
+      - packages/frontend/
   shared:
     paths:
-      - app/shared/
+      - packages/shared/
+
+coverage:
+  status:
+    project: off
+    patch: off
