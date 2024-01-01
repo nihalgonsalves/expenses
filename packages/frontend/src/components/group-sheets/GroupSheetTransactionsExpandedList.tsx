@@ -77,26 +77,29 @@ const ExpandedTransactionListItem = forwardRef<
               <>
                 {transaction.participants.map(({ id, name, balance }) => (
                   <ParticipantListItem key={id} avatar={<Avatar name={name} />}>
-                    <div>
-                      <span className="font-semibold">{name}</span>
-                      {balance.actual.amount !== 0 && (
-                        <>
-                          {transaction.type === 'EXPENSE'
-                            ? ' paid '
-                            : ' received '}
-                          <Badge>
-                            {formatCurrency(balance.actual, {
-                              signDisplay: 'never',
-                            })}
-                          </Badge>
-                        </>
-                      )}
-                      <br />
-                      <Badge variant="secondary">
-                        {formatCurrency(balance.share, {
-                          signDisplay: 'never',
-                        })}
-                      </Badge>
+                    <div className="flex flex-col">
+                      <div>
+                        <span className="font-semibold">{name}</span>
+                        {balance.actual.amount !== 0 && (
+                          <>
+                            {transaction.type === 'EXPENSE'
+                              ? ' paid '
+                              : ' received '}
+                            <Badge>
+                              {formatCurrency(balance.actual, {
+                                signDisplay: 'never',
+                              })}
+                            </Badge>
+                          </>
+                        )}
+                      </div>
+                      <div>
+                        <Badge variant="secondary">
+                          {formatCurrency(balance.share, {
+                            signDisplay: 'never',
+                          })}
+                        </Badge>
+                      </div>
                     </div>
                   </ParticipantListItem>
                 ))}
@@ -111,6 +114,9 @@ const ExpandedTransactionListItem = forwardRef<
                     groupSheetId,
                   }),
                   utils.transaction.getParticipantSummaries.invalidate(
+                    groupSheetId,
+                  ),
+                  utils.transaction.getSimplifiedBalances.invalidate(
                     groupSheetId,
                   ),
                 ]);

@@ -747,35 +747,15 @@ export class TransactionService {
       });
     });
 
-    const transfers = simplifyBalances(groupSheet.currencyCode, balances);
-    const participantTransfers: Record<string, { to: string; money: Money }[]> =
-      {};
-
-    transfers.forEach(({ from, to, money }) => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      participantTransfers[from] ??= [];
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      participantTransfers[from]!.push({ to, money });
-    });
-
-    return {
-      byParticipant: Object.entries(participantTransfers).map(([id, tfs]) => ({
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        ...participantById[id]!,
-        otherParticipants: tfs.map(({ to, money }) => ({
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          ...participantById[to]!,
-          balance: money,
-        })),
-      })),
-      transfers: transfers.map(({ from, to, money }) => ({
+    return simplifyBalances(groupSheet.currencyCode, balances).map(
+      ({ from, to, money }) => ({
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         from: participantById[from]!,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         to: participantById[to]!,
         money,
-      })),
-    };
+      }),
+    );
   }
 
   async getParticipantBalance(groupSheet: Sheet, userId: string) {

@@ -204,20 +204,13 @@ export type TransactionSummaryResponse = z.infer<
   typeof ZTransactionSummaryResponse
 >;
 
-export const ZBalanceSimplificationResponse = z.object({
-  transfers: z.array(
-    z.object({
-      from: ZParticipant,
-      to: ZParticipant,
-      money: ZMoney,
-    }),
-  ),
-  byParticipant: z.array(
-    ZParticipant.extend({
-      otherParticipants: z.array(ZParticipantBalance),
-    }),
-  ),
-});
+export const ZBalanceSimplificationResponse = z.array(
+  z.object({
+    from: ZParticipant,
+    to: ZParticipant,
+    money: ZMoney,
+  }),
+);
 
 export type BalanceSimplificationResponse = z.infer<
   typeof ZBalanceSimplificationResponse
