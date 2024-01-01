@@ -733,6 +733,7 @@ export const TransactionForm = ({
         groupSheetId: groupSheet.id,
       }),
       utils.transaction.getParticipantSummaries.invalidate(groupSheet.id),
+      utils.transaction.getSimplifiedBalances.invalidate(groupSheet.id),
     ]);
   };
 
