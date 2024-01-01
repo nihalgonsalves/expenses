@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { fileURLToPath } from 'url';
 
 /** https://playwright.dev/docs/test-configuration. */
 export default defineConfig({
@@ -11,6 +12,14 @@ export default defineConfig({
   use: {
     baseURL: process.env.PW_BASE_URL ?? 'http://localhost:5173',
     trace: 'on-first-retry',
+  },
+  webServer: {
+    command: 'yarn dev:vite',
+    cwd: fileURLToPath(new URL('../frontend/', import.meta.url).toString()),
+    port: 5173,
+    env: {
+      VITE_COVERAGE: '1',
+    },
   },
   projects: [
     {

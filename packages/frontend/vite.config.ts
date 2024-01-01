@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import IstanbulPlugin from 'vite-plugin-istanbul';
 
 const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
@@ -49,5 +50,14 @@ export default defineConfig(({ mode }) => ({
         ],
       },
     }),
+    ...(process.env.VITE_COVERAGE
+      ? [
+          IstanbulPlugin({
+            include: 'src/*',
+            exclude: ['node_modules', 'test/'],
+            extension: ['.js', '.ts', '.tsx'],
+          }),
+        ]
+      : []),
   ],
 }));
