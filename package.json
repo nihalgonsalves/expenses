@@ -34,7 +34,7 @@
   "devDependencies": {
     "@nihalgonsalves/esconfig": "^0.6.16",
     "@types/node": "20",
-    "@vitest/ui": "^1.1.0",
+    "@vitest/ui": "^1.1.1",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -44,7 +44,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "eslint-plugin-storybook": "^0.6.15",
-    "eslint-plugin-tailwindcss": "^3.13.0",
+    "eslint-plugin-tailwindcss": "^3.13.1",
     "eslint-plugin-unused-imports": "^3.0.0",
     "lefthook": "^1.5.5",
     "npm-run-all2": "^6.1.1",
@@ -54,6 +54,6 @@
     "sherif": "^0.7.0",
     "type-fest": "^4.9.0",
     "typescript": "^5.3.3",
-    "vitest": "~1.1.0"
+    "vitest": "~1.1.1"
   }
 }
