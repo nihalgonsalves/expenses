@@ -1,7 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill';
+import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
 import {
   DotsVerticalIcon,
   ListBulletIcon,
+  TimerIcon,
   TrashIcon,
 } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
@@ -14,9 +16,11 @@ import { formatCurrency } from '../../utils/money';
 import {
   formatDateTimeRelative,
   getTransactionDescription,
+  shortDateTimeFormatter,
 } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ConfirmDialog } from '../form/ConfirmDialog';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import {
@@ -26,6 +30,13 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { ScrollArea } from '../ui/scroll-area';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
+import { cn } from '../ui/utils';
 
 const TransactionListItemComponent = ({
   transaction,
@@ -144,31 +155,67 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => (
-            <TransactionListItemComponent
-              key={schedule.id}
-              transaction={schedule}
-              description={
-                <>
-                  <span className="capitalize">
-                    {schedule.recurrenceRule.freq.toLowerCase()}
-                  </span>
-                  ,{' next: '}
-                  {formatDateTimeRelative(
-                    Temporal.ZonedDateTime.from(
-                      schedule.nextOccurrenceAt,
-                    ).toInstant(),
-                  )}
-                </>
-              }
-              addons={
-                <TransactionScheduleDropdownMenu
-                  sheetId={personalSheet.id}
-                  transactionScheduleId={schedule.id}
-                />
-              }
-            />
-          ))}
+          {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => {
+            const nextOccurrenceAt = Temporal.ZonedDateTime.from(
+              schedule.nextOccurrenceAt,
+            ).toInstant();
+
+            const isPast =
+              nextOccurrenceAt.epochMilliseconds <
+              Temporal.Now.instant().epochMilliseconds;
+
+            return (
+              <TransactionListItemComponent
+                key={schedule.id}
+                transaction={schedule}
+                description={
+                  <div className={cn('flex gap-1')}>
+                    <Badge variant="outline" className="capitalize">
+                      {schedule.recurrenceRule.freq.toLowerCase()}
+                    </Badge>
+
+                    <TooltipProvider delayDuration={100}>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Badge variant="outline">
+                            {formatDateTimeRelative(nextOccurrenceAt, 90)}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-muted text-muted-foreground">
+                          <p>
+                            {shortDateTimeFormatter.format(
+                              nextOccurrenceAt.epochMilliseconds,
+                            )}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      {isPast && (
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Badge variant="outline">
+                              <AccessibleIcon label="Pending processing">
+                                <TimerIcon />
+                              </AccessibleIcon>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-muted text-muted-foreground">
+                            <p>Pending processing</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
+                    </TooltipProvider>
+                  </div>
+                }
+                addons={
+                  <TransactionScheduleDropdownMenu
+                    sheetId={personalSheet.id}
+                    transactionScheduleId={schedule.id}
+                  />
+                }
+              />
+            );
+          })}
         </CardContent>
       </Card>
     </div>

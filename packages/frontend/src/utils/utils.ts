@@ -74,6 +74,7 @@ export const formatDateRelative = (
 
 export const formatDateTimeRelative = (
   instantOrISO8601: string | Temporal.Instant,
+  dayThreshold = 7,
 ) => {
   const instant = Temporal.Instant.from(instantOrISO8601);
 
@@ -86,7 +87,7 @@ export const formatDateTimeRelative = (
 
   const { days, hours, minutes } = durationRounded.abs();
 
-  if (days >= 7) {
+  if (days >= dayThreshold) {
     return shortDateTimeFormatter.format(instant.epochMilliseconds);
   }
 
