@@ -10,17 +10,19 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? 'github' : 'html',
   use: {
-    baseURL: process.env.PW_BASE_URL ?? 'http://localhost:5173',
+    baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
   },
-  webServer: {
-    command: 'yarn dev:vite',
-    cwd: fileURLToPath(new URL('../frontend/', import.meta.url).toString()),
-    port: 5173,
-    env: {
-      VITE_COVERAGE: '1',
-    },
-  },
+  webServer: process.env.CI
+    ? {
+        command: 'yarn dev:vite',
+        cwd: fileURLToPath(new URL('../frontend/', import.meta.url).toString()),
+        port: 5173,
+        env: {
+          VITE_COVERAGE: '1',
+        },
+      }
+    : undefined,
   projects: [
     {
       name: 'chromium',

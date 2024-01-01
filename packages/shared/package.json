@@ -9,6 +9,7 @@
     "./types/transaction": "./src/types/transaction.ts",
     "./types/notification": "./src/types/notification.ts",
     "./types/sheet": "./src/types/sheet.ts",
+    "./types/theme": "./src/types/theme.ts",
     "./types/user": "./src/types/user.ts"
   },
   "scripts": {

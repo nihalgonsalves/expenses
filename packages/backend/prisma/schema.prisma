@@ -24,6 +24,8 @@ model User {
   notificationSubscriptions NotificationSubscription[]
   categories                Category[]
 
+  theme String?
+
   @@map("users")
 }
 

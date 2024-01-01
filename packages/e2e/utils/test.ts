@@ -99,20 +99,20 @@ export const test = base.extend<Fixtures>({
     await use(async () => {
       const { name, email, password } = getUserData();
 
-      const { id } = await serverTRPCClient.user.createUser.mutate({
+      const { id, theme } = await serverTRPCClient.user.createUser.mutate({
         name,
         email,
         password,
       });
 
-      return { id, name, email, password };
+      return { id, name, email, password, theme };
     });
   },
 
   // TODO: this should automatically set cookies instead of using the form on each run
   signIn: async ({ page, createUser }, use) => {
     await use(async () => {
-      const { id, name, email, password } = await createUser();
+      const { id, name, email, password, theme } = await createUser();
 
       await page.goto('/auth/sign-in');
 
@@ -122,7 +122,7 @@ export const test = base.extend<Fixtures>({
       await page.getByLabel(/password/i).fill(password);
       await page.getByRole('button', { name: /sign in/i }).click();
 
-      return { id, name, email, password };
+      return { id, name, email, password, theme };
     });
   },
 });

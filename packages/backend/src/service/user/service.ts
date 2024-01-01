@@ -27,9 +27,10 @@ export class UserService {
     >,
   ) {}
 
-  async exchangeToken(
-    token: JWTToken,
-  ): Promise<{ user: User; newToken: JWTToken | undefined }> {
+  async exchangeToken(token: JWTToken): Promise<{
+    user: User;
+    newToken: JWTToken | undefined;
+  }> {
     const { payload, reissue } = await verifyJWT(token);
 
     if (!payload.sub) {
@@ -141,6 +142,15 @@ export class UserService {
         ...(input.newPassword
           ? { passwordHash: await hashPassword(input.newPassword) }
           : {}),
+      },
+    });
+  }
+
+  async updateTheme(id: string, theme: string) {
+    return this.prismaClient.user.update({
+      where: { id },
+      data: {
+        theme,
       },
     });
   }

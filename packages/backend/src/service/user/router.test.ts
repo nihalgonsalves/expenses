@@ -1,6 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { describe, expect, it, vi } from 'vitest';
 
+import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+
 import { personalSheetFactory, userFactory } from '../../../test/factories';
 import { getTRPCCaller } from '../../../test/getTRPCCaller';
 import { createPersonalSheetTransactionInput } from '../../../test/input';
@@ -19,10 +21,11 @@ describe('createUser', () => {
   it('creates a user ', async () => {
     const caller = usePublicCaller();
 
-    expect(await caller.user.createUser(userArgs)).toEqual({
+    expect(await caller.user.createUser(userArgs)).toEqual<User>({
       id: expect.any(String),
       name: 'Emily',
       email: 'emily@example.com',
+      theme: null,
     });
   });
 
@@ -30,10 +33,11 @@ describe('createUser', () => {
     const caller = usePublicCaller();
 
     await caller.user.createUser(userArgs);
-    expect(await caller.user.createUser(userArgs)).toEqual({
+    expect(await caller.user.createUser(userArgs)).toEqual<User>({
       id: expect.any(String),
       name: 'Emily',
       email: 'emily@example.com',
+      theme: null,
     });
   });
 
@@ -139,10 +143,11 @@ describe('authorizeUser', () => {
     expect(setJWTToken.mock.calls).toMatchObject([[expect.any(String)]]);
     setJWTToken.mockReset();
 
-    expect(await caller.user.authorizeUser(userArgs)).toEqual({
+    expect(await caller.user.authorizeUser(userArgs)).toEqual<User>({
       id: expect.any(String),
       name: 'Emily',
       email: 'emily@example.com',
+      theme: null,
     });
     expect(setJWTToken.mock.calls).toEqual([[expect.any(String)]]);
   });
