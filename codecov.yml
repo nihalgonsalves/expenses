@@ -1,13 +1,8 @@
-flags:
-  backend:
-    paths:
-      - packages/backend/
-  frontend:
-    paths:
-      - packages/frontend/
-  shared:
-    paths:
-      - packages/shared/
+ignore:
+  - '**/*.config.js'
+  - 'packages/frontend/**/*.stories.tsx'
+  - 'packages/backend/bin'
+  - 'packages/e2e'
 
 coverage:
   status:
