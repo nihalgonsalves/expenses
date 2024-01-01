@@ -1,9 +1,13 @@
+import fs from 'fs/promises';
+import { fileURLToPath } from 'url';
+
 import { test as base, expect } from '@playwright/test';
 import {
   type CreateTRPCProxyClient,
   createTRPCProxyClient,
   httpBatchLink,
 } from '@trpc/client';
+import { nanoid } from 'nanoid';
 
 import type { AppRouter } from '@nihalgonsalves/expenses-backend';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
@@ -16,7 +20,52 @@ type Fixtures = {
   signIn: () => Promise<User & { password: string }>;
 };
 
+export const relativePath = (path: string) =>
+  fileURLToPath(new URL(path, import.meta.url).toString());
+
+declare global {
+  /* eslint-disable no-var, @typescript-eslint/naming-convention */
+  var collectIstanbulCoverage: (coverageJSON: string) => void;
+  var __coverage__: unknown;
+  /* eslint-enable */
+}
+
 export const test = base.extend<Fixtures>({
+  context: async ({ context }, use) => {
+    await context.addInitScript(() => {
+      window.addEventListener('beforeunload', () => {
+        globalThis.collectIstanbulCoverage(
+          JSON.stringify(globalThis.__coverage__),
+        );
+      });
+    });
+
+    await fs.mkdir(relativePath('../coverage/'), { recursive: true });
+
+    await context.exposeFunction(
+      'collectIstanbulCoverage',
+      async (coverageJSON: string) => {
+        if (coverageJSON)
+          await fs.writeFile(
+            relativePath(`../coverage/playwright_coverage_${nanoid()}.json`),
+            coverageJSON,
+          );
+      },
+    );
+
+    await use(context);
+
+    await Promise.all(
+      context.pages().map(async (page) =>
+        page.evaluate(async () => {
+          globalThis.collectIstanbulCoverage(
+            JSON.stringify(globalThis.__coverage__),
+          );
+        }),
+      ),
+    );
+  },
+
   serverTRPCClient: async ({ request, baseURL }, use) => {
     const client = createTRPCProxyClient<AppRouter>({
       links: [
