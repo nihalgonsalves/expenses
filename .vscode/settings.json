@@ -19,5 +19,12 @@
     "twx\\(.*?\\).*?`([^`]*)",
     ["twx\\.[^`]+\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["twx\\(.*?\\).*?\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-  ]
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/codecov.json": "codecov.yml",
+    "https://json.schemastore.org/lefthook.json": [
+      "lefthook.yml",
+      "lefthook-local.yml"
+    ]
+  }
 }
