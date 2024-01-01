@@ -45,14 +45,14 @@
     "@types/pem": "^1.14.4",
     "@types/ua-parser-js": "^0.7.39",
     "@types/web-push": "^3.6.3",
-    "@vitest/coverage-v8": "^1.1.0",
-    "esbuild": "^0.19.10",
+    "@vitest/coverage-v8": "^1.1.1",
+    "esbuild": "^0.19.11",
     "npm-run-all2": "^6.1.1",
     "pem": "^1.14.8",
     "prisma": "*",
     "squawk-cli": "^0.26.0",
     "testcontainers": "^10.4.0",
-    "vitest": "~1.1.0",
+    "vitest": "~1.1.1",
     "wait-on": "^7.2.0"
   },
   "resolutions": {
