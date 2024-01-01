@@ -48,7 +48,13 @@ jobs:
         with:
           node-version: 20
           cache: yarn
+
       # pull so that testcontainers doesn't have to, timing out tests.
       - run: docker compose -f compose.dev.yaml pull postgres redis
+
       - run: yarn install --immutable
-      - run: yarn test
+      - run: yarn test --coverage
+
+      - uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
