@@ -1,5 +1,6 @@
 import emojiMartData from '@emoji-mart/data';
 import { init as initEmojiMart } from 'emoji-mart';
+import { MotionConfig } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 
 import { TrpcProvider } from './api/TrpcProvider';
@@ -27,7 +28,9 @@ const GlobalHookContainer = () => {
 export const App = () => (
   <TrpcProvider>
     <GlobalHookContainer />
-    <RouterProvider router={router} />
+    <MotionConfig reducedMotion="user">
+      <RouterProvider router={router} />
+    </MotionConfig>
     <Toaster
       toastOptions={{
         success: {
