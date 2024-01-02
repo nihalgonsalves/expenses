@@ -3,8 +3,8 @@
   "compilerOptions": {
     "composite": true,
     "moduleResolution": "Bundler",
-    "skipLibCheck": true
-    // TODO
-    // "verbatimModuleSyntax": true
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "types": []
   }
 }
