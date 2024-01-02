@@ -246,11 +246,17 @@ const SummaryCard = ({
             <BalanceText balance={summary.balance} />
           </span>
         </div>
-        <CollapsibleTrigger asChild>
+        <CollapsibleTrigger asChild disabled={transfers?.length === 0}>
           <Button variant="ghost" size="icon">
-            <AccessibleIcon label="Toggle">
-              <CaretSortIcon className="h-4 w-4" />
-            </AccessibleIcon>
+            {transfers?.length === 0 ? (
+              <AccessibleIcon label="Settled up">
+                <CheckIcon className="h-4 w-4" />
+              </AccessibleIcon>
+            ) : (
+              <AccessibleIcon label="Toggle">
+                <CaretSortIcon className="h-4 w-4" />
+              </AccessibleIcon>
+            )}
           </Button>
         </CollapsibleTrigger>
 
