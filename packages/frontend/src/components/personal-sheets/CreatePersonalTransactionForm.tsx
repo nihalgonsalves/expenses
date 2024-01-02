@@ -113,6 +113,8 @@ export const CreatePersonalTransactionForm = ({
     },
   });
 
+  const type = useWatch({ name: 'type', control: form.control });
+
   const amount = useWatch({ name: 'amount', control: form.control });
   const currencyCode = useWatch({
     name: 'currencyCode',
@@ -213,7 +215,9 @@ export const CreatePersonalTransactionForm = ({
               name="amount"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Amount</FormLabel>
+                  <FormLabel>
+                    Amount {type === 'EXPENSE' ? 'spent' : 'received'}
+                  </FormLabel>
                   <FormControl>
                     <MoneyField
                       className="grow"

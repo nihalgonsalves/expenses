@@ -49,7 +49,7 @@ const TransactionListItemComponent = ({
 }) => {
   const descriptionText = getTransactionDescription(transaction);
   return (
-    <div className="flex flex-row items-center gap-4 text-sm">
+    <div className="flex flex-row items-center gap-2 text-sm md:gap-4">
       <CategoryAvatar category={transaction.category} />
       <div className="flex flex-col">
         <span>
@@ -126,7 +126,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <ScrollArea viewportClassName="max-h-96">
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2 md:gap-4">
               {getPersonalSheetTransactionsResponse?.transactions.map(
                 (transaction) => (
                   <TransactionListItemComponent
@@ -154,7 +154,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             {getPersonalSheetTransactionSchedulesResponse?.length})
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+        <CardContent className="flex flex-col gap-2 md:gap-4">
           {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => {
             const nextOccurrenceAt = Temporal.ZonedDateTime.from(
               schedule.nextOccurrenceAt,
