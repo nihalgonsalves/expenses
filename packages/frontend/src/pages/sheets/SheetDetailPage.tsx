@@ -51,14 +51,9 @@ export const SheetDetailPage = () => {
     <RootLoader
       result={result}
       showBackButton
-      additionalChildren={
-        <FloatingActionButton
-          to={`/sheets/${sheetId}/transactions/new`}
-          label="Add Transaction"
-          icon={<PlusIcon />}
-        />
-      }
       getTitle={(sheet) => sheet.name}
+      className="p-2 md:p-5"
+      render={(sheet) => <PersonalSheet personalSheet={sheet} />}
       rightNavBarItems={
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -115,7 +110,13 @@ export const SheetDetailPage = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       }
-      render={(sheet) => <PersonalSheet personalSheet={sheet} />}
+      additionalChildren={
+        <FloatingActionButton
+          to={`/sheets/${sheetId}/transactions/new`}
+          label="Add Transaction"
+          icon={<PlusIcon />}
+        />
+      }
     />
   );
 };

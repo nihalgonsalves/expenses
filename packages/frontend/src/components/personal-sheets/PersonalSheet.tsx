@@ -119,12 +119,12 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     });
 
   return (
-    <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+    <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4">
       <Card>
         <CardHeader>
           <CardTitle>Latest Transactions</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+        <CardContent className="flex flex-col gap-2 md:gap-4">
           <ScrollArea viewportClassName="max-h-96">
             <div className="flex flex-col gap-2 md:gap-4">
               {getPersonalSheetTransactionsResponse?.transactions.map(

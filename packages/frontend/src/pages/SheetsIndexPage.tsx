@@ -13,6 +13,7 @@ export const SheetsIndexPage = () => {
     <RootLoader
       result={result}
       title="Sheets"
+      className="p-2"
       additionalChildren={
         <FloatingActionButton
           to="/sheets/new"

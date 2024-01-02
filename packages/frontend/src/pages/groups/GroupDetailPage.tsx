@@ -67,8 +67,12 @@ export const GroupDetailPage = () => {
 
   return (
     <RootLoader
-      result={result}
       getTitle={(groupSheet) => groupSheet.name}
+      result={result}
+      className="p-2 md:p-5"
+      render={(groupSheet) => (
+        <GroupSheet actorInfo={actorInfo} groupSheet={groupSheet} />
+      )}
       showBackButton
       additionalChildren={
         <FloatingActionButton
@@ -128,9 +132,6 @@ export const GroupDetailPage = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       }
-      render={(groupSheet) => (
-        <GroupSheet actorInfo={actorInfo} groupSheet={groupSheet} />
-      )}
     />
   );
 };

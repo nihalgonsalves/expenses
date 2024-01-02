@@ -26,7 +26,7 @@ export const GroupSheet = ({
     });
 
   return (
-    <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+    <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4">
       <Card>
         <CardHeader>
           <CardTitle>People</CardTitle>
