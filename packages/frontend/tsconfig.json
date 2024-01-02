@@ -3,10 +3,10 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "WebWorker"],
-    "rootDir": "./src/",
+    "rootDir": "./",
     "outDir": "./build/tsc/"
   },
-  "include": ["./src/"],
+  "include": ["./src/", "./bin/"],
   "references": [
     {
       "path": "../backend"

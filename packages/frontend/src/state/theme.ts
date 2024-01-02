@@ -85,6 +85,10 @@ const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
         '--primary',
       )})`,
     );
+
+  document
+    .getElementById('rel-icon-png')
+    ?.setAttribute('href', `/assets/icon-${theme}.png`);
 };
 
 export const useThemeSync = () => {
