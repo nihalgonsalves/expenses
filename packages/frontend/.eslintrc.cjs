@@ -49,5 +49,14 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ['bin/**/*'],
+      rules: {
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: true },
+        ],
+      },
+    },
   ],
 };

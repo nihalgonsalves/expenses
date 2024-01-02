@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => ({
       injectRegister: null,
       strategies: 'injectManifest',
       selfDestroying:
-        mode === 'development' && process.env.ENABLE_DEV_PWA == null,
+        mode === 'development' && process.env['ENABLE_DEV_PWA'] == null,
       devOptions: {
         enabled: true,
         type: 'module',
@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => ({
       },
       manifest: false,
     }),
-    ...(process.env.VITE_COVERAGE
+    ...(process.env['VITE_COVERAGE']
       ? [
           IstanbulPlugin({
             include: 'src/*',

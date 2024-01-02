@@ -79,7 +79,7 @@ export const Root = ({
   return (
     <>
       <Helmet>
-        <title>{title}</title>
+        <title>{`Expenses - ${title}`}</title>
       </Helmet>
       <div className="m-auto flex h-dvh flex-col">
         <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">

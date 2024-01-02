@@ -17,6 +17,7 @@ import {
   useTheme,
   getThemeDataAttribute,
 } from '../../state/theme';
+import { useIsStandalone } from '../../utils/hooks/useIsStandalone';
 import { noop } from '../../utils/utils';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
@@ -24,8 +25,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Label } from '../ui/label';
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
 
+import { IconPreview } from './IconPreview';
+
 export const AppearanceForm = () => {
   const [themePreference, setThemePreference] = useThemePreference();
+
+  const isStandalone = useIsStandalone();
 
   const [theme, setTheme] = useTheme();
 
@@ -113,19 +118,20 @@ export const AppearanceForm = () => {
           />
         </Label>
 
-        <div className="grid grow place-items-center rounded-lg bg-muted text-center align-middle">
-          <div className="p-4 text-sm tracking-tight">
-            <img
-              className="size-20"
-              src={`/api/icon-preview-${theme}.svg`}
-              alt="icon"
-            />
-            Expenses
-          </div>
-        </div>
+        <IconPreview theme={theme} />
 
         <div className="text-center text-xs">
-          To change the app icon, you must re-install the web app
+          {isStandalone ? (
+            <>
+              An installed app icon cannot be changed, please delete and re-add
+              the web app.
+            </>
+          ) : (
+            <>
+              If you change your theme, reload the page before installing the
+              app.
+            </>
+          )}
         </div>
       </CardContent>
     </Card>
