@@ -1,11 +1,12 @@
 import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
 import {
   CaretSortIcon,
+  CheckIcon,
   DotsVerticalIcon,
   ExitIcon,
   TrashIcon,
 } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import type { Money } from '@nihalgonsalves/expenses-shared/money';
@@ -18,6 +19,7 @@ import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { formatCurrency } from '../../utils/money';
 import { Avatar } from '../Avatar';
+import { ConfirmDialog } from '../form/ConfirmDialog';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import {
@@ -147,6 +149,76 @@ const BalanceText = ({ balance }: { balance: Money }) => {
   }
 };
 
+const TransferItem = ({
+  groupSheetId,
+  summary,
+  transfer: t,
+}: {
+  groupSheetId: string;
+  transfer: BalanceSimplificationResponse[number];
+  summary: TransactionSummaryResponse[number];
+}) => {
+  const utils = trpc.useUtils();
+
+  const { mutateAsync: createGroupSheetSettlement, isLoading } =
+    trpc.transaction.createGroupSheetSettlement.useMutation();
+
+  const handleSettleUp = useCallback(async () => {
+    await createGroupSheetSettlement({
+      groupSheetId,
+      fromId: t.from.id,
+      toId: t.to.id,
+      money: t.money,
+    });
+
+    await Promise.all([
+      utils.transaction.getAllUserTransactions.invalidate(),
+      utils.transaction.getGroupSheetTransactions.invalidate({
+        groupSheetId,
+      }),
+      utils.transaction.getParticipantSummaries.invalidate(groupSheetId),
+      utils.transaction.getSimplifiedBalances.invalidate(groupSheetId),
+    ]);
+  }, [createGroupSheetSettlement, groupSheetId, t, utils]);
+
+  return (
+    <div
+      className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm shadow-sm"
+      key={`${t.from.id}_${t.to.id}`}
+    >
+      <span>
+        {t.from.name} owes {t.to.name}
+      </span>
+      <span className="grow" />
+      <Badge
+        className={cn(
+          'shadow-none',
+          summary.id === t.from.id
+            ? 'bg-red-100 text-red-800 hover:bg-red-100'
+            : 'bg-green-100 text-green-800 hover:bg-green-100',
+        )}
+      >
+        {formatCurrency(t.money)}
+      </Badge>
+      <ConfirmDialog
+        onConfirm={handleSettleUp}
+        trigger={
+          <Button isLoading={isLoading} type="button" variant="link">
+            <CheckIcon className="mr-2" /> Settled
+          </Button>
+        }
+        confirmLabel="Settle up"
+        description={
+          <>
+            Log transfer of {formatCurrency(t.money)} from {t.from.name} to{' '}
+            {t.to.name}
+          </>
+        }
+      />
+    </div>
+  );
+};
+
 const SummaryCard = ({
   summary,
   groupSheetId,
@@ -156,7 +228,7 @@ const SummaryCard = ({
   summary: TransactionSummaryResponse[number];
   groupSheetId: string;
   actorInfo: ActorInfo;
-  transfers: BalanceSimplificationResponse;
+  transfers: BalanceSimplificationResponse | undefined;
 }) => {
   const [isInvalidating, setIsInvalidating] = useState(false);
 
@@ -191,26 +263,14 @@ const SummaryCard = ({
       </ParticipantListItem>
       <CollapsibleContent className="space-y-2">
         {transfers
-          .filter((t) => t.from.id === summary.id || t.to.id === summary.id)
+          ?.filter((t) => t.from.id === summary.id || t.to.id === summary.id)
           .map((t) => (
-            <div
-              className="flex justify-between rounded-md border px-4 py-2 text-sm shadow-sm"
+            <TransferItem
               key={`${t.from.id}_${t.to.id}`}
-            >
-              <span>
-                {t.from.name} owes {t.to.name}
-              </span>
-              <Badge
-                className={cn(
-                  'shadow-none',
-                  summary.id === t.from.id
-                    ? 'bg-red-100 text-red-800 hover:bg-red-100'
-                    : 'bg-green-100 text-green-800 hover:bg-green-100',
-                )}
-              >
-                {formatCurrency(t.money)}
-              </Badge>
-            </div>
+              groupSheetId={groupSheetId}
+              transfer={t}
+              summary={summary}
+            />
           ))}
       </CollapsibleContent>
     </Collapsible>
@@ -232,16 +292,15 @@ export const BalanceSummary = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {transfers &&
-        summaries?.map((summary) => (
-          <SummaryCard
-            key={summary.id}
-            groupSheetId={groupSheetId}
-            summary={summary}
-            actorInfo={actorInfo}
-            transfers={transfers}
-          />
-        ))}
+      {summaries?.map((summary) => (
+        <SummaryCard
+          key={summary.id}
+          groupSheetId={groupSheetId}
+          summary={summary}
+          actorInfo={actorInfo}
+          transfers={transfers}
+        />
+      ))}
     </div>
   );
 };
