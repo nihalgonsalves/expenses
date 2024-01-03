@@ -12,6 +12,7 @@ import { useCurrentUser } from '../api/useCurrentUser';
 import { useMediaQuery } from '../utils/hooks/useMediaQuery';
 
 import { createPreferenceWithDefault } from './preferences';
+import { useNavigatorOnLine } from './useNavigatorOnLine';
 
 const ZThemePreference = z.enum(['system', 'light', 'dark']);
 
@@ -71,20 +72,24 @@ export const getThemeDataAttribute = (
   theme: Theme,
 ) => `${theme}-${isDarkMode(themePreference) ? 'dark' : 'light'}`;
 
-const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
+const syncTheme = (
+  themePreference: ThemePreference,
+  theme: Theme,
+  navigatorOnLine: boolean,
+) => {
   document.documentElement.setAttribute(
     'data-theme',
     getThemeDataAttribute(themePreference, theme),
   );
 
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute(
-      'content',
-      `hsl(${getComputedStyle(document.documentElement).getPropertyValue(
-        '--primary',
-      )})`,
-    );
+  document.querySelector('meta[name="theme-color"]')?.setAttribute(
+    'content',
+    `hsl(${getComputedStyle(document.documentElement).getPropertyValue(
+      // see also: packages/frontend/src/pages/Root.tsx which adds a banner at the top
+      // to blend with the theme colour
+      navigatorOnLine ? '--primary' : '--muted',
+    )})`,
+  );
 
   document
     .getElementById('rel-icon-png')
@@ -95,9 +100,11 @@ export const useThemeSync = () => {
   const [themePreference] = useThemePreference();
   const [theme] = useTheme();
 
+  const navigatorOnLine = useNavigatorOnLine();
+
   const systemDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   useEffect(() => {
-    syncTheme(themePreference, theme);
-  }, [themePreference, theme, systemDarkMode]);
+    syncTheme(themePreference, theme, navigatorOnLine);
+  }, [themePreference, theme, navigatorOnLine, systemDarkMode]);
 };

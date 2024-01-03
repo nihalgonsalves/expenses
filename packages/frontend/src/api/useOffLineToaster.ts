@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
+import { durationMilliseconds } from '../utils/utils';
 
 const TOAST_ID = 'network-toast';
 
@@ -13,15 +14,15 @@ export const useOffLineToaster = () => {
       toast.success('Connected!', {
         id: TOAST_ID,
         style: {},
-        duration: 1_000,
+        duration: durationMilliseconds({ seconds: 1 }),
       });
     } else {
-      toast(() => 'You are offline', {
+      toast(() => 'Network disconnected', {
         id: TOAST_ID,
         style: {
-          color: 'hsl(var(--wa))',
+          backgroundColor: 'hsl(var(--muted))',
+          color: 'hsl(var(--muted-foreground))',
         },
-        duration: Infinity,
       });
     }
   }, [onLine]);

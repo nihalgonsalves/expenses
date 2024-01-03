@@ -75,6 +75,8 @@ export const Root = ({
   className,
 }: RootProps) => {
   const navigate = useNavigate();
+  // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
+  const navigatorOnLine = useNavigatorOnLine();
 
   return (
     <>
@@ -82,6 +84,11 @@ export const Root = ({
         <title>{`Expenses - ${title}`}</title>
       </Helmet>
       <div className="m-auto flex h-dvh flex-col">
+        {!navigatorOnLine && (
+          <div className="bg-muted p-1 text-center text-xs tracking-tighter text-muted-foreground">
+            You are offline
+          </div>
+        )}
         <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
           {showBackButton && (
             <Button
