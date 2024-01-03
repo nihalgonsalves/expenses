@@ -628,7 +628,7 @@ const SplitsFormSection = ({
         })}
       </div>
       {splitErrorMessage && !ratioFocused && (
-        <Alert variant="destructive">
+        <Alert $variant="destructive">
           <AlertTitle>{splitErrorMessage}</AlertTitle>
         </Alert>
       )}

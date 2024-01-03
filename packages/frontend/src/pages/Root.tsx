@@ -294,7 +294,7 @@ export const RootLoader = <
       <ErrorBoundary>
         <AnimatePresence mode="wait">
           {result.error != null && (
-            <Alert variant="destructive">
+            <Alert $variant="destructive">
               <AlertTitle>{result.error.message}</AlertTitle>
             </Alert>
           )}

@@ -63,7 +63,7 @@ export class ErrorBoundary extends React.Component<{
 
       return (
         <div className="p-4">
-          <Alert variant="destructive" className="flex flex-col gap-2">
+          <Alert $variant="destructive" className="flex flex-col gap-2">
             <AlertTitle>Something went wrong</AlertTitle>
             <AlertDescription className="flex gap-2">
               <RetryErrorButton

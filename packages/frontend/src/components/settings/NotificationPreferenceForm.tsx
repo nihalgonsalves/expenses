@@ -122,7 +122,7 @@ export const NotificationPreferenceForm = () => {
       </CardHeader>
       <CardContent className="flex flex-col gap-8">
         {permission === 'denied' && (
-          <Alert variant="destructive">
+          <Alert $variant="destructive">
             <ExclamationTriangleIcon className="size-4" />
             <AlertTitle>You have denied notifications.</AlertTitle>
             <AlertDescription>
@@ -134,7 +134,7 @@ export const NotificationPreferenceForm = () => {
         )}
 
         {permission === 'not_supported' && (
-          <Alert variant="destructive">
+          <Alert $variant="destructive">
             <ExclamationTriangleIcon className="size-4" />
             <AlertTitle>
               Push notifications are not supported in your browser or

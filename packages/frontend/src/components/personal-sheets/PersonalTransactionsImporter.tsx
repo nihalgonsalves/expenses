@@ -456,7 +456,7 @@ export const PersonalTransactionsImporter = ({
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">Upload File</h2>
           {csvError && (
-            <Alert variant="destructive">
+            <Alert $variant="destructive">
               <AlertTitle>CSV Error</AlertTitle>
               <AlertDescription>{csvError}</AlertDescription>
             </Alert>
