@@ -40,7 +40,7 @@ export const AppearanceForm = () => {
   const { data: supportedCurrencies = [] } = useSupportedCurrencies();
 
   return (
-    <Card className="flex flex-col border-0 md:border-2">
+    <Card className="flex flex-col">
       <CardHeader>
         <CardTitle>Appearance</CardTitle>
       </CardHeader>
