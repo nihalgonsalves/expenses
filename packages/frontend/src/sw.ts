@@ -1,6 +1,5 @@
 /// <reference lib="webworker" />
 
-import { clientsClaim } from 'workbox-core';
 import {
   cleanupOutdatedCaches,
   createHandlerBoundToURL,
@@ -18,9 +17,6 @@ import { getTransactionDescription } from './utils/utils';
 
 declare let self: ServiceWorkerGlobalScope;
 
-void self.skipWaiting();
-
-clientsClaim();
 cleanupOutdatedCaches();
 
 if (!import.meta.env.DEV) {
@@ -83,4 +79,13 @@ const handlePush = async (event: PushEvent) => {
 
 self.addEventListener('push', (event) => {
   event.waitUntil(handlePush(event));
+});
+
+/**
+ * see packages/frontend/src/registerSW.tsx
+ */
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+    void self.skipWaiting();
+  }
 });

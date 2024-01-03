@@ -6,17 +6,22 @@ import { Toaster } from 'react-hot-toast';
 import { TrpcProvider } from './api/TrpcProvider';
 import { useOffLineToaster } from './api/useOffLineToaster';
 import { usePrefetchQueries } from './api/usePrefetchQueries';
-import { registerSW } from './registerSW';
+import { registerSW, useSwUpdateCheck } from './registerSW';
 import { RouterProvider, router } from './router';
 import { useThemeSync } from './state/theme';
 import { useHydrateState } from './state/useHydrateState';
 
-void registerSW();
+await registerSW();
 
 // TODO: Use a react-query client instead of baked-in data
 await initEmojiMart({ data: emojiMartData });
 
+import.meta.hot?.accept(() => {
+  void registerSW();
+});
+
 const GlobalHookContainer = () => {
+  useSwUpdateCheck();
   useOffLineToaster();
   usePrefetchQueries();
   useHydrateState();
