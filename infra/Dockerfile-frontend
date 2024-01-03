@@ -20,7 +20,7 @@ COPY ./packages/backend/ ./packages/backend/
 COPY ./packages/shared/ ./packages/shared/
 COPY ./packages/e2e/ ./packages/e2e/
 
-RUN yarn fe build
+RUN yarn fe build:vite
 
 FROM caddy:2.6-alpine
 
