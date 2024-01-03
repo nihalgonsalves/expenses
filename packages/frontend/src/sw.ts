@@ -12,6 +12,7 @@ import {
   type NotificationPayload,
 } from '@nihalgonsalves/expenses-shared/types/notification';
 
+import { prefsDexie } from './state/preferences';
 import { formatCurrency } from './utils/money';
 import { getTransactionDescription } from './utils/utils';
 
@@ -79,6 +80,25 @@ const handlePush = async (event: PushEvent) => {
 
 self.addEventListener('push', (event) => {
   event.waitUntil(handlePush(event));
+});
+
+// The SKIP_WAITING message from registerSW.tsx will never be received here if the loaded
+// app was before the behaviour changed from update to skip waiting. Hence retain the previous
+// behaviour for a single load, then save a flag that tells us not to do that again
+
+self.addEventListener('install', (event) => {
+  const KEY = 'swPromptForUpdate';
+
+  event.waitUntil(
+    (async () => {
+      const preference = await prefsDexie.preferences.get(KEY);
+
+      if (preference === undefined) {
+        await self.skipWaiting();
+        await prefsDexie.preferences.put({ key: KEY, value: true });
+      }
+    })(),
+  );
 });
 
 /**

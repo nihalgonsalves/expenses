@@ -20,19 +20,19 @@ class PreferencesDexie extends Dexie {
   }
 }
 
-const prefs = new PreferencesDexie();
+export const prefsDexie = new PreferencesDexie();
 
 const createUsePreference = <T>(key: string, parse: (value: unknown) => T) => {
   const getPreference = async () => {
-    const item = await prefs.preferences.get(key);
+    const item = await prefsDexie.preferences.get(key);
     return item === undefined ? undefined : parse(item.value);
   };
 
   const setPreference = async (value: T | undefined) => {
     if (value === undefined) {
-      await prefs.preferences.delete(key);
+      await prefsDexie.preferences.delete(key);
     } else {
-      await prefs.preferences.put({ key, value });
+      await prefsDexie.preferences.put({ key, value });
     }
   };
 
