@@ -4,6 +4,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { describe, it, expect } from 'vitest';
 
 import {
+  CURRENT_TIMEZONE,
   durationMilliseconds,
   formatDateRelative,
   formatDateTimeRelative,
@@ -55,13 +56,15 @@ describe('formatDateRelative', () => {
   });
 
   it.each<[Temporal.DurationLike, string]>([
-    [{ days: 1, hours: 6 }, 'Yesterday'],
+    [{ days: 1 }, 'Yesterday'],
     [{ seconds: 0 }, 'Today'],
     [{ days: -1 }, 'Tomorrow'],
   ])('returns the correct relative date', (duration, expected) => {
     expect(
       formatDateRelative(
-        Temporal.Now.zonedDateTimeISO().subtract(duration).toString(),
+        Temporal.Now.zonedDateTimeISO(CURRENT_TIMEZONE)
+          .subtract(duration)
+          .toString(),
       ),
     ).toBe(expected);
   });
