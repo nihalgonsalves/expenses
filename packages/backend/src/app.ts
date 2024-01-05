@@ -58,6 +58,19 @@ void (async () => {
       port: config.PORT,
     });
 
+    process.on('SIGINT', () => {
+      console.log(`SIGINT received, shutting web server down`);
+
+      void server
+        .close()
+        .then(() => {
+          process.exit();
+        })
+        .catch(() => {
+          process.exit(1);
+        });
+    });
+
     console.log(`Server running at ${address}`);
   } catch (e) {
     server.log.error(e);

@@ -8,21 +8,31 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? 'github' : 'html',
+  reporter: [
+    [process.env.CI ? 'github' : 'html'],
+    ['line'],
+    [
+      '@argos-ci/playwright/reporter',
+      {
+        uploadToArgos: !!process.env.CI,
+        token: process.env.ARGOS_TOKEN,
+      },
+    ],
+  ],
   use: {
     baseURL: 'http://localhost:5173',
-    trace: 'on-first-retry',
+    trace: 'on',
+    screenshot: 'on',
   },
-  webServer: process.env.CI
-    ? {
-        command: 'yarn dev:vite',
-        cwd: fileURLToPath(new URL('../frontend/', import.meta.url).toString()),
-        port: 5173,
-        env: {
-          VITE_COVERAGE: '1',
-        },
-      }
-    : undefined,
+  webServer: {
+    reuseExistingServer: true,
+    command: 'yarn start:e2e',
+    cwd: fileURLToPath(new URL('../../', import.meta.url).toString()),
+    port: 5173,
+    env: {
+      VITE_COVERAGE: '1',
+    },
+  },
   projects: [
     {
       name: 'chromium',

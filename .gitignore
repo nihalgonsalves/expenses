@@ -99,3 +99,8 @@ dist
 
 # lefthook local-only file
 lefthook-local.yml
+
+# e2e
+packages/e2e/test-results/
+packages/e2e/playwright-report/
+packages/e2e/playwright/.cache/
