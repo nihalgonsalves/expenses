@@ -19,7 +19,7 @@ jobs:
           cache: yarn
 
       - run: yarn install --immutable
-      - run: yarn build
+      - run: yarn build:tsc
 
       - run: yarn lint
       - uses: hadolint/hadolint-action@v3.1.0
@@ -40,7 +40,6 @@ jobs:
           # https://www.chromatic.com/docs/github-actions/
           fetch-depth: 0
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
-      # this is to fix GIT not liking owner of the checkout dir
       - run: chown -R $(id -u):$(id -g) $PWD
       # waiting on: https://github.com/actions/setup-node/issues/531
       - run: corepack enable
@@ -125,6 +124,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
+      - run: chown -R $(id -u):$(id -g) $PWD
       # waiting on: https://github.com/actions/setup-node/issues/531
       - run: corepack enable
       - uses: actions/setup-node@v4
@@ -137,16 +138,10 @@ jobs:
       - working-directory: ./packages/backend/
         # TODO: put VAPID keys into GHA and remove this step
         run: yarn prepare:e2e && yarn prisma migrate deploy
-      - working-directory: ./packages/backend/
-        name: start backend
-        env:
-          NODE_ENV: production
-        run: |
-          yarn run-s 'build' 'start' &
-          yarn wait-on tcp:5174
-
       - working-directory: ./packages/e2e/
         run: yarn test
+        env:
+          ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -154,13 +149,6 @@ jobs:
           path: packages/e2e/coverage/
           if-no-files-found: error
           retention-days: 1
-
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: packages/e2e/playwright-report/
-          retention-days: 7
 
   codecov:
     timeout-minutes: 5

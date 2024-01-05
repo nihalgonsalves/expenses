@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "run-p 'dev:*'",
-    "dev:vite": "vite",
+    "dev:vite": "vite --port 5173",
     "dev:storybook": "storybook dev -p 6006",
     "build": "run-p 'build:*'",
     "build:vite": "vite build",
     "build:storybook": "storybook build --output-dir=./build/storybook",
     "chromatic": "chromatic --build-script-name='build:storybook'",
-    "preview:vite": "vite preview",
+    "preview:vite": "vite preview --port 5173",
     "preview:storybook": "serve --listen 6006 build/storybook",
     "test": "vitest",
     "test:storybook": "test-storybook --coverage"
