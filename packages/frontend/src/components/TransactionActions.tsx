@@ -4,7 +4,8 @@ import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/
 
 import { trpc } from '../api/trpc';
 
-import { ConfirmButton } from './form/ConfirmButton';
+import { ConfirmDialog } from './form/ConfirmDialog';
+import { Button } from './ui/button';
 
 export const TransactionActions = ({
   sheetId,
@@ -28,15 +29,15 @@ export const TransactionActions = ({
   };
 
   return (
-    <ConfirmButton
-      isLoading={isLoading}
-      label={
-        <>
+    <ConfirmDialog
+      trigger={
+        <Button isLoading={isLoading} variant="destructive">
           <TrashIcon className="mr-2" /> Delete Transaction
-        </>
+        </Button>
       }
-      confirmLabel="Confirm Delete (Irreversible)"
-      handleConfirmed={handleDelete}
+      confirmLabel="Delete"
+      description="Are you sure you want to delete this transaction?"
+      onConfirm={handleDelete}
     />
   );
 };
