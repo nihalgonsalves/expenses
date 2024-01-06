@@ -7,9 +7,9 @@ import { expect, test } from '../utils/test';
     await page.getByRole('link', { name: 'Sheets' }).click();
     await expect(page.getByText('No sheets')).toBeVisible();
 
-    await page.getByRole('link', { name: 'New Sheet' }).click();
+    await page.getByRole('button', { name: 'New Sheet' }).click();
 
-    await page.getByRole('radio', { name: new RegExp(type, 'i') }).check();
+    await page.getByRole('tab', { name: new RegExp(type, 'i') }).click();
 
     await page.getByLabel(/sheet name/i).fill('Test Sheet');
     await page.getByRole('button', { name: /create/i }).click();

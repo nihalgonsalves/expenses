@@ -27,6 +27,7 @@ const DenseTransactionListItem = forwardRef<
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      role="listitem"
     >
       <CategoryAvatar category={transaction.category} />
       <div>
@@ -59,7 +60,7 @@ export const GroupSheetTransactionsDenseList = ({
 }: {
   transactions: GroupSheetTransactionListItem[];
 }) => (
-  <div className="flex flex-col gap-4">
+  <div className="flex flex-col gap-4" role="list">
     <AnimatePresence mode="popLayout" initial={false}>
       {transactions.map((transaction) => (
         <DenseTransactionListItem

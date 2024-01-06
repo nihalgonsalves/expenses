@@ -2,6 +2,7 @@ import { PlusIcon } from '@radix-ui/react-icons';
 
 import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionButton';
+import { CreatePersonalTransactionDialog } from '../../../components/personal-sheets/CreatePersonalTransactionDialog';
 import { PersonalSheetTransactionsExpandedList } from '../../../components/personal-sheets/PersonalSheetTransactionsExpandedList';
 import { SheetParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';
@@ -18,10 +19,11 @@ export const PersonalExpensesIndexPage = () => {
       title="Transactions"
       showBackButton
       additionalChildren={
-        <FloatingActionButton
-          to={`/sheets/${sheetId}/transactions/new`}
-          label="Add Transaction"
-          icon={<PlusIcon />}
+        <CreatePersonalTransactionDialog
+          sheetId={sheetId}
+          trigger={
+            <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
+          }
         />
       }
       render={({ transactions }) => (

@@ -1,9 +1,10 @@
 import { PlusIcon } from '@radix-ui/react-icons';
-import { Link } from 'react-router-dom';
 
 import { trpc } from '../../api/trpc';
 import { FloatingActionButton } from '../FloatingActionButton';
 import { ResponsiveDialog } from '../form/ResponsiveDialog';
+import { CreateGroupSheetTransactionDialog } from '../group-sheets/CreateGroupSheetTransactionDialog';
+import { CreatePersonalTransactionDialog } from '../personal-sheets/CreatePersonalTransactionDialog';
 import { Button } from '../ui/button';
 
 export const QuickCreateTransactionFAB = () => {
@@ -20,20 +21,29 @@ export const QuickCreateTransactionFAB = () => {
     >
       <div className="flex flex-col gap-4 mt-2">
         {sheets?.length === 0 && 'No unarchived sheets found'}
-
-        {sheets?.map((sheet) => (
-          <Button key={sheet.id} className="w-full" $variant="outline" asChild>
-            <Link
-              to={
-                sheet.type === 'PERSONAL'
-                  ? `/sheets/${sheet.id}/transactions/new`
-                  : `/groups/${sheet.id}/transactions/new`
+        {sheets?.map((sheet) =>
+          sheet.type === 'PERSONAL' ? (
+            <CreatePersonalTransactionDialog
+              key={sheet.id}
+              sheetId={sheet.id}
+              trigger={
+                <Button className="w-full" $variant="outline">
+                  {sheet.name}
+                </Button>
               }
-            >
-              {sheet.name}
-            </Link>
-          </Button>
-        ))}
+            />
+          ) : (
+            <CreateGroupSheetTransactionDialog
+              key={sheet.id}
+              sheetId={sheet.id}
+              trigger={
+                <Button className="w-full" $variant="outline">
+                  {sheet.name}
+                </Button>
+              }
+            />
+          ),
+        )}
       </div>
     </ResponsiveDialog>
   );

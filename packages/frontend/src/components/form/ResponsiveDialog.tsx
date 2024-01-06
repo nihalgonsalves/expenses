@@ -1,6 +1,8 @@
+import { ScrollArea } from '@radix-ui/react-scroll-area';
 import type { VariantProps } from 'class-variance-authority';
-import { useAtom } from 'jotai';
-import { useCallback, useState } from 'react';
+import { atom, useAtom } from 'jotai';
+import { ScopeProvider } from 'jotai-scope';
+import { useCallback } from 'react';
 import { useMedia } from 'react-use';
 
 import { vaulDrawerOpenAtom } from '../../state/theme';
@@ -52,15 +54,19 @@ type ResponsiveDialogProps = {
       variant?: VariantProps<typeof buttonVariants>['$variant'];
     }
 );
-export const ResponsiveDialog = ({
+
+export const responsiveDialogOpen = atom(false);
+
+const ResponsiveDialogInner = ({
   trigger,
   title,
   description,
   children,
   ...props
 }: ResponsiveDialogProps) => {
-  const [open, setOpen] = useState(false);
   const isDesktop = useMedia('(min-width: 768px)');
+
+  const [open, setOpen] = useAtom(responsiveDialogOpen);
   const [, setVaulDrawerOpen] = useAtom(vaulDrawerOpenAtom);
 
   const handleSetOpen = useCallback(
@@ -68,7 +74,7 @@ export const ResponsiveDialog = ({
       setOpen(value);
       setVaulDrawerOpen(value);
     },
-    [setVaulDrawerOpen],
+    [setVaulDrawerOpen, setOpen],
   );
 
   if (isDesktop) {
@@ -83,7 +89,7 @@ export const ResponsiveDialog = ({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction $variant={props.variant} asChild>
+              <AlertDialogAction tabIndex={0} $variant={props.variant} asChild>
                 <Button
                   onClick={async (e) => {
                     await props.onConfirm(e);
@@ -103,7 +109,7 @@ export const ResponsiveDialog = ({
     return (
       <Dialog open={open} onOpenChange={handleSetOpen}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="max-w-5xl">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
@@ -117,12 +123,12 @@ export const ResponsiveDialog = ({
   return (
     <Drawer open={open} onOpenChange={handleSetOpen}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="max-h-dvh">
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
-        <div className="px-4">{children}</div>
+        <ScrollArea className="overflow-y-auto px-4">{children}</ScrollArea>
         <DrawerFooter>
           {props.alert && (
             <Button
@@ -144,3 +150,10 @@ export const ResponsiveDialog = ({
     </Drawer>
   );
 };
+
+// Scope the dialogOpen atom to each instance, but have a global vaulDialogOpen for the themeing
+export const ResponsiveDialog = (props: ResponsiveDialogProps) => (
+  <ScopeProvider atoms={[responsiveDialogOpen]}>
+    <ResponsiveDialogInner {...props} />
+  </ScopeProvider>
+);

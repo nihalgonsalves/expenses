@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useAtom } from 'jotai';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -11,6 +11,7 @@ import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { toMoneyValues } from '../../utils/money';
 import { MoneyField } from '../form/MoneyField';
+import { responsiveDialogOpen } from '../form/ResponsiveDialog';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -31,7 +32,8 @@ export const SettlementForm = ({
   me: User;
 }) => {
   const onLine = useNavigatorOnLine();
-  const navigate = useNavigate();
+
+  const [, setOpen] = useAtom(responsiveDialogOpen);
 
   const formSchema = ZCreateGroupSheetSettlementInput.omit({
     money: true,
@@ -74,7 +76,7 @@ export const SettlementForm = ({
       utils.transaction.getSimplifiedBalances.invalidate(groupSheet.id),
     ]);
 
-    navigate(`/groups/${groupSheet.id}`, { replace: true });
+    setOpen(false);
   };
 
   const disabled = !onLine;

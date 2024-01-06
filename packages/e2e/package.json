@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "playwright test",
+    "ui": "playwright test --ui",
+    "codegen": "playwright codegen http://localhost:5173/",
     "prepare": "playwright install",
     "prepare-pw": "playwright install --with-deps"
   },

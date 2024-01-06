@@ -1,4 +1,3 @@
-import { DevTool } from '@hookform/devtools';
 import { Slot } from '@radix-ui/react-slot';
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import * as React from 'react';
@@ -18,7 +17,7 @@ import { cn } from './utils';
 
 const Form: typeof FormProvider = ({ children, ...props }) => (
   <div className="relative">
-    {import.meta.env.DEV && (
+    {/* {import.meta.env.DEV && (
       <DevTool
         control={props.control}
         placement="bottom-left"
@@ -33,7 +32,7 @@ const Form: typeof FormProvider = ({ children, ...props }) => (
           },
         }}
       />
-    )}
+    )} */}
     <FormProvider {...props}>{children}</FormProvider>{' '}
   </div>
 );

@@ -15,12 +15,8 @@ import { SettingsPage } from './pages/SettingsPage';
 import { SheetsIndexPage } from './pages/SheetsIndexPage';
 import { GroupDetailPage } from './pages/groups/GroupDetailPage';
 import { GroupTransactionsIndexPage } from './pages/groups/transactions/GroupTransactionsIndexPage';
-import { NewGroupSheetTransactionPage } from './pages/groups/transactions/NewGroupSheetTransactionPage';
-import { NewSheetPage } from './pages/sheets/NewSheetPage';
 import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
 import { SheetImportPage } from './pages/sheets/SheetImportPage';
-import { EditPersonalSheetTransactionPage } from './pages/sheets/transactions/EditPersonalSheetTransactionPage';
-import { NewPersonalSheetTransactionPage } from './pages/sheets/transactions/NewPersonalSheetTransactionPage';
 import { PersonalExpensesIndexPage } from './pages/sheets/transactions/PersonalTransactionsIndexPage';
 import { StatsIndexPage } from './pages/stats/StatsIndexPage';
 import { TransactionsIndexPage } from './pages/transactions/TransactionsIndexPage';
@@ -100,14 +96,6 @@ export const router = createBrowserRouter([
                   </AuthenticatedRoute>
                 ),
               },
-              {
-                path: '/groups/:sheetId/transactions/new',
-                element: (
-                  <AuthenticatedRoute>
-                    <NewGroupSheetTransactionPage />
-                  </AuthenticatedRoute>
-                ),
-              },
             ],
           },
         ],
@@ -120,14 +108,6 @@ export const router = createBrowserRouter([
             element: (
               <AuthenticatedRoute>
                 <SheetsIndexPage />
-              </AuthenticatedRoute>
-            ),
-          },
-          {
-            path: '/sheets/new',
-            element: (
-              <AuthenticatedRoute>
-                <NewSheetPage />
               </AuthenticatedRoute>
             ),
           },
@@ -147,22 +127,6 @@ export const router = createBrowserRouter([
                 element: (
                   <AuthenticatedRoute>
                     <PersonalExpensesIndexPage />
-                  </AuthenticatedRoute>
-                ),
-              },
-              {
-                path: '/sheets/:sheetId/transactions/new',
-                element: (
-                  <AuthenticatedRoute>
-                    <NewPersonalSheetTransactionPage />
-                  </AuthenticatedRoute>
-                ),
-              },
-              {
-                path: '/sheets/:sheetId/transactions/:transactionId',
-                element: (
-                  <AuthenticatedRoute>
-                    <EditPersonalSheetTransactionPage />
                   </AuthenticatedRoute>
                 ),
               },

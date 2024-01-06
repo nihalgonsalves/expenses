@@ -10,6 +10,7 @@ import {
   TokensIcon,
 } from '@radix-ui/react-icons';
 import { type Dinero, allocate } from 'dinero.js';
+import { useAtom } from 'jotai';
 import { useCallback, useMemo, useState } from 'react';
 import {
   useFieldArray,
@@ -17,7 +18,6 @@ import {
   useFormContext,
   useWatch,
 } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import {
@@ -52,6 +52,7 @@ import { Avatar } from '../Avatar';
 import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
+import { responsiveDialogOpen } from '../form/ResponsiveDialog';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Alert, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
@@ -645,11 +646,12 @@ export const TransactionForm = ({
   me: User;
   type: Exclude<TransactionType, 'TRANSFER'>;
 }) => {
+  const [, setOpen] = useAtom(responsiveDialogOpen);
+
   const utils = trpc.useUtils();
   const { mutateAsync: createGroupSheetTransaction, isLoading } =
     trpc.transaction.createGroupSheetTransaction.useMutation();
 
-  const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -725,7 +727,7 @@ export const TransactionForm = ({
       });
     }
 
-    navigate(`/groups/${groupSheet.id}`);
+    setOpen(false);
 
     await Promise.all([
       utils.transaction.getAllUserTransactions.invalidate(),
@@ -869,13 +871,12 @@ export const TransactionForm = ({
         <SplitsFormSection groupSheet={groupSheet} rate={rate} />
 
         <Button
-          className="w-full"
+          className="w-full capitalize"
           isLoading={isLoading}
           type="submit"
           disabled={disabled}
         >
-          <PlusIcon className="mr-2" /> Add{' '}
-          {type === 'EXPENSE' ? 'Expense' : 'Income'}
+          <PlusIcon className="mr-2" /> Add {type.toLocaleLowerCase()}
         </Button>
       </form>
     </Form>

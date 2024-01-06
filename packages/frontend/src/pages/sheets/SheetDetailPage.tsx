@@ -12,6 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { trpc } from '../../api/trpc';
 import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { ConfirmDialog } from '../../components/form/ConfirmDialog';
+import { CreatePersonalTransactionDialog } from '../../components/personal-sheets/CreatePersonalTransactionDialog';
 import { ExportPersonalTransactionsDropdown } from '../../components/personal-sheets/ExportPersonalTransactionsDropdown';
 import { PersonalSheet } from '../../components/personal-sheets/PersonalSheet';
 import { Button } from '../../components/ui/button';
@@ -111,10 +112,11 @@ export const SheetDetailPage = () => {
         </DropdownMenu>
       }
       additionalChildren={
-        <FloatingActionButton
-          to={`/sheets/${sheetId}/transactions/new`}
-          label="Add Transaction"
-          icon={<PlusIcon />}
+        <CreatePersonalTransactionDialog
+          sheetId={sheetId}
+          trigger={
+            <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
+          }
         />
       }
     />

@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
 import { PersonIcon, PlusIcon, TrashIcon } from '@radix-ui/react-icons';
+import { useAtom } from 'jotai';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import type { z } from 'zod';
@@ -10,6 +11,7 @@ import { ZCreateGroupSheetInput } from '@nihalgonsalves/expenses-shared/types/sh
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { CurrencySelect } from '../form/CurrencySelect';
+import { responsiveDialogOpen } from '../form/ResponsiveDialog';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -27,6 +29,8 @@ export const CreateGroupForm = ({
 }: {
   defaultCurrencyCode: string;
 }) => {
+  const [, setOpen] = useAtom(responsiveDialogOpen);
+
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
@@ -60,6 +64,7 @@ export const CreateGroupForm = ({
   const onSubmit = async (values: z.infer<typeof ZCreateGroupSheetInput>) => {
     const { id } = await createGroupSheet(values);
 
+    setOpen(false);
     navigate(`/groups/${id}`, { replace: true });
 
     await utils.sheet.mySheets.invalidate();

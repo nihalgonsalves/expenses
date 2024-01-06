@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusCircledIcon } from '@radix-ui/react-icons';
+import { useAtom } from 'jotai';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import type { z } from 'zod';
@@ -9,6 +10,7 @@ import { ZCreatePersonalSheetInput } from '@nihalgonsalves/expenses-shared/types
 import { trpc } from '../../api/trpc';
 import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
 import { CurrencySelect } from '../form/CurrencySelect';
+import { responsiveDialogOpen } from '../form/ResponsiveDialog';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -25,6 +27,8 @@ export const CreateSheetForm = ({
 }: {
   defaultCurrencyCode: string;
 }) => {
+  const [, setOpen] = useAtom(responsiveDialogOpen);
+
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
@@ -46,6 +50,7 @@ export const CreateSheetForm = ({
   ) => {
     const { id } = await createSheet(values);
 
+    setOpen(false);
     navigate(`/sheets/${id}`, { replace: true });
 
     await utils.sheet.mySheets.invalidate();

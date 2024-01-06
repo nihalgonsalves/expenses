@@ -2,6 +2,7 @@ import { PlusIcon } from '@radix-ui/react-icons';
 
 import { trpc } from '../api/trpc';
 import { FloatingActionButton } from '../components/FloatingActionButton';
+import { NewSheetDialog } from '../components/NewSheetDialog';
 import { SheetsList } from '../components/SheetsList';
 
 import { RootLoader } from './Root';
@@ -15,10 +16,10 @@ export const SheetsIndexPage = () => {
       title="Sheets"
       className="p-2"
       additionalChildren={
-        <FloatingActionButton
-          to="/sheets/new"
-          label="New Sheet"
-          icon={<PlusIcon />}
+        <NewSheetDialog
+          trigger={
+            <FloatingActionButton label="New Sheet" icon={<PlusIcon />} />
+          }
         />
       }
       render={(sheets) => <SheetsList sheets={sheets} />}

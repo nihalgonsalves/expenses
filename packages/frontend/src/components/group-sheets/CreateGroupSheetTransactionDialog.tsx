@@ -9,6 +9,9 @@ import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/typ
 import type { TransactionType } from '@nihalgonsalves/expenses-shared/types/transaction';
 import type { User } from '@nihalgonsalves/expenses-shared/types/user';
 
+import { trpc } from '../../api/trpc';
+import { useCurrentUser } from '../../api/useCurrentUser';
+import { ResponsiveDialog } from '../form/ResponsiveDialog';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 
 import { SettlementForm } from './SettlementForm';
@@ -67,5 +70,25 @@ export const CreateGroupSheetTransactionForm = ({
         <TransactionForm type={type} groupSheet={groupSheet} me={me} />
       )}
     </div>
+  );
+};
+
+export const CreateGroupSheetTransactionDialog = ({
+  sheetId,
+  trigger,
+}: {
+  sheetId: string;
+  trigger: React.ReactNode;
+}) => {
+  const { data: groupSheet } = trpc.sheet.groupSheetById.useQuery(sheetId);
+
+  const { data: me } = useCurrentUser();
+
+  return (
+    <ResponsiveDialog trigger={trigger} title="Add Transaction">
+      {groupSheet && me && (
+        <CreateGroupSheetTransactionForm groupSheet={groupSheet} me={me} />
+      )}
+    </ResponsiveDialog>
   );
 };

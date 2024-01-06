@@ -2,7 +2,6 @@ import { Temporal } from '@js-temporal/polyfill';
 import { Pencil1Icon } from '@radix-ui/react-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 import { forwardRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
 import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
@@ -28,6 +27,8 @@ import {
   CollapsibleTrigger,
 } from '../ui/collapsible';
 import { Separator } from '../ui/separator';
+
+import { EditPersonalTransactionDialog } from './EditPersonalTransactionForm';
 
 const MotionCard = motion(Card);
 
@@ -74,14 +75,15 @@ const ExpandedTransactionListItem = forwardRef<
         </CardHeader>
         <CollapsibleContent>
           <CardContent className="flex flex-col gap-4">
-            <Button $variant="outline" asChild>
-              <Link
-                to={`/sheets/${personalSheetId}/transactions/${transaction.id}`}
-              >
-                <Pencil1Icon className="mr-2" /> Edit
-              </Link>
-            </Button>
-
+            <EditPersonalTransactionDialog
+              sheetId={personalSheetId}
+              transactionId={transaction.id}
+              trigger={
+                <Button $variant="outline">
+                  <Pencil1Icon className="mr-2" /> Edit
+                </Button>
+              }
+            />
             <TransactionActions
               sheetId={personalSheetId}
               transaction={transaction}

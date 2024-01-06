@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
 import { ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
+import { useAtom } from 'jotai';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -24,6 +25,10 @@ import {
 import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
+import {
+  ResponsiveDialog,
+  responsiveDialogOpen,
+} from '../form/ResponsiveDialog';
 import { Select, type SelectOption } from '../form/Select';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Button } from '../ui/button';
@@ -92,11 +97,13 @@ const formSchema = ZCreatePersonalSheetTransactionInput.merge(
     dateTime: z.string().min(1),
   });
 
-export const CreatePersonalTransactionForm = ({
+const CreatePersonalTransactionForm = ({
   personalSheet,
 }: {
   personalSheet: Sheet;
 }) => {
+  const [, setOpen] = useAtom(responsiveDialogOpen);
+
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
@@ -172,8 +179,9 @@ export const CreatePersonalTransactionForm = ({
         ...commonValues,
         spentAt: dateTimeLocalToZonedISOString(dateTime),
       });
-      navigate(`/sheets/${personalSheet.id}/transactions`, { replace: true });
     }
+
+    setOpen(false);
 
     await Promise.all([
       utils.transaction.getAllUserTransactions.invalidate(),
@@ -328,14 +336,33 @@ export const CreatePersonalTransactionForm = ({
         />
 
         <Button
-          className="w-full"
+          className="w-full capitalize"
           type="submit"
           disabled={disabled}
           isLoading={isLoading}
         >
-          Create
+          Add {type.toLocaleLowerCase()}
         </Button>
       </form>
     </Form>
+  );
+};
+
+export const CreatePersonalTransactionDialog = ({
+  trigger,
+  sheetId,
+}: {
+  trigger: React.ReactNode;
+  sheetId: string;
+}) => {
+  const { data: personalSheet } =
+    trpc.sheet.personalSheetById.useQuery(sheetId);
+
+  return (
+    <ResponsiveDialog trigger={trigger} title="Add Transaction">
+      {personalSheet && (
+        <CreatePersonalTransactionForm personalSheet={personalSheet} />
+      )}
+    </ResponsiveDialog>
   );
 };

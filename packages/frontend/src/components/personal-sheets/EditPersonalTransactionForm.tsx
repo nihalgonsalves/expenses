@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
+import { useAtom } from 'jotai';
 import { useForm, useWatch } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
@@ -21,6 +21,10 @@ import {
 import { CategorySelect } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
+import {
+  ResponsiveDialog,
+  responsiveDialogOpen,
+} from '../form/ResponsiveDialog';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -43,14 +47,15 @@ const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
   amount: z.number().positive({ message: 'Amount is required' }),
 });
 
-export const EditPersonalTransactionForm = ({
+const EditPersonalTransactionForm = ({
   transaction,
   personalSheet,
 }: {
   transaction: TransactionListItem;
   personalSheet: Sheet;
 }) => {
-  const navigate = useNavigate();
+  const [, setOpen] = useAtom(responsiveDialogOpen);
+
   const onLine = useNavigatorOnLine();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -100,7 +105,7 @@ export const EditPersonalTransactionForm = ({
       description: values.description,
       spentAt: dateTimeLocalToZonedISOString(values.spentAt),
     });
-    navigate(`/sheets/${personalSheet.id}/transactions`, { replace: true });
+    setOpen(false);
 
     await Promise.all([
       utils.transaction.getAllUserTransactions.invalidate(),
@@ -224,5 +229,31 @@ export const EditPersonalTransactionForm = ({
         </Button>
       </form>
     </Form>
+  );
+};
+
+export const EditPersonalTransactionDialog = ({
+  sheetId,
+  transactionId,
+  trigger,
+}: {
+  sheetId: string;
+  transactionId: string;
+  trigger: React.ReactNode;
+}) => {
+  const { data } = trpc.transaction.getTransaction.useQuery({
+    sheetId,
+    transactionId,
+  });
+
+  return (
+    <ResponsiveDialog title="Edit Transaction" trigger={trigger}>
+      {data && (
+        <EditPersonalTransactionForm
+          transaction={data.transaction}
+          personalSheet={data.sheet}
+        />
+      )}
+    </ResponsiveDialog>
   );
 };

@@ -2,6 +2,7 @@ import { PlusIcon } from '@radix-ui/react-icons';
 
 import { trpc } from '../../../api/trpc';
 import { FloatingActionButton } from '../../../components/FloatingActionButton';
+import { CreateGroupSheetTransactionDialog } from '../../../components/group-sheets/CreateGroupSheetTransactionDialog';
 import { GroupSheetTransactionsExpandedList } from '../../../components/group-sheets/GroupSheetTransactionsExpandedList';
 import { SheetParams, useParams } from '../../../router';
 import { RootLoader } from '../../Root';
@@ -18,10 +19,11 @@ export const GroupTransactionsIndexPage = () => {
       title="Transactions"
       showBackButton
       additionalChildren={
-        <FloatingActionButton
-          to={`/groups/${sheetId}/transactions/new`}
-          label="Add Transaction"
-          icon={<PlusIcon />}
+        <CreateGroupSheetTransactionDialog
+          sheetId={sheetId}
+          trigger={
+            <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
+          }
         />
       }
       render={({ transactions }) => (

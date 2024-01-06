@@ -12,6 +12,7 @@ import { useCurrentUser } from '../../api/useCurrentUser';
 import { FloatingActionButton } from '../../components/FloatingActionButton';
 import { ConfirmDialog } from '../../components/form/ConfirmDialog';
 import type { ActorInfo } from '../../components/group-sheets/BalanceSummary';
+import { CreateGroupSheetTransactionDialog } from '../../components/group-sheets/CreateGroupSheetTransactionDialog';
 import { ExportGroupTransactionsDropdown } from '../../components/group-sheets/ExportGroupTransactionsDropdown';
 import { GroupSheet } from '../../components/group-sheets/GroupSheet';
 import { Button } from '../../components/ui/button';
@@ -75,10 +76,11 @@ export const GroupDetailPage = () => {
       )}
       showBackButton
       additionalChildren={
-        <FloatingActionButton
-          to={`/groups/${sheetId}/transactions/new`}
-          label="Add Transaction"
-          icon={<PlusIcon />}
+        <CreateGroupSheetTransactionDialog
+          sheetId={sheetId}
+          trigger={
+            <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
+          }
         />
       }
       rightNavBarItems={
