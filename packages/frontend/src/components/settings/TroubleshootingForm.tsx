@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { trpc } from '../../api/trpc';
 import { useResetCache } from '../../api/useCacheReset';
 import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
 import { Button } from '../ui/button';
@@ -11,6 +12,8 @@ export const TroubleshootingForm = () => {
   const resetCache = useResetCache();
   const serviceWorker = useServiceWorkerRegistration();
 
+  const { mutateAsync: signOut } = trpc.user.signOut.useMutation();
+
   const handleResetCache = async () => {
     setState('loading');
 
@@ -19,6 +22,8 @@ export const TroubleshootingForm = () => {
 
     await resetCache();
     await serviceWorker?.unregister();
+
+    await signOut();
 
     await minTimer;
     setState('done');

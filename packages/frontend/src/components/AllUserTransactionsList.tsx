@@ -26,6 +26,7 @@ import {
 import { CategoryAvatar } from './CategoryAvatar';
 import { CategorySelect } from './form/CategorySelect';
 import { SheetSelect } from './form/SheetSelect';
+import { Alert, AlertDescription } from './ui/alert';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -229,6 +230,12 @@ export const AllUserTransactionsList = ({
           </Tabs>
         </Collapsible>
       </div>
+
+      {data.expenses.length === 0 && (
+        <Alert>
+          <AlertDescription>No transactions found</AlertDescription>
+        </Alert>
+      )}
 
       <AnimatePresence mode="popLayout" initial={false}>
         <MotionTable key={selectedView} className="p-4" {...fadeInOut}>

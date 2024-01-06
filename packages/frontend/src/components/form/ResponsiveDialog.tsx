@@ -111,8 +111,8 @@ export const ResponsiveDialog = ({
           <DrawerTitle>{title}</DrawerTitle>
           <DrawerDescription>{description}</DrawerDescription>
         </DrawerHeader>
-        <div className="p-4">{children}</div>
-        <DrawerFooter className="pt-2">
+        <div className="px-4">{children}</div>
+        <DrawerFooter>
           {props.alert && (
             <Button
               $variant={props.variant}

@@ -295,11 +295,12 @@ export const RootLoader = <
 
   useInterval(() => {
     setIsOldData(
-      intervalGreaterThan(
-        Temporal.Now.instant(),
-        dataUpdatedAt,
-        Temporal.Duration.from({ minutes: 1 }),
-      ),
+      dataUpdatedAt.epochMilliseconds !== 0 &&
+        intervalGreaterThan(
+          Temporal.Now.instant(),
+          dataUpdatedAt,
+          Temporal.Duration.from({ minutes: 1 }),
+        ),
     );
   });
 

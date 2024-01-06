@@ -74,12 +74,25 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
       if (!value) {
         void res.header('clear-site-data', '"*"');
       }
+
+      // Clear old versions of the cookie
+      void res.header(
+        'Set-Cookie',
+        cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
+          path: '/api/trpc',
+          httpOnly: true,
+          secure: config.SECURE,
+          maxAge: -1,
+        }),
+      );
+
       void res.header(
         'Set-Cookie',
         cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
           path: '/',
           httpOnly: true,
           secure: config.SECURE,
+          sameSite: 'strict',
           maxAge: value ? config.JWT_EXPIRY_SECONDS : -1,
         }),
       );
