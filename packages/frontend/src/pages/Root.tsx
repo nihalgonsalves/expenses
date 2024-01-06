@@ -306,6 +306,7 @@ export const RootLoader = <
           Temporal.Duration.from({ minutes: 1 }),
         ),
     );
+    syncMetaThemeColor();
   });
 
   return (
