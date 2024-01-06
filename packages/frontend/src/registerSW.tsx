@@ -22,6 +22,7 @@ export const useSwUpdateCheck = () => {
     queryKey: [url],
     queryFn: async () => {
       await registration?.update();
+      return null;
     },
     enabled: 'serviceWorker' in globalThis.navigator,
     networkMode: 'always',
