@@ -4,19 +4,10 @@ module.exports = {
   extends: [
     '../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react',
     'plugin:storybook/recommended',
-    'plugin:tailwindcss/recommended',
   ],
-  plugins: ['storybook', 'tailwindcss'],
+  plugins: ['storybook'],
   parserOptions: { tsconfigRootDir: __dirname },
   settings: {
-    tailwindcss: {
-      callees: ['cn', 'cva'],
-      tags: ['twx'],
-      config: path.join(__dirname, './tailwind.config.js'),
-      whitelist: [
-        '(bg|text|border)-(primary|secondary|muted|destructive|popover)(-(foreground|content))?',
-      ],
-    },
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx'],
     },
