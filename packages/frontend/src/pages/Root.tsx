@@ -213,8 +213,7 @@ export const Root = ({
                     animate={{ scale: 1 }}
                     className="flex grow justify-center p-4"
                     style={{
-                      paddingBottom:
-                        'max(1rem, calc(env(safe-area-inset-bottom) - 1rem))',
+                      paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
                     }}
                   >
                     <span />
