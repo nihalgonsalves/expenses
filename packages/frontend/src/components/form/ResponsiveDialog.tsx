@@ -1,8 +1,9 @@
 import type { VariantProps } from 'class-variance-authority';
+import { useAtom } from 'jotai';
 import { useCallback, useState } from 'react';
 import { useMedia } from 'react-use';
 
-import { syncMetaThemeColor } from '../../state/theme';
+import { vaulDrawerOpenAtom } from '../../state/theme';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,11 +61,15 @@ export const ResponsiveDialog = ({
 }: ResponsiveDialogProps) => {
   const [open, setOpen] = useState(false);
   const isDesktop = useMedia('(min-width: 768px)');
+  const [, setVaulDrawerOpen] = useAtom(vaulDrawerOpenAtom);
 
-  const handleSetOpen = useCallback((value: boolean) => {
-    setOpen(value);
-    syncMetaThemeColor(value);
-  }, []);
+  const handleSetOpen = useCallback(
+    (value: boolean) => {
+      setOpen(value);
+      setVaulDrawerOpen(value);
+    },
+    [setVaulDrawerOpen],
+  );
 
   if (isDesktop) {
     if (props.alert) {

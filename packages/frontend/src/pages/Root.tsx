@@ -11,7 +11,7 @@ import type { TRPCClientErrorLike } from '@trpc/client';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -31,7 +31,6 @@ import {
 } from '../components/ui/navigation-menu';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { cn } from '../components/ui/utils';
-import { syncMetaThemeColor } from '../state/theme';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 import { formatDateTimeRelative, intervalGreaterThan } from '../utils/temporal';
@@ -83,10 +82,6 @@ export const Root = ({
   const navigate = useNavigate();
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
   const navigatorOnLine = useNavigatorOnLine();
-
-  useEffect(() => {
-    syncMetaThemeColor();
-  }, [navigatorOnLine]);
 
   return (
     <>
@@ -306,7 +301,6 @@ export const RootLoader = <
           Temporal.Duration.from({ minutes: 1 }),
         ),
     );
-    syncMetaThemeColor();
   });
 
   return (

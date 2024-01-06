@@ -1,3 +1,4 @@
+import { atom, useAtom } from 'jotai';
 import { useCallback, useEffect } from 'react';
 import { useMedia } from 'react-use';
 import { z } from 'zod';
@@ -12,6 +13,7 @@ import { trpc } from '../api/trpc';
 import { useCurrentUser } from '../api/useCurrentUser';
 
 import { createPreferenceWithDefault } from './preferences';
+import { useNavigatorOnLine } from './useNavigatorOnLine';
 
 const ZThemePreference = z.enum(['system', 'light', 'dark']);
 
@@ -71,7 +73,9 @@ export const getThemeDataAttribute = (
   theme: Theme,
 ) => `${theme}-${isDarkMode(themePreference) ? 'dark' : 'light'}`;
 
-export const syncMetaThemeColor = (shouldDarken = false) => {
+export const vaulDrawerOpenAtom = atom(false);
+
+export const syncMetaThemeColor = (shouldDarken: boolean) => {
   // this works because the first header is the one that touches the status bar
   // if there's a "last updated at" or "offline" banner, it will still be first
   // see Root.tsx
@@ -112,17 +116,18 @@ const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
   document
     .getElementById('rel-icon-png')
     ?.setAttribute('href', `/assets/icon-${theme}.png`);
-
-  syncMetaThemeColor(false);
 };
 
 export const useThemeSync = () => {
   const [themePreference] = useThemePreference();
   const [theme] = useTheme();
+  const [vaulDrawerOpen] = useAtom(vaulDrawerOpenAtom);
+  const navigatorOnLine = useNavigatorOnLine();
 
   const systemDarkMode = useMedia('(prefers-color-scheme: dark)');
 
   useEffect(() => {
     syncTheme(themePreference, theme);
-  }, [themePreference, theme, systemDarkMode]);
+    syncMetaThemeColor(vaulDrawerOpen);
+  }, [themePreference, theme, systemDarkMode, vaulDrawerOpen, navigatorOnLine]);
 };
