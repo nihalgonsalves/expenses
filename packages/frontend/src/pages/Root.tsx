@@ -11,7 +11,7 @@ import type { TRPCClientErrorLike } from '@trpc/client';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate } from 'react-router-dom';
@@ -31,6 +31,7 @@ import {
 } from '../components/ui/navigation-menu';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { cn } from '../components/ui/utils';
+import { syncMetaThemeColor } from '../state/theme';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 import { formatDateTimeRelative, intervalGreaterThan } from '../utils/temporal';
@@ -83,6 +84,10 @@ export const Root = ({
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
   const navigatorOnLine = useNavigatorOnLine();
 
+  useEffect(() => {
+    syncMetaThemeColor();
+  }, [navigatorOnLine]);
+
   return (
     <>
       <Helmet>
@@ -90,10 +95,10 @@ export const Root = ({
       </Helmet>
       <div className="m-auto flex h-dvh flex-col">
         {(!navigatorOnLine || bannerText) && (
-          <div className="flex justify-center gap-1 bg-muted p-1 text-center text-xs tracking-tighter text-muted-foreground">
+          <header className="flex justify-center gap-1 bg-muted p-1 text-center text-xs tracking-tighter text-muted-foreground">
             {bannerText && <span>{bannerText}</span>}
             {!navigatorOnLine && <span>You are offline</span>}
-          </div>
+          </header>
         )}
         <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
           {showBackButton && (

@@ -12,7 +12,6 @@ import { trpc } from '../api/trpc';
 import { useCurrentUser } from '../api/useCurrentUser';
 
 import { createPreferenceWithDefault } from './preferences';
-import { useNavigatorOnLine } from './useNavigatorOnLine';
 
 const ZThemePreference = z.enum(['system', 'light', 'dark']);
 
@@ -72,39 +71,58 @@ export const getThemeDataAttribute = (
   theme: Theme,
 ) => `${theme}-${isDarkMode(themePreference) ? 'dark' : 'light'}`;
 
-const syncTheme = (
-  themePreference: ThemePreference,
-  theme: Theme,
-  navigatorOnLine: boolean,
-) => {
+export const syncMetaThemeColor = (shouldDarken = false) => {
+  // this works because the first header is the one that touches the status bar
+  // if there's a "last updated at" or "offline" banner, it will still be first
+  // see Root.tsx
+
+  const header = document.getElementsByTagName('header').item(0);
+
+  if (!header) {
+    return;
+  }
+
+  const { backgroundColor } = getComputedStyle(header);
+
+  const result = z
+    .tuple([z.coerce.number(), z.coerce.number(), z.coerce.number()])
+    .safeParse(backgroundColor.match(/\d+/g));
+
+  if (!result.success) {
+    return;
+  }
+
+  const [r, g, b] = result.data;
+
+  document.querySelector('meta[name="theme-color"]')?.setAttribute(
+    'content',
+    shouldDarken
+      ? // the DrawerRoot is styled as bg-black/80, we can mimic the same 80% black effect by setting the RGB value to 20% of the original
+        `rgb(${r * 0.2}, ${g * 0.2}, ${b * 0.2})`
+      : backgroundColor,
+  );
+};
+
+const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
   document.documentElement.setAttribute(
     'data-theme',
     getThemeDataAttribute(themePreference, theme),
   );
 
-  document.querySelector('meta[name="theme-color"]')?.setAttribute(
-    'content',
-    `hsl(${getComputedStyle(document.documentElement).getPropertyValue(
-      // see also: packages/frontend/src/pages/Root.tsx which adds a banner at the top
-      // to blend with the theme colour
-      navigatorOnLine ? '--primary' : '--muted',
-    )})`,
-  );
-
   document
     .getElementById('rel-icon-png')
     ?.setAttribute('href', `/assets/icon-${theme}.png`);
+
+  syncMetaThemeColor(false);
 };
 
 export const useThemeSync = () => {
   const [themePreference] = useThemePreference();
   const [theme] = useTheme();
 
-  const navigatorOnLine = useNavigatorOnLine();
-
   const systemDarkMode = useMedia('(prefers-color-scheme: dark)');
 
   useEffect(() => {
-    syncTheme(themePreference, theme, navigatorOnLine ?? true);
-  }, [themePreference, theme, navigatorOnLine, systemDarkMode]);
+    syncTheme(themePreference, theme);
+  }, [themePreference, theme, systemDarkMode]);
 };

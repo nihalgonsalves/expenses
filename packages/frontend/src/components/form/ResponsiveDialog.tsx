@@ -1,7 +1,8 @@
 import type { VariantProps } from 'class-variance-authority';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useMedia } from 'react-use';
 
+import { syncMetaThemeColor } from '../../state/theme';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -60,10 +61,15 @@ export const ResponsiveDialog = ({
   const [open, setOpen] = useState(false);
   const isDesktop = useMedia('(min-width: 768px)');
 
+  const handleSetOpen = useCallback((value: boolean) => {
+    setOpen(value);
+    syncMetaThemeColor(value);
+  }, []);
+
   if (isDesktop) {
     if (props.alert) {
       return (
-        <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialog open={open} onOpenChange={handleSetOpen}>
           <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
@@ -76,7 +82,7 @@ export const ResponsiveDialog = ({
                 <Button
                   onClick={async (e) => {
                     await props.onConfirm(e);
-                    setOpen(false);
+                    handleSetOpen(false);
                   }}
                   isLoading={props.isLoading}
                 >
@@ -90,7 +96,7 @@ export const ResponsiveDialog = ({
     }
 
     return (
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleSetOpen}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -104,7 +110,7 @@ export const ResponsiveDialog = ({
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
+    <Drawer open={open} onOpenChange={handleSetOpen}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
@@ -119,7 +125,7 @@ export const ResponsiveDialog = ({
               isLoading={props.isLoading}
               onClick={async (e) => {
                 await props.onConfirm(e);
-                setOpen(false);
+                handleSetOpen(false);
               }}
             >
               {props.confirmLabel}
