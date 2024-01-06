@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { API_BASE_URL } from '../config';
 import { queryCache } from '../state/queryCache';
-import { durationMilliseconds } from '../utils/utils';
+import { durationMilliseconds } from '../utils/temporal';
 
 import { trpc } from './trpc';
 

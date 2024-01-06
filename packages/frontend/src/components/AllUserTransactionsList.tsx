@@ -16,12 +16,11 @@ import type { AllConvertedUserTransactions } from '../api/useAllUserTransactions
 import { usePreferredCurrencyCode } from '../state/preferences';
 import { fadeInOut } from '../utils/framer';
 import { formatCurrency } from '../utils/money';
+import { formatDateTimeRelative, shortDateFormatter } from '../utils/temporal';
 import {
-  formatDateTimeRelative,
   getTransactionDescription,
   groupBySpentAt,
   noop,
-  shortDateFormatter,
 } from '../utils/utils';
 
 import { CategoryAvatar } from './CategoryAvatar';

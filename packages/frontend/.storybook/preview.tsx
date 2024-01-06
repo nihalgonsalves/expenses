@@ -1,11 +1,10 @@
 // @ts-check
 
-import React from 'react';
+import type { Preview } from '@storybook/react';
 import '../src/tailwind.css';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter } from 'react-router-dom';
 
-/** @type { import('@storybook/react').Preview } */
-const preview = {
+const preview: Preview = {
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
@@ -20,4 +19,5 @@ const preview = {
   ],
 };
 
+// eslint-disable-next-line import/no-default-export
 export default preview;

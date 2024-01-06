@@ -15,9 +15,9 @@ import { trpc } from '../../api/trpc';
 import { formatCurrency } from '../../utils/money';
 import {
   formatDateTimeRelative,
-  getTransactionDescription,
   shortDateTimeFormatter,
-} from '../../utils/utils';
+} from '../../utils/temporal';
+import { getTransactionDescription } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ConfirmDialog } from '../form/ConfirmDialog';
 import { Badge } from '../ui/badge';

@@ -9,7 +9,6 @@ import { usePrefetchQueries } from './api/usePrefetchQueries';
 import { registerSW, useSwUpdateCheck } from './registerSW';
 import { RouterProvider, router } from './router';
 import { useThemeSync } from './state/theme';
-import { useHydrateState } from './state/useHydrateState';
 
 await registerSW();
 
@@ -24,7 +23,6 @@ const GlobalHookContainer = () => {
   useSwUpdateCheck();
   useOffLineToaster();
   usePrefetchQueries();
-  useHydrateState();
   useThemeSync();
 
   return null;

@@ -17,7 +17,7 @@ import { formatCurrency, useMoneyValues } from '../../utils/money';
 import {
   dateTimeLocalToZonedISOString,
   isoToTemporalZonedDateTime,
-} from '../../utils/utils';
+} from '../../utils/temporal';
 import { CategorySelect } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';

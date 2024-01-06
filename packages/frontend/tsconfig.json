@@ -6,7 +6,7 @@
     "rootDir": "./",
     "outDir": "./build/tsc/"
   },
-  "include": ["./src/", "./bin/"],
+  "include": ["./src/", "./bin/", "./.storybook/*"],
   "references": [
     {
       "path": "../backend"

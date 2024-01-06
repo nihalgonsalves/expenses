@@ -13,7 +13,7 @@ import type {
   ConvertedTransactionWithSheet,
 } from '../api/useAllUserTransactions';
 import { formatCurrency } from '../utils/money';
-import { shortDateFormatter } from '../utils/utils';
+import { shortDateFormatter } from '../utils/temporal';
 
 import { CategoryIcon } from './CategoryAvatar';
 import { Button } from './ui/button';

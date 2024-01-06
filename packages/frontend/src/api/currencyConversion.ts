@@ -5,7 +5,7 @@ import type { Money } from '@nihalgonsalves/expenses-shared/money';
 
 import { usePreferredCurrencyCode } from '../state/preferences';
 import { convertCurrency } from '../utils/money';
-import { durationMilliseconds } from '../utils/utils';
+import { durationMilliseconds } from '../utils/temporal';
 
 import { trpc } from './trpc';
 

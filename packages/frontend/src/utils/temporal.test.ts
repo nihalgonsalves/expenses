@@ -8,9 +8,10 @@ import {
   durationMilliseconds,
   formatDateRelative,
   formatDateTimeRelative,
+  intervalGreaterThan,
   shortDateFormatter,
   shortDateTimeFormatter,
-} from './utils';
+} from './temporal';
 
 describe('durationMilliseconds', () => {
   it('returns total milliseconds', () => {
@@ -67,5 +68,15 @@ describe('formatDateRelative', () => {
           .toString(),
       ),
     ).toBe(expected);
+  });
+});
+
+describe('intervalGreaterThan', () => {
+  it('returns true if the interval is greater than the duration', () => {
+    const a = Temporal.Now.instant();
+    const b = a.subtract({ minutes: 1 });
+
+    expect(intervalGreaterThan(a, b, { seconds: 30 })).toBe(true);
+    expect(intervalGreaterThan(a, b, { days: 1 })).toBe(false);
   });
 });

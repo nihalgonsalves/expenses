@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill';
 import {
   ArrowLeftIcon,
   GearIcon,
@@ -10,10 +11,11 @@ import type { TRPCClientErrorLike } from '@trpc/client';
 import type { AnyProcedure, AnyRouter } from '@trpc/server';
 import type { TRPCErrorShape } from '@trpc/server/rpc';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useInterval } from 'react-use';
 
 import { usePullToRefresh } from '../api/usePullToRefresh';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -31,6 +33,7 @@ import { ScrollArea } from '../components/ui/scroll-area';
 import { cn } from '../components/ui/utils';
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
+import { formatDateTimeRelative, intervalGreaterThan } from '../utils/temporal';
 
 type RootProps = {
   title: string | undefined;
@@ -40,6 +43,7 @@ type RootProps = {
   showBackButton?: boolean;
   additionalChildren?: React.ReactNode;
   className?: string;
+  bannerText?: string | undefined;
 };
 
 const navItems = [
@@ -73,6 +77,7 @@ export const Root = ({
   showBackButton,
   additionalChildren,
   className,
+  bannerText,
 }: RootProps) => {
   const navigate = useNavigate();
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
@@ -84,9 +89,10 @@ export const Root = ({
         <title>{`Expenses - ${title}`}</title>
       </Helmet>
       <div className="m-auto flex h-dvh flex-col">
-        {!navigatorOnLine && (
-          <div className="bg-muted p-1 text-center text-xs tracking-tighter text-muted-foreground">
-            You are offline
+        {(!navigatorOnLine || bannerText) && (
+          <div className="flex justify-center gap-1 bg-muted p-1 text-center text-xs tracking-tighter text-muted-foreground">
+            {bannerText && <span>{bannerText}</span>}
+            {!navigatorOnLine && <span>You are offline</span>}
           </div>
         )}
         <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
@@ -238,13 +244,14 @@ export const RootLoader = <
   title,
   getTitle,
   ...rootProps
-}: Omit<RootProps, 'children' | 'title'> & {
+}: Omit<RootProps, 'children' | 'title' | 'banner'> & {
   render: (data: TData) => React.ReactNode;
   result: {
     data: TData | undefined;
     error: TError | null;
     isLoading: boolean;
     refetch: () => Promise<unknown>;
+    dataUpdatedAt: number;
   };
 } & (
     | {
@@ -278,6 +285,24 @@ export const RootLoader = <
 
   usePullToRefresh(ROOT_TOAST, refetch);
 
+  // we use staleTime: 0 so we can't check react-query's isStale parameter to show a warning.
+  // let's just show a warning if data hasn't been updated in a while, defined by us:
+  const [isOldData, setIsOldData] = useState(false);
+
+  const dataUpdatedAt = Temporal.Instant.fromEpochMilliseconds(
+    result.dataUpdatedAt,
+  );
+
+  useInterval(() => {
+    setIsOldData(
+      intervalGreaterThan(
+        Temporal.Now.instant(),
+        dataUpdatedAt,
+        Temporal.Duration.from({ minutes: 1 }),
+      ),
+    );
+  });
+
   return (
     <Root
       title={result.data != null ? getTitle?.(result.data) ?? title : title}
@@ -295,6 +320,11 @@ export const RootLoader = <
             </Button>
           )}
         </>
+      }
+      bannerText={
+        isOldData
+          ? `Last updated ${formatDateTimeRelative(dataUpdatedAt)}.`
+          : undefined
       }
       {...rootProps}
     >

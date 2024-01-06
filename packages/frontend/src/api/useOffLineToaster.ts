@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
-import { durationMilliseconds } from '../utils/utils';
+import { durationMilliseconds } from '../utils/temporal';
 
 const TOAST_ID = 'network-toast';
 

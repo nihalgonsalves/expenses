@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { Button } from './components/ui/button';
 import { queryCache } from './state/queryCache';
 import { useServiceWorkerRegistration } from './utils/hooks/useServiceWorkerRegistration';
-import { durationMilliseconds } from './utils/utils';
+import { durationMilliseconds } from './utils/temporal';
 
 // https://whatwebcando.today/articles/handling-service-worker-updates/
 // https://vite-pwa-org.netlify.app/guide/periodic-sw-updates.html

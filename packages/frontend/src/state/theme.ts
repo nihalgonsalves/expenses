@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useMedia } from 'react-use';
 import { z } from 'zod';
 
 import {
@@ -9,7 +10,6 @@ import {
 
 import { trpc } from '../api/trpc';
 import { useCurrentUser } from '../api/useCurrentUser';
-import { useMediaQuery } from '../utils/hooks/useMediaQuery';
 
 import { createPreferenceWithDefault } from './preferences';
 import { useNavigatorOnLine } from './useNavigatorOnLine';
@@ -102,9 +102,9 @@ export const useThemeSync = () => {
 
   const navigatorOnLine = useNavigatorOnLine();
 
-  const systemDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const systemDarkMode = useMedia('(prefers-color-scheme: dark)');
 
   useEffect(() => {
-    syncTheme(themePreference, theme, navigatorOnLine);
+    syncTheme(themePreference, theme, navigatorOnLine ?? true);
   }, [themePreference, theme, navigatorOnLine, systemDarkMode]);
 };

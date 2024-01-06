@@ -23,7 +23,7 @@ export type AllConvertedUserTransactions = {
 
 type AllConvertedUserTransactionsQueryResult = Pick<
   ReturnType<typeof trpc.transaction.getAllUserTransactions.useQuery>,
-  'error' | 'isLoading' | 'refetch'
+  'error' | 'isLoading' | 'refetch' | 'dataUpdatedAt'
 > & {
   data: AllConvertedUserTransactions | undefined;
 };
@@ -38,6 +38,7 @@ export const useAllUserTransactions = (
     isLoading,
     error,
     refetch,
+    dataUpdatedAt,
   } = trpc.transaction.getAllUserTransactions.useQuery(
     {
       ...input,
@@ -81,5 +82,6 @@ export const useAllUserTransactions = (
     isLoading: enabled ? isLoading : false,
     error,
     refetch,
+    dataUpdatedAt,
   };
 };

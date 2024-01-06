@@ -1,2 +1,10 @@
 **/.eslintrc*
 *.config.js
+
+**/build
+**/coverage
+**/dist
+
+!packages/frontend/.storybook
+packages/e2e/playwright-report
+packages/e2e/test-results
