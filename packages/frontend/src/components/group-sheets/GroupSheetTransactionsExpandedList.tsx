@@ -9,11 +9,10 @@ import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-sha
 import { trpc } from '../../api/trpc';
 import { scaleOut } from '../../utils/framer';
 import { formatCurrency } from '../../utils/money';
-import { formatDateRelative } from '../../utils/temporal';
+import { formatDateRelative, groupBySpentAt } from '../../utils/temporal';
 import {
   getTransactionDescription,
   getGroupSheetTransactionSummaryText,
-  groupBySpentAt,
 } from '../../utils/utils';
 import { Avatar } from '../Avatar';
 import { CategoryAvatar } from '../CategoryAvatar';

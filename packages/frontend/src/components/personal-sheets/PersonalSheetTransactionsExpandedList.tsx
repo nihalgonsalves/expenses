@@ -13,8 +13,9 @@ import { formatCurrency } from '../../utils/money';
 import {
   formatDateRelative,
   formatDateTimeRelative,
+  groupBySpentAt,
 } from '../../utils/temporal';
-import { getTransactionDescription, groupBySpentAt } from '../../utils/utils';
+import { getTransactionDescription } from '../../utils/utils';
 import { CategoryAvatar } from '../CategoryAvatar';
 import { ExpandMoreButton } from '../ExpandMoreButton';
 import { TransactionActions } from '../TransactionActions';

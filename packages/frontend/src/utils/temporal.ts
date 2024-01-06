@@ -33,9 +33,6 @@ export const shortDateTimeFormatter = new Intl.DateTimeFormat(
     timeStyle: 'short',
   },
 );
-const shortRelativeFormatter = new Intl.RelativeTimeFormat(getUserLanguage(), {
-  style: 'short',
-});
 
 export const intervalGreaterThan = (
   a: Temporal.Instant,
@@ -73,6 +70,10 @@ export const formatDateRelative = (
   }
 };
 
+const shortRelativeFormatter = new Intl.RelativeTimeFormat(getUserLanguage(), {
+  style: 'short',
+});
+
 export const formatDateTimeRelative = (
   instantOrISO8601: string | Temporal.Instant,
   dayThreshold = 7,
@@ -105,4 +106,29 @@ export const formatDateTimeRelative = (
   }
 
   return 'just now';
+};
+
+export const groupBySpentAt = <T>(
+  items: T[],
+  getSpentAt: (item: T) => string,
+) => {
+  const groupedByDate = new Map<number, T[]>();
+
+  // TODO: proposal-array-grouping (TypeScript 5.3?)
+  for (const item of items) {
+    const date = isoToTemporalZonedDateTime(getSpentAt(item)).round({
+      smallestUnit: 'day',
+      roundingMode: 'trunc',
+    }).epochMilliseconds;
+
+    const existing = groupedByDate.get(date);
+
+    if (existing) {
+      existing.push(item);
+    } else {
+      groupedByDate.set(date, [item]);
+    }
+  }
+
+  return groupedByDate;
 };
