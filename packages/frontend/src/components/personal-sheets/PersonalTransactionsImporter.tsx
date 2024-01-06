@@ -266,7 +266,7 @@ const DataPreview = ({
       </Table>
       <div className="flex flex-row place-items-center justify-between bg-muted">
         <Button
-          variant="ghost"
+          $variant="ghost"
           disabled={page === 0}
           onClick={() => {
             setPage((prev) => prev - 1);
@@ -278,7 +278,7 @@ const DataPreview = ({
           Page {page + 1} of {maxPage + 1}
         </div>
         <Button
-          variant="ghost"
+          $variant="ghost"
           disabled={page === maxPage}
           onClick={() => {
             setPage((prev) => prev + 1);
@@ -580,7 +580,7 @@ export const PersonalTransactionsImporter = ({
           <div className="flex gap-4">
             <Button
               className="grow"
-              variant="outline"
+              $variant="outline"
               onClick={() => {
                 setActiveStep(ImportStep.UPLOAD_FILE);
               }}

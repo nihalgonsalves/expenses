@@ -31,10 +31,11 @@ export const TransactionActions = ({
   return (
     <ConfirmDialog
       trigger={
-        <Button isLoading={isLoading} variant="destructive">
+        <Button isLoading={isLoading} $variant="destructive">
           <TrashIcon className="mr-2" /> Delete Transaction
         </Button>
       }
+      variant="destructive"
       confirmLabel="Delete"
       description="Are you sure you want to delete this transaction?"
       onConfirm={handleDelete}

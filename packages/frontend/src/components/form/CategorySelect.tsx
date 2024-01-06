@@ -59,7 +59,7 @@ export const CategorySelect = forwardRef<
             {...controllerProps}
             id={id}
             ref={ref}
-            variant="outline"
+            $variant="outline"
             role="combobox"
             className={cn('min-w-48 justify-between', className)}
           >

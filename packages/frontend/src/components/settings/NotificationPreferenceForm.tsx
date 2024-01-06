@@ -199,7 +199,7 @@ export const NotificationPreferenceForm = () => {
                 </div>
                 <div className="grow" />
                 <Button
-                  variant="destructive"
+                  $variant="destructive"
                   className="text-2xl"
                   aria-label="Delete Subscription"
                   onClick={async () =>

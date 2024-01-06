@@ -85,8 +85,8 @@ export const GroupDetailPage = () => {
         <DropdownMenu aria-label="Actions">
           <DropdownMenuTrigger asChild>
             <Button
-              size="icon"
-              variant="ghost"
+              $size="icon"
+              $variant="ghost"
               className="text-primary-foreground"
             >
               <DotsVerticalIcon />
@@ -117,6 +117,7 @@ export const GroupDetailPage = () => {
                   confirmLabel="Confirm Delete"
                   description="Are you sure you want to delete this group? This action is irreversible."
                   onConfirm={handleDelete}
+                  variant="destructive"
                   trigger={
                     <DropdownMenuItem
                       onSelect={(e) => {

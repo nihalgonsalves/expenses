@@ -110,7 +110,7 @@ export const PrivacyForm = () => {
               isLoading={isLoading}
               disabled={disabled}
               type="submit"
-              variant="destructive"
+              $variant="destructive"
               className="w-full"
             >
               {isReconfirming ? 'Are you sure?' : 'Anonymise your account'}

@@ -1,23 +1,14 @@
 import type { VariantProps } from 'class-variance-authority';
 import { type MouseEvent, useCallback, useState } from 'react';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '../ui/alert-dialog';
-import { Button, type buttonVariants } from '../ui/button';
+import type { buttonVariants } from '../ui/button';
+
+import { ResponsiveDialog } from './ResponsiveDialog';
 
 export const ConfirmDialog = ({
   description,
   confirmLabel,
-  onConfirm,
+  onConfirm: onConfirmProp,
   trigger,
   variant,
 }: {
@@ -25,43 +16,34 @@ export const ConfirmDialog = ({
   confirmLabel: React.ReactNode;
   onConfirm: () => Promise<void> | void;
   trigger: React.ReactNode;
-  variant?: VariantProps<typeof buttonVariants>['variant'];
+  variant?: VariantProps<typeof buttonVariants>['$variant'];
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
-  const handleConfirmed = useCallback(
+  const onConfirm = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       setIsLoading(true);
 
       try {
-        await onConfirm();
-        setIsOpen(false);
+        await onConfirmProp();
       } catch {
         setIsLoading(false);
       }
     },
-    [onConfirm],
+    [onConfirmProp],
   );
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Confirm</AlertDialogTitle>
-          <AlertDialogDescription>{description}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirmed} asChild>
-            <Button variant={variant} isLoading={isLoading}>
-              {confirmLabel}
-            </Button>
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ResponsiveDialog
+      trigger={trigger}
+      title="Confirm"
+      description={description}
+      alert
+      confirmLabel={confirmLabel}
+      onConfirm={onConfirm}
+      isLoading={isLoading}
+      variant={variant}
+    />
   );
 };

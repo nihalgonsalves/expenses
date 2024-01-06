@@ -535,8 +535,8 @@ const SplitsFormSection = ({
 
                     {splitConfig.resetNumber != null && (
                       <Button
-                        variant="ghost"
-                        size="icon"
+                        $variant="ghost"
+                        $size="icon"
                         disabled={
                           !form.formState.dirtyFields.ratios?.[i]?.ratio
                         }

@@ -82,7 +82,7 @@ const TransactionScheduleDropdownMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline" className="bg-inherit">
+        <Button $size="icon" $variant="outline" className="bg-inherit">
           <DotsVerticalIcon />
         </Button>
       </DropdownMenuTrigger>
@@ -92,6 +92,7 @@ const TransactionScheduleDropdownMenu = ({
           confirmLabel="Confirm Delete"
           description="Delete transaction schedule? Existing transactions will not be affected."
           onConfirm={handleDelete}
+          variant="destructive"
           trigger={
             <DropdownMenuItem
               onSelect={(e) => {
@@ -138,7 +139,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
               )}
             </div>
           </ScrollArea>
-          <Button variant="outline" asChild>
+          <Button $variant="outline" asChild>
             <Link to={`/sheets/${personalSheet.id}/transactions`}>
               <ListBulletIcon className="mr-2" /> All Transactions (
               {getPersonalSheetTransactionsResponse?.total})

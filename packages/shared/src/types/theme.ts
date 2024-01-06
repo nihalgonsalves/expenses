@@ -10,6 +10,27 @@ export const THEMES = [
   'violet',
 ] as const;
 
+export type CssVariableName =
+  | 'background'
+  | 'foreground'
+  | 'card'
+  | 'card-foreground'
+  | 'popover'
+  | 'popover-foreground'
+  | 'primary'
+  | 'primary-foreground'
+  | 'secondary'
+  | 'secondary-foreground'
+  | 'muted'
+  | 'muted-foreground'
+  | 'accent'
+  | 'accent-foreground'
+  | 'destructive'
+  | 'destructive-foreground'
+  | 'border'
+  | 'input'
+  | 'ring';
+
 type CSSColor =
   | `hsl(${number}, ${number}%, ${number}%)`
   | `hsla(${number}, ${number}%, ${number}%, ${number})`

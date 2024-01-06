@@ -17,7 +17,7 @@ const meta: Meta<typeof Collapsible> = {
           @peduarte starred 3 repositories
         </h4>
         <CollapsibleTrigger asChild>
-          <Button variant="ghost" size="sm">
+          <Button $variant="ghost" $size="sm">
             <CaretSortIcon className="size-4" />
             <span className="sr-only">Toggle</span>
           </Button>

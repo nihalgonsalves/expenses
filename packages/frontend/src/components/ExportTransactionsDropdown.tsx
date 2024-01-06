@@ -42,7 +42,7 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
 
           return (
             <>
-              <Button variant="ghost" asChild>
+              <Button $variant="ghost" asChild>
                 <a
                   href={objectURL}
                   download={filename}
@@ -54,7 +54,7 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
                 </a>
               </Button>
               <Button
-                variant="outline"
+                $variant="outline"
                 onClick={() => {
                   toast.dismiss(toastId);
                 }}

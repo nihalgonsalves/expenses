@@ -35,7 +35,7 @@ export const TroubleshootingForm = () => {
         If you are experiencing issues with the app, you can reset the cache
         here. This is safe but you need to be online to reload data.
         <Button
-          variant="destructive"
+          $variant="destructive"
           onClick={handleResetCache}
           isLoading={state === 'loading'}
         >

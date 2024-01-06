@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import type { CssVariableName } from '@nihalgonsalves/expenses-shared/types/theme';
+
 const center = 16;
 const strokeWidth = 4;
 const r = 16 - strokeWidth;
@@ -10,12 +12,14 @@ const c = 2 * r * Math.PI;
 type CircularProgressProps = {
   value: number;
   size?: number;
+  color?: CssVariableName;
 } & React.HTMLAttributes<HTMLDivElement>;
 
 const CircularProgress = ({
   className,
   size = 32,
   value,
+  color = 'primary',
 }: CircularProgressProps) => (
   <svg
     className={className}
@@ -29,7 +33,7 @@ const CircularProgress = ({
       cx={center}
       cy={center}
       r={r}
-      stroke="hsl(var(--primary))"
+      stroke={`hsl(var(--${color}))`}
       strokeDasharray={`${c} ${c}`}
       strokeDashoffset={c - (value / 100) * c}
       strokeLinecap="round"

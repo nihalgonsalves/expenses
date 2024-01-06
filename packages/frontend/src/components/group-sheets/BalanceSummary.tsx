@@ -84,7 +84,7 @@ const PersonMenu = ({
 
   if (!visible) {
     return (
-      <Button size="icon" variant="outline" disabled>
+      <Button $size="icon" $variant="outline" disabled>
         <DotsVerticalIcon />
       </Button>
     );
@@ -93,7 +93,7 @@ const PersonMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline" className="bg-inherit">
+        <Button $size="icon" $variant="outline" className="bg-inherit">
           <AccessibleIcon label="Member actions">
             <DotsVerticalIcon />
           </AccessibleIcon>
@@ -192,7 +192,7 @@ const TransferItem = ({
       <span className="grow" />
       <Badge
         className={cn(
-          'shadow-none',
+          'shadow-none py-2',
           summary.id === t.from.id
             ? 'bg-red-100 text-red-800 hover:bg-red-100'
             : 'bg-green-100 text-green-800 hover:bg-green-100',
@@ -203,15 +203,15 @@ const TransferItem = ({
       <ConfirmDialog
         onConfirm={handleSettleUp}
         trigger={
-          <Button isLoading={isLoading} type="button" variant="link">
+          <Button isLoading={isLoading} type="button" $variant="outline">
             <CheckIcon className="mr-2" /> Settled
           </Button>
         }
         confirmLabel="Settle up"
         description={
           <>
-            Log transfer of {formatCurrency(t.money)} from {t.from.name} to{' '}
-            {t.to.name}
+            Log a transfer of <strong>{formatCurrency(t.money)}</strong> from{' '}
+            <strong>{t.from.name}</strong> to <strong>{t.to.name}</strong>
           </>
         }
       />
@@ -247,7 +247,7 @@ const SummaryCard = ({
           </span>
         </div>
         <CollapsibleTrigger asChild disabled={transfers?.length === 0}>
-          <Button variant="ghost" size="icon">
+          <Button $variant="ghost" $size="icon">
             {transfers?.length === 0 ? (
               <AccessibleIcon label="Settled up">
                 <CheckIcon className="h-4 w-4" />

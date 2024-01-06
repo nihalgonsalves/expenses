@@ -86,7 +86,7 @@ export const CategoryStats = ({
           <PopoverTrigger asChild>
             <Button
               id="date"
-              variant="outline"
+              $variant="outline"
               className="justify-start text-left font-normal"
             >
               <CalendarIcon className="mr-2 size-4" />

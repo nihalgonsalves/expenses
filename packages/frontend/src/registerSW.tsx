@@ -61,7 +61,7 @@ export const registerSW = async () => {
     toast(
       <div className="flex items-center gap-2 text-primary">
         A web app update is available.
-        <Button variant="outline" size="icon" onClick={update}>
+        <Button $variant="outline" $size="icon" onClick={update}>
           <AccessibleIcon label="Reload">
             <ReloadIcon />
           </AccessibleIcon>

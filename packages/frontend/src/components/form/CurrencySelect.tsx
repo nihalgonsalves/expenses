@@ -56,7 +56,7 @@ export const CurrencySelect = forwardRef<
             {...controllerProps}
             id={id}
             ref={ref}
-            variant="outline"
+            $variant="outline"
             role="combobox"
             aria-expanded={open}
             className="min-w-24 justify-between bg-inherit md:min-w-48"

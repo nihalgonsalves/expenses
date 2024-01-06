@@ -73,7 +73,7 @@ const ExpandedTransactionListItem = forwardRef<
         </CardHeader>
         <CollapsibleContent>
           <CardContent className="flex flex-col gap-4">
-            <Button variant="outline" asChild>
+            <Button $variant="outline" asChild>
               <Link
                 to={`/sheets/${personalSheetId}/transactions/${transaction.id}`}
               >

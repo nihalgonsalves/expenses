@@ -58,7 +58,7 @@ export const GroupSheet = ({
                   transactions={groupSheetTransactionsResponse.transactions}
                 />
               </ScrollArea>
-              <Button className="w-full" variant="outline" asChild>
+              <Button className="w-full" $variant="outline" asChild>
                 <Link to={`/groups/${groupSheet.id}/transactions`}>
                   <ListBulletIcon className="mr-2" /> All Transactions (
                   {groupSheetTransactionsResponse.total})

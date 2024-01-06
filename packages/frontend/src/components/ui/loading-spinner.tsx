@@ -6,5 +6,6 @@ export const LoadingSpinner = ({ className }: { className?: string }) => (
     className={cn(className, 'animate-spin')}
     value={80}
     size={24}
+    color="primary-foreground"
   />
 );

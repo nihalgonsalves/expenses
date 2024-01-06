@@ -58,8 +58,8 @@ export const SheetDetailPage = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
-              size="icon"
-              variant="ghost"
+              $size="icon"
+              $variant="ghost"
               className="text-primary-foreground"
             >
               <DotsVerticalIcon />

@@ -67,7 +67,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
         />
 
         <Button
-          variant="outline"
+          $variant="outline"
           type="reset"
           aria-label="Cancel"
           onClick={handleClose}
@@ -76,7 +76,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
         </Button>
 
         <Button
-          variant="outline"
+          $variant="outline"
           type="submit"
           aria-label="Add"
           disabled={!valid}
@@ -88,7 +88,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   ) : (
     <Button
       className="w-full"
-      variant="outline"
+      $variant="outline"
       disabled={!onLine}
       onClick={() => {
         setAddMemberOpen(true);

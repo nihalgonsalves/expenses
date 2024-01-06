@@ -15,7 +15,7 @@ const meta: Meta<typeof Tooltip> = {
     <TooltipProvider {...props}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="outline">Hover</Button>
+          <Button $variant="outline">Hover</Button>
         </TooltipTrigger>
         <TooltipContent>
           <p>Add to library</p>

@@ -115,7 +115,7 @@ export const CreateGroupForm = ({
                       {...field}
                     />
                     <Button
-                      variant="outline"
+                      $variant="outline"
                       onClick={() => {
                         handleDeleteParticipant(i);
                       }}
@@ -135,7 +135,7 @@ export const CreateGroupForm = ({
         <Button
           type="button"
           className="mt-4 w-full"
-          variant="outline"
+          $variant="outline"
           onClick={handleAddParticipant}
         >
           <PersonIcon className="mr-2" />

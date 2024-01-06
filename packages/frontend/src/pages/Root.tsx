@@ -98,7 +98,7 @@ export const Root = ({
         <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
           {showBackButton && (
             <Button
-              variant="ghost"
+              $variant="ghost"
               className="text-primary-foreground md:hidden"
               onClick={() => {
                 navigate(-1);
@@ -311,8 +311,8 @@ export const RootLoader = <
           {result.isLoading && <LoadingSpinner className="ml-4 size-4" />}
           {!mobileStandalone && !result.isLoading && onLine && (
             <Button
-              variant="ghost"
-              size="icon"
+              $variant="ghost"
+              $size="icon"
               className="ml-2"
               onClick={refetch}
             >

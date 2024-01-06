@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
+import type { CssVariableName } from '@nihalgonsalves/expenses-shared/types/theme';
+
 import { CircularProgress } from './circular-progress';
 
 const meta: Meta<typeof CircularProgress> = {
@@ -19,10 +21,21 @@ const meta: Meta<typeof CircularProgress> = {
         max: 96,
       },
     },
+    color: {
+      control: {
+        type: 'radio',
+      },
+      options: [
+        'primary',
+        'secondary',
+        'destructive',
+      ] satisfies CssVariableName[],
+    },
   },
   args: {
     value: 75,
     size: 32,
+    color: 'primary',
   },
   render: (props) => <CircularProgress {...props} />,
 };

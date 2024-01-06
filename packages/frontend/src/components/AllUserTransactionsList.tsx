@@ -155,7 +155,7 @@ export const AllUserTransactionsList = ({
               <PopoverTrigger asChild>
                 <Button
                   id="date"
-                  variant="outline"
+                  $variant="outline"
                   className="justify-start bg-card text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 size-4" />
@@ -222,7 +222,7 @@ export const AllUserTransactionsList = ({
             </TabsList>
 
             <CollapsibleTrigger className="md:hidden" asChild>
-              <Button size="icon" variant="outline">
+              <Button $size="icon" $variant="outline">
                 <MixerHorizontalIcon />
               </Button>
             </CollapsibleTrigger>

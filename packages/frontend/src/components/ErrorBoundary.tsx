@@ -17,7 +17,7 @@ const RetryErrorButton = ({ reset }: { reset: () => void }) => {
 
   return (
     <Button
-      variant="outline"
+      $variant="outline"
       onClick={async () => {
         queryClient.clear();
         await queryClient.invalidateQueries();
@@ -73,7 +73,7 @@ export class ErrorBoundary extends React.Component<{
               />
 
               <Button
-                variant="outline"
+                $variant="outline"
                 onClick={() => {
                   this.setState({ displayError: true });
                 }}
@@ -81,7 +81,7 @@ export class ErrorBoundary extends React.Component<{
                 Display error
               </Button>
               <Button
-                variant="outline"
+                $variant="outline"
                 onClick={async () => {
                   await navigator.clipboard.writeText(
                     JSON.stringify(

@@ -1,7 +1,9 @@
 'use client';
 
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog';
+import type { VariantProps } from 'class-variance-authority';
 import * as React from 'react';
+import type { TwcComponentProps } from 'react-twc';
 
 import { buttonVariants } from '../ui/button';
 
@@ -51,32 +53,26 @@ const AlertDialogDescription = twx(
 AlertDialogDescription.displayName =
   AlertDialogPrimitive.Description.displayName;
 
-const AlertDialogAction = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Action>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action>
->(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Action
-    ref={ref}
-    className={cn(buttonVariants(), className)}
-    {...props}
-  />
-));
+type AlertDialogActionProps = TwcComponentProps<
+  typeof AlertDialogPrimitive.Action
+> &
+  VariantProps<typeof buttonVariants>;
+
+const AlertDialogAction = twx(
+  AlertDialogPrimitive.Action,
+)<AlertDialogActionProps>(({ $variant }) => cn(buttonVariants({ $variant })));
 AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
 
-const AlertDialogCancel = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
->(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Cancel
-    ref={ref}
-    className={cn(
-      buttonVariants({ variant: 'outline' }),
-      'mt-2 sm:mt-0',
-      className,
-    )}
-    {...props}
-  />
-));
+type AlertDialogCancelProps = TwcComponentProps<
+  typeof AlertDialogPrimitive.Cancel
+> &
+  VariantProps<typeof buttonVariants>;
+
+const AlertDialogCancel = twx(
+  AlertDialogPrimitive.Cancel,
+)<AlertDialogCancelProps>(({ $variant = 'outline' }) =>
+  cn(buttonVariants({ $variant }), 'mt-2 sm:mt-0'),
+);
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
 
 export {

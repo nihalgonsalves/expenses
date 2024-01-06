@@ -21,7 +21,7 @@ const meta: Meta<typeof Dialog> = {
   render: () => (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
+        <Button $variant="outline">Share</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -41,14 +41,14 @@ const meta: Meta<typeof Dialog> = {
               readOnly
             />
           </div>
-          <Button type="submit" size="sm" className="px-3">
+          <Button type="submit" $size="sm" className="px-3">
             <span className="sr-only">Copy</span>
             <CopyIcon className="size-4" />
           </Button>
         </div>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
-            <Button type="button" variant="secondary">
+            <Button type="button" $variant="secondary">
               Close
             </Button>
           </DialogClose>

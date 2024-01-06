@@ -44,7 +44,7 @@ export const FloatingActionButton = ({
           {to ? (
             <MotionButton
               asChild
-              variant="outline"
+              $variant="outline"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
               className="absolute bottom-4 right-4 size-12 rounded-full text-2xl"
@@ -55,7 +55,7 @@ export const FloatingActionButton = ({
             </MotionButton>
           ) : (
             <MotionButton
-              variant="outline"
+              $variant="outline"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
               className="absolute bottom-4 right-4 size-12 rounded-full text-2xl"
