@@ -31,13 +31,11 @@ type FloatingActionButtonProps = {
     }
 );
 
-export const FloatingActionButton = ({
-  to,
-  onClick,
-  label,
-  icon,
-}: FloatingActionButtonProps) => (
-  <div className="sticky bottom-0 w-full">
+export const FloatingActionButton = React.forwardRef<
+  HTMLDivElement,
+  FloatingActionButtonProps
+>(({ to, onClick, label, icon }, ref) => (
+  <div ref={ref} className="sticky bottom-0 w-full">
     <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger className="absolute bottom-4 right-4" asChild>
@@ -74,4 +72,5 @@ export const FloatingActionButton = ({
       </Tooltip>
     </TooltipProvider>
   </div>
-);
+));
+FloatingActionButton.displayName = 'FloatingActionButton';
