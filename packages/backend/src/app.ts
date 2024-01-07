@@ -1,79 +1,81 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { FastifyAdapter } from '@bull-board/fastify';
+import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
+import { trpcServer } from '@hono/trpc-server';
 import { PrismaClient } from '@prisma/client';
-import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
-import fastify from 'fastify';
+import { Hono } from 'hono';
+import { showRoutes } from 'hono/dev';
 import IORedis from 'ioredis';
 
+import { BullBoardHonoAdapter } from './BullBoardHonoAdapter';
 import { config } from './config';
 import { makeCreateContext } from './context';
 import { makePWARouter } from './pwaRouter';
 import { appRouter } from './router';
 import { startWorkers } from './startWorkers';
 
-const server = fastify({
-  maxParamLength: 5000,
-  logger: true,
-});
+export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
+  const app = new Hono();
+  const workers = await startWorkers(prisma, redis);
+
+  const createContext = makeCreateContext(prisma, workers);
+
+  app.use(
+    '/trpc/*',
+    trpcServer({
+      router: appRouter,
+      createContext,
+    }),
+  );
+
+  app.route('/', makePWARouter(createContext));
+
+  if (config.ENABLE_ADMIN) {
+    const serverAdapter = new BullBoardHonoAdapter(serveStatic);
+
+    createBullBoard({
+      queues: Object.values(workers).map(
+        ({ queue }) => new BullMQAdapter(queue),
+      ),
+      serverAdapter,
+    });
+
+    app.route('/admin/queue', serverAdapter.registerPlugin('/admin/queue'));
+  }
+
+  return app;
+};
 
 void (async () => {
   const prisma = new PrismaClient();
   const redis = new IORedis(config.REDIS_URL, { maxRetriesPerRequest: null });
 
   try {
-    const workers = await startWorkers(prisma, redis);
+    const app = await createApp(prisma, redis);
 
-    const createContext = makeCreateContext(prisma, workers);
-
-    await server.register(fastifyTRPCPlugin, {
-      prefix: '/trpc',
-      trpcOptions: {
-        router: appRouter,
-        createContext,
-      },
-    });
-
-    await server.register(makePWARouter(createContext));
-
-    if (config.ENABLE_ADMIN) {
-      const serverAdapter = new FastifyAdapter();
-
-      createBullBoard({
-        queues: Object.values(workers).map(
-          ({ queue }) => new BullMQAdapter(queue),
-        ),
-        serverAdapter,
-      });
-
-      serverAdapter.setBasePath('/admin/queue');
-      await server.register(serverAdapter.registerPlugin(), {
-        basePath: '/admin/queue',
-        prefix: '/admin/queue',
-      });
+    if (!IS_PROD) {
+      showRoutes(app);
     }
 
-    const address = await server.listen({
-      host: config.LISTEN_HOST,
-      port: config.PORT,
-    });
+    const server = serve(
+      {
+        fetch: app.fetch,
+        hostname: config.LISTEN_HOST,
+        port: config.PORT,
+      },
+      ({ address, port }) => {
+        console.log(`Server listening at http://${address}:${port}`);
+      },
+    );
 
     process.on('SIGINT', () => {
       console.log(`SIGINT received, shutting web server down`);
 
-      void server
-        .close()
-        .then(() => {
-          process.exit();
-        })
-        .catch(() => {
-          process.exit(1);
-        });
+      server.close();
     });
-
-    console.log(`Server running at ${address}`);
   } catch (e) {
-    server.log.error(e);
+    console.error(e);
     process.exit(1);
   }
 })();

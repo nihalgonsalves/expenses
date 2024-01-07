@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
-import type { CreateFastifyContextOptions } from '@trpc/server/adapters/fastify';
+import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import cookie from 'cookie';
 import { UAParser } from 'ua-parser-js';
 
@@ -20,7 +20,7 @@ import type { Workers } from './startWorkers';
 export const AUTH_COOKIE_NAME = 'auth';
 
 export const getMaybeUser = async (
-  cookieHeader: string | undefined,
+  cookieHeader: string | null,
   setJwtToken: (value: JWTToken | null) => Promise<void>,
   userServiceImpl: Pick<UserService, 'exchangeToken'>,
 ) => {
@@ -69,14 +69,14 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
     config.FRANKFURTER_BASE_URL,
   );
 
-  return async ({ req, res }: CreateFastifyContextOptions) => {
+  return async ({ req, resHeaders }: FetchCreateContextFnOptions) => {
     const setJwtToken = async (value: JWTToken | null) => {
       if (!value) {
-        void res.header('clear-site-data', '"*"');
+        resHeaders.set('clear-site-data', '"*"');
       }
 
       // Clear old versions of the cookie
-      void res.header(
+      resHeaders.append(
         'Set-Cookie',
         cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
           path: '/api/trpc',
@@ -86,7 +86,7 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
         }),
       );
 
-      void res.header(
+      resHeaders.append(
         'Set-Cookie',
         cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
           path: '/',
@@ -100,9 +100,15 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
 
     return {
       prisma,
-      user: await getMaybeUser(req.headers.cookie, setJwtToken, userService),
+      user: await getMaybeUser(
+        req.headers.get('cookie'),
+        setJwtToken,
+        userService,
+      ),
       get userAgent() {
-        return new UAParser(req.headers['user-agent']).getResult();
+        return new UAParser(
+          req.headers.get('user-agent') ?? undefined,
+        ).getResult();
       },
       userService,
       sheetService,
