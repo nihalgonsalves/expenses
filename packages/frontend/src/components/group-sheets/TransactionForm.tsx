@@ -10,7 +10,6 @@ import {
   TokensIcon,
 } from '@radix-ui/react-icons';
 import { type Dinero, allocate } from 'dinero.js';
-import { useAtom } from 'jotai';
 import { useCallback, useMemo, useState } from 'react';
 import {
   useFieldArray,
@@ -52,7 +51,7 @@ import { Avatar } from '../Avatar';
 import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
-import { responsiveDialogOpen } from '../form/ResponsiveDialog';
+import { useDialog } from '../form/ResponsiveDialog';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Alert, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
@@ -646,7 +645,7 @@ export const TransactionForm = ({
   me: User;
   type: Exclude<TransactionType, 'TRANSFER'>;
 }) => {
-  const [, setOpen] = useAtom(responsiveDialogOpen);
+  const dialog = useDialog();
 
   const utils = trpc.useUtils();
   const { mutateAsync: createGroupSheetTransaction, isLoading } =
@@ -727,7 +726,7 @@ export const TransactionForm = ({
       });
     }
 
-    setOpen(false);
+    dialog.dismiss();
 
     await Promise.all([
       utils.transaction.getAllUserTransactions.invalidate(),

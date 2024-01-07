@@ -3400,7 +3400,6 @@ __metadata:
     happy-dom: "npm:^12.10.3"
     immer: "npm:^10.0.3"
     jotai: "npm:^2.6.1"
-    jotai-scope: "npm:^0.4.1"
     npm-run-all2: "npm:^6.1.1"
     papaparse: "npm:^5.4.1"
     react: "npm:^18.2.0"
@@ -13735,16 +13734,6 @@ __metadata:
   version: 5.2.0
   resolution: "jose@npm:5.2.0"
   checksum: a5631e9a7148fb56c8feca8e00d1f03de6fa6e18e494fe62428b53bed525a9dba554ff3e860bdfc4aee60574194691015ba991557874ae826509c4c19dba4fea
-  languageName: node
-  linkType: hard
-
-"jotai-scope@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "jotai-scope@npm:0.4.1"
-  peerDependencies:
-    jotai: ">=2.5.0"
-    react: ">=17.0.0"
-  checksum: 6f94948c350c93649be2d8df29baa8099d492cee461a3b6a6f27e10687c31914db70c2cdb452cff6bbc4ee0e206fcb30b37ecbf051c259db7f71736f2b622404
   languageName: node
   linkType: hard
 

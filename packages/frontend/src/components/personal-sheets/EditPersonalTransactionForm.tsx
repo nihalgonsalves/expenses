@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
-import { useAtom } from 'jotai';
 import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -21,10 +20,7 @@ import {
 import { CategorySelect } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
-import {
-  ResponsiveDialog,
-  responsiveDialogOpen,
-} from '../form/ResponsiveDialog';
+import { ResponsiveDialog, useDialog } from '../form/ResponsiveDialog';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -54,7 +50,7 @@ const EditPersonalTransactionForm = ({
   transaction: TransactionListItem;
   personalSheet: Sheet;
 }) => {
-  const [, setOpen] = useAtom(responsiveDialogOpen);
+  const dialog = useDialog();
 
   const onLine = useNavigatorOnLine();
 
@@ -105,7 +101,7 @@ const EditPersonalTransactionForm = ({
       description: values.description,
       spentAt: dateTimeLocalToZonedISOString(values.spentAt),
     });
-    setOpen(false);
+    dialog.dismiss();
 
     await Promise.all([
       utils.transaction.getAllUserTransactions.invalidate(),

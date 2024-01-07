@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Temporal } from '@js-temporal/polyfill';
 import { ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
-import { useAtom } from 'jotai';
 import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
@@ -25,10 +24,7 @@ import {
 import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
 import { CurrencySelect } from '../form/CurrencySelect';
 import { MoneyField } from '../form/MoneyField';
-import {
-  ResponsiveDialog,
-  responsiveDialogOpen,
-} from '../form/ResponsiveDialog';
+import { ResponsiveDialog, useDialog } from '../form/ResponsiveDialog';
 import { Select, type SelectOption } from '../form/Select';
 import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
 import { Button } from '../ui/button';
@@ -102,7 +98,7 @@ const CreatePersonalTransactionForm = ({
 }: {
   personalSheet: Sheet;
 }) => {
-  const [, setOpen] = useAtom(responsiveDialogOpen);
+  const dialog = useDialog();
 
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
@@ -181,7 +177,7 @@ const CreatePersonalTransactionForm = ({
       });
     }
 
-    setOpen(false);
+    dialog.dismiss();
 
     await Promise.all([
       utils.transaction.getAllUserTransactions.invalidate(),

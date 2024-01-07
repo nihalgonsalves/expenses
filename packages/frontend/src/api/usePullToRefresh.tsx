@@ -1,10 +1,9 @@
 import { easeIn } from 'framer-motion';
-import { useAtom } from 'jotai';
 import { useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 
+import { useDialog } from '../components/form/ResponsiveDialog';
 import { CircularProgress } from '../components/ui/circular-progress';
-import { vaulDrawerOpenAtom } from '../state/theme';
 import { useIsStandalone } from '../utils/hooks/useIsStandalone';
 
 const displayThreshold = () => window.innerHeight * 0.05;
@@ -15,14 +14,14 @@ export const usePullToRefresh = (
   toastId: string,
   onRefetch: () => Promise<void>,
 ) => {
-  const [vaulDrawerOpen] = useAtom(vaulDrawerOpenAtom);
+  const dialog = useDialog();
   const isStandalone = useIsStandalone();
 
   const touchStartYRef = useRef(0);
   const touchDiffYRef = useRef(0);
 
   useEffect(() => {
-    if (!isStandalone || vaulDrawerOpen) {
+    if (!isStandalone || dialog.isOpen) {
       return;
     }
 
@@ -82,5 +81,5 @@ export const usePullToRefresh = (
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('touchend', onTouchEnd);
     };
-  }, [toastId, onRefetch, isStandalone, vaulDrawerOpen]);
+  }, [toastId, onRefetch, isStandalone, dialog.isOpen]);
 };

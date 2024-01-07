@@ -1,11 +1,9 @@
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import type { VariantProps } from 'class-variance-authority';
 import { atom, useAtom } from 'jotai';
-import { ScopeProvider } from 'jotai-scope';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useMedia } from 'react-use';
 
-import { vaulDrawerOpenAtom } from '../../state/theme';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,7 +53,18 @@ type ResponsiveDialogProps = {
     }
 );
 
-export const responsiveDialogOpen = atom(false);
+const responsiveDialogOpen = atom(false);
+
+export const useDialog = () => {
+  const [isOpen, setOpen] = useAtom(responsiveDialogOpen);
+
+  return {
+    isOpen,
+    dismiss: useCallback(() => {
+      setOpen(false);
+    }, [setOpen]),
+  };
+};
 
 const ResponsiveDialogInner = ({
   trigger,
@@ -66,16 +75,23 @@ const ResponsiveDialogInner = ({
 }: ResponsiveDialogProps) => {
   const isDesktop = useMedia('(min-width: 768px)');
 
-  const [open, setOpen] = useAtom(responsiveDialogOpen);
-  const [, setVaulDrawerOpen] = useAtom(vaulDrawerOpenAtom);
+  const [open, setOpen] = useState(false);
+  const [globalOpen, setGlobalOpen] = useAtom(responsiveDialogOpen);
 
   const handleSetOpen = useCallback(
     (value: boolean) => {
       setOpen(value);
-      setVaulDrawerOpen(value);
+      setGlobalOpen(value);
     },
-    [setVaulDrawerOpen, setOpen],
+    [setOpen, setGlobalOpen],
   );
+
+  // rudimentary global dismiss, see useDialog above
+  useEffect(() => {
+    if (open && !globalOpen) {
+      setOpen(false);
+    }
+  }, [open, globalOpen, setOpen]);
 
   if (isDesktop) {
     if (props.alert) {
@@ -153,7 +169,5 @@ const ResponsiveDialogInner = ({
 
 // Scope the dialogOpen atom to each instance, but have a global vaulDialogOpen for the themeing
 export const ResponsiveDialog = (props: ResponsiveDialogProps) => (
-  <ScopeProvider atoms={[responsiveDialogOpen]}>
-    <ResponsiveDialogInner {...props} />
-  </ScopeProvider>
+  <ResponsiveDialogInner {...props} />
 );
