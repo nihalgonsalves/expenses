@@ -18,8 +18,8 @@
     "prepare:local": "node bin/prepare-local-env.mjs"
   },
   "dependencies": {
-    "@bull-board/api": "^5.10.3",
-    "@bull-board/ui": "^5.10.3",
+    "@bull-board/api": "^5.11.0",
+    "@bull-board/hono": "^5.11.0",
     "@hono/node-server": "^1.4.0",
     "@hono/trpc-server": "^0.1.0",
     "@js-temporal/polyfill": "^0.4.4",
@@ -29,7 +29,6 @@
     "bcrypt": "*",
     "bullmq": "^5.0.0",
     "cookie": "^0.6.0",
-    "ejs": "^3.1.9",
     "hono": "^3.12.0",
     "ioredis": "^5.3.2",
     "jose": "^5.2.0",
@@ -45,7 +44,6 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie": "^0.6.0",
-    "@types/ejs": "^3",
     "@types/pem": "^1.14.4",
     "@types/ua-parser-js": "^0.7.39",
     "@types/web-push": "^3.6.3",
@@ -60,7 +58,7 @@
     "wait-on": "^7.2.0"
   },
   "resolutions": {
-    "@bull-board/ui": "5.10.3",
+    "@bull-board/ui": "5.11.0",
     "@prisma/client": "5.7.1",
     "prisma": "5.7.1",
     "bcrypt": "5.1.1"

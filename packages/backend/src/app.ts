@@ -1,5 +1,6 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { HonoAdapter } from '@bull-board/hono';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { trpcServer } from '@hono/trpc-server';
@@ -8,7 +9,6 @@ import { Hono } from 'hono';
 import { showRoutes } from 'hono/dev';
 import IORedis from 'ioredis';
 
-import { BullBoardHonoAdapter } from './BullBoardHonoAdapter';
 import { config } from './config';
 import { makeCreateContext } from './context';
 import { makePWARouter } from './pwaRouter';
@@ -32,7 +32,7 @@ export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
   app.route('/', makePWARouter(createContext));
 
   if (config.ENABLE_ADMIN) {
-    const serverAdapter = new BullBoardHonoAdapter(serveStatic);
+    const serverAdapter = new HonoAdapter(serveStatic);
 
     createBullBoard({
       queues: Object.values(workers).map(
@@ -41,7 +41,8 @@ export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
       serverAdapter,
     });
 
-    app.route('/admin/queue', serverAdapter.registerPlugin('/admin/queue'));
+    serverAdapter.setBasePath('/admin/queue');
+    app.route('/admin/queue', serverAdapter.registerPlugin());
   }
 
   return app;
