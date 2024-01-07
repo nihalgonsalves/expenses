@@ -1,3 +1,5 @@
+import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
+import { PlusIcon } from '@radix-ui/react-icons';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -5,7 +7,7 @@ import type { SheetsResponse } from '@nihalgonsalves/expenses-shared/types/sheet
 
 import { Avatar } from './Avatar';
 import { ExpandMoreButton } from './ExpandMoreButton';
-import { Alert, AlertTitle } from './ui/alert';
+import { NewGroupSheetDialog, NewPersonalSheetDialog } from './NewSheetDialog';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import {
@@ -13,7 +15,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from './ui/collapsible';
-import { cn } from './ui/utils';
+import { cn, twx } from './ui/utils';
 
 const partitionSheets = (sheets: SheetsResponse) => {
   const personal: SheetsResponse = [];
@@ -57,6 +59,10 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
   );
 };
 
+const CardTitleWithButton = twx(
+  CardTitle,
+)`flex place-items-center justify-between`;
+
 export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
   const { personal, group, archived } = useMemo(
     () => partitionSheets(sheets),
@@ -65,64 +71,76 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
 
   const [showArchived, setShowArchived] = useState(false);
 
-  return sheets.length === 0 ? (
-    <Alert>
-      <AlertTitle>No sheets</AlertTitle>
-    </Alert>
-  ) : (
+  return (
     <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3">
-      {personal.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Personal Sheets</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {personal.map((sheet) => (
-              <SheetItem key={sheet.id} sheet={sheet} />
-            ))}
-          </CardContent>
-        </Card>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitleWithButton>
+            Personal Sheets
+            <NewPersonalSheetDialog
+              trigger={
+                <Button $size="icon" $variant="outline">
+                  <AccessibleIcon label="New personal sheet">
+                    <PlusIcon />
+                  </AccessibleIcon>
+                </Button>
+              }
+            />
+          </CardTitleWithButton>
+        </CardHeader>
+        <CardContent>
+          {personal.map((sheet) => (
+            <SheetItem key={sheet.id} sheet={sheet} />
+          ))}
+        </CardContent>
+      </Card>
 
-      {group.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Group Sheets</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {group.map((sheet) => (
-              <SheetItem key={sheet.id} sheet={sheet} />
-            ))}
-          </CardContent>
-        </Card>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitleWithButton>
+            Group Sheets
+            <NewGroupSheetDialog
+              trigger={
+                <Button $size="icon" $variant="outline">
+                  <AccessibleIcon label="New group sheet">
+                    <PlusIcon />
+                  </AccessibleIcon>
+                </Button>
+              }
+            />
+          </CardTitleWithButton>
+        </CardHeader>
+        <CardContent>
+          {group.map((sheet) => (
+            <SheetItem key={sheet.id} sheet={sheet} />
+          ))}
+        </CardContent>
+      </Card>
 
-      {archived.length > 0 && (
-        <Card className={cn(showArchived ? '' : 'opacity-50')}>
-          <Collapsible open={showArchived}>
-            <CardHeader>
-              <CardTitle className="flex place-items-center justify-between">
-                Archived Sheets
-                <CollapsibleTrigger asChild>
-                  <ExpandMoreButton
-                    expand={showArchived}
-                    onClick={() => {
-                      setShowArchived((prev) => !prev);
-                    }}
-                  />
-                </CollapsibleTrigger>
-              </CardTitle>
-            </CardHeader>
-            <CollapsibleContent>
-              <CardContent>
-                {archived.map((sheet) => (
-                  <SheetItem key={sheet.id} sheet={sheet} />
-                ))}
-              </CardContent>
-            </CollapsibleContent>
-          </Collapsible>
-        </Card>
-      )}
+      <Card className={cn(showArchived ? '' : 'opacity-50')}>
+        <Collapsible open={showArchived}>
+          <CardHeader>
+            <CardTitleWithButton>
+              Archived Sheets
+              <CollapsibleTrigger asChild>
+                <ExpandMoreButton
+                  expand={showArchived}
+                  onClick={() => {
+                    setShowArchived((prev) => !prev);
+                  }}
+                />
+              </CollapsibleTrigger>
+            </CardTitleWithButton>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent>
+              {archived.map((sheet) => (
+                <SheetItem key={sheet.id} sheet={sheet} />
+              ))}
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
     </div>
   );
 };
