@@ -39,9 +39,9 @@
     "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn' 'e2e test'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.6.16",
+    "@nihalgonsalves/esconfig": "^0.8.0",
     "@types/node": "20",
-    "@vitest/ui": "^1.1.1",
+    "@vitest/ui": "^1.1.3",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -61,6 +61,6 @@
     "sherif": "^0.7.0",
     "type-fest": "^4.9.0",
     "typescript": "^5.3.3",
-    "vitest": "~1.1.1"
+    "vitest": "~1.1.3"
   }
 }
