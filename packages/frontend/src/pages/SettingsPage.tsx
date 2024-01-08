@@ -14,9 +14,9 @@ export const SettingsPage = () => {
   return (
     <Root title="Settings" className="p-2 md:p-5" showBackButton>
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        <AppearanceForm />
         {status === 'success' && (
           <>
+            <AppearanceForm />
             <ProfileForm me={data} />
             <CategoryForm />
             <NotificationPreferenceForm />
