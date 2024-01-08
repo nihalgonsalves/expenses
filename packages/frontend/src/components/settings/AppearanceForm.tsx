@@ -96,9 +96,9 @@ export const AppearanceForm = () => {
                 key={t}
                 value={t}
                 data-theme={getThemeDataAttribute(themePreference, t)}
-                className="grid size-9 place-items-center rounded-full border shadow-none data-[state=on]:border-primary"
+                className="data-[state=on]:border-primary grid size-9 place-items-center rounded-full border shadow-none"
               >
-                <span className="grid size-6 place-items-center rounded-full bg-primary text-primary-foreground">
+                <span className="bg-primary text-primary-foreground grid size-6 place-items-center rounded-full">
                   {theme === t && <CheckIcon />}
                 </span>
                 <span className="sr-only">{t}</span>

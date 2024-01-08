@@ -20,7 +20,7 @@ export const CategoryAvatar = ({ category }: { category: string }) => (
     <Tooltip>
       <TooltipTrigger>
         <div
-          className="flex size-10 items-center justify-center rounded-md border bg-card text-xl md:size-12"
+          className="bg-card flex size-10 items-center justify-center rounded-md border text-xl md:size-12"
           aria-label={category}
         >
           <CategoryIcon category={category} />

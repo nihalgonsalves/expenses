@@ -264,7 +264,7 @@ const DataPreview = ({
           ))}
         </TableBody>
       </Table>
-      <div className="flex flex-row place-items-center justify-between bg-muted">
+      <div className="bg-muted flex flex-row place-items-center justify-between">
         <Button
           $variant="ghost"
           disabled={page === 0}
@@ -274,7 +274,7 @@ const DataPreview = ({
         >
           <ArrowLeftIcon />
         </Button>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-muted-foreground text-sm">
           Page {page + 1} of {maxPage + 1}
         </div>
         <Button

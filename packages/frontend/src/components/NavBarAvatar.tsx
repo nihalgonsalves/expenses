@@ -26,14 +26,14 @@ export const LoggedOutNavBarAvatar = ({
 
     <Button
       $variant="outline"
-      className="bg-transparent text-primary-foreground"
+      className="text-primary-foreground bg-transparent"
       asChild
     >
       <Link to="/auth/sign-in">Sign in</Link>
     </Button>
     <Button
       $variant="outline"
-      className="bg-transparent text-primary-foreground"
+      className="text-primary-foreground bg-transparent"
       asChild
     >
       <Link to="/auth/sign-up">Sign up</Link>
@@ -52,7 +52,7 @@ export const LoggedInNavBarAvatar = ({
     <DropdownMenuTrigger asChild>
       <Button className={className} $variant="ghost" $size="icon">
         <AccessibleIcon label="Profile and Settings menu">
-          <AvatarIcon className="size-5 text-primary-foreground" />
+          <AvatarIcon className="text-primary-foreground size-5" />
         </AccessibleIcon>
       </Button>
     </DropdownMenuTrigger>

@@ -38,7 +38,7 @@ const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
 };
 
 const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
-  <div className="flex place-items-center content-between justify-between rounded-lg border bg-card p-6 shadow">
+  <div className="bg-card flex place-items-center content-between justify-between rounded-lg border p-6 shadow">
     <div>
       <div className="text-sm capitalize text-neutral-500 md:text-lg">
         {category}
@@ -81,7 +81,7 @@ export const CategoryStats = ({
 
   return (
     <>
-      <div className="mb-4 rounded-md bg-muted p-1 text-center">
+      <div className="bg-muted mb-4 rounded-md p-1 text-center">
         <Popover>
           <PopoverTrigger asChild>
             <Button

@@ -19,7 +19,7 @@ export const QuickCreateTransactionFAB = () => {
       }
       title="Choose a sheet"
     >
-      <div className="flex flex-col gap-4 mt-2">
+      <div className="mt-2 flex flex-col gap-4">
         {sheets?.length === 0 && 'No unarchived sheets found'}
         {sheets?.map((sheet) =>
           sheet.type === 'PERSONAL' ? (

@@ -157,7 +157,7 @@ export const AllUserTransactionsList = ({
                 <Button
                   id="date"
                   $variant="outline"
-                  className="justify-start bg-card text-left font-normal"
+                  className="bg-card justify-start text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 size-4" />
                   {dateRange?.from && dateRange.to ? (
@@ -182,7 +182,7 @@ export const AllUserTransactionsList = ({
 
             <SheetSelect
               name="sheet"
-              className="w-full bg-card lg:w-48"
+              className="bg-card w-full lg:w-48"
               placeholder="All sheets"
               onBlur={noop}
               value={sheetId}

@@ -93,12 +93,12 @@ export const Root = ({
       </Helmet>
       <div className="m-auto flex h-dvh flex-col">
         {(!navigatorOnLine || bannerText) && (
-          <header className="flex justify-center gap-1 bg-muted p-1 text-center text-xs tracking-tighter text-muted-foreground">
+          <header className="bg-muted text-muted-foreground flex justify-center gap-1 p-1 text-center text-xs tracking-tighter">
             {bannerText && <span>{bannerText}</span>}
             {!navigatorOnLine && <span>You are offline</span>}
           </header>
         )}
-        <header className="flex place-items-center justify-center bg-primary p-4 px-5 align-middle text-lg md:text-2xl">
+        <header className="bg-primary flex place-items-center justify-center p-4 px-5 align-middle text-lg md:text-2xl">
           {showBackButton && (
             <Button
               $variant="ghost"
@@ -111,7 +111,7 @@ export const Root = ({
             </Button>
           )}
 
-          <div className="ms-2 flex place-items-center font-semibold normal-case text-primary-foreground ">
+          <div className="text-primary-foreground ms-2 flex place-items-center font-semibold normal-case ">
             {title}
             {additionalTitleItems}
           </div>
@@ -136,7 +136,7 @@ export const Root = ({
                             'hover:no-underline',
                             'hover:text-primary-foreground',
                             isActive
-                              ? 'text-primary underline hover:text-primary'
+                              ? 'text-primary hover:text-primary underline'
                               : 'text-primary-foreground',
                           ),
                         })}
@@ -186,7 +186,7 @@ export const Root = ({
         {additionalChildren}
 
         <nav
-          className="flex shrink-0 border-t-2 border-primary text-3xl md:hidden"
+          className="border-primary flex shrink-0 border-t-2 text-3xl md:hidden"
           style={{}}
         >
           {navItems.map(({ to, text, icon }) => (
@@ -201,7 +201,7 @@ export const Root = ({
                 <>
                   {isActive ? (
                     <motion.span
-                      className="h-1 bg-primary"
+                      className="bg-primary h-1"
                       layoutId="activeLine"
                       transition={{
                         type: 'spring',

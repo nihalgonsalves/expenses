@@ -18,7 +18,7 @@ export const AuthenticationPage = () => {
   }
 
   return (
-    <Root title={isSignUp ? 'Sign up' : 'Sign in'} className="max-w-xl m-auto ">
+    <Root title={isSignUp ? 'Sign up' : 'Sign in'} className="m-auto max-w-xl ">
       <AuthenticationForm isSignUp={isSignUp != null} />
     </Root>
   );
