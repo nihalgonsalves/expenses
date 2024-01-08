@@ -48,6 +48,14 @@ export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
   return app;
 };
 
+const getAddress = (address: string) => {
+  if (address === '0.0.0.0' || address === '::1' || address == '::') {
+    return 'localhost';
+  }
+
+  return address;
+};
+
 void (async () => {
   const prisma = new PrismaClient();
   const redis = new IORedis(config.REDIS_URL, { maxRetriesPerRequest: null });
@@ -66,7 +74,9 @@ void (async () => {
         port: config.PORT,
       },
       ({ address, port }) => {
-        console.log(`Server listening at http://${address}:${port}`);
+        console.log(
+          `Server listening at http://${getAddress(address)}:${port}`,
+        );
       },
     );
 
