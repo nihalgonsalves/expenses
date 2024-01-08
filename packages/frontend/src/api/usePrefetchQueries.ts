@@ -6,6 +6,7 @@ export const usePrefetchQueries = () => {
   const enabled = me != null;
 
   trpc.sheet.mySheets.useQuery({ includeArchived: true }, { enabled });
+  trpc.sheet.mySheets.useQuery({ includeArchived: false }, { enabled });
 
   trpc.notification.getSubscriptions.useQuery(undefined, { enabled });
   trpc.notification.getPublicKey.useQuery(undefined, { enabled });
