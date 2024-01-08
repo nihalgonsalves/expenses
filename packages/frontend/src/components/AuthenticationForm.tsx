@@ -11,6 +11,7 @@ import { trpc } from '../api/trpc';
 import { useResetCache } from '../api/useCacheReset';
 
 import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import {
   Form,
   FormControl,
@@ -20,8 +21,14 @@ import {
   FormMessage,
 } from './ui/form';
 import { Input } from './ui/input';
+import { twx } from './ui/utils';
 
-const SignInForm = () => {
+// collapse into underlying layer on narrow screens
+const SingleScreenCard = twx(
+  Card,
+)`border-0 rounded-none bg-inherit sm:bg-card sm:border sm:rounded-md`;
+
+export const SignInForm = () => {
   const signInMutation = trpc.user.authorizeUser.useMutation();
 
   const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
@@ -45,53 +52,58 @@ const SignInForm = () => {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email address</FormLabel>
-              <FormControl>
-                <Input type="email" autoComplete="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  autoComplete="current-password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button
-          className="w-full"
-          type="submit"
-          isLoading={signInMutation.isLoading}
-        >
-          Sign In
-        </Button>
-      </form>
-    </Form>
+    <SingleScreenCard>
+      <CardHeader>
+        <CardTitle>Sign In</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
+                    <Input type="email" autoComplete="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="current-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              className="w-full"
+              type="submit"
+              isLoading={signInMutation.isLoading}
+            >
+              Sign In
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </SingleScreenCard>
   );
 };
 
-const SignUpForm = () => {
+export const SignUpForm = () => {
   const signUpMutation = trpc.user.createUser.useMutation();
 
   const form = useForm<z.infer<typeof ZCreateUserInput>>({
@@ -117,62 +129,66 @@ const SignUpForm = () => {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input autoComplete="name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email address</FormLabel>
-              <FormControl>
-                <Input type="email" autoComplete="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  autoComplete="current-password"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button
-          className="w-full"
-          type="submit"
-          isLoading={signUpMutation.isLoading}
-        >
-          Sign Up
-        </Button>
-      </form>
-    </Form>
+    <SingleScreenCard>
+      <CardHeader>
+        <CardTitle>Sign Up</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input autoComplete="name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email address</FormLabel>
+                  <FormControl>
+                    <Input type="email" autoComplete="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      autoComplete="current-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              className="w-full"
+              type="submit"
+              isLoading={signUpMutation.isLoading}
+            >
+              Sign Up
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </SingleScreenCard>
   );
 };
-
-export const AuthenticationForm = ({ isSignUp }: { isSignUp: boolean }) =>
-  isSignUp ? <SignUpForm /> : <SignInForm />;

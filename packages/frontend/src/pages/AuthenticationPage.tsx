@@ -1,7 +1,7 @@
 import { Navigate, useMatch, useSearchParams } from 'react-router-dom';
 
 import { useCurrentUser } from '../api/useCurrentUser';
-import { AuthenticationForm } from '../components/AuthenticationForm';
+import { SignInForm, SignUpForm } from '../components/AuthenticationForm';
 
 import { Root } from './Root';
 
@@ -18,8 +18,11 @@ export const AuthenticationPage = () => {
   }
 
   return (
-    <Root title={isSignUp ? 'Sign up' : 'Sign in'} className="m-auto max-w-xl ">
-      <AuthenticationForm isSignUp={isSignUp != null} />
+    <Root
+      title={isSignUp ? 'Sign up' : 'Sign in'}
+      className="m-auto p-0 sm:grid sm:max-w-xl sm:place-items-center sm:p-5"
+    >
+      {isSignUp ? <SignUpForm /> : <SignInForm />}
     </Root>
   );
 };
