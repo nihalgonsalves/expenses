@@ -17,6 +17,7 @@ import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useInterval } from 'react-use';
 
+import { trpc } from '../api/trpc';
 import { usePullToRefresh } from '../api/usePullToRefresh';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { NavBarAvatar } from '../components/NavBarAvatar';
@@ -79,6 +80,8 @@ export const Root = ({
   className,
   bannerText,
 }: RootProps) => {
+  const { data } = trpc.config.useQuery();
+
   const navigate = useNavigate();
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
   const navigatorOnLine = useNavigatorOnLine();
@@ -86,7 +89,7 @@ export const Root = ({
   return (
     <>
       <Helmet>
-        <title>{`Expenses - ${title}`}</title>
+        <title>{data ? `${data.name} - ${title}` : title}</title>
       </Helmet>
       <div className="m-auto flex h-dvh flex-col">
         {(!navigatorOnLine || bannerText) && (

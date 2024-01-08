@@ -23,8 +23,14 @@ const health = publicProcedure.query(async ({ ctx }) => {
   }
 });
 
+const config = publicProcedure
+  .input(z.void())
+  .output(z.object({ name: z.string() }))
+  .query(() => ({ name: 'Expenses' }));
+
 export const appRouter = router({
   health,
+  config,
   user: userRouter,
   sheet: sheetRouter,
   transaction: transactionRouter,
