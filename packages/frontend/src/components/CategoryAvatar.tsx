@@ -1,13 +1,13 @@
-import { QuestionMarkIcon } from '@radix-ui/react-icons';
+import { QuestionMarkIcon } from "@radix-ui/react-icons";
 
-import { useCategoryEmojiShortCode } from '../data/useCategoryEmojiShortCode';
+import { useCategoryEmojiShortCode } from "../data/useCategoryEmojiShortCode";
 
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './ui/tooltip';
+} from "./ui/tooltip";
 
 export const CategoryIcon = ({ category }: { category: string }) => {
   const shortCode = useCategoryEmojiShortCode(category);

@@ -1,17 +1,17 @@
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { QueryClient } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { TRPCClientError, httpBatchLink } from '@trpc/client';
-import React, { useMemo } from 'react';
-import { toast } from 'react-hot-toast';
-import { z } from 'zod';
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import { QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { TRPCClientError, httpBatchLink } from "@trpc/client";
+import React, { useMemo } from "react";
+import { toast } from "react-hot-toast";
+import { z } from "zod";
 
-import { API_BASE_URL } from '../config';
-import { queryCache } from '../state/queryCache';
-import { durationMilliseconds } from '../utils/temporal';
+import { API_BASE_URL } from "../config";
+import { queryCache } from "../state/queryCache";
+import { durationMilliseconds } from "../utils/temporal";
 
-import { trpc } from './trpc';
+import { trpc } from "./trpc";
 
 const ZData = z.object({
   httpStatus: z.number().optional(),
@@ -69,15 +69,15 @@ const queryClient = new QueryClient({
               [
                 ...formErrors,
                 ...Object.entries(fieldErrors).map(
-                  ([field, errors]) => `${field}: ${errors.join(', ')}`,
+                  ([field, errors]) => `${field}: ${errors.join(", ")}`,
                 ),
-              ].join('; '),
+              ].join("; "),
             );
           } else {
             toast.error(error.message);
           }
         } else {
-          toast.error('An unknown error occurred');
+          toast.error("An unknown error occurred");
         }
       },
     },

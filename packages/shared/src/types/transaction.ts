@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { ZParticipant, ZSheet } from './sheet';
+import { ZParticipant, ZSheet } from "./sheet";
 
 export const ZMoney = z.object({
   amount: z.number().int(),
@@ -9,11 +9,11 @@ export const ZMoney = z.object({
 });
 
 const ZCreateSheetTransactionInput = z.object({
-  type: z.enum(['EXPENSE', 'INCOME']),
+  type: z.enum(["EXPENSE", "INCOME"]),
   money: ZMoney,
-  spentAt: z.string().min(1, { message: 'Required' }),
+  spentAt: z.string().min(1, { message: "Required" }),
   description: z.string(),
-  category: z.string().min(1, { message: 'Required' }),
+  category: z.string().min(1, { message: "Required" }),
 });
 
 export type CreateSheetTransactionInput = z.infer<
@@ -38,7 +38,7 @@ export type UpdatePersonalSheetTransactionInput = z.infer<
   typeof ZUpdatePersonalSheetTransactionInput
 >;
 
-export const ZRecurrenceFrequency = z.enum(['WEEKLY', 'MONTHLY']);
+export const ZRecurrenceFrequency = z.enum(["WEEKLY", "MONTHLY"]);
 
 export type RecurrenceFrequency = z.infer<typeof ZRecurrenceFrequency>;
 
@@ -88,8 +88,8 @@ export const ZCreateSheetTransactionResponse = z.object({
 
 export const ZCreateGroupSheetSettlementInput = z.object({
   groupSheetId: z.string().min(1),
-  fromId: z.string().min(1, { message: 'Sender is required' }),
-  toId: z.string().min(1, { message: 'Recipient is required' }),
+  fromId: z.string().min(1, { message: "Sender is required" }),
+  toId: z.string().min(1, { message: "Recipient is required" }),
   money: ZMoney,
 });
 
@@ -101,7 +101,7 @@ export const ZCreateGroupSheetSettlementResponse = z.object({
   id: z.string().min(1),
 });
 
-export const ZTransactionType = z.enum(['EXPENSE', 'INCOME', 'TRANSFER']);
+export const ZTransactionType = z.enum(["EXPENSE", "INCOME", "TRANSFER"]);
 
 export type TransactionType = z.infer<typeof ZTransactionType>;
 
@@ -166,9 +166,9 @@ export const ZBalance = z.object({
 });
 
 const ZTransactionParticipantType = z.enum([
-  'participant',
-  'transfer_from',
-  'transfer_to',
+  "participant",
+  "transfer_from",
+  "transfer_to",
 ]);
 
 const ZGroupSheetParticipantItem = ZParticipant.extend({

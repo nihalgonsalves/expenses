@@ -1,4 +1,4 @@
-import { Root } from './Root';
+import { Root } from "./Root";
 
 export const NotFoundPage = () => (
   <Root

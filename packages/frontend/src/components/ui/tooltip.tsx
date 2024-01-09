@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as TooltipPrimitive from '@radix-ui/react-tooltip';
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
-import { twx } from './utils';
+import { twx } from "./utils";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 

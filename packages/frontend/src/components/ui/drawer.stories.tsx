@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within, screen } from '@storybook/test';
+import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within, screen } from "@storybook/test";
 
-import { Button } from './button';
+import { Button } from "./button";
 import {
   Drawer,
   DrawerClose,
@@ -11,7 +11,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from './drawer';
+} from "./drawer";
 
 const meta: Meta<typeof Drawer> = {
   component: Drawer,
@@ -39,10 +39,10 @@ const meta: Meta<typeof Drawer> = {
     const canvas = within(canvasElement);
     // https://github.com/storybookjs/storybook/issues/25258
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    await userEvent.click(canvas.getByRole('button'));
+    await userEvent.click(canvas.getByRole("button"));
 
     await waitFor(async () => {
-      await expect(screen.getByText('Are you sure?')).toBeVisible();
+      await expect(screen.getByText("Are you sure?")).toBeVisible();
     });
   },
 };

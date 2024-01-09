@@ -1,41 +1,41 @@
-import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
   CaretSortIcon,
   CheckIcon,
   DotsVerticalIcon,
   ExitIcon,
   TrashIcon,
-} from '@radix-ui/react-icons';
-import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+} from "@radix-ui/react-icons";
+import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import type { Money } from '@nihalgonsalves/expenses-shared/money';
+import type { Money } from "@nihalgonsalves/expenses-shared/money";
 import type {
   BalanceSimplificationResponse,
   TransactionSummaryResponse,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { formatCurrency } from '../../utils/money';
-import { Avatar } from '../Avatar';
-import { ConfirmDialog } from '../form/ConfirmDialog';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { formatCurrency } from "../../utils/money";
+import { Avatar } from "../Avatar";
+import { ConfirmDialog } from "../form/ConfirmDialog";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '../ui/collapsible';
+} from "../ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { cn } from '../ui/utils';
+} from "../ui/dropdown-menu";
+import { cn } from "../ui/utils";
 
-import { ParticipantListItem } from './ParticipantListItem';
+import { ParticipantListItem } from "./ParticipantListItem";
 
 export type ActorInfo = { id: string; isAdmin: boolean };
 
@@ -73,7 +73,7 @@ const PersonMenu = ({
       ]);
 
       if (actorInfo.id === id) {
-        navigate('/groups');
+        navigate("/groups");
       }
     } catch {
       setIsInvalidating(false);
@@ -125,7 +125,7 @@ const BalanceText = ({ balance }: { balance: Money }) => {
   }
 
   const amount = formatCurrency(balance, {
-    signDisplay: 'never',
+    signDisplay: "never",
   });
 
   if (balance.amount > 0) {
@@ -192,10 +192,10 @@ const TransferItem = ({
       <span className="grow" />
       <Badge
         className={cn(
-          'py-2 shadow-none',
+          "py-2 shadow-none",
           summary.id === t.from.id
-            ? 'bg-red-100 text-red-800 hover:bg-red-100'
-            : 'bg-green-100 text-green-800 hover:bg-green-100',
+            ? "bg-red-100 text-red-800 hover:bg-red-100"
+            : "bg-green-100 text-green-800 hover:bg-green-100",
         )}
       >
         {formatCurrency(t.money)}
@@ -210,7 +210,7 @@ const TransferItem = ({
         confirmLabel="Settle up"
         description={
           <>
-            Log a transfer of <strong>{formatCurrency(t.money)}</strong> from{' '}
+            Log a transfer of <strong>{formatCurrency(t.money)}</strong> from{" "}
             <strong>{t.from.name}</strong> to <strong>{t.to.name}</strong>
           </>
         }
@@ -236,8 +236,8 @@ const SummaryCard = ({
     <Collapsible className="flex flex-col gap-4">
       <ParticipantListItem
         avatar={<Avatar name={summary.name} />}
-        className={cn('flex grow flex-row', {
-          'opacity-50': isInvalidating,
+        className={cn("flex grow flex-row", {
+          "opacity-50": isInvalidating,
         })}
       >
         <div className="flex grow flex-col">

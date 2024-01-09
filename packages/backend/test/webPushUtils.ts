@@ -1,16 +1,16 @@
-import crypto from 'crypto';
-import type { ServerResponse, IncomingMessage } from 'http';
-import { createServer } from 'https';
+import crypto from "crypto";
+import type { ServerResponse, IncomingMessage } from "http";
+import { createServer } from "https";
 
-import { type CertificateCreationResult, createCertificate } from 'pem';
-import { generateVAPIDKeys } from 'web-push';
+import { type CertificateCreationResult, createCertificate } from "pem";
+import { generateVAPIDKeys } from "web-push";
 
 import {
   ZNotificationPayload,
   type NotificationPayload,
-} from '@nihalgonsalves/expenses-shared/types/notification';
+} from "@nihalgonsalves/expenses-shared/types/notification";
 
-import type { INotificationDispatchService } from '../src/service/notification/service';
+import type { INotificationDispatchService } from "../src/service/notification/service";
 
 export const getVapidDetails = () => {
   const { publicKey, privateKey } = generateVAPIDKeys();
@@ -44,13 +44,13 @@ export class FakeNotificationDispatchService
 }
 
 export const getUserKeys = () => {
-  const userCurve = crypto.createECDH('prime256v1');
+  const userCurve = crypto.createECDH("prime256v1");
   const userPublicKey = userCurve.generateKeys();
   const userAuth = crypto.randomBytes(16);
 
   return {
-    p256dh: userPublicKey.toString('base64url'),
-    auth: userAuth.toString('base64url'),
+    p256dh: userPublicKey.toString("base64url"),
+    auth: userAuth.toString("base64url"),
   };
 };
 
@@ -79,8 +79,8 @@ export const createPushService = async (
 
     server.listen(undefined, () => {
       const addr = server.address();
-      if (addr == null || typeof addr === 'string') {
-        reject(new Error('Unexpected server address'));
+      if (addr == null || typeof addr === "string") {
+        reject(new Error("Unexpected server address"));
       } else {
         resolve(`https://localhost:${addr.port}/`);
       }

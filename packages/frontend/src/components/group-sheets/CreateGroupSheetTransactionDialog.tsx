@@ -2,24 +2,24 @@ import {
   CheckIcon,
   ThickArrowDownIcon,
   ThickArrowUpIcon,
-} from '@radix-ui/react-icons';
-import { useState } from 'react';
+} from "@radix-ui/react-icons";
+import { useState } from "react";
 
-import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { TransactionType } from '@nihalgonsalves/expenses-shared/types/transaction';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
+import type { TransactionType } from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from '../../api/trpc';
-import { useCurrentUser } from '../../api/useCurrentUser';
-import { ResponsiveDialog } from '../form/ResponsiveDialog';
-import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
+import { trpc } from "../../api/trpc";
+import { useCurrentUser } from "../../api/useCurrentUser";
+import { ResponsiveDialog } from "../form/ResponsiveDialog";
+import { ToggleButtonGroup } from "../form/ToggleButtonGroup";
 
-import { SettlementForm } from './SettlementForm';
-import { TransactionForm } from './TransactionForm';
+import { SettlementForm } from "./SettlementForm";
+import { TransactionForm } from "./TransactionForm";
 
 const TYPE_OPTIONS = [
   {
-    value: 'EXPENSE',
+    value: "EXPENSE",
     label: (
       <>
         <ThickArrowUpIcon className="mr-2 text-xl" />
@@ -28,7 +28,7 @@ const TYPE_OPTIONS = [
     ),
   },
   {
-    value: 'INCOME',
+    value: "INCOME",
     label: (
       <>
         <ThickArrowDownIcon className="mr-2 text-xl" />
@@ -37,7 +37,7 @@ const TYPE_OPTIONS = [
     ),
   },
   {
-    value: 'TRANSFER',
+    value: "TRANSFER",
     label: (
       <>
         <CheckIcon className="mr-2 text-xl" />
@@ -54,7 +54,7 @@ export const CreateGroupSheetTransactionForm = ({
   groupSheet: GroupSheetByIdResponse;
   me: User;
 }) => {
-  const [type, setType] = useState<TransactionType>('EXPENSE');
+  const [type, setType] = useState<TransactionType>("EXPENSE");
 
   return (
     <div className="flex flex-col gap-4">
@@ -64,7 +64,7 @@ export const CreateGroupSheetTransactionForm = ({
         setValue={setType}
         options={TYPE_OPTIONS}
       />
-      {type === 'TRANSFER' ? (
+      {type === "TRANSFER" ? (
         <SettlementForm groupSheet={groupSheet} me={me} />
       ) : (
         <TransactionForm type={type} groupSheet={groupSheet} me={me} />

@@ -1,10 +1,10 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { CircleBackslashIcon, DownloadIcon } from '@radix-ui/react-icons';
-import Papa from 'papaparse';
-import { toast } from 'react-hot-toast';
+import { Temporal } from "@js-temporal/polyfill";
+import { CircleBackslashIcon, DownloadIcon } from "@radix-ui/react-icons";
+import Papa from "papaparse";
+import { toast } from "react-hot-toast";
 
-import { Button } from './ui/button';
-import { DropdownMenuItem } from './ui/dropdown-menu';
+import { Button } from "./ui/button";
+import { DropdownMenuItem } from "./ui/dropdown-menu";
 
 export const ExportTransactionsDropdown = <TData, TOutput>({
   id,
@@ -17,27 +17,27 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
   fetch: () => Promise<TData[]>;
   mapItem: (data: TData) => TOutput;
 }) => {
-  const handleRequestDownload = async (type: 'json' | 'csv') => {
+  const handleRequestDownload = async (type: "json" | "csv") => {
     const toastId = `${id}-${type}`;
 
     await toast.promise(
       fetch(),
       {
-        loading: 'Preparing download...',
+        loading: "Preparing download...",
         success: (data) => {
           const mapped = data.map((item) => mapItem(item));
 
           const blob =
-            type === 'json'
+            type === "json"
               ? new Blob([JSON.stringify(mapped, null, 2)], {
-                  type: 'application/json',
+                  type: "application/json",
                 })
-              : new Blob([Papa.unparse(mapped)], { type: 'text/csv' });
+              : new Blob([Papa.unparse(mapped)], { type: "text/csv" });
 
           const objectURL = URL.createObjectURL(blob);
 
           const filename = `${id}-${name
-            .replace(/[^\w]/g, '_')
+            .replace(/[^\w]/g, "_")
             .toLowerCase()}-${Temporal.Now.instant().epochSeconds}.${type}`;
 
           return (
@@ -65,7 +65,7 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
           );
         },
         error: (e: unknown) =>
-          `Download failed: ${e instanceof Error ? e.message : 'Unknown'}`,
+          `Download failed: ${e instanceof Error ? e.message : "Unknown"}`,
       },
       {
         id: toastId,
@@ -81,14 +81,14 @@ export const ExportTransactionsDropdown = <TData, TOutput>({
     <>
       <DropdownMenuItem
         onSelect={() => {
-          void handleRequestDownload('json');
+          void handleRequestDownload("json");
         }}
       >
         <DownloadIcon className="mr-2" /> Export .json
       </DropdownMenuItem>
       <DropdownMenuItem
         onSelect={() => {
-          void handleRequestDownload('csv');
+          void handleRequestDownload("csv");
         }}
       >
         <DownloadIcon className="mr-2" /> Export .csv

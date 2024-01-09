@@ -1,12 +1,12 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from "@js-temporal/polyfill";
 
-import { getUserLanguage } from './utils';
+import { getUserLanguage } from "./utils";
 
 export const CURRENT_TIMEZONE =
   Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export const durationMilliseconds = (duration: Temporal.DurationLike) =>
-  Temporal.Duration.from(duration).total('milliseconds');
+  Temporal.Duration.from(duration).total("milliseconds");
 
 export const dateTimeLocalToZonedISOString = (val: string) =>
   Temporal.PlainDateTime.from(val).toZonedDateTime(CURRENT_TIMEZONE).toString();
@@ -20,17 +20,17 @@ export const isoToTemporalZonedDateTime = (iso: string) =>
   Temporal.Instant.from(iso).toZonedDateTimeISO(CURRENT_TIMEZONE);
 
 export const nowForDateTimeInput = () =>
-  Temporal.Now.plainDateTimeISO().round('minutes').toString();
+  Temporal.Now.plainDateTimeISO().round("minutes").toString();
 
 export const shortDateFormatter = new Intl.DateTimeFormat(getUserLanguage(), {
-  dateStyle: 'short',
+  dateStyle: "short",
 });
 
 export const shortDateTimeFormatter = new Intl.DateTimeFormat(
   getUserLanguage(),
   {
-    dateStyle: 'short',
-    timeStyle: 'short',
+    dateStyle: "short",
+    timeStyle: "short",
   },
 );
 
@@ -42,8 +42,8 @@ export const intervalGreaterThan = (
   const interval = a.since(b);
 
   return (
-    interval.abs().total('seconds') >
-    Temporal.Duration.from(duration).total('seconds')
+    interval.abs().total("seconds") >
+    Temporal.Duration.from(duration).total("seconds")
   );
 };
 
@@ -60,18 +60,18 @@ export const formatDateRelative = (
 
   switch (daysSinceToday) {
     case 1:
-      return 'Yesterday';
+      return "Yesterday";
     case 0:
-      return 'Today';
+      return "Today";
     case -1:
-      return 'Tomorrow';
+      return "Tomorrow";
     default:
       return shortDateFormatter.format(instant.epochMilliseconds);
   }
 };
 
 const shortRelativeFormatter = new Intl.RelativeTimeFormat(getUserLanguage(), {
-  style: 'short',
+  style: "short",
 });
 
 export const formatDateTimeRelative = (
@@ -83,8 +83,8 @@ export const formatDateTimeRelative = (
   const relativeToNow = instant.since(Temporal.Now.instant());
 
   const durationRounded = relativeToNow.round({
-    smallestUnit: 'second',
-    largestUnit: 'day',
+    smallestUnit: "second",
+    largestUnit: "day",
   });
 
   const { days, hours, minutes } = durationRounded.abs();
@@ -94,18 +94,18 @@ export const formatDateTimeRelative = (
   }
 
   if (days >= 1) {
-    return shortRelativeFormatter.format(durationRounded.days, 'day');
+    return shortRelativeFormatter.format(durationRounded.days, "day");
   }
 
   if (hours >= 1) {
-    return shortRelativeFormatter.format(durationRounded.hours, 'hours');
+    return shortRelativeFormatter.format(durationRounded.hours, "hours");
   }
 
   if (minutes >= 1) {
-    return shortRelativeFormatter.format(durationRounded.minutes, 'minutes');
+    return shortRelativeFormatter.format(durationRounded.minutes, "minutes");
   }
 
-  return 'just now';
+  return "just now";
 };
 
 export const groupBySpentAt = <T>(
@@ -117,8 +117,8 @@ export const groupBySpentAt = <T>(
   // TODO: proposal-array-grouping (TypeScript 5.3?)
   for (const item of items) {
     const date = isoToTemporalZonedDateTime(getSpentAt(item)).round({
-      smallestUnit: 'day',
-      roundingMode: 'trunc',
+      smallestUnit: "day",
+      roundingMode: "trunc",
     }).epochMilliseconds;
 
     const existing = groupedByDate.get(date);

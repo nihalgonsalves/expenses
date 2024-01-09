@@ -1,28 +1,28 @@
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
+import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
   ArchiveIcon,
   DotsVerticalIcon,
   PlusIcon,
   TrashIcon,
   UploadIcon,
-} from '@radix-ui/react-icons';
-import { useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+} from "@radix-ui/react-icons";
+import { useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-import { trpc } from '../../api/trpc';
-import { FloatingActionButton } from '../../components/FloatingActionButton';
-import { ConfirmDialog } from '../../components/form/ConfirmDialog';
-import { CreatePersonalTransactionDialog } from '../../components/personal-sheets/CreatePersonalTransactionDialog';
-import { ExportPersonalTransactionsDropdown } from '../../components/personal-sheets/ExportPersonalTransactionsDropdown';
-import { PersonalSheet } from '../../components/personal-sheets/PersonalSheet';
-import { Button } from '../../components/ui/button';
+import { trpc } from "../../api/trpc";
+import { FloatingActionButton } from "../../components/FloatingActionButton";
+import { ConfirmDialog } from "../../components/form/ConfirmDialog";
+import { CreatePersonalTransactionDialog } from "../../components/personal-sheets/CreatePersonalTransactionDialog";
+import { ExportPersonalTransactionsDropdown } from "../../components/personal-sheets/ExportPersonalTransactionsDropdown";
+import { PersonalSheet } from "../../components/personal-sheets/PersonalSheet";
+import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-} from '../../components/ui/dropdown-menu';
-import { useParams, SheetParams } from '../../router';
-import { RootLoader } from '../Root';
+} from "../../components/ui/dropdown-menu";
+import { useParams, SheetParams } from "../../router";
+import { RootLoader } from "../Root";
 
 export const SheetDetailPage = () => {
   const { sheetId } = useParams(SheetParams);
@@ -38,14 +38,14 @@ export const SheetDetailPage = () => {
     await deleteSheet(sheetId);
     void utils.sheet.personalSheetById.invalidate(sheetId);
     void utils.sheet.mySheets.invalidate();
-    navigate('/sheets');
+    navigate("/sheets");
   }, [deleteSheet, sheetId, navigate, utils]);
 
   const handleArchive = useCallback(async () => {
     await archiveSheet(sheetId);
     void utils.sheet.personalSheetById.invalidate(sheetId);
     void utils.sheet.mySheets.invalidate();
-    navigate('/sheets');
+    navigate("/sheets");
   }, [archiveSheet, sheetId, navigate, utils]);
 
   return (

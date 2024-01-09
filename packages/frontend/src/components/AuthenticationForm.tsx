@@ -1,17 +1,17 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import type { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
 
 import {
   ZAuthorizeUserInput,
   ZCreateUserInput,
-} from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from '../api/trpc';
-import { useResetCache } from '../api/useCacheReset';
+import { trpc } from "../api/trpc";
+import { useResetCache } from "../api/useCacheReset";
 
-import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Form,
   FormControl,
@@ -19,9 +19,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from './ui/form';
-import { Input } from './ui/input';
-import { twx } from './ui/utils';
+} from "./ui/form";
+import { Input } from "./ui/input";
+import { twx } from "./ui/utils";
 
 // collapse into underlying layer on narrow screens
 const SingleScreenCard = twx(
@@ -33,10 +33,10 @@ export const SignInForm = () => {
 
   const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
     resolver: zodResolver(ZAuthorizeUserInput),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -108,11 +108,11 @@ export const SignUpForm = () => {
 
   const form = useForm<z.infer<typeof ZCreateUserInput>>({
     resolver: zodResolver(ZCreateUserInput),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
-      name: '',
-      email: '',
-      password: '',
+      name: "",
+      email: "",
+      password: "",
     },
   });
 

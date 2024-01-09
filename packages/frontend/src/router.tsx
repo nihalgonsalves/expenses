@@ -4,22 +4,22 @@ import {
   Navigate,
   useLocation,
   Outlet,
-} from 'react-router-dom';
-import { z, type ZodRawShape } from 'zod';
+} from "react-router-dom";
+import { z, type ZodRawShape } from "zod";
 
-import { useCurrentUser } from './api/useCurrentUser';
-import { ErrorBoundary } from './components/ErrorBoundary';
-import { AuthenticationPage } from './pages/AuthenticationPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { SettingsPage } from './pages/SettingsPage';
-import { SheetsIndexPage } from './pages/SheetsIndexPage';
-import { GroupDetailPage } from './pages/groups/GroupDetailPage';
-import { GroupTransactionsIndexPage } from './pages/groups/transactions/GroupTransactionsIndexPage';
-import { SheetDetailPage } from './pages/sheets/SheetDetailPage';
-import { SheetImportPage } from './pages/sheets/SheetImportPage';
-import { PersonalExpensesIndexPage } from './pages/sheets/transactions/PersonalTransactionsIndexPage';
-import { StatsIndexPage } from './pages/stats/StatsIndexPage';
-import { TransactionsIndexPage } from './pages/transactions/TransactionsIndexPage';
+import { useCurrentUser } from "./api/useCurrentUser";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+import { AuthenticationPage } from "./pages/AuthenticationPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { SheetsIndexPage } from "./pages/SheetsIndexPage";
+import { GroupDetailPage } from "./pages/groups/GroupDetailPage";
+import { GroupTransactionsIndexPage } from "./pages/groups/transactions/GroupTransactionsIndexPage";
+import { SheetDetailPage } from "./pages/sheets/SheetDetailPage";
+import { SheetImportPage } from "./pages/sheets/SheetImportPage";
+import { PersonalExpensesIndexPage } from "./pages/sheets/transactions/PersonalTransactionsIndexPage";
+import { StatsIndexPage } from "./pages/stats/StatsIndexPage";
+import { TransactionsIndexPage } from "./pages/transactions/TransactionsIndexPage";
 
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
@@ -39,7 +39,7 @@ const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: (
       <ErrorBoundary>
         <Outlet />
@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
-        path: '/',
+        path: "/",
         element: (
           <AuthenticatedRoute>
             <TransactionsIndexPage />
@@ -55,7 +55,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/stats',
+        path: "/stats",
         element: (
           <AuthenticatedRoute>
             <StatsIndexPage />
@@ -63,25 +63,25 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: '/auth/sign-in',
+        path: "/auth/sign-in",
         element: <AuthenticationPage />,
       },
       {
-        path: '/auth/sign-up',
+        path: "/auth/sign-up",
         element: <AuthenticationPage />,
       },
       {
-        path: '/groups',
+        path: "/groups",
         children: [
           {
-            path: '/groups',
+            path: "/groups",
             element: <Navigate to="/sheets" />,
           },
           {
-            path: '/groups/:sheetId',
+            path: "/groups/:sheetId",
             children: [
               {
-                path: '/groups/:sheetId',
+                path: "/groups/:sheetId",
                 element: (
                   <AuthenticatedRoute>
                     <GroupDetailPage />
@@ -89,7 +89,7 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/groups/:sheetId/transactions',
+                path: "/groups/:sheetId/transactions",
                 element: (
                   <AuthenticatedRoute>
                     <GroupTransactionsIndexPage />
@@ -101,10 +101,10 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: '/sheets',
+        path: "/sheets",
         children: [
           {
-            path: '/sheets',
+            path: "/sheets",
             element: (
               <AuthenticatedRoute>
                 <SheetsIndexPage />
@@ -112,10 +112,10 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: '/sheets/:sheetId',
+            path: "/sheets/:sheetId",
             children: [
               {
-                path: '/sheets/:sheetId',
+                path: "/sheets/:sheetId",
                 element: (
                   <AuthenticatedRoute>
                     <SheetDetailPage />
@@ -123,7 +123,7 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/sheets/:sheetId/transactions',
+                path: "/sheets/:sheetId/transactions",
                 element: (
                   <AuthenticatedRoute>
                     <PersonalExpensesIndexPage />
@@ -131,7 +131,7 @@ export const router = createBrowserRouter([
                 ),
               },
               {
-                path: '/sheets/:sheetId/import',
+                path: "/sheets/:sheetId/import",
                 element: (
                   <AuthenticatedRoute>
                     <SheetImportPage />
@@ -143,11 +143,11 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: '/settings',
+        path: "/settings",
         element: <SettingsPage />,
       },
       {
-        path: '*',
+        path: "*",
         element: <NotFoundPage />,
       },
     ],
@@ -165,4 +165,4 @@ export const TransactionParams = SheetParams.extend({
   transactionId: z.string(),
 });
 
-export { RouterProvider } from 'react-router-dom';
+export { RouterProvider } from "react-router-dom";

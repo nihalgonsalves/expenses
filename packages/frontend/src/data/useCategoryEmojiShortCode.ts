@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { trpc } from '../api/trpc';
+import { trpc } from "../api/trpc";
 
 export const useCategoryEmojiShortCode = (
   category: string,

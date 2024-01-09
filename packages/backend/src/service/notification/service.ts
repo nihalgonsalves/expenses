@@ -1,26 +1,26 @@
-import type { PrismaClient } from '@prisma/client';
-import { Queue, Worker } from 'bullmq';
-import type IORedis from 'ioredis';
+import type { PrismaClient } from "@prisma/client";
+import { Queue, Worker } from "bullmq";
+import type IORedis from "ioredis";
 import webPush, {
   WebPushError,
   type PushSubscription,
   type RequestOptions,
-} from 'web-push';
+} from "web-push";
 
 import {
   type NotificationSubscriptionUpsertInput,
   type NotificationPayload,
   ZNotificationPayload,
-} from '@nihalgonsalves/expenses-shared/types/notification';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/notification";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { NOTIFICATION_BULLMQ_QUEUE } from '../../config';
-import type { IWorker } from '../../startWorkers';
-import { generateId } from '../../utils/nanoid';
+import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
+import type { IWorker } from "../../startWorkers";
+import { generateId } from "../../utils/nanoid";
 
 export class NotificationSubscriptionService {
   constructor(
-    private prismaClient: Pick<PrismaClient, 'notificationSubscription'>,
+    private prismaClient: Pick<PrismaClient, "notificationSubscription">,
   ) {}
 
   async getSubscriptions(user: User) {
@@ -72,8 +72,8 @@ type WebPushQueueItem = {
 };
 
 type NotificationDispatchResult = { id: string; userId: string } & (
-  | { success: false; errorType: 'SERVER'; statusCode: number }
-  | { success: false; errorType: 'UNKNOWN'; error: unknown }
+  | { success: false; errorType: "SERVER"; statusCode: number }
+  | { success: false; errorType: "UNKNOWN"; error: unknown }
   | { success: true }
 );
 
@@ -95,7 +95,7 @@ export class NotificationDispatchService
   constructor(
     private prismaClient: PrismaClient,
     redis: IORedis,
-    private vapidDetails: NonNullable<RequestOptions['vapidDetails']>,
+    private vapidDetails: NonNullable<RequestOptions["vapidDetails"]>,
   ) {
     this.queue = new Queue(NOTIFICATION_BULLMQ_QUEUE, {
       connection: redis,
@@ -124,7 +124,7 @@ export class NotificationDispatchService
 
     await this.queue.addBulk(
       subscriptions.map(({ id, userId, endpoint, keyAuth, keyP256dh }) => ({
-        name: 'push-message',
+        name: "push-message",
         data: {
           userId,
           subscriptionId: id,
@@ -174,7 +174,7 @@ export class NotificationDispatchService
         return {
           ...baseResult,
           success: false,
-          errorType: 'SERVER',
+          errorType: "SERVER",
           statusCode: error.statusCode,
         };
       } else {
@@ -186,7 +186,7 @@ export class NotificationDispatchService
         return {
           ...baseResult,
           success: false,
-          errorType: 'UNKNOWN',
+          errorType: "UNKNOWN",
           error,
         };
       }

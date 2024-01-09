@@ -1,17 +1,17 @@
-import { faker } from '@faker-js/faker';
+import { faker } from "@faker-js/faker";
 import {
   type PrismaClient,
   type Prisma,
   SheetParticipantRole,
   SheetType,
-} from '@prisma/client';
+} from "@prisma/client";
 
-import { CURRENCY_CODES } from '@nihalgonsalves/expenses-shared/money';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+import { CURRENCY_CODES } from "@nihalgonsalves/expenses-shared/money";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { generateId } from '../src/utils/nanoid';
+import { generateId } from "../src/utils/nanoid";
 
-import { getUserKeys } from './webPushUtils';
+import { getUserKeys } from "./webPushUtils";
 
 const randomItem = <T>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]!;
@@ -93,7 +93,7 @@ export const personalSheetFactory = async (
     data: {
       id: generateId(),
       type: SheetType.PERSONAL,
-      name: 'Personal expenses',
+      name: "Personal expenses",
       currencyCode: opts.currencyCode ?? currencyCodeFactory(),
       isArchived: opts.isArchived ?? false,
       participants: {
@@ -114,7 +114,7 @@ export const notificationSubscriptionFactory = async (
     data: {
       id: generateId(),
       userId: user.id,
-      description: 'Test',
+      description: "Test",
       endpoint: endpoint ?? `https://push.example.com/user/${user.id}`,
       keyAuth: auth,
       keyP256dh: p256dh,

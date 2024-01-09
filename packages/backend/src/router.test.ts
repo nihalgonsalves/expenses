@@ -1,17 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { getTRPCCaller } from '../test/getTRPCCaller';
+import { getTRPCCaller } from "../test/getTRPCCaller";
 
 const { usePublicCaller } = await getTRPCCaller();
 
-describe('router', () => {
-  describe('health', () => {
-    it('should respond with OK', async () => {
+describe("router", () => {
+  describe("health", () => {
+    it("should respond with OK", async () => {
       const caller = usePublicCaller();
 
       expect(await caller.health()).toEqual({
-        status: 'ok',
-        message: 'healthy',
+        status: "ok",
+        message: "healthy",
       });
     });
   });

@@ -1,18 +1,18 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ExclamationTriangleIcon, TrashIcon } from '@radix-ui/react-icons';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { ZPushSubscription } from '@nihalgonsalves/expenses-shared/types/notification';
+import { ZPushSubscription } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import { trpc } from '../../api/trpc';
-import { useSubscriptionEndpoint } from '../../state/preferences';
-import { useNotificationPermission } from '../../utils/hooks/useNotificationPermission';
-import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { trpc } from "../../api/trpc";
+import { useSubscriptionEndpoint } from "../../state/preferences";
+import { useNotificationPermission } from "../../utils/hooks/useNotificationPermission";
+import { useServiceWorkerRegistration } from "../../utils/hooks/useServiceWorkerRegistration";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Form,
   FormControl,
@@ -20,8 +20,8 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from '../ui/form';
-import { Switch } from '../ui/switch';
+} from "../ui/form";
+import { Switch } from "../ui/switch";
 
 const IS_IOS_AND_NOT_STANDALONE = z.boolean().optional().parse(
   // @ts-expect-error iOS only
@@ -53,7 +53,7 @@ export const NotificationPreferenceForm = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: "onTouched",
   });
 
   useEffect(() => {
@@ -72,10 +72,10 @@ export const NotificationPreferenceForm = () => {
 
     if (
       !applicationServerKey ||
-      (permission === 'default' && (await request()) !== 'granted') ||
+      (permission === "default" && (await request()) !== "granted") ||
       !serviceWorkerRegistration
     ) {
-      console.debug('[NotificationPreferenceForm] Push subscription failed', {
+      console.debug("[NotificationPreferenceForm] Push subscription failed", {
         applicationServerKey,
         permission,
         serviceWorkerRegistration,
@@ -111,8 +111,8 @@ export const NotificationPreferenceForm = () => {
   };
 
   const disabled =
-    permission === 'denied' ||
-    permission === 'not_supported' ||
+    permission === "denied" ||
+    permission === "not_supported" ||
     !applicationServerKey;
 
   return (
@@ -121,7 +121,7 @@ export const NotificationPreferenceForm = () => {
         <CardTitle>Notifications</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-8">
-        {permission === 'denied' && (
+        {permission === "denied" && (
           <Alert $variant="destructive">
             <ExclamationTriangleIcon className="size-4" />
             <AlertTitle>You have denied notifications.</AlertTitle>
@@ -133,7 +133,7 @@ export const NotificationPreferenceForm = () => {
           </Alert>
         )}
 
-        {permission === 'not_supported' && (
+        {permission === "not_supported" && (
           <Alert $variant="destructive">
             <ExclamationTriangleIcon className="size-4" />
             <AlertTitle>
@@ -144,7 +144,7 @@ export const NotificationPreferenceForm = () => {
               Make sure that you&rsquo;re not using private browsing, and that
               you&rsquo;re accessing this page over https.
               {IS_IOS_AND_NOT_STANDALONE === false &&
-                ' On iOS 16.4 and above, click the share icon and Add to Home Screen for notification support.'}
+                " On iOS 16.4 and above, click the share icon and Add to Home Screen for notification support."}
               {import.meta.env.DEV && (
                 <b>
                   <br />
@@ -192,7 +192,7 @@ export const NotificationPreferenceForm = () => {
                 <div>
                   <span className="font-semibold">
                     {subscription.description}
-                    {subscription.endpoint === endpoint && ' – this device'}
+                    {subscription.endpoint === endpoint && " – this device"}
                   </span>
                   <br />
                   Notifications enabled

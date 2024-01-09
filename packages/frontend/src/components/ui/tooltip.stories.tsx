@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from '@storybook/test';
+import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, waitFor, within } from "@storybook/test";
 
-import { Button } from './button';
+import { Button } from "./button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './tooltip';
+} from "./tooltip";
 
 const meta: Meta<typeof Tooltip> = {
   component: Tooltip,
@@ -27,11 +27,11 @@ const meta: Meta<typeof Tooltip> = {
     const canvas = within(canvasElement);
     // https://github.com/storybookjs/storybook/issues/25258
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    await userEvent.hover(canvas.getByRole('button'));
+    await userEvent.hover(canvas.getByRole("button"));
 
     await waitFor(async () => {
       await expect(
-        within(canvas.getByRole('tooltip')).getByText('Add to library'),
+        within(canvas.getByRole("tooltip")).getByText("Add to library"),
       ).toBeVisible();
     });
   },

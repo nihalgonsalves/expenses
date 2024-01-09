@@ -1,10 +1,10 @@
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
-import { Popover } from '@radix-ui/react-popover';
-import { forwardRef, useMemo, useState } from 'react';
-import type { ControllerRenderProps } from 'react-hook-form';
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { Popover } from "@radix-ui/react-popover";
+import { forwardRef, useMemo, useState } from "react";
+import type { ControllerRenderProps } from "react-hook-form";
 
-import { CURRENCY_CODES } from '../../utils/money';
-import { Button } from '../ui/button';
+import { CURRENCY_CODES } from "../../utils/money";
+import { Button } from "../ui/button";
 import {
   Command,
   CommandEmpty,
@@ -12,16 +12,16 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '../ui/command';
-import { PopoverContent, PopoverTrigger } from '../ui/popover';
-import { cn } from '../ui/utils';
+} from "../ui/command";
+import { PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn } from "../ui/utils";
 
 type CurrencySelectProps = {
   id?: string;
   value: string;
   onChange: (newCode: string) => void;
   options?: string[];
-} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const CurrencySelect = forwardRef<
   HTMLButtonElement,
@@ -63,7 +63,7 @@ export const CurrencySelect = forwardRef<
           >
             {value
               ? optionObjects.find((opt) => opt.value === value)?.label
-              : 'Select'}
+              : "Select"}
             <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -88,8 +88,8 @@ export const CurrencySelect = forwardRef<
                   >
                     <CheckIcon
                       className={cn(
-                        'mr-2 size-4',
-                        value === option.value ? 'opacity-100' : 'opacity-0',
+                        "mr-2 size-4",
+                        value === option.value ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {option.label}
@@ -103,4 +103,4 @@ export const CurrencySelect = forwardRef<
     );
   },
 );
-CurrencySelect.displayName = 'CurrencySelect';
+CurrencySelect.displayName = "CurrencySelect";

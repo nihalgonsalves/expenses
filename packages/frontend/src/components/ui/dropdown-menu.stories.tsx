@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within, screen, waitFor, expect } from '@storybook/test';
+import type { Meta, StoryObj } from "@storybook/react";
+import { userEvent, within, screen, waitFor, expect } from "@storybook/test";
 
-import { Button } from './button';
+import { Button } from "./button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-} from './dropdown-menu';
+} from "./dropdown-menu";
 
 const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,
@@ -111,15 +111,15 @@ const meta: Meta<typeof DropdownMenu> = {
     const canvas = within(canvasElement);
     // https://github.com/storybookjs/storybook/issues/25258
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    await userEvent.click(canvas.getByRole('button'));
+    await userEvent.click(canvas.getByRole("button"));
 
-    const menu = screen.getByRole('menu');
+    const menu = screen.getByRole("menu");
 
     await waitFor(async () => {
-      await expect(within(menu).getByText('My Account', {})).toBeVisible();
+      await expect(within(menu).getByText("My Account", {})).toBeVisible();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      await userEvent.hover(within(menu).getByText('Invite users'));
-      await expect(screen.getByText('Email', {})).toBeVisible();
+      await userEvent.hover(within(menu).getByText("Invite users"));
+      await expect(screen.getByText("Email", {})).toBeVisible();
     });
   },
 };

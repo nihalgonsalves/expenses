@@ -1,4 +1,4 @@
-import type { Theme } from '@nihalgonsalves/expenses-shared/types/theme';
+import type { Theme } from "@nihalgonsalves/expenses-shared/types/theme";
 
 export const IconPreview = ({ theme }: { theme: Theme }) => (
   <div className="bg-muted grid grow place-items-center rounded-lg text-center align-middle">

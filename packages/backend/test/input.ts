@@ -1,22 +1,22 @@
-import { faker } from '@faker-js/faker';
-import { Temporal } from '@js-temporal/polyfill';
+import { faker } from "@faker-js/faker";
+import { Temporal } from "@js-temporal/polyfill";
 
 import type {
   CreatePersonalSheetTransactionInput,
   CreateGroupSheetTransactionInput,
   CreatePersonalSheetTransactionScheduleInput,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
 
 export const createPersonalSheetTransactionInput = (
   personalSheetId: string,
   currencyCode: string,
-  type: 'EXPENSE' | 'INCOME',
+  type: "EXPENSE" | "INCOME",
   amount = 100_00,
 ): CreatePersonalSheetTransactionInput => ({
   personalSheetId,
   type,
   description: `test personal ${type.toLowerCase()}`,
-  category: 'other',
+  category: "other",
   money: { amount, scale: 2, currencyCode },
   spentAt: Temporal.Now.zonedDateTimeISO().toString(),
 });
@@ -24,23 +24,23 @@ export const createPersonalSheetTransactionInput = (
 export const createPersonalSheetTransactionScheduleInput = (
   personalSheetId: string,
   currencyCode: string,
-  type: 'EXPENSE' | 'INCOME',
+  type: "EXPENSE" | "INCOME",
   amount = 100_00,
   firstOccurrenceAt = Temporal.Now.zonedDateTimeISO(faker.location.timeZone()),
 ): CreatePersonalSheetTransactionScheduleInput => ({
   personalSheetId,
   type,
   description: `test personal ${type.toLowerCase()}`,
-  category: 'other',
+  category: "other",
   money: { amount, scale: 2, currencyCode },
   firstOccurrenceAt: firstOccurrenceAt.toString(),
   recurrenceRule: {
-    freq: 'MONTHLY',
+    freq: "MONTHLY",
   },
 });
 
 export const createGroupSheetTransactionInput = (
-  type: 'EXPENSE' | 'INCOME',
+  type: "EXPENSE" | "INCOME",
   groupSheetId: string,
   currencyCode: string,
   paidOrReceivedById: string,
@@ -52,7 +52,7 @@ export const createGroupSheetTransactionInput = (
   type,
   groupSheetId,
   description: `test group ${type.toLowerCase()}`,
-  category: 'other',
+  category: "other",
   money: { amount, scale: 2, currencyCode },
   paidOrReceivedById,
   spentAt: Temporal.Now.zonedDateTimeISO().toString(),

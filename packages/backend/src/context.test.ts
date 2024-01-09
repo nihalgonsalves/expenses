@@ -1,24 +1,24 @@
-import cookie from 'cookie';
-import { vi, describe, it, expect } from 'vitest';
+import cookie from "cookie";
+import { vi, describe, it, expect } from "vitest";
 
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { AUTH_COOKIE_NAME, getMaybeUser } from './context';
-import { UserServiceError } from './service/user/utils';
+import { AUTH_COOKIE_NAME, getMaybeUser } from "./context";
+import { UserServiceError } from "./service/user/utils";
 
-describe('getMaybeUser', () => {
-  it('exchanges a cookie header token for a user', async () => {
+describe("getMaybeUser", () => {
+  it("exchanges a cookie header token for a user", async () => {
     const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     const result = await getMaybeUser(
-      cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
+      cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
       setJwtToken,
       {
         exchangeToken: async (token) => ({
           user: {
-            id: 'id',
+            id: "id",
             name: `name (${token})`,
-            email: 'email',
+            email: "email",
             theme: null,
           },
           newToken: undefined,
@@ -27,70 +27,70 @@ describe('getMaybeUser', () => {
     );
 
     expect(result).toEqual<User>({
-      id: 'id',
-      name: 'name (<jwt-token>)',
-      email: 'email',
+      id: "id",
+      name: "name (<jwt-token>)",
+      email: "email",
       theme: null,
     });
   });
 
-  it('clears token on auth error', async () => {
+  it("clears token on auth error", async () => {
     const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     await expect(
       getMaybeUser(
-        cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
+        cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
         setJwtToken,
         {
           exchangeToken: async () =>
             Promise.reject(
               new UserServiceError({
-                code: 'FORBIDDEN',
+                code: "FORBIDDEN",
               }),
             ),
         },
       ),
-    ).rejects.toThrowError('FORBIDDEN');
+    ).rejects.toThrowError("FORBIDDEN");
 
     expect(setJwtToken).toHaveBeenCalledWith(null);
   });
 
-  it('rethrows without clearing token on generic error', async () => {
+  it("rethrows without clearing token on generic error", async () => {
     const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     await expect(
       getMaybeUser(
-        cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
+        cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
         setJwtToken,
         {
-          exchangeToken: async () => Promise.reject(new Error('Error')),
+          exchangeToken: async () => Promise.reject(new Error("Error")),
         },
       ),
-    ).rejects.toThrowError('Error');
+    ).rejects.toThrowError("Error");
 
     expect(setJwtToken).not.toHaveBeenCalled();
   });
 
-  it('sets a reissued token', async () => {
+  it("sets a reissued token", async () => {
     const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
 
     await getMaybeUser(
-      cookie.serialize(AUTH_COOKIE_NAME, '<jwt-token>'),
+      cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
       setJwtToken,
       {
         exchangeToken: async (token) =>
           // @ts-expect-error mock
           ({
             user: {
-              id: 'id',
+              id: "id",
               name: `name (${token})`,
-              email: 'email',
+              email: "email",
             },
-            newToken: '<new-jwt-token>',
+            newToken: "<new-jwt-token>",
           }),
       },
     );
 
-    expect(setJwtToken).toHaveBeenCalledWith('<new-jwt-token>');
+    expect(setJwtToken).toHaveBeenCalledWith("<new-jwt-token>");
   });
 });

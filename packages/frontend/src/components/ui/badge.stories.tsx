@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { Badge } from './badge';
+import { Badge } from "./badge";
 
 const meta: Meta<typeof Badge> = {
   component: Badge,
   args: {
-    variant: 'default',
+    variant: "default",
   },
   render: (props) => <Badge {...props}>{props.variant}</Badge>,
 };
@@ -14,10 +14,10 @@ type Story = StoryObj<typeof Badge>;
 
 export const Default: Story = {};
 
-export const Secondary: Story = { args: { variant: 'secondary' } };
+export const Secondary: Story = { args: { variant: "secondary" } };
 
-export const Outline: Story = { args: { variant: 'outline' } };
+export const Outline: Story = { args: { variant: "outline" } };
 
-export const Destructive: Story = { args: { variant: 'destructive' } };
+export const Destructive: Story = { args: { variant: "destructive" } };
 
 export default meta;

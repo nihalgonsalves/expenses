@@ -1,4 +1,4 @@
-import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export const ToggleButtonGroup = <T extends string>({
   className,

@@ -1,11 +1,11 @@
-import type { TRPC_ERROR_CODE_KEY } from '@trpc/server/rpc';
+import type { TRPC_ERROR_CODE_KEY } from "@trpc/server/rpc";
 
 export const getErrorMessage = (error: unknown) => {
   if (IS_PROD) {
-    return 'Internal Server Error';
+    return "Internal Server Error";
   }
 
-  return error instanceof Error ? error.message : 'Unknown Error';
+  return error instanceof Error ? error.message : "Unknown Error";
 };
 
 export const getTRPCError = (
@@ -16,6 +16,6 @@ export const getTRPCError = (
   cause: unknown;
 } => ({
   message: getErrorMessage(error),
-  code: 'INTERNAL_SERVER_ERROR',
+  code: "INTERNAL_SERVER_ERROR",
   cause: error,
 });

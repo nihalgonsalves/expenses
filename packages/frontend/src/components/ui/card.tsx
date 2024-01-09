@@ -1,22 +1,22 @@
-import { twx } from './utils';
+import { twx } from "./utils";
 
 const Card = twx.div`rounded-xl border bg-card text-card-foreground`;
-Card.displayName = 'Card';
+Card.displayName = "Card";
 
 const CardHeader = twx.div`flex flex-col space-y-1.5 p-6`;
-CardHeader.displayName = 'CardHeader';
+CardHeader.displayName = "CardHeader";
 
 const CardTitle = twx.div`font-semibold leading-none tracking-tight`;
-CardTitle.displayName = 'CardTitle';
+CardTitle.displayName = "CardTitle";
 
 const CardDescription = twx.div`text-sm text-muted-foreground`;
-CardDescription.displayName = 'CardDescription';
+CardDescription.displayName = "CardDescription";
 
 const CardContent = twx.div`p-6 pt-0`;
-CardContent.displayName = 'CardContent';
+CardContent.displayName = "CardContent";
 
 const CardFooter = twx.div`flex items-center p-6 pt-0`;
-CardFooter.displayName = 'CardFooter';
+CardFooter.displayName = "CardFooter";
 
 export {
   Card,

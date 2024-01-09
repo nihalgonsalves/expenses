@@ -1,21 +1,21 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { TRPCError } from '@trpc/server';
-import bcrypt from 'bcrypt';
-import { SignJWT, jwtVerify, errors } from 'jose';
-import { z } from 'zod';
+import { Temporal } from "@js-temporal/polyfill";
+import { TRPCError } from "@trpc/server";
+import bcrypt from "bcrypt";
+import { SignJWT, jwtVerify, errors } from "jose";
+import { z } from "zod";
 
 import {
   ZJWTToken,
   type User,
   type JWTToken,
-} from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/user";
 
-import { config } from '../../config';
+import { config } from "../../config";
 
 const SALT_ROUNDS = 10;
 // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
 const REISSUE_MIN_AGE_SECS = Temporal.Duration.from({ hours: 1 }).total(
-  'seconds',
+  "seconds",
 );
 
 export class UserServiceError extends TRPCError {}
@@ -28,11 +28,11 @@ export const comparePassword = async (
   hash: string,
 ): Promise<boolean> => bcrypt.compare(password, hash);
 
-const alg = 'HS256';
+const alg = "HS256";
 const secret = new TextEncoder().encode(config.JWT_SECRET);
 
 export const signJWT = async (
-  user: Pick<User, 'id'>,
+  user: Pick<User, "id">,
   identity = config.JWT_IDENTITY,
 ): Promise<JWTToken> => {
   const token = await new SignJWT({})
@@ -72,8 +72,8 @@ export const verifyJWT = async (
   } catch (e) {
     if (e instanceof errors.JOSEError) {
       throw new UserServiceError({
-        message: 'Invalid token',
-        code: 'FORBIDDEN',
+        message: "Invalid token",
+        code: "FORBIDDEN",
         cause: e,
       });
     }

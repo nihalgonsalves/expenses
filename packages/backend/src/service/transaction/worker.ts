@@ -1,14 +1,14 @@
-import { Temporal } from '@js-temporal/polyfill';
-import type { PrismaClient, Prisma } from '@prisma/client';
-import { Queue } from 'bullmq';
-import { Worker } from 'bullmq';
-import type IORedis from 'ioredis';
+import { Temporal } from "@js-temporal/polyfill";
+import type { PrismaClient, Prisma } from "@prisma/client";
+import { Queue } from "bullmq";
+import { Worker } from "bullmq";
+import type IORedis from "ioredis";
 
-import { TRANSACTION_SCHEDULE_BULLMQ_QUEUE } from '../../config';
-import type { IWorker } from '../../startWorkers';
-import { generateId } from '../../utils/nanoid';
+import { TRANSACTION_SCHEDULE_BULLMQ_QUEUE } from "../../config";
+import type { IWorker } from "../../startWorkers";
+import { generateId } from "../../utils/nanoid";
 
-import { getRRuleInstancesTzAware } from './rruleUtils';
+import { getRRuleInstancesTzAware } from "./rruleUtils";
 
 type TransactionScheduleWorkerResult = {
   now: string;
@@ -50,19 +50,19 @@ export class TransactionScheduleWorker
 
   async init() {
     await this.queue.add(
-      'process-transaction-schedules',
+      "process-transaction-schedules",
       { now: undefined },
       {
         repeat: {
           // every hour
-          pattern: '0 * * * *',
+          pattern: "0 * * * *",
         },
       },
     );
   }
 
   async processOnce(now?: Temporal.Instant) {
-    await this.queue.add('process-transaction-schedules', {
+    await this.queue.add("process-transaction-schedules", {
       now: now?.toString(),
     });
   }
@@ -85,9 +85,9 @@ export class TransactionScheduleWorker
       },
     });
 
-    const successfulSchedules: TransactionScheduleWorkerResult['successfulSchedules'] =
+    const successfulSchedules: TransactionScheduleWorkerResult["successfulSchedules"] =
       {};
-    const failedSchedules: TransactionScheduleWorkerResult['failedSchedules'] =
+    const failedSchedules: TransactionScheduleWorkerResult["failedSchedules"] =
       {};
 
     await Promise.all(
@@ -101,11 +101,11 @@ export class TransactionScheduleWorker
         if (tzAwarePastInstances.length > 0) {
           try {
             const userId = schedule.sheet.participants.find(
-              ({ role }) => role === 'ADMIN',
+              ({ role }) => role === "ADMIN",
             )?.participantId;
 
             if (!userId) {
-              throw new Error('Unexpected schedule with no sheet admin');
+              throw new Error("Unexpected schedule with no sheet admin");
             }
 
             const transactionInputWithIds: Prisma.TransactionCreateManyInput[] =
@@ -153,7 +153,7 @@ export class TransactionScheduleWorker
             };
           } catch (e) {
             failedSchedules[schedule.id] =
-              e instanceof Error ? e.message : 'Unknown error';
+              e instanceof Error ? e.message : "Unknown error";
           }
         }
       }),

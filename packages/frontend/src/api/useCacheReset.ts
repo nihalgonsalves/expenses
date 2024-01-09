@@ -1,7 +1,7 @@
-import { useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 
-import { queryCache } from '../state/queryCache';
+import { queryCache } from "../state/queryCache";
 
 export const useResetCache = () => {
   const queryClient = useQueryClient();

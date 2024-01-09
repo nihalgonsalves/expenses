@@ -1,22 +1,22 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { describe, expect, it } from 'vitest';
+import { Temporal } from "@js-temporal/polyfill";
+import { describe, expect, it } from "vitest";
 
-import { getRRuleInstancesTzAware } from './rruleUtils';
+import { getRRuleInstancesTzAware } from "./rruleUtils";
 
-describe('getRRuleInstancesTzAware', () => {
-  it('correctly calculates instances across DST boundaries', () => {
+describe("getRRuleInstancesTzAware", () => {
+  it("correctly calculates instances across DST boundaries", () => {
     expect(
       getRRuleInstancesTzAware(
         {
-          rruleFreq: 'MONTHLY',
+          rruleFreq: "MONTHLY",
           nextOccurrenceAt: new Date(
             Temporal.ZonedDateTime.from(
-              '2023-01-01T00:00:00+01:00[Europe/Berlin]',
+              "2023-01-01T00:00:00+01:00[Europe/Berlin]",
             ).toInstant().epochMilliseconds,
           ),
-          nextOccurrenceTzId: 'Europe/Berlin',
+          nextOccurrenceTzId: "Europe/Berlin",
         },
-        Temporal.ZonedDateTime.from('2024-01-01T00:00:00+01:00[Europe/Berlin]'),
+        Temporal.ZonedDateTime.from("2024-01-01T00:00:00+01:00[Europe/Berlin]"),
       ),
     ).toMatchInlineSnapshot(`
       {

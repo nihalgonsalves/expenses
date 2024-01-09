@@ -31,7 +31,7 @@ export const largestRemainderRound = (
   for (let i = 0; i < desiredTotal - lowerSum; i++) {
     const item = sortedArray[i];
     if (!item) {
-      throw new Error('Invalid state');
+      throw new Error("Invalid state");
     }
 
     item.floor++;

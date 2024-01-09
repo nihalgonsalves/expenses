@@ -1,5 +1,5 @@
-import { dinero, convert, transformScale, toUnits } from 'dinero.js';
-import { useMemo } from 'react';
+import { dinero, convert, transformScale, toUnits } from "dinero.js";
+import { useMemo } from "react";
 
 import {
   type Money,
@@ -7,28 +7,28 @@ import {
   getCurrency,
   dineroToMoney,
   moneyToDinero,
-} from '@nihalgonsalves/expenses-shared/money';
+} from "@nihalgonsalves/expenses-shared/money";
 
-import { getUserLanguage } from './utils';
+import { getUserLanguage } from "./utils";
 
 export const CURRENCY_CODES = BACKEND_CURRENCY_CODES.filter((c) =>
-  Intl.supportedValuesOf('currency').includes(c),
+  Intl.supportedValuesOf("currency").includes(c),
 );
 
 export const formatCurrency = (
   { amount, scale, currencyCode }: Money,
   options: Pick<
     Intl.NumberFormatOptions,
-    'signDisplay' | 'currencyDisplay'
+    "signDisplay" | "currencyDisplay"
   > = {},
 ) => {
   const floatValue = amount / Math.pow(10, scale);
 
   return new Intl.NumberFormat(getUserLanguage(), {
     ...options,
-    style: 'currency',
+    style: "currency",
     currency: currencyCode,
-    currencyDisplay: 'narrowSymbol',
+    currencyDisplay: "narrowSymbol",
   }).format(floatValue);
 };
 
@@ -72,7 +72,7 @@ export const moneyToString = ({ currencyCode, amount, scale }: Money) => {
     moneyToDinero({ currencyCode, amount: Math.abs(amount), scale }),
   )
     .map((val) => val.toFixed(0))
-    .join('.');
+    .join(".");
 
-  return `${amount < 0 ? '-' : ''}${unsigned}`;
+  return `${amount < 0 ? "-" : ""}${unsigned}`;
 };

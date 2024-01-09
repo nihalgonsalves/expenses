@@ -1,5 +1,5 @@
-import { QueueEvents } from 'bullmq';
-import type IORedis from 'ioredis';
+import { QueueEvents } from "bullmq";
+import type IORedis from "ioredis";
 
 export const makeWaitForQueueSuccess =
   (queueName: string, redis: IORedis) => async (exec: () => Promise<void>) => {
@@ -15,7 +15,7 @@ export const makeWaitForQueueSuccess =
       returnvalue: unknown;
       prev?: string;
     }>((resolve, reject) => {
-      queueEvents.on('completed', resolve);
-      queueEvents.on('failed', reject);
+      queueEvents.on("completed", resolve);
+      queueEvents.on("failed", reject);
     });
   };

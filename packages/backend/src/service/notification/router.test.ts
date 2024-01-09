@@ -1,37 +1,37 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { userFactory } from '../../../test/factories';
-import { getTRPCCaller } from '../../../test/getTRPCCaller';
+import { userFactory } from "../../../test/factories";
+import { getTRPCCaller } from "../../../test/getTRPCCaller";
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
-describe('getPublicKey', () => {
-  it('returns the server public key', async () => {
+describe("getPublicKey", () => {
+  it("returns the server public key", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    expect(await caller.notification.getPublicKey()).toEqual('<public-key>');
+    expect(await caller.notification.getPublicKey()).toEqual("<public-key>");
   });
 });
 
 const args = {
   pushSubscription: {
-    endpoint: 'https://push.example.com/foo/bar',
+    endpoint: "https://push.example.com/foo/bar",
     keys: {
-      auth: '<auth-key>',
-      p256dh: '<p256dh-key>',
+      auth: "<auth-key>",
+      p256dh: "<p256dh-key>",
     },
   },
 };
 
 const expected = {
   id: expect.any(String),
-  description: 'Macintosh (Safari)',
-  endpoint: 'https://push.example.com/foo/bar',
+  description: "Macintosh (Safari)",
+  endpoint: "https://push.example.com/foo/bar",
 };
 
-describe('getSubscriptions', () => {
-  it('returns all user subscriptions', async () => {
+describe("getSubscriptions", () => {
+  it("returns all user subscriptions", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -40,8 +40,8 @@ describe('getSubscriptions', () => {
   });
 });
 
-describe('upsertSubscription', () => {
-  it('creates a subscription', async () => {
+describe("upsertSubscription", () => {
+  it("creates a subscription", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -50,7 +50,7 @@ describe('upsertSubscription', () => {
     );
   });
 
-  it('updates an existing subscription', async () => {
+  it("updates an existing subscription", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -64,8 +64,8 @@ describe('upsertSubscription', () => {
   });
 });
 
-describe('deleteSubscription', () => {
-  it('deletes a subscription', async () => {
+describe("deleteSubscription", () => {
+  it("deletes a subscription", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 

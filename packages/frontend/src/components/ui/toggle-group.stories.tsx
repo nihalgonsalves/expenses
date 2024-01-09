@@ -2,17 +2,17 @@ import {
   FontBoldIcon,
   FontItalicIcon,
   UnderlineIcon,
-} from '@radix-ui/react-icons';
-import type { Meta, StoryObj } from '@storybook/react';
+} from "@radix-ui/react-icons";
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { ToggleGroup, ToggleGroupItem } from './toggle-group';
+import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
 
 const meta: Meta<typeof ToggleGroup> = {
   component: ToggleGroup,
   args: {
-    type: 'multiple',
-    variant: 'default',
-    size: 'default',
+    type: "multiple",
+    variant: "default",
+    size: "default",
   },
   render: (props) => (
     <ToggleGroup {...props}>
@@ -35,24 +35,24 @@ export const Default: Story = {};
 
 export const Outline: Story = {
   args: {
-    variant: 'outline',
+    variant: "outline",
   },
 };
 export const Single: Story = {
   args: {
-    type: 'single',
+    type: "single",
   },
 };
 
 export const Small: Story = {
   args: {
-    size: 'sm',
+    size: "sm",
   },
 };
 
 export const Large: Story = {
   args: {
-    size: 'lg',
+    size: "lg",
   },
 };
 

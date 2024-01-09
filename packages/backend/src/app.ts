@@ -1,19 +1,19 @@
-import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
-import { HonoAdapter } from '@bull-board/hono';
-import { serve } from '@hono/node-server';
-import { serveStatic } from '@hono/node-server/serve-static';
-import { trpcServer } from '@hono/trpc-server';
-import { PrismaClient } from '@prisma/client';
-import { Hono } from 'hono';
-import { showRoutes } from 'hono/dev';
-import IORedis from 'ioredis';
+import { createBullBoard } from "@bull-board/api";
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { HonoAdapter } from "@bull-board/hono";
+import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
+import { trpcServer } from "@hono/trpc-server";
+import { PrismaClient } from "@prisma/client";
+import { Hono } from "hono";
+import { showRoutes } from "hono/dev";
+import IORedis from "ioredis";
 
-import { config } from './config';
-import { makeCreateContext } from './context';
-import { makePWARouter } from './pwaRouter';
-import { appRouter } from './router';
-import { startWorkers } from './startWorkers';
+import { config } from "./config";
+import { makeCreateContext } from "./context";
+import { makePWARouter } from "./pwaRouter";
+import { appRouter } from "./router";
+import { startWorkers } from "./startWorkers";
 
 export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
   const app = new Hono();
@@ -22,14 +22,14 @@ export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
   const createContext = makeCreateContext(prisma, workers);
 
   app.use(
-    '/trpc/*',
+    "/trpc/*",
     trpcServer({
       router: appRouter,
       createContext,
     }),
   );
 
-  app.route('/', makePWARouter(createContext));
+  app.route("/", makePWARouter(createContext));
 
   if (config.ENABLE_ADMIN) {
     const serverAdapter = new HonoAdapter(serveStatic);
@@ -41,16 +41,16 @@ export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
       serverAdapter,
     });
 
-    serverAdapter.setBasePath('/admin/queue');
-    app.route('/admin/queue', serverAdapter.registerPlugin());
+    serverAdapter.setBasePath("/admin/queue");
+    app.route("/admin/queue", serverAdapter.registerPlugin());
   }
 
   return app;
 };
 
 const getAddress = (address: string) => {
-  if (address === '0.0.0.0' || address === '::1' || address == '::') {
-    return 'localhost';
+  if (address === "0.0.0.0" || address === "::1" || address == "::") {
+    return "localhost";
   }
 
   return address;
@@ -80,7 +80,7 @@ void (async () => {
       },
     );
 
-    process.on('SIGINT', () => {
+    process.on("SIGINT", () => {
       console.log(`SIGINT received, shutting web server down`);
 
       server.close();

@@ -2,43 +2,43 @@ import {
   SheetType,
   type PrismaClient,
   SheetParticipantRole,
-} from '@prisma/client';
+} from "@prisma/client";
 import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
-} from '@prisma/client/runtime/library';
-import { TRPCError } from '@trpc/server';
+} from "@prisma/client/runtime/library";
+import { TRPCError } from "@trpc/server";
 
 import type {
   Sheet,
   CreateGroupSheetInput,
   CreatePersonalSheetInput,
   GroupSheetWithParticipants,
-} from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/sheet";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { generateId } from '../../utils/nanoid';
-import { getTRPCError } from '../../utils/trpcUtils';
-import type { TransactionService } from '../transaction/service';
+import { generateId } from "../../utils/nanoid";
+import { getTRPCError } from "../../utils/trpcUtils";
+import type { TransactionService } from "../transaction/service";
 
 class SheetServiceError extends TRPCError {}
 
 export const nameFromEmail = (email: string) => {
-  const firstPart = email.split('@')[0];
+  const firstPart = email.split("@")[0];
 
   if (!firstPart) {
-    return 'No Name';
+    return "No Name";
   }
 
   return firstPart
-    .replace(/[^A-Za-z]/gu, ' ')
-    .replace(/\s+/g, ' ')
-    .split(' ')
+    .replace(/[^A-Za-z]/gu, " ")
+    .replace(/\s+/g, " ")
+    .split(" ")
     .map((part) => {
       const lowerCase = part.toLowerCase();
       return lowerCase.charAt(0).toUpperCase() + lowerCase.slice(1);
     })
-    .join(' ');
+    .join(" ");
 };
 
 const participantConnectOrCreate = (email: string) => ({
@@ -48,7 +48,7 @@ const participantConnectOrCreate = (email: string) => ({
 
 export class SheetService {
   constructor(
-    private prismaClient: Pick<PrismaClient, 'sheet' | 'sheetMemberships'>,
+    private prismaClient: Pick<PrismaClient, "sheet" | "sheetMemberships">,
     private transactionService: TransactionService,
   ) {}
 
@@ -76,8 +76,8 @@ export class SheetService {
         error instanceof PrismaClientValidationError
       ) {
         throw new SheetServiceError({
-          code: 'BAD_REQUEST',
-          message: 'Invalid input',
+          code: "BAD_REQUEST",
+          message: "Invalid input",
           cause: error,
         });
       }
@@ -117,8 +117,8 @@ export class SheetService {
         error instanceof PrismaClientValidationError
       ) {
         throw new SheetServiceError({
-          code: 'BAD_REQUEST',
-          message: 'Invalid input',
+          code: "BAD_REQUEST",
+          message: "Invalid input",
           cause: error,
         });
       }
@@ -193,11 +193,11 @@ export class SheetService {
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
+        error.code === "P2002"
       ) {
         throw new SheetServiceError({
-          code: 'CONFLICT',
-          message: 'Participant already exists',
+          code: "CONFLICT",
+          message: "Participant already exists",
           cause: error,
         });
       }
@@ -214,8 +214,8 @@ export class SheetService {
 
     if (balance.amount !== 0) {
       throw new SheetServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Cannot delete a member with a non-zero balance',
+        code: "BAD_REQUEST",
+        message: "Cannot delete a member with a non-zero balance",
       });
     }
 
@@ -256,8 +256,8 @@ export class SheetService {
 
     if (!sheet || (type && sheet.type !== type)) {
       throw new SheetServiceError({
-        code: 'NOT_FOUND',
-        message: 'Sheet not found',
+        code: "NOT_FOUND",
+        message: "Sheet not found",
       });
     }
 
@@ -276,8 +276,8 @@ export class SheetService {
 
     if (!role) {
       throw new TRPCError({
-        code: 'NOT_FOUND',
-        message: 'Sheet not found',
+        code: "NOT_FOUND",
+        message: "Sheet not found",
       });
     }
 

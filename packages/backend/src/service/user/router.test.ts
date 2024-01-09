@@ -1,141 +1,141 @@
-import { faker } from '@faker-js/faker';
-import { describe, expect, it, vi } from 'vitest';
+import { faker } from "@faker-js/faker";
+import { describe, expect, it, vi } from "vitest";
 
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { personalSheetFactory, userFactory } from '../../../test/factories';
-import { getTRPCCaller } from '../../../test/getTRPCCaller';
-import { createPersonalSheetTransactionInput } from '../../../test/input';
+import { personalSheetFactory, userFactory } from "../../../test/factories";
+import { getTRPCCaller } from "../../../test/getTRPCCaller";
+import { createPersonalSheetTransactionInput } from "../../../test/input";
 
-import { comparePassword, hashPassword } from './utils';
+import { comparePassword, hashPassword } from "./utils";
 
 const userArgs = {
-  name: 'Emily',
-  email: 'emily@example.com',
-  password: 'correct-horse-battery-staple',
+  name: "Emily",
+  email: "emily@example.com",
+  password: "correct-horse-battery-staple",
 };
 
 const { usePublicCaller, useProtectedCaller, prisma } = await getTRPCCaller();
 
-describe('createUser', () => {
-  it('creates a user ', async () => {
+describe("createUser", () => {
+  it("creates a user ", async () => {
     const caller = usePublicCaller();
 
     expect(await caller.user.createUser(userArgs)).toEqual<User>({
       id: expect.any(String),
-      name: 'Emily',
-      email: 'emily@example.com',
+      name: "Emily",
+      email: "emily@example.com",
       theme: null,
     });
   });
 
-  it('logs in if the user already exists and the password matches', async () => {
+  it("logs in if the user already exists and the password matches", async () => {
     const caller = usePublicCaller();
 
     await caller.user.createUser(userArgs);
     expect(await caller.user.createUser(userArgs)).toEqual<User>({
       id: expect.any(String),
-      name: 'Emily',
-      email: 'emily@example.com',
+      name: "Emily",
+      email: "emily@example.com",
       theme: null,
     });
   });
 
-  it('returns an error if the user already exists', async () => {
+  it("returns an error if the user already exists", async () => {
     const caller = usePublicCaller();
 
-    await caller.user.createUser({ ...userArgs, password: 'aaa' });
+    await caller.user.createUser({ ...userArgs, password: "aaa" });
     await expect(caller.user.createUser(userArgs)).rejects.toThrow(
-      'Invalid credentials',
+      "Invalid credentials",
     );
   });
 });
 
-describe('updateUser', () => {
-  it('updates a user', async () => {
+describe("updateUser", () => {
+  it("updates a user", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const updatedUser = await caller.user.updateUser({
-      name: 'Juan',
-      email: 'juan@example.com',
+      name: "Juan",
+      email: "juan@example.com",
     });
 
     expect(updatedUser).toMatchObject({
       id: user.id,
-      name: 'Juan',
-      email: 'juan@example.com',
+      name: "Juan",
+      email: "juan@example.com",
     });
   });
 
   it("updates a user's password", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('old-password'),
+      passwordHash: await hashPassword("old-password"),
     });
     const caller = useProtectedCaller(user);
 
     await caller.user.updateUser({
-      name: 'Juan',
-      email: 'juan@example.com',
-      password: 'old-password',
-      newPassword: 'new-password',
+      name: "Juan",
+      email: "juan@example.com",
+      password: "old-password",
+      newPassword: "new-password",
     });
 
     const { passwordHash: newHash } = await prisma.user.findUniqueOrThrow({
       where: { id: user.id },
     });
 
-    expect(await comparePassword('new-password', newHash!)).toBe(true);
+    expect(await comparePassword("new-password", newHash!)).toBe(true);
   });
 
-  it('returns 401 if the old password is wrong', async () => {
+  it("returns 401 if the old password is wrong", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('old-password'),
+      passwordHash: await hashPassword("old-password"),
     });
     const caller = useProtectedCaller(user);
 
     await expect(
       caller.user.updateUser({
-        name: 'Juan',
-        email: 'juan@example.com',
-        password: 'not-the-old-password',
-        newPassword: 'new-password',
+        name: "Juan",
+        email: "juan@example.com",
+        password: "not-the-old-password",
+        newPassword: "new-password",
       }),
-    ).rejects.toThrow('Invalid credentials');
+    ).rejects.toThrow("Invalid credentials");
   });
 
-  it('returns 401 if the old password is not provided', async () => {
+  it("returns 401 if the old password is not provided", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('old-password'),
+      passwordHash: await hashPassword("old-password"),
     });
     const caller = useProtectedCaller(user);
 
     await expect(
       caller.user.updateUser({
-        name: 'Juan',
-        email: 'juan@example.com',
-        newPassword: 'new-password',
+        name: "Juan",
+        email: "juan@example.com",
+        newPassword: "new-password",
       }),
-    ).rejects.toThrow('The old password is required to set a new password');
+    ).rejects.toThrow("The old password is required to set a new password");
   });
 
-  it('returns 400 if there is no existing db password', async () => {
+  it("returns 400 if there is no existing db password", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     await expect(
       caller.user.updateUser({
-        name: 'Juan',
-        email: 'juan@example.com',
-        password: 'old-password',
-        newPassword: 'new-password',
+        name: "Juan",
+        email: "juan@example.com",
+        password: "old-password",
+        newPassword: "new-password",
       }),
     ).rejects.toThrow("Can't update or delete with no existing password");
   });
 });
 
-describe('authorizeUser', () => {
-  it('returns a user and logs in', async () => {
+describe("authorizeUser", () => {
+  it("returns a user and logs in", async () => {
     const setJWTToken = vi.fn();
     const caller = usePublicCaller(setJWTToken);
 
@@ -145,23 +145,23 @@ describe('authorizeUser', () => {
 
     expect(await caller.user.authorizeUser(userArgs)).toEqual<User>({
       id: expect.any(String),
-      name: 'Emily',
-      email: 'emily@example.com',
+      name: "Emily",
+      email: "emily@example.com",
       theme: null,
     });
     expect(setJWTToken.mock.calls).toEqual([[expect.any(String)]]);
   });
 
-  it('returns an error if the password is wrong', async () => {
+  it("returns an error if the password is wrong", async () => {
     const user = await userFactory(prisma);
     const caller = usePublicCaller();
 
     await expect(
       caller.user.authorizeUser({
         email: user.email,
-        password: 'wrong-horse-battery-staple',
+        password: "wrong-horse-battery-staple",
       }),
-    ).rejects.toThrow('Invalid credentials');
+    ).rejects.toThrow("Invalid credentials");
   });
 
   it("returns an error if the user doesn't exist", async () => {
@@ -169,15 +169,15 @@ describe('authorizeUser', () => {
 
     await expect(
       caller.user.authorizeUser({
-        email: 'nobody@example.com',
-        password: 'aaa',
+        email: "nobody@example.com",
+        password: "aaa",
       }),
-    ).rejects.toThrow('Invalid credentials');
+    ).rejects.toThrow("Invalid credentials");
   });
 });
 
-describe('signOut', () => {
-  it('signs a user out', async () => {
+describe("signOut", () => {
+  it("signs a user out", async () => {
     const setJWTToken = vi.fn();
     const caller = usePublicCaller(setJWTToken);
 
@@ -186,16 +186,16 @@ describe('signOut', () => {
   });
 });
 
-describe('anonymizeUser', () => {
-  it('anonymizes a user', async () => {
+describe("anonymizeUser", () => {
+  it("anonymizes a user", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('password'),
+      passwordHash: await hashPassword("password"),
     });
     const caller = useProtectedCaller(user);
 
     const deletedUserId = await caller.user.anonymizeUser({
       email: user.email,
-      password: 'password',
+      password: "password",
     });
 
     expect(deletedUserId).toBe(user.id);
@@ -205,18 +205,18 @@ describe('anonymizeUser', () => {
     });
     expect(deletedUser).toMatchObject({
       id: user.id,
-      name: 'Deleted User',
+      name: "Deleted User",
       passwordHash: null,
     });
 
     expect(
-      /deleted_[\w]+_[\w]+@example.com/.test(deletedUser?.email ?? ''),
+      /deleted_[\w]+_[\w]+@example.com/.test(deletedUser?.email ?? ""),
     ).toBe(true);
   });
 
-  it('resets the JWT token', async () => {
+  it("resets the JWT token", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('password'),
+      passwordHash: await hashPassword("password"),
     });
 
     const setJWTToken = vi.fn();
@@ -224,15 +224,15 @@ describe('anonymizeUser', () => {
 
     await caller.user.anonymizeUser({
       email: user.email,
-      password: 'password',
+      password: "password",
     });
 
     expect(setJWTToken.mock.calls).toEqual([[null]]);
   });
 
-  it('deletes personal sheets and transactions', async () => {
+  it("deletes personal sheets and transactions", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('password'),
+      passwordHash: await hashPassword("password"),
     });
 
     const personalSheet = await personalSheetFactory(prisma, {
@@ -245,13 +245,13 @@ describe('anonymizeUser', () => {
       createPersonalSheetTransactionInput(
         personalSheet.id,
         personalSheet.currencyCode,
-        'EXPENSE',
+        "EXPENSE",
       ),
     );
 
     await caller.user.anonymizeUser({
       email: user.email,
-      password: 'password',
+      password: "password",
     });
 
     expect(
@@ -267,29 +267,29 @@ describe('anonymizeUser', () => {
 
   it("returns 403 if the details don't match the logged-in user", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('password'),
+      passwordHash: await hashPassword("password"),
     });
     const caller = useProtectedCaller(user);
 
     await expect(
       caller.user.anonymizeUser({
         email: faker.internet.email(),
-        password: 'password',
+        password: "password",
       }),
-    ).rejects.toThrow('Invalid credentials');
+    ).rejects.toThrow("Invalid credentials");
   });
 
-  it('returns 403 if the password is wrong', async () => {
+  it("returns 403 if the password is wrong", async () => {
     const user = await userFactory(prisma, {
-      passwordHash: await hashPassword('password'),
+      passwordHash: await hashPassword("password"),
     });
     const caller = useProtectedCaller(user);
 
     await expect(
       caller.user.anonymizeUser({
         email: user.email,
-        password: 'wrong-password',
+        password: "wrong-password",
       }),
-    ).rejects.toThrow('Invalid credentials');
+    ).rejects.toThrow("Invalid credentials");
   });
 });

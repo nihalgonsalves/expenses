@@ -1,13 +1,13 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from "@js-temporal/polyfill";
 import {
   type PrismaClient,
   type Prisma,
   TransactionType,
   type TransactionEntry,
   type User as PrismaUser,
-} from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { TRPCError } from '@trpc/server';
+} from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { TRPCError } from "@trpc/server";
 
 import {
   type Money,
@@ -16,13 +16,13 @@ import {
   negateMoney,
   equalMoney,
   addMoney,
-} from '@nihalgonsalves/expenses-shared/money';
-import { simplifyBalances } from '@nihalgonsalves/expenses-shared/simplifyBalances';
-import type { NotificationPayload } from '@nihalgonsalves/expenses-shared/types/notification';
+} from "@nihalgonsalves/expenses-shared/money";
+import { simplifyBalances } from "@nihalgonsalves/expenses-shared/simplifyBalances";
+import type { NotificationPayload } from "@nihalgonsalves/expenses-shared/types/notification";
 import type {
   GroupSheetWithParticipants,
   Sheet,
-} from '@nihalgonsalves/expenses-shared/types/sheet';
+} from "@nihalgonsalves/expenses-shared/types/sheet";
 import type {
   TransactionSummaryResponse,
   CreateGroupSheetTransactionInput,
@@ -32,21 +32,21 @@ import type {
   CreatePersonalSheetTransactionScheduleInput,
   UpdatePersonalSheetTransactionInput,
   BalanceSimplificationResponse,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { generateId } from '../../utils/nanoid';
-import type { INotificationDispatchService } from '../notification/service';
+import { generateId } from "../../utils/nanoid";
+import type { INotificationDispatchService } from "../notification/service";
 
 import {
   transactionToNotificationPayload,
   transferToNotificationPayload,
-} from './notificationMappers';
+} from "./notificationMappers";
 import {
   mapInputToCreatePersonalTransaction,
   mapInputToCreatePersonalTransactionEntry,
   mapInputToCreatePersonalTransactionSchedule,
-} from './prismaMappers';
+} from "./prismaMappers";
 
 class TransactionServiceError extends TRPCError {}
 
@@ -89,7 +89,7 @@ const calculateBalances = (
         ({ amount }) => amount < 0,
       );
 
-      if (type === 'TRANSFER') {
+      if (type === "TRANSFER") {
         const balance = sumTransactions(
           groupSheet.currencyCode,
           userTransactions,
@@ -97,7 +97,7 @@ const calculateBalances = (
 
         return {
           id,
-          type: balance.amount < 0 ? 'transfer_from' : 'transfer_to',
+          type: balance.amount < 0 ? "transfer_from" : "transfer_to",
           name,
           balance: {
             actual: balance,
@@ -108,16 +108,16 @@ const calculateBalances = (
 
       return {
         id,
-        type: 'participant',
+        type: "participant",
         name,
         balance: {
           actual: sumTransactions(
             groupSheet.currencyCode,
-            type === 'EXPENSE' ? positiveTransactions : negativeTransactions,
+            type === "EXPENSE" ? positiveTransactions : negativeTransactions,
           ),
           share: sumTransactions(
             groupSheet.currencyCode,
-            type === 'EXPENSE' ? negativeTransactions : positiveTransactions,
+            type === "EXPENSE" ? negativeTransactions : positiveTransactions,
           ),
         },
       };
@@ -136,8 +136,8 @@ const verifyCurrencies = (
   const allCodes = new Set([sheetCurrencyCode, ...inputCurrencyCodes]);
   if (allCodes.size !== 1 || !allCodes.has(sheetCurrencyCode)) {
     throw new TransactionServiceError({
-      code: 'BAD_REQUEST',
-      message: 'Currencies do not match',
+      code: "BAD_REQUEST",
+      message: "Currencies do not match",
     });
   }
 };
@@ -145,8 +145,8 @@ const verifyCurrencies = (
 const verifyAmountIsAbsolute = (money: Money) => {
   if (money.amount < 0) {
     throw new TransactionServiceError({
-      code: 'BAD_REQUEST',
-      message: 'Amount must be absolute',
+      code: "BAD_REQUEST",
+      message: "Amount must be absolute",
     });
   }
 };
@@ -155,11 +155,11 @@ export class TransactionService {
   constructor(
     private prismaClient: Pick<
       PrismaClient,
-      | '$transaction'
-      | 'transaction'
-      | 'transactionSchedule'
-      | 'transactionEntry'
-      | 'sheetMemberships'
+      | "$transaction"
+      | "transaction"
+      | "transactionSchedule"
+      | "transactionEntry"
+      | "sheetMemberships"
     >,
     private notificationService: INotificationDispatchService,
   ) {}
@@ -180,7 +180,7 @@ export class TransactionService {
   ) {
     const data = await this.prismaClient.transaction.findMany({
       where: {
-        type: { in: ['EXPENSE', 'INCOME'] },
+        type: { in: ["EXPENSE", "INCOME"] },
         transactionEntries: { some: { userId: user.id } },
         spentAt: {
           gte: from.toString(),
@@ -197,7 +197,7 @@ export class TransactionService {
           },
         },
       },
-      orderBy: { spentAt: 'desc' },
+      orderBy: { spentAt: "desc" },
     });
 
     const expenses = data
@@ -213,7 +213,7 @@ export class TransactionService {
             transaction.sheet.currencyCode,
             transactionEntries.filter(
               ({ amount, userId }) =>
-                transaction.type === 'EXPENSE' &&
+                transaction.type === "EXPENSE" &&
                 amount < 0 &&
                 userId === user.id,
             ),
@@ -235,7 +235,7 @@ export class TransactionService {
             transaction.sheet.currencyCode,
             transactionEntries.filter(
               ({ amount, userId }) =>
-                transaction.type === 'INCOME' &&
+                transaction.type === "INCOME" &&
                 amount > 0 &&
                 userId === user.id,
             ),
@@ -291,7 +291,7 @@ export class TransactionService {
       include: {
         transactions: true,
       },
-      orderBy: { nextOccurrenceAt: 'asc' },
+      orderBy: { nextOccurrenceAt: "asc" },
     });
   }
 
@@ -312,7 +312,7 @@ export class TransactionService {
             },
           },
         },
-        orderBy: { spentAt: 'desc' },
+        orderBy: { spentAt: "desc" },
         ...(limit != null ? { take: limit } : {}),
       }),
       this.prismaClient.transaction.count({ where: { sheetId } }),
@@ -326,7 +326,7 @@ export class TransactionService {
 
   async createPersonalSheetTransaction(
     user: User,
-    input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>,
+    input: Omit<CreatePersonalSheetTransactionInput, "personalSheetId">,
     personalSheet: Sheet,
   ) {
     verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
@@ -351,7 +351,7 @@ export class TransactionService {
 
   async updatePersonalSheetTransaction(
     user: User,
-    input: Omit<UpdatePersonalSheetTransactionInput, 'personalSheetId'>,
+    input: Omit<UpdatePersonalSheetTransactionInput, "personalSheetId">,
     personalSheet: Sheet,
   ) {
     verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
@@ -363,8 +363,8 @@ export class TransactionService {
 
     if (!transaction) {
       throw new TransactionServiceError({
-        code: 'NOT_FOUND',
-        message: 'Transaction not found',
+        code: "NOT_FOUND",
+        message: "Transaction not found",
       });
     }
 
@@ -398,7 +398,7 @@ export class TransactionService {
   }
 
   async createPersonalSheetTransactionSchedule(
-    input: Omit<CreatePersonalSheetTransactionScheduleInput, 'personalSheetId'>,
+    input: Omit<CreatePersonalSheetTransactionScheduleInput, "personalSheetId">,
     personalSheet: Sheet,
   ) {
     verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
@@ -411,7 +411,7 @@ export class TransactionService {
 
   async batchCreatePersonalSheetTransactions(
     user: User,
-    input: Omit<CreatePersonalSheetTransactionInput, 'personalSheetId'>[],
+    input: Omit<CreatePersonalSheetTransactionInput, "personalSheetId">[],
     personalSheet: Sheet,
   ) {
     verifyCurrencies(
@@ -442,7 +442,7 @@ export class TransactionService {
 
   async createGroupSheetTransaction(
     user: User,
-    input: Omit<CreateGroupSheetTransactionInput, 'groupSheetId'>,
+    input: Omit<CreateGroupSheetTransactionInput, "groupSheetId">,
     groupSheet: Sheet,
   ) {
     verifyCurrencies(
@@ -460,8 +460,8 @@ export class TransactionService {
 
     if (!equalMoney(input.money, splitTotal)) {
       throw new TransactionServiceError({
-        code: 'BAD_REQUEST',
-        message: 'Invalid splits',
+        code: "BAD_REQUEST",
+        message: "Invalid splits",
       });
     }
 
@@ -502,7 +502,7 @@ export class TransactionService {
                     },
                   },
                   amount:
-                    input.type === 'EXPENSE'
+                    input.type === "EXPENSE"
                       ? split.share.amount
                       : -split.share.amount,
                   scale: split.share.scale,
@@ -511,7 +511,7 @@ export class TransactionService {
                   id: generateId(),
                   user: { connect: { id: split.participantId } },
                   amount:
-                    input.type === 'EXPENSE'
+                    input.type === "EXPENSE"
                       ? -split.share.amount
                       : split.share.amount,
                   scale: split.share.scale,
@@ -548,7 +548,7 @@ export class TransactionService {
 
   async createSettlement(
     user: User,
-    input: Omit<CreateGroupSheetSettlementInput, 'groupSheetId'>,
+    input: Omit<CreateGroupSheetSettlementInput, "groupSheetId">,
     groupSheet: Sheet,
   ) {
     verifyCurrencies(groupSheet.currencyCode, input.money.currencyCode);
@@ -561,8 +561,8 @@ export class TransactionService {
         amount: input.money.amount,
         scale: input.money.scale,
         type: TransactionType.TRANSFER,
-        category: 'transfer',
-        description: '',
+        category: "transfer",
+        description: "",
         spentAt: Temporal.Now.instant().toString(),
         transactionEntries: {
           create: [
@@ -586,15 +586,15 @@ export class TransactionService {
     const messages: Record<string, NotificationPayload> = {};
     if (input.fromId !== user.id)
       messages[input.fromId] = transferToNotificationPayload(
-        { ...transaction, type: 'TRANSFER' },
+        { ...transaction, type: "TRANSFER" },
         groupSheet,
-        'sent',
+        "sent",
       );
     if (input.toId !== user.id)
       messages[input.toId] = transferToNotificationPayload(
-        { ...transaction, type: 'TRANSFER' },
+        { ...transaction, type: "TRANSFER" },
         groupSheet,
-        'received',
+        "received",
       );
 
     await this.notificationService.sendNotifications(messages);
@@ -619,11 +619,11 @@ export class TransactionService {
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2025'
+        error.code === "P2025"
       ) {
         throw new TransactionServiceError({
-          code: 'NOT_FOUND',
-          message: 'Transaction not found',
+          code: "NOT_FOUND",
+          message: "Transaction not found",
         });
       }
 
@@ -639,11 +639,11 @@ export class TransactionService {
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2025'
+        error.code === "P2025"
       ) {
         throw new TransactionServiceError({
-          code: 'NOT_FOUND',
-          message: 'Transaction schedule not found',
+          code: "NOT_FOUND",
+          message: "Transaction schedule not found",
         });
       }
 
@@ -692,7 +692,7 @@ export class TransactionService {
     const [balanceMap, participants] = await Promise.all([
       this.prismaClient.transactionEntry
         .groupBy({
-          by: ['userId', 'scale'],
+          by: ["userId", "scale"],
           where: { transaction: { sheetId: groupSheet.id } },
           _sum: { amount: true },
         })
@@ -790,7 +790,7 @@ export class TransactionService {
           },
         },
       },
-      distinct: ['category'],
+      distinct: ["category"],
       select: {
         category: true,
       },

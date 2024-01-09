@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as AvatarPrimitive from '@radix-ui/react-avatar';
+import * as AvatarPrimitive from "@radix-ui/react-avatar";
 
-import { twx } from './utils';
+import { twx } from "./utils";
 
 const Avatar = twx(
   AvatarPrimitive.Root,

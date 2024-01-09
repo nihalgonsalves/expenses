@@ -1,17 +1,17 @@
-import { forwardRef } from 'react';
-import type { ControllerRenderProps } from 'react-hook-form';
-import { z } from 'zod';
+import { forwardRef } from "react";
+import type { ControllerRenderProps } from "react-hook-form";
+import { z } from "zod";
 
-import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { Select } from '../form/Select';
+import { Select } from "../form/Select";
 
 type ParticipantSelectProps = {
   id?: string;
   groupSheet: GroupSheetByIdResponse;
   value: string | undefined;
   onChange: (val: string) => void;
-} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const ParticipantSelect = forwardRef<
   HTMLButtonElement,
@@ -25,11 +25,11 @@ export const ParticipantSelect = forwardRef<
       id={id}
       ref={ref}
       placeholder="Please Select..."
-      value={value ?? ''}
+      value={value ?? ""}
       onChange={onChange}
       schema={z.string()}
       options={[
-        { label: 'Please Select...', value: undefined, disabled: true },
+        { label: "Please Select...", value: undefined, disabled: true },
         ...options.map(({ id: optValue, name: label }) => ({
           value: optValue,
           label,
@@ -38,4 +38,4 @@ export const ParticipantSelect = forwardRef<
     />
   );
 });
-ParticipantSelect.displayName = 'ParticipantSelect';
+ParticipantSelect.displayName = "ParticipantSelect";

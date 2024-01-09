@@ -1,20 +1,20 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { describe, expect, it } from 'vitest';
+import { Temporal } from "@js-temporal/polyfill";
+import { describe, expect, it } from "vitest";
 
-import { makeWaitForQueueSuccess } from '../../../test/bullMQUtils';
-import { personalSheetFactory, userFactory } from '../../../test/factories';
-import { getPrisma } from '../../../test/getPrisma';
-import { getRedis } from '../../../test/getRedis';
-import { createPersonalSheetTransactionScheduleInput } from '../../../test/input';
+import { makeWaitForQueueSuccess } from "../../../test/bullMQUtils";
+import { personalSheetFactory, userFactory } from "../../../test/factories";
+import { getPrisma } from "../../../test/getPrisma";
+import { getRedis } from "../../../test/getRedis";
+import { createPersonalSheetTransactionScheduleInput } from "../../../test/input";
 
-import { mapInputToCreatePersonalTransactionSchedule } from './prismaMappers';
-import { TransactionScheduleWorker } from './worker';
+import { mapInputToCreatePersonalTransactionSchedule } from "./prismaMappers";
+import { TransactionScheduleWorker } from "./worker";
 
 const prisma = await getPrisma();
 const redis = await getRedis();
 
-describe('TransactionScheduleWorker', () => {
-  it('processes transaction schedules with next occurrence timestamps in the past', async () => {
+describe("TransactionScheduleWorker", () => {
+  it("processes transaction schedules with next occurrence timestamps in the past", async () => {
     const worker = new TransactionScheduleWorker(prisma, redis);
 
     const waitForQueueSuccess = makeWaitForQueueSuccess(
@@ -31,10 +31,10 @@ describe('TransactionScheduleWorker', () => {
           ...createPersonalSheetTransactionScheduleInput(
             sheet.id,
             sheet.currencyCode,
-            'EXPENSE',
+            "EXPENSE",
             100_00,
             Temporal.ZonedDateTime.from(
-              '2023-01-01T00:00:00+01:00[Europe/Berlin]',
+              "2023-01-01T00:00:00+01:00[Europe/Berlin]",
             ),
           ),
         },
@@ -43,7 +43,7 @@ describe('TransactionScheduleWorker', () => {
     });
 
     const now = Temporal.ZonedDateTime.from(
-      '2024-01-01T00:00:00+01:00[Europe/Berlin]',
+      "2024-01-01T00:00:00+01:00[Europe/Berlin]",
     ).toInstant();
 
     const { returnvalue } = await waitForQueueSuccess(async () => {
@@ -57,20 +57,20 @@ describe('TransactionScheduleWorker', () => {
         [id]: {
           created: 12,
           instances: [
-            '2023-01-01T00:00:00+01:00[Europe/Berlin]',
-            '2023-02-01T00:00:00+01:00[Europe/Berlin]',
-            '2023-03-01T00:00:00+01:00[Europe/Berlin]',
-            '2023-04-01T00:00:00+02:00[Europe/Berlin]',
-            '2023-05-01T00:00:00+02:00[Europe/Berlin]',
-            '2023-06-01T00:00:00+02:00[Europe/Berlin]',
-            '2023-07-01T00:00:00+02:00[Europe/Berlin]',
-            '2023-08-01T00:00:00+02:00[Europe/Berlin]',
-            '2023-09-01T00:00:00+02:00[Europe/Berlin]',
-            '2023-10-01T00:00:00+02:00[Europe/Berlin]',
-            '2023-11-01T00:00:00+01:00[Europe/Berlin]',
-            '2023-12-01T00:00:00+01:00[Europe/Berlin]',
+            "2023-01-01T00:00:00+01:00[Europe/Berlin]",
+            "2023-02-01T00:00:00+01:00[Europe/Berlin]",
+            "2023-03-01T00:00:00+01:00[Europe/Berlin]",
+            "2023-04-01T00:00:00+02:00[Europe/Berlin]",
+            "2023-05-01T00:00:00+02:00[Europe/Berlin]",
+            "2023-06-01T00:00:00+02:00[Europe/Berlin]",
+            "2023-07-01T00:00:00+02:00[Europe/Berlin]",
+            "2023-08-01T00:00:00+02:00[Europe/Berlin]",
+            "2023-09-01T00:00:00+02:00[Europe/Berlin]",
+            "2023-10-01T00:00:00+02:00[Europe/Berlin]",
+            "2023-11-01T00:00:00+01:00[Europe/Berlin]",
+            "2023-12-01T00:00:00+01:00[Europe/Berlin]",
           ],
-          nextOccurrenceAt: '2024-01-01T00:00:00+01:00[Europe/Berlin]',
+          nextOccurrenceAt: "2024-01-01T00:00:00+01:00[Europe/Berlin]",
         },
       },
       failedSchedules: {},
@@ -85,7 +85,7 @@ describe('TransactionScheduleWorker', () => {
         schedule.nextOccurrenceAt.valueOf(),
       ).equals(
         Temporal.ZonedDateTime.from(
-          '2024-01-01T00:00:00+01:00[Europe/Berlin]',
+          "2024-01-01T00:00:00+01:00[Europe/Berlin]",
         ).toInstant(),
       ),
     ).toBe(true);
@@ -93,14 +93,14 @@ describe('TransactionScheduleWorker', () => {
     // fast-forward one month
 
     const now2 = Temporal.ZonedDateTime.from(
-      '2024-02-01T00:00:00+01:00[Europe/Berlin]',
+      "2024-02-01T00:00:00+01:00[Europe/Berlin]",
     ).toInstant();
 
     const { returnvalue: secondReturnvalue } = await waitForQueueSuccess(
       async () => {
         await worker.processOnce(
           Temporal.ZonedDateTime.from(
-            '2024-02-01T00:00:00+01:00[Europe/Berlin]',
+            "2024-02-01T00:00:00+01:00[Europe/Berlin]",
           ).toInstant(),
         );
       },
@@ -114,15 +114,15 @@ describe('TransactionScheduleWorker', () => {
       successfulSchedules: {
         [id]: {
           created: 1,
-          instances: ['2024-01-01T00:00:00+01:00[Europe/Berlin]'],
-          nextOccurrenceAt: '2024-02-01T00:00:00+01:00[Europe/Berlin]',
+          instances: ["2024-01-01T00:00:00+01:00[Europe/Berlin]"],
+          nextOccurrenceAt: "2024-02-01T00:00:00+01:00[Europe/Berlin]",
         },
       },
       failedSchedules: {},
     });
   });
 
-  it('processes without now set', async () => {
+  it("processes without now set", async () => {
     const worker = new TransactionScheduleWorker(prisma, redis);
 
     const waitForQueueSuccess = makeWaitForQueueSuccess(

@@ -1,33 +1,33 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Temporal } from '@js-temporal/polyfill';
-import { ThickArrowDownIcon, ThickArrowUpIcon } from '@radix-ui/react-icons';
-import { useForm, useWatch } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Temporal } from "@js-temporal/polyfill";
+import { ThickArrowDownIcon, ThickArrowUpIcon } from "@radix-ui/react-icons";
+import { useForm, useWatch } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
-import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import {
   ZRecurrenceFrequency,
   ZCreatePersonalSheetTransactionScheduleInput,
   ZCreatePersonalSheetTransactionInput,
   ZRecurrenceRule,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useCurrencyConversion } from '../../api/currencyConversion';
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { formatCurrency, useMoneyValues } from '../../utils/money';
+import { useCurrencyConversion } from "../../api/currencyConversion";
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { formatCurrency, useMoneyValues } from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
-} from '../../utils/temporal';
-import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
-import { CurrencySelect } from '../form/CurrencySelect';
-import { MoneyField } from '../form/MoneyField';
-import { ResponsiveDialog, useDialog } from '../form/ResponsiveDialog';
-import { Select, type SelectOption } from '../form/Select';
-import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
-import { Button } from '../ui/button';
+} from "../../utils/temporal";
+import { CategorySelect, OTHER_CATEGORY } from "../form/CategorySelect";
+import { CurrencySelect } from "../form/CurrencySelect";
+import { MoneyField } from "../form/MoneyField";
+import { ResponsiveDialog, useDialog } from "../form/ResponsiveDialog";
+import { Select, type SelectOption } from "../form/Select";
+import { ToggleButtonGroup } from "../form/ToggleButtonGroup";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -36,13 +36,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { Separator } from '../ui/separator';
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
 
 const TYPE_OPTIONS = [
   {
-    value: 'EXPENSE',
+    value: "EXPENSE",
     label: (
       <>
         <ThickArrowUpIcon className="mr-2 text-xl" />
@@ -51,7 +51,7 @@ const TYPE_OPTIONS = [
     ),
   },
   {
-    value: 'INCOME',
+    value: "INCOME",
     label: (
       <>
         <ThickArrowDownIcon className="mr-2 text-xl" />
@@ -64,15 +64,15 @@ const TYPE_OPTIONS = [
 const RECURRENCE_OPTIONS = [
   {
     value: undefined,
-    label: 'No',
+    label: "No",
   },
   {
-    value: 'MONTHLY',
-    label: 'Every month',
+    value: "MONTHLY",
+    label: "Every month",
   },
   {
-    value: 'WEEKLY',
-    label: 'Every week',
+    value: "WEEKLY",
+    label: "Every week",
   },
 ] satisfies SelectOption<typeof ZRecurrenceFrequency>[];
 
@@ -89,7 +89,7 @@ const formSchema = ZCreatePersonalSheetTransactionInput.merge(
   .extend({
     recurrenceRule: ZRecurrenceRule.partial().optional(),
     currencyCode: z.string().min(1),
-    amount: z.number().positive({ message: 'Amount is required' }),
+    amount: z.number().positive({ message: "Amount is required" }),
     dateTime: z.string().min(1),
   });
 
@@ -105,27 +105,27 @@ const CreatePersonalTransactionForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
-      type: 'EXPENSE',
+      type: "EXPENSE",
       currencyCode: personalSheet.currencyCode,
       category: OTHER_CATEGORY,
       amount: 0,
-      description: '',
+      description: "",
       dateTime: nowForDateTimeInput(),
     },
   });
 
-  const type = useWatch({ name: 'type', control: form.control });
+  const type = useWatch({ name: "type", control: form.control });
 
-  const amount = useWatch({ name: 'amount', control: form.control });
+  const amount = useWatch({ name: "amount", control: form.control });
   const currencyCode = useWatch({
-    name: 'currencyCode',
+    name: "currencyCode",
     control: form.control,
   });
-  const dateTime = useWatch({ name: 'dateTime', control: form.control });
+  const dateTime = useWatch({ name: "dateTime", control: form.control });
   const recurrenceRule = useWatch({
-    name: 'recurrenceRule',
+    name: "recurrenceRule",
     control: form.control,
   });
 
@@ -220,7 +220,7 @@ const CreatePersonalTransactionForm = ({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>
-                    Amount {type === 'EXPENSE' ? 'spent' : 'received'}
+                    Amount {type === "EXPENSE" ? "spent" : "received"}
                   </FormLabel>
                   <FormControl>
                     <MoneyField
@@ -298,7 +298,7 @@ const CreatePersonalTransactionForm = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                {recurrenceRule?.freq ? 'Starting Date & Time' : 'Date & Time'}
+                {recurrenceRule?.freq ? "Starting Date & Time" : "Date & Time"}
               </FormLabel>
               <FormControl>
                 <Input

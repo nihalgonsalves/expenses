@@ -1,8 +1,8 @@
 ignore:
-  - '**/*.config.js'
-  - 'packages/frontend/**/*.stories.tsx'
-  - 'packages/backend/bin'
-  - 'packages/e2e'
+  - "**/*.config.js"
+  - "packages/frontend/**/*.stories.tsx"
+  - "packages/backend/bin"
+  - "packages/e2e"
 
 coverage:
   status:

@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Fragment } from 'react';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Fragment } from "react";
 
-import { ScrollArea } from './scroll-area';
-import { Separator } from './separator';
+import { ScrollArea } from "./scroll-area";
+import { Separator } from "./separator";
 
 const tags = Array.from({ length: 50 }).map(
   (_, i, a) => `v1.2.0-beta.${a.length - i}`,

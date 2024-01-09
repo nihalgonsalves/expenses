@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill';
+import { Temporal } from "@js-temporal/polyfill";
 import {
   ArrowLeftIcon,
   GearIcon,
@@ -6,35 +6,35 @@ import {
   ListBulletIcon,
   PieChartIcon,
   SymbolIcon,
-} from '@radix-ui/react-icons';
-import type { TRPCClientErrorLike } from '@trpc/client';
-import type { AnyProcedure, AnyRouter } from '@trpc/server';
-import type { TRPCErrorShape } from '@trpc/server/rpc';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { toast } from 'react-hot-toast';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useInterval } from 'react-use';
+} from "@radix-ui/react-icons";
+import type { TRPCClientErrorLike } from "@trpc/client";
+import type { AnyProcedure, AnyRouter } from "@trpc/server";
+import type { TRPCErrorShape } from "@trpc/server/rpc";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useState } from "react";
+import { Helmet } from "react-helmet";
+import { toast } from "react-hot-toast";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useInterval } from "react-use";
 
-import { trpc } from '../api/trpc';
-import { usePullToRefresh } from '../api/usePullToRefresh';
-import { ErrorBoundary } from '../components/ErrorBoundary';
-import { NavBarAvatar } from '../components/NavBarAvatar';
-import { Alert, AlertTitle } from '../components/ui/alert';
-import { Button } from '../components/ui/button';
-import { LoadingSpinner } from '../components/ui/loading-spinner';
+import { trpc } from "../api/trpc";
+import { usePullToRefresh } from "../api/usePullToRefresh";
+import { ErrorBoundary } from "../components/ErrorBoundary";
+import { NavBarAvatar } from "../components/NavBarAvatar";
+import { Alert, AlertTitle } from "../components/ui/alert";
+import { Button } from "../components/ui/button";
+import { LoadingSpinner } from "../components/ui/loading-spinner";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from '../components/ui/navigation-menu';
-import { ScrollArea } from '../components/ui/scroll-area';
-import { cn } from '../components/ui/utils';
-import { useNavigatorOnLine } from '../state/useNavigatorOnLine';
-import { useIsStandalone } from '../utils/hooks/useIsStandalone';
-import { formatDateTimeRelative, intervalGreaterThan } from '../utils/temporal';
+} from "../components/ui/navigation-menu";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { cn } from "../components/ui/utils";
+import { useNavigatorOnLine } from "../state/useNavigatorOnLine";
+import { useIsStandalone } from "../utils/hooks/useIsStandalone";
+import { formatDateTimeRelative, intervalGreaterThan } from "../utils/temporal";
 
 type RootProps = {
   title: string | undefined;
@@ -49,23 +49,23 @@ type RootProps = {
 
 const navItems = [
   {
-    to: '/',
-    text: 'Home',
+    to: "/",
+    text: "Home",
     icon: <HomeIcon className="size-5" />,
   },
   {
-    to: '/sheets',
-    text: 'Sheets',
+    to: "/sheets",
+    text: "Sheets",
     icon: <ListBulletIcon className="size-5" />,
   },
   {
-    to: '/stats',
-    text: 'Stats',
+    to: "/stats",
+    text: "Stats",
     icon: <PieChartIcon className="size-5" />,
   },
   {
-    to: '/settings',
-    text: 'Settings',
+    to: "/settings",
+    text: "Settings",
     icon: <GearIcon className="size-5" />,
   },
 ];
@@ -129,15 +129,15 @@ export const Root = ({
                       <div
                         className={navigationMenuTriggerStyle({
                           className: cn(
-                            'relative',
-                            'bg-transparent',
-                            'underline',
-                            'hover:bg-inherit',
-                            'hover:no-underline',
-                            'hover:text-primary-foreground',
+                            "relative",
+                            "bg-transparent",
+                            "underline",
+                            "hover:bg-inherit",
+                            "hover:no-underline",
+                            "hover:text-primary-foreground",
                             isActive
-                              ? 'text-primary hover:text-primary underline'
-                              : 'text-primary-foreground',
+                              ? "text-primary hover:text-primary underline"
+                              : "text-primary-foreground",
                           ),
                         })}
                       >
@@ -145,20 +145,20 @@ export const Root = ({
                         <motion.span
                           className={navigationMenuTriggerStyle({
                             className: cn(
-                              'absolute',
-                              'top-0',
-                              'left-0',
-                              '-z-10',
-                              'text-transparent',
-                              'hover:bg-transparent',
+                              "absolute",
+                              "top-0",
+                              "left-0",
+                              "-z-10",
+                              "text-transparent",
+                              "hover:bg-transparent",
                               isActive
-                                ? 'bg-primary-foreground'
-                                : 'bg-transparent',
+                                ? "bg-primary-foreground"
+                                : "bg-transparent",
                             ),
                           })}
-                          layoutId={isActive ? 'active' : to}
+                          layoutId={isActive ? "active" : to}
                           transition={{
-                            type: 'spring',
+                            type: "spring",
                             bounce: 0.2,
                             duration: 0.5,
                           }}
@@ -177,7 +177,7 @@ export const Root = ({
         </header>
 
         <ScrollArea
-          viewportClassName={cn('p-3 md:p-5', className)}
+          viewportClassName={cn("p-3 md:p-5", className)}
           rootClassName="flex grow flex-col"
         >
           <main>{children}</main>
@@ -204,7 +204,7 @@ export const Root = ({
                       className="bg-primary h-1"
                       layoutId="activeLine"
                       transition={{
-                        type: 'spring',
+                        type: "spring",
                         bounce: 0.2,
                         duration: 0.5,
                       }}
@@ -216,7 +216,7 @@ export const Root = ({
                     animate={{ scale: 1 }}
                     className="flex grow justify-center p-4"
                     style={{
-                      paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+                      paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
                     }}
                   >
                     <span />
@@ -233,7 +233,7 @@ export const Root = ({
   );
 };
 
-const ROOT_TOAST = 'root-toast';
+const ROOT_TOAST = "root-toast";
 
 export const RootLoader = <
   TData,
@@ -246,7 +246,7 @@ export const RootLoader = <
   title,
   getTitle,
   ...rootProps
-}: Omit<RootProps, 'children' | 'title' | 'banner'> & {
+}: Omit<RootProps, "children" | "title" | "banner"> & {
   render: (data: TData) => React.ReactNode;
   result: {
     data: TData | undefined;
@@ -265,19 +265,19 @@ export const RootLoader = <
   const onLine = useNavigatorOnLine();
   const isStandalone = useIsStandalone();
 
-  const mobileStandalone = isStandalone && 'ontouchstart' in window;
+  const mobileStandalone = isStandalone && "ontouchstart" in window;
 
   const refetch = useCallback(async () => {
     await toast.promise(
       result.refetch(),
       {
-        loading: 'Refreshing',
-        success: 'Done',
-        error: 'Error',
+        loading: "Refreshing",
+        success: "Done",
+        error: "Error",
       },
       {
         id: ROOT_TOAST,
-        className: 'w-48',
+        className: "w-48",
         success: {
           duration: 1000,
         },

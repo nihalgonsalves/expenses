@@ -1,10 +1,10 @@
-import type { PrismaClient } from '@prisma/client';
-import type { Queue, Worker } from 'bullmq';
-import type { Redis } from 'ioredis';
+import type { PrismaClient } from "@prisma/client";
+import type { Queue, Worker } from "bullmq";
+import type { Redis } from "ioredis";
 
-import { config } from './config';
-import { NotificationDispatchService } from './service/notification/service';
-import { TransactionScheduleWorker } from './service/transaction/worker';
+import { config } from "./config";
+import { NotificationDispatchService } from "./service/notification/service";
+import { TransactionScheduleWorker } from "./service/transaction/worker";
 
 export type IWorker<TData, TResult> = {
   worker: Worker<TData, TResult>;
@@ -20,7 +20,7 @@ const startWorker = async (worker: IWorker<any, any>) => {
     console.log(`Worker '${worker.worker.name}' initialized`);
   }
 
-  worker.worker.on('closed', () => {
+  worker.worker.on("closed", () => {
     console.log(`Worker '${worker.worker.name}' closed`);
   });
 };
@@ -54,7 +54,7 @@ export const startWorkers = async (prisma: PrismaClient, redis: Redis) => {
     Object.values(workers).map(async (worker) => startWorker(worker)),
   );
 
-  process.on('SIGINT', () => {
+  process.on("SIGINT", () => {
     console.log(`SIGINT received, closing workers`);
 
     Object.values(workers).forEach((worker) => {

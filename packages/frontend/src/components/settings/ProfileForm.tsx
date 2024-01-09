@@ -1,15 +1,15 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
-import type { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import type { z } from "zod";
 
-import { ZUpdateUserInput } from '@nihalgonsalves/expenses-shared/types/user';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+import { ZUpdateUserInput } from "@nihalgonsalves/expenses-shared/types/user";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Form,
   FormControl,
@@ -18,8 +18,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from "../ui/form";
+import { Input } from "../ui/input";
 
 export const ProfileForm = ({ me }: { me: User }) => {
   const onLine = useNavigatorOnLine();
@@ -29,12 +29,12 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
   const form = useForm<z.infer<typeof ZUpdateUserInput>>({
     resolver: zodResolver(ZUpdateUserInput),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
       name: me.name,
       email: me.email,
-      password: '',
-      newPassword: '',
+      password: "",
+      newPassword: "",
     },
   });
 
@@ -48,7 +48,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
       newPassword: values.newPassword ? values.newPassword : undefined,
     });
 
-    toast.success('Saved!');
+    toast.success("Saved!");
 
     await utils.user.me.invalidate();
 

@@ -1,56 +1,56 @@
-import { faker } from '@faker-js/faker';
-import { SheetParticipantRole } from '@prisma/client';
-import { describe, expect, it } from 'vitest';
+import { faker } from "@faker-js/faker";
+import { SheetParticipantRole } from "@prisma/client";
+import { describe, expect, it } from "vitest";
 
 import {
   groupSheetFactory,
   personalSheetFactory,
   userFactory,
-} from '../../../test/factories';
-import { getTRPCCaller } from '../../../test/getTRPCCaller';
-import { createGroupSheetTransactionInput } from '../../../test/input';
-import { generateId } from '../../utils/nanoid';
+} from "../../../test/factories";
+import { getTRPCCaller } from "../../../test/getTRPCCaller";
+import { createGroupSheetTransactionInput } from "../../../test/input";
+import { generateId } from "../../utils/nanoid";
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 
-describe('createPersonalSheet', () => {
-  it('creates a sheet', async () => {
+describe("createPersonalSheet", () => {
+  it("creates a sheet", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const personalSheet = await caller.sheet.createPersonalSheet({
-      name: 'Personal Expenses',
-      currencyCode: 'EUR',
+      name: "Personal Expenses",
+      currencyCode: "EUR",
     });
 
     expect(personalSheet).toEqual({
       id: expect.any(String),
-      type: 'PERSONAL',
-      name: 'Personal Expenses',
-      currencyCode: 'EUR',
+      type: "PERSONAL",
+      name: "Personal Expenses",
+      currencyCode: "EUR",
       isArchived: false,
     });
   });
 });
 
-describe('createGroupSheet', () => {
-  it('creates a groupSheet', async () => {
+describe("createGroupSheet", () => {
+  it("creates a groupSheet", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const otherMember = await userFactory(prisma);
 
     const groupSheet = await caller.sheet.createGroupSheet({
-      name: 'WG Expenses',
-      currencyCode: 'EUR',
+      name: "WG Expenses",
+      currencyCode: "EUR",
       additionalParticipantEmailAddresses: [{ email: otherMember.email }],
     });
 
     expect(groupSheet).toEqual({
       id: expect.any(String),
-      type: 'GROUP',
-      name: 'WG Expenses',
-      currencyCode: 'EUR',
+      type: "GROUP",
+      name: "WG Expenses",
+      currencyCode: "EUR",
       isArchived: false,
       participants: expect.arrayContaining([
         {
@@ -67,25 +67,25 @@ describe('createGroupSheet', () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const otherEmail = 'hello@example.com';
+    const otherEmail = "hello@example.com";
 
     await caller.sheet.createGroupSheet({
-      name: 'WG Expenses',
-      currencyCode: 'EUR',
+      name: "WG Expenses",
+      currencyCode: "EUR",
       additionalParticipantEmailAddresses: [{ email: otherEmail }],
     });
 
     expect(
       await prisma.user.findUnique({ where: { email: otherEmail } }),
     ).toMatchObject({
-      name: 'Hello',
-      email: 'hello@example.com',
+      name: "Hello",
+      email: "hello@example.com",
     });
   });
 });
 
-describe('personalSheetById', () => {
-  it('returns a sheet', async () => {
+describe("personalSheetById", () => {
+  it("returns a sheet", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -97,7 +97,7 @@ describe('personalSheetById', () => {
 
     expect(sheetById).toEqual({
       id: personalSheet.id,
-      type: 'PERSONAL',
+      type: "PERSONAL",
       name: personalSheet.name,
       currencyCode: personalSheet.currencyCode,
       isArchived: false,
@@ -109,7 +109,7 @@ describe('personalSheetById', () => {
     const caller = useProtectedCaller(user);
 
     await expect(caller.sheet.personalSheetById(generateId())).rejects.toThrow(
-      'Sheet not found',
+      "Sheet not found",
     );
   });
 
@@ -121,23 +121,23 @@ describe('personalSheetById', () => {
 
     await expect(
       caller.sheet.personalSheetById(personalSheet.id),
-    ).rejects.toThrow('Sheet not found');
+    ).rejects.toThrow("Sheet not found");
   });
 
-  it('returns a 404 for a groupSheet ID', async () => {
+  it("returns a 404 for a groupSheet ID", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(caller.sheet.personalSheetById(groupSheet.id)).rejects.toThrow(
-      'Sheet not found',
+      "Sheet not found",
     );
   });
 });
 
-describe('groupSheetById', () => {
-  it('returns a groupSheet', async () => {
+describe("groupSheetById", () => {
+  it("returns a groupSheet", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -149,7 +149,7 @@ describe('groupSheetById', () => {
 
     expect(groupSheetById).toEqual({
       id: groupSheet.id,
-      type: 'GROUP',
+      type: "GROUP",
       name: groupSheet.name,
       currencyCode: groupSheet.currencyCode,
       isArchived: false,
@@ -169,35 +169,35 @@ describe('groupSheetById', () => {
     const caller = useProtectedCaller(user);
 
     await expect(caller.sheet.groupSheetById(generateId())).rejects.toThrow(
-      'Sheet not found',
+      "Sheet not found",
     );
   });
 
-  it('returns a 404 if the participant has no access', async () => {
+  it("returns a 404 if the participant has no access", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(caller.sheet.groupSheetById(groupSheet.id)).rejects.toThrow(
-      'Sheet not found',
+      "Sheet not found",
     );
   });
 
-  it('returns a 404 for a personal sheet ID', async () => {
+  it("returns a 404 for a personal sheet ID", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
     const personalSheet = await personalSheetFactory(prisma);
 
     await expect(caller.sheet.groupSheetById(personalSheet.id)).rejects.toThrow(
-      'Sheet not found',
+      "Sheet not found",
     );
   });
 });
 
-describe('mySheets', () => {
-  it('returns all personal sheets', async () => {
+describe("mySheets", () => {
+  it("returns all personal sheets", async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
@@ -216,7 +216,7 @@ describe('mySheets', () => {
     expect(mySheets).toMatchObject([{ id: personalSheet.id }]);
   });
 
-  it('hides archived sheets when includeArchived is false', async () => {
+  it("hides archived sheets when includeArchived is false", async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
@@ -239,7 +239,7 @@ describe('mySheets', () => {
     expect(allMySheets).toHaveLength(2);
   });
 
-  it('returns all groups where the user is a participant', async () => {
+  it("returns all groups where the user is a participant", async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
@@ -265,11 +265,11 @@ describe('mySheets', () => {
   });
 });
 
-describe('deleteSheet', () => {
+describe("deleteSheet", () => {
   describe.each([
-    ['personalSheet', personalSheetFactory],
-    ['groupSheet', groupSheetFactory],
-  ])('%s', (sheetType, factory) => {
+    ["personalSheet", personalSheetFactory],
+    ["groupSheet", groupSheetFactory],
+  ])("%s", (sheetType, factory) => {
     it(`deletes a ${sheetType}`, async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
@@ -286,18 +286,18 @@ describe('deleteSheet', () => {
 
     it.todo(`deletes a ${sheetType} with transactions`);
 
-    it('returns a 404 if the participant has no access', async () => {
+    it("returns a 404 if the participant has no access", async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
       const sheet = await factory(prisma);
 
       await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
-        'Sheet not found',
+        "Sheet not found",
       );
     });
 
-    if (sheetType === 'groupSheet') {
-      it('returns a 403 if the participant is not an admin', async () => {
+    if (sheetType === "groupSheet") {
+      it("returns a 403 if the participant is not an admin", async () => {
         const user = await userFactory(prisma);
         const caller = useProtectedCaller(user);
         const sheet = await factory(prisma, {
@@ -305,18 +305,18 @@ describe('deleteSheet', () => {
         });
 
         await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
-          'Only admins can delete sheets',
+          "Only admins can delete sheets",
         );
       });
     }
   });
 });
 
-describe('archiveSheet', () => {
+describe("archiveSheet", () => {
   describe.each([
-    ['personalSheet', personalSheetFactory],
-    ['groupSheet', groupSheetFactory],
-  ])('%s', (sheetType, factory) => {
+    ["personalSheet", personalSheetFactory],
+    ["groupSheet", groupSheetFactory],
+  ])("%s", (sheetType, factory) => {
     it(`archives a ${sheetType}`, async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
@@ -333,18 +333,18 @@ describe('archiveSheet', () => {
 
     it.todo(`archives a ${sheetType} with transactions`);
 
-    it('returns a 404 if the participant has no access', async () => {
+    it("returns a 404 if the participant has no access", async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
       const sheet = await factory(prisma);
 
       await expect(caller.sheet.archiveSheet(sheet.id)).rejects.toThrow(
-        'Sheet not found',
+        "Sheet not found",
       );
     });
 
-    if (sheetType === 'groupSheet') {
-      it('returns a 403 if the participant is not an admin', async () => {
+    if (sheetType === "groupSheet") {
+      it("returns a 403 if the participant is not an admin", async () => {
         const user = await userFactory(prisma);
         const caller = useProtectedCaller(user);
         const sheet = await factory(prisma, {
@@ -352,15 +352,15 @@ describe('archiveSheet', () => {
         });
 
         await expect(caller.sheet.archiveSheet(sheet.id)).rejects.toThrow(
-          'Only admins can archive sheets',
+          "Only admins can archive sheets",
         );
       });
     }
   });
 });
 
-describe('addGroupSheetMember', () => {
-  it('adds a member', async () => {
+describe("addGroupSheetMember", () => {
+  it("adds a member", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -382,7 +382,7 @@ describe('addGroupSheetMember', () => {
     });
   });
 
-  it('creates a new user if the member is not signed up', async () => {
+  it("creates a new user if the member is not signed up", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -390,7 +390,7 @@ describe('addGroupSheetMember', () => {
       withOwnerId: user.id,
     });
 
-    const participantEmail = 'jessica@example.com';
+    const participantEmail = "jessica@example.com";
 
     expect(
       await caller.sheet.addGroupSheetMember({
@@ -399,13 +399,13 @@ describe('addGroupSheetMember', () => {
       }),
     ).toMatchObject({
       id: expect.any(String),
-      name: 'Jessica',
+      name: "Jessica",
       email: participantEmail,
       role: SheetParticipantRole.MEMBER,
     });
   });
 
-  it('returns a 409 for an existing participant', async () => {
+  it("returns a 409 for an existing participant", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
@@ -420,10 +420,10 @@ describe('addGroupSheetMember', () => {
         groupSheetId: groupSheet.id,
         email: otherUser.email,
       }),
-    ).rejects.toThrow('Participant already exists');
+    ).rejects.toThrow("Participant already exists");
   });
 
-  it('returns a 404 if the participant has no access', async () => {
+  it("returns a 404 if the participant has no access", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
     const groupSheet = await groupSheetFactory(prisma);
@@ -433,10 +433,10 @@ describe('addGroupSheetMember', () => {
         groupSheetId: groupSheet.id,
         email: faker.internet.email(),
       }),
-    ).rejects.toThrow('Sheet not found');
+    ).rejects.toThrow("Sheet not found");
   });
 
-  it('returns a 403 if the participant is not an admin', async () => {
+  it("returns a 403 if the participant is not an admin", async () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
     const groupSheet = await groupSheetFactory(prisma, {
@@ -448,12 +448,12 @@ describe('addGroupSheetMember', () => {
         groupSheetId: groupSheet.id,
         email: faker.internet.email(),
       }),
-    ).rejects.toThrow('Only admins can add participants');
+    ).rejects.toThrow("Only admins can add participants");
   });
 });
 
-describe('deleteParticipant', () => {
-  it('deletes a participant as admin', async () => {
+describe("deleteParticipant", () => {
+  it("deletes a participant as admin", async () => {
     const [user, member] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -482,7 +482,7 @@ describe('deleteParticipant', () => {
     ).toBe(null);
   });
 
-  it('leaves as a participant', async () => {
+  it("leaves as a participant", async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
@@ -507,7 +507,7 @@ describe('deleteParticipant', () => {
     ).toBe(null);
   });
 
-  it('leaves as a participant with settled balance', async () => {
+  it("leaves as a participant with settled balance", async () => {
     const user = await userFactory(prisma);
 
     const caller = useProtectedCaller(user);
@@ -518,7 +518,7 @@ describe('deleteParticipant', () => {
     // Paid for self, so settled de-facto
     await caller.transaction.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
-        'EXPENSE',
+        "EXPENSE",
         groupSheet.id,
         groupSheet.currencyCode,
         user.id,
@@ -543,7 +543,7 @@ describe('deleteParticipant', () => {
     ).toBe(null);
   });
 
-  it('returns a 400 if the admin tries to remove themselves', async () => {
+  it("returns a 400 if the admin tries to remove themselves", async () => {
     const admin = await userFactory(prisma);
 
     const caller = useProtectedCaller(admin);
@@ -556,7 +556,7 @@ describe('deleteParticipant', () => {
         groupSheetId: groupSheet.id,
         participantId: admin.id,
       }),
-    ).rejects.toThrow('You cannot delete yourself as the last admin');
+    ).rejects.toThrow("You cannot delete yourself as the last admin");
   });
 
   it("returns a 400 if the participant's balance is non zero", async () => {
@@ -573,7 +573,7 @@ describe('deleteParticipant', () => {
 
     await caller.transaction.createGroupSheetTransaction(
       createGroupSheetTransactionInput(
-        'EXPENSE',
+        "EXPENSE",
         groupSheet.id,
         groupSheet.currencyCode,
         admin.id,
@@ -586,10 +586,10 @@ describe('deleteParticipant', () => {
         groupSheetId: groupSheet.id,
         participantId: member.id,
       }),
-    ).rejects.toThrow('Cannot delete a member with a non-zero balance');
+    ).rejects.toThrow("Cannot delete a member with a non-zero balance");
   });
 
-  it('returns a 404 if the participant has no access', async () => {
+  it("returns a 404 if the participant has no access", async () => {
     const user = await userFactory(prisma);
     const member = await userFactory(prisma);
 
@@ -603,10 +603,10 @@ describe('deleteParticipant', () => {
         groupSheetId: groupSheet.id,
         participantId: member.id,
       }),
-    ).rejects.toThrow('Sheet not found');
+    ).rejects.toThrow("Sheet not found");
   });
 
-  it('returns a 403 if the participant is not an admin', async () => {
+  it("returns a 403 if the participant is not an admin", async () => {
     const [member, otherMember] = await Promise.all([
       userFactory(prisma),
       userFactory(prisma),
@@ -622,6 +622,6 @@ describe('deleteParticipant', () => {
         groupSheetId: groupSheet.id,
         participantId: otherMember.id,
       }),
-    ).rejects.toThrow('Only admins can remove other participants');
+    ).rejects.toThrow("Only admins can remove other participants");
   });
 });

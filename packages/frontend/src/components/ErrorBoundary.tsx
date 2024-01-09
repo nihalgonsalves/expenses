@@ -1,9 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
-import React from 'react';
-import { toast } from 'react-hot-toast';
+import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { toast } from "react-hot-toast";
 
-import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { Button } from './ui/button';
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { Button } from "./ui/button";
 
 type ErrorBoundaryState = {
   hasError: boolean;
@@ -32,7 +32,7 @@ const RetryErrorButton = ({ reset }: { reset: () => void }) => {
 const initialState: ErrorBoundaryState = {
   hasError: false,
   error: undefined,
-  componentStack: '',
+  componentStack: "",
   displayError: false,
 };
 
@@ -56,10 +56,10 @@ export class ErrorBoundary extends React.Component<{
       const errorMessage =
         error instanceof Error
           ? error.message
-              .split('\n')
+              .split("\n")
               .map((line) => line.trim())
-              .join(' ')
-          : 'Unknown Error';
+              .join(" ")
+          : "Unknown Error";
 
       return (
         <div className="p-4">
@@ -94,7 +94,7 @@ export class ErrorBoundary extends React.Component<{
                       2,
                     ),
                   );
-                  toast.success('Copied');
+                  toast.success("Copied");
                 }}
               >
                 Copy to Clipboard
@@ -107,13 +107,13 @@ export class ErrorBoundary extends React.Component<{
                   {errorMessage}
                   <br />
                   {componentStack
-                    .split('\n')
+                    .split("\n")
                     .map((line) => line.trim())
-                    .filter((line) => line !== '')
+                    .filter((line) => line !== "")
                     .map((line, index) => (
                       // eslint-disable-next-line react/no-array-index-key
                       <React.Fragment key={index}>
-                        {'> '}
+                        {"> "}
                         {line}
                         <br />
                       </React.Fragment>
