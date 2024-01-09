@@ -13,6 +13,14 @@ const devOnlyDefault = <T extends ZodTypeAny>(
 const ZEnv = z.object({
   LISTEN_HOST: z.string().min(1).default("0.0.0.0"),
   PORT: z.coerce.number().default(5174),
+  PUBLIC_ORIGIN: devOnlyDefault(z.string().url(), "http://localhost:5173"),
+  APP_NAME: z.string().default("Expenses"),
+
+  SMTP_HOST: devOnlyDefault(z.string(), "localhost"),
+  SMTP_PORT: devOnlyDefault(z.coerce.number(), 1025),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASSWORD: z.string().optional(),
+  EMAIL_FROM: devOnlyDefault(z.string().email(), "expenses@example.com"),
 
   SECURE: z.coerce.boolean().default(IS_PROD),
   JWT_SECRET: devOnlyDefault(z.string().min(1), defaultSecret),

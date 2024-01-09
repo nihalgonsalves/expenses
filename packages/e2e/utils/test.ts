@@ -1,7 +1,7 @@
 import fs from "fs/promises";
 import { fileURLToPath } from "url";
 
-import { test as base, expect } from "@playwright/test";
+import { test as base } from "@playwright/test";
 import {
   type CreateTRPCProxyClient,
   createTRPCProxyClient,
@@ -99,30 +99,25 @@ export const test = base.extend<Fixtures>({
     await use(async () => {
       const { name, email, password } = getUserData();
 
-      const { id, theme } = await serverTRPCClient.user.createUser.mutate({
-        name,
-        email,
-        password,
-      });
+      const { id, emailVerified, theme } =
+        await serverTRPCClient.user.createUser.mutate({
+          name,
+          email,
+          password,
+        });
 
-      return { id, name, email, password, theme };
+      return { id, name, email, emailVerified, password, theme };
     });
   },
 
-  // TODO: this should automatically set cookies instead of using the form on each run
-  signIn: async ({ page, createUser }, use) => {
+  signIn: async ({ context, request, createUser }, use) => {
     await use(async () => {
-      const { id, name, email, password, theme } = await createUser();
+      const { id, name, email, emailVerified, password, theme } =
+        await createUser();
 
-      await page.goto("/auth/sign-in");
+      await context.addCookies((await request.storageState()).cookies);
 
-      await expect(page).toHaveTitle(/sign in/i);
-
-      await page.getByLabel(/email/i).fill(email);
-      await page.getByLabel(/password/i).fill(password);
-      await page.getByRole("button", { name: /sign in/i }).click();
-
-      return { id, name, email, password, theme };
+      return { id, name, email, emailVerified, password, theme };
     });
   },
 });

@@ -10,7 +10,10 @@ vi.setSystemTime(new Date(date.epochMilliseconds));
 
 describe("signJWT/verifyJWT", () => {
   it("creates and signs a token", async () => {
-    const result = await signJWT({ id: "<user-id>" }, "<identity>");
+    const result = await signJWT(
+      { id: "<user-id>" },
+      { identity: "<identity>" },
+    );
     const verified = await verifyJWT(result, "<identity>");
 
     expect(verified).toMatchObject({
@@ -28,7 +31,10 @@ describe("signJWT/verifyJWT", () => {
 
 describe("verifyJWT", () => {
   it("returns reissue=true after 1 hour", async () => {
-    const result = await signJWT({ id: "<user-id>" }, "<identity>");
+    const result = await signJWT(
+      { id: "<user-id>" },
+      { identity: "<identity>" },
+    );
 
     vi.setSystemTime(new Date(date.add({ hours: 1 }).epochMilliseconds));
 

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { config } from "./config";
 import { currencyConversionRouter } from "./service/frankfurter/currencyConversionRouter";
 import { notificationRouter } from "./service/notification/router";
 import { sheetRouter } from "./service/sheet/router";
@@ -23,14 +24,14 @@ const health = publicProcedure.query(async ({ ctx }) => {
   }
 });
 
-const config = publicProcedure
+const configProcedure = publicProcedure
   .input(z.void())
   .output(z.object({ name: z.string() }))
-  .query(() => ({ name: "Expenses" }));
+  .query(() => ({ name: config.APP_NAME }));
 
 export const appRouter = router({
   health,
-  config,
+  config: configProcedure,
   user: userRouter,
   sheet: sheetRouter,
   transaction: transactionRouter,

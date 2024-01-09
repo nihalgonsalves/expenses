@@ -6,6 +6,7 @@ test(`creates a personal sheet transaction successfully`, async ({
   signIn,
 }) => {
   await signIn();
+  await page.goto("/");
 
   await serverTRPCClient.sheet.createPersonalSheet.mutate({
     name: "Test Sheet",
@@ -73,6 +74,7 @@ test(`creates a shared sheet transaction successfully`, async ({
   signIn,
 }) => {
   await signIn();
+  await page.goto("/");
 
   await serverTRPCClient.sheet.createGroupSheet.mutate({
     name: "Test Sheet",

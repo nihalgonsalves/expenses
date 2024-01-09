@@ -15,9 +15,12 @@ model User {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
-  name         String
-  email        String  @unique
-  passwordHash String? @map("password_hash")
+  name          String
+  email         String  @unique
+  emailVerified Boolean @default(false) @map("email_verified")
+
+  passwordHash       String? @map("password_hash")
+  passwordResetToken String? @map("password_reset_token")
 
   sheets                    SheetMemberships[]
   transactionEntries        TransactionEntry[]

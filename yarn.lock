@@ -3005,6 +3005,7 @@ __metadata:
     "@trpc/server": "npm:^10.45.0"
     "@types/bcrypt": "npm:^5.0.2"
     "@types/cookie": "npm:^0.6.0"
+    "@types/nodemailer": "npm:^6"
     "@types/pem": "npm:^1.14.4"
     "@types/ua-parser-js": "npm:^0.7.39"
     "@types/web-push": "npm:^3.6.3"
@@ -3017,6 +3018,7 @@ __metadata:
     ioredis: "npm:^5.3.2"
     jose: "npm:^5.2.0"
     nanoid: "npm:^5.0.4"
+    nodemailer: "npm:^6.9.8"
     npm-run-all2: "npm:^6.1.1"
     pem: "npm:^1.14.8"
     prisma: "npm:*"
@@ -3041,6 +3043,7 @@ __metadata:
     "@playwright/test": "npm:^1.40.1"
     "@trpc/client": "npm:^10.45.0"
     nanoid: "npm:^5.0.4"
+    zod: "npm:^3.22.4"
   languageName: unknown
   linkType: soft
 
@@ -6422,6 +6425,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: 6cfffb738124d43bc240d21f3196270c15b9a4137644eee35a7e75460fda8df881630e350d00fcfd66caa37bf1ed80771f2da0d4c7cd0016c9f616934a2377c5
+  languageName: node
+  linkType: hard
+
+"@types/nodemailer@npm:^6":
+  version: 6.4.14
+  resolution: "@types/nodemailer@npm:6.4.14"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: b5958843576cde76dc532aa7b726182fef8b466fa9fcaf1aa03f89f02e896bec4e28b593ffa1a289a46bd0b7fdf34da0640ab7ef8f0811948016f58f77e16307
   languageName: node
   linkType: hard
 
@@ -14479,6 +14491,13 @@ __metadata:
   dependencies:
     big-integer: "npm:^1.6.48"
   checksum: 151c8d1c4ad8b827f2ec9811f0c704a99e1521317990ffd25cad35c9775ee2112b9598b051eb85c582f23c74bb4f92e467be8ec8d6f01f9870a8744d8d873492
+  languageName: node
+  linkType: hard
+
+"nodemailer@npm:^6.9.8":
+  version: 6.9.8
+  resolution: "nodemailer@npm:6.9.8"
+  checksum: 9332587975240ac648e1295b1df15e339fcace3f7fab8af0382e7f2dd10e48296344dfa698d58f1667f220f7fe13c779d55d39144c9cd9ed6f5f559714183c75
   languageName: node
   linkType: hard
 

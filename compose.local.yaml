@@ -26,5 +26,13 @@ services:
     ports:
       - "5200:8080"
 
+  mailpit:
+    extends:
+      file: compose.dev.yaml
+      service: mailpit
+    ports:
+      - "8025:8025" # web
+      - "1025:1025" # smtp
+
 volumes:
   postgresql:

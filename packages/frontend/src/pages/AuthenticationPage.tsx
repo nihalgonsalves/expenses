@@ -1,7 +1,8 @@
 import { Navigate, useMatch, useSearchParams } from "react-router-dom";
 
 import { useCurrentUser } from "../api/useCurrentUser";
-import { SignInForm, SignUpForm } from "../components/AuthenticationForm";
+import { SignInForm } from "../components/SignInForm";
+import { SignUpForm } from "../components/SignUpForm";
 
 import { Root } from "./Root";
 

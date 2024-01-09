@@ -4,6 +4,7 @@ export const ZUser = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   email: z.string().email(),
+  emailVerified: z.boolean(),
   theme: z.string().nullable(),
 });
 
@@ -72,6 +73,12 @@ export const ZUpdateUserInput = z
     },
   );
 export type UpdateUserInput = z.infer<typeof ZUpdateUserInput>;
+
+export const ZResetPasswordInput = z.object({
+  token: ZJWTToken,
+  password: z.string().min(1, { message: "Password is required" }),
+});
+export type ResetPasswordInput = z.infer<typeof ZResetPasswordInput>;
 
 export const ZAuthorizeUserInput = z.object({
   email: z.string().email({

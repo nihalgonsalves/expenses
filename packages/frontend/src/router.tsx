@@ -7,10 +7,13 @@ import {
 } from "react-router-dom";
 import { z, type ZodRawShape } from "zod";
 
+import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
+
 import { useCurrentUser } from "./api/useCurrentUser";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { AuthenticationPage } from "./pages/AuthenticationPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { SheetsIndexPage } from "./pages/SheetsIndexPage";
 import { GroupDetailPage } from "./pages/groups/GroupDetailPage";
@@ -69,6 +72,10 @@ export const router = createBrowserRouter([
       {
         path: "/auth/sign-up",
         element: <AuthenticationPage />,
+      },
+      {
+        path: RESET_PASSWORD_ROUTE,
+        element: <ResetPasswordPage />,
       },
       {
         path: "/groups",

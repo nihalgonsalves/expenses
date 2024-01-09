@@ -1,13 +1,17 @@
 import { faker } from "@faker-js/faker";
 import { describe, expect, it, vi } from "vitest";
 
-import type { User } from "@nihalgonsalves/expenses-shared/types/user";
+import {
+  ZJWTToken,
+  type User,
+} from "@nihalgonsalves/expenses-shared/types/user";
 
 import { personalSheetFactory, userFactory } from "../../../test/factories";
 import { getTRPCCaller } from "../../../test/getTRPCCaller";
 import { createPersonalSheetTransactionInput } from "../../../test/input";
+import { config } from "../../config";
 
-import { comparePassword, hashPassword } from "./utils";
+import { comparePassword, hashPassword, signJWT } from "./utils";
 
 const userArgs = {
   name: "Emily",
@@ -15,7 +19,8 @@ const userArgs = {
   password: "correct-horse-battery-staple",
 };
 
-const { usePublicCaller, useProtectedCaller, prisma } = await getTRPCCaller();
+const { usePublicCaller, useProtectedCaller, mailbox, prisma } =
+  await getTRPCCaller();
 
 describe("createUser", () => {
   it("creates a user ", async () => {
@@ -25,6 +30,7 @@ describe("createUser", () => {
       id: expect.any(String),
       name: "Emily",
       email: "emily@example.com",
+      emailVerified: false,
       theme: null,
     });
   });
@@ -37,6 +43,7 @@ describe("createUser", () => {
       id: expect.any(String),
       name: "Emily",
       email: "emily@example.com",
+      emailVerified: false,
       theme: null,
     });
   });
@@ -66,6 +73,34 @@ describe("updateUser", () => {
       name: "Juan",
       email: "juan@example.com",
     });
+  });
+
+  it("retains emailVerified when not changed", async () => {
+    const user = await userFactory(prisma, { emailVerified: true });
+    const caller = useProtectedCaller(user);
+
+    expect(user.emailVerified).toBe(true);
+
+    const updatedUser = await caller.user.updateUser({
+      name: "Juan",
+      email: user.email,
+    });
+
+    expect(updatedUser.emailVerified).toBe(true);
+  });
+
+  it("resets emailVerified when changed", async () => {
+    const user = await userFactory(prisma, { emailVerified: true });
+    const caller = useProtectedCaller(user);
+
+    expect(user.emailVerified).toBe(true);
+
+    const updatedUser = await caller.user.updateUser({
+      name: "Juan",
+      email: "juan@example.com",
+    });
+
+    expect(updatedUser.emailVerified).toBe(false);
   });
 
   it("updates a user's password", async () => {
@@ -147,6 +182,7 @@ describe("authorizeUser", () => {
       id: expect.any(String),
       name: "Emily",
       email: "emily@example.com",
+      emailVerified: false,
       theme: null,
     });
     expect(setJWTToken.mock.calls).toEqual([[expect.any(String)]]);
@@ -291,5 +327,120 @@ describe("anonymizeUser", () => {
         password: "wrong-password",
       }),
     ).rejects.toThrow("Invalid credentials");
+  });
+});
+
+describe("requestPasswordReset", () => {
+  it("does nothing if the user does not exist", async () => {
+    const caller = usePublicCaller();
+
+    await caller.user.requestPasswordReset(faker.internet.email());
+
+    expect(mailbox.messages).toHaveLength(0);
+  });
+
+  it("sends an email if the user exists", async () => {
+    const user = await userFactory(prisma);
+
+    const caller = usePublicCaller();
+
+    await caller.user.requestPasswordReset(user.email);
+
+    expect(mailbox.messages).toHaveLength(1);
+
+    expect(mailbox.messages[0]?.from).toMatch(config.EMAIL_FROM);
+    expect(mailbox.messages[0]?.to).toMatch(user.email);
+    expect(mailbox.messages[0]?.subject).toMatch(/your reset password link/i);
+    expect(mailbox.messages[0]?.text).toMatch(
+      /click here to reset your password/i,
+    );
+
+    const { passwordResetToken } = await prisma.user.findUniqueOrThrow({
+      where: { id: user.id },
+    });
+
+    expect(passwordResetToken).toBeTruthy();
+  });
+});
+
+describe("resetPassword", () => {
+  const getResetTokenFromMailbox = (index = 0) => {
+    const emailText = mailbox.messages[index]?.text;
+    if (typeof emailText !== "string") {
+      throw new Error("No email text");
+    }
+
+    return new URL(emailText.split("\n")[1] ?? "").searchParams.get("token");
+  };
+  it("resets a password and sets emailVerified", async () => {
+    const user = await userFactory(prisma);
+
+    expect(user.emailVerified).toBe(false);
+    expect(user.passwordHash).toBeNull();
+
+    const caller = usePublicCaller();
+
+    await caller.user.requestPasswordReset(user.email);
+
+    await caller.user.resetPassword({
+      token: ZJWTToken.parse(getResetTokenFromMailbox()),
+      password: "new-password",
+    });
+
+    const { emailVerified, passwordHash } = await prisma.user.findUniqueOrThrow(
+      {
+        where: { id: user.id },
+      },
+    );
+
+    expect(emailVerified).toBe(true);
+    expect(passwordHash).toBeTruthy();
+  });
+
+  it("throws an error on an invalid token", async () => {
+    const caller = usePublicCaller();
+
+    await expect(
+      caller.user.resetPassword({
+        token: ZJWTToken.parse(await signJWT({ id: "foobar" })),
+        password: "new-password",
+      }),
+    ).rejects.toThrowError("Invalid token");
+  });
+
+  it("throws an error on a previous token", async () => {
+    const user = await userFactory(prisma);
+
+    const caller = usePublicCaller();
+
+    await caller.user.requestPasswordReset(user.email);
+    await caller.user.requestPasswordReset(user.email);
+
+    await expect(
+      caller.user.resetPassword({
+        token: ZJWTToken.parse(getResetTokenFromMailbox()),
+        password: "new-password",
+      }),
+    ).rejects.toThrowError("That reset link is invalid or expired");
+  });
+
+  it("throws an error on a used token", async () => {
+    const user = await userFactory(prisma);
+
+    const caller = usePublicCaller();
+
+    await caller.user.requestPasswordReset(user.email);
+
+    await caller.user.resetPassword({
+      token: ZJWTToken.parse(getResetTokenFromMailbox()),
+      password: "new-password",
+    });
+
+    await expect(
+      caller.user.resetPassword({
+        token: ZJWTToken.parse(getResetTokenFromMailbox()),
+        password: "new-password",
+      }),
+    ).rejects.toThrowError("That reset link is invalid or expired");
   });
 });
