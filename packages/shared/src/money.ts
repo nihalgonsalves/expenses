@@ -1,4 +1,4 @@
-import * as Currencies from '@dinero.js/currencies';
+import * as Currencies from "@dinero.js/currencies";
 import {
   type Dinero,
   add as dineroAdd,
@@ -6,8 +6,8 @@ import {
   toSnapshot,
   equal,
   compare,
-} from 'dinero.js';
-import { z } from 'zod';
+} from "dinero.js";
+import { z } from "zod";
 
 export const CURRENCY_CODES = Object.keys(Currencies);
 

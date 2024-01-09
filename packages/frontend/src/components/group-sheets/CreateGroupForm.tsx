@@ -1,17 +1,17 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
-import { PersonIcon, PlusIcon, TrashIcon } from '@radix-ui/react-icons';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import type { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { PersonIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useFieldArray, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import type { z } from "zod";
 
-import { ZCreateGroupSheetInput } from '@nihalgonsalves/expenses-shared/types/sheet';
+import { ZCreateGroupSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { CurrencySelect } from '../form/CurrencySelect';
-import { useDialog } from '../form/ResponsiveDialog';
-import { Button } from '../ui/button';
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { CurrencySelect } from "../form/CurrencySelect";
+import { useDialog } from "../form/ResponsiveDialog";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -19,9 +19,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { Separator } from '../ui/separator';
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
 
 export const CreateGroupForm = ({
   defaultCurrencyCode,
@@ -39,21 +39,21 @@ export const CreateGroupForm = ({
 
   const form = useForm<z.infer<typeof ZCreateGroupSheetInput>>({
     resolver: zodResolver(ZCreateGroupSheetInput),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
-      name: '',
+      name: "",
       currencyCode: defaultCurrencyCode,
       additionalParticipantEmailAddresses: [],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
-    name: 'additionalParticipantEmailAddresses',
+    name: "additionalParticipantEmailAddresses",
     control: form.control,
   });
 
   const handleAddParticipant = () => {
-    append({ email: '' });
+    append({ email: "" });
   };
 
   const handleDeleteParticipant = (index: number) => {

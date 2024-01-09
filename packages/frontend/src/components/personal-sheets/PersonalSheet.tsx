@@ -1,49 +1,49 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
+import { Temporal } from "@js-temporal/polyfill";
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
   DotsVerticalIcon,
   ListBulletIcon,
   TimerIcon,
   TrashIcon,
-} from '@radix-ui/react-icons';
-import { Link } from 'react-router-dom';
+} from "@radix-ui/react-icons";
+import { Link } from "react-router-dom";
 
-import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
+import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from '../../api/trpc';
-import { formatCurrency } from '../../utils/money';
+import { trpc } from "../../api/trpc";
+import { formatCurrency } from "../../utils/money";
 import {
   formatDateTimeRelative,
   shortDateTimeFormatter,
-} from '../../utils/temporal';
-import { getTransactionDescription } from '../../utils/utils';
-import { CategoryAvatar } from '../CategoryAvatar';
-import { ConfirmDialog } from '../form/ConfirmDialog';
-import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+} from "../../utils/temporal";
+import { getTransactionDescription } from "../../utils/utils";
+import { CategoryAvatar } from "../CategoryAvatar";
+import { ConfirmDialog } from "../form/ConfirmDialog";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { ScrollArea } from '../ui/scroll-area';
+} from "../ui/dropdown-menu";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
-import { cn } from '../ui/utils';
+} from "../ui/tooltip";
+import { cn } from "../ui/utils";
 
 const TransactionListItemComponent = ({
   transaction,
   description,
   addons,
 }: {
-  transaction: Pick<TransactionListItem, 'category' | 'description' | 'money'>;
+  transaction: Pick<TransactionListItem, "category" | "description" | "money">;
   description: React.ReactNode;
   addons?: React.ReactNode;
 }) => {
@@ -173,7 +173,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                 key={schedule.id}
                 transaction={schedule}
                 description={
-                  <div className={cn('flex gap-1')}>
+                  <div className={cn("flex gap-1")}>
                     <Badge variant="outline" className="capitalize">
                       {schedule.recurrenceRule.freq.toLowerCase()}
                     </Badge>

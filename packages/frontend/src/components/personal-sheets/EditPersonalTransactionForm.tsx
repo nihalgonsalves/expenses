@@ -1,27 +1,27 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Temporal } from '@js-temporal/polyfill';
-import { useForm, useWatch } from 'react-hook-form';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Temporal } from "@js-temporal/polyfill";
+import { useForm, useWatch } from "react-hook-form";
+import { z } from "zod";
 
-import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import {
   ZUpdatePersonalSheetTransactionInput,
   type TransactionListItem,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useCurrencyConversion } from '../../api/currencyConversion';
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { formatCurrency, useMoneyValues } from '../../utils/money';
+import { useCurrencyConversion } from "../../api/currencyConversion";
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { formatCurrency, useMoneyValues } from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   isoToTemporalZonedDateTime,
-} from '../../utils/temporal';
-import { CategorySelect } from '../form/CategorySelect';
-import { CurrencySelect } from '../form/CurrencySelect';
-import { MoneyField } from '../form/MoneyField';
-import { ResponsiveDialog, useDialog } from '../form/ResponsiveDialog';
-import { Button } from '../ui/button';
+} from "../../utils/temporal";
+import { CategorySelect } from "../form/CategorySelect";
+import { CurrencySelect } from "../form/CurrencySelect";
+import { MoneyField } from "../form/MoneyField";
+import { ResponsiveDialog, useDialog } from "../form/ResponsiveDialog";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -30,8 +30,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from "../ui/form";
+import { Input } from "../ui/input";
 
 const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
   id: true,
@@ -40,7 +40,7 @@ const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
   money: true,
 }).extend({
   currencyCode: z.string().min(1),
-  amount: z.number().positive({ message: 'Amount is required' }),
+  amount: z.number().positive({ message: "Amount is required" }),
 });
 
 const EditPersonalTransactionForm = ({
@@ -56,7 +56,7 @@ const EditPersonalTransactionForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
       currencyCode: personalSheet.currencyCode,
       category: transaction.category,
@@ -67,12 +67,12 @@ const EditPersonalTransactionForm = ({
         .toString(),
     },
   });
-  const amount = useWatch({ name: 'amount', control: form.control });
+  const amount = useWatch({ name: "amount", control: form.control });
   const currencyCode = useWatch({
-    name: 'currencyCode',
+    name: "currencyCode",
     control: form.control,
   });
-  const spentAt = useWatch({ name: 'spentAt', control: form.control });
+  const spentAt = useWatch({ name: "spentAt", control: form.control });
 
   const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
@@ -94,7 +94,7 @@ const EditPersonalTransactionForm = ({
     await updatePersonalSheetTransaction({
       id: transaction.id,
       // this should not be required, but the returned type has an extraneous 'TRANFER' value
-      type: z.enum(['EXPENSE', 'INCOME']).parse(transaction.type),
+      type: z.enum(["EXPENSE", "INCOME"]).parse(transaction.type),
       personalSheetId: personalSheet.id,
       money,
       category: values.category,

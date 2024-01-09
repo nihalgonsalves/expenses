@@ -1,6 +1,6 @@
-import { forwardRef } from 'react';
-import type { ControllerRenderProps } from 'react-hook-form';
-import type { z } from 'zod';
+import { forwardRef } from "react";
+import type { ControllerRenderProps } from "react-hook-form";
+import type { z } from "zod";
 
 import {
   Select as UISelect,
@@ -8,7 +8,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
+} from "../ui/select";
 
 export type SelectOption<T extends z.Schema<string | undefined>> = {
   label: React.ReactNode;
@@ -16,7 +16,7 @@ export type SelectOption<T extends z.Schema<string | undefined>> = {
   disabled?: boolean;
 };
 
-const UNSET = 'unset' as const;
+const UNSET = "unset" as const;
 
 type SelectProps<T extends z.Schema<string | undefined>> = {
   id?: string | undefined;
@@ -26,7 +26,7 @@ type SelectProps<T extends z.Schema<string | undefined>> = {
   onChange: (newValue: z.infer<T>) => void;
   schema: T;
   className?: string | undefined;
-} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 const SelectInner = <T extends z.Schema<string | undefined>>(
   {
@@ -43,11 +43,11 @@ const SelectInner = <T extends z.Schema<string | undefined>>(
   ref: React.ForwardedRef<HTMLButtonElement>,
 ) => (
   <UISelect
-    value={value ?? ''}
+    value={value ?? ""}
     onValueChange={(newValue) => {
       onBlur();
       setValue(
-        newValue !== '' && newValue !== UNSET
+        newValue !== "" && newValue !== UNSET
           ? schema.parse(newValue)
           : undefined,
       );

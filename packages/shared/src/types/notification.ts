@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { ZMoney } from './transaction';
+import { ZMoney } from "./transaction";
 
 const ZNotificationTransaction = z.object({
   id: z.string().min(1),
@@ -10,7 +10,7 @@ const ZNotificationTransaction = z.object({
 });
 
 const ZExpenseNotificationPayload = z.object({
-  type: z.literal('EXPENSE'),
+  type: z.literal("EXPENSE"),
   groupSheet: z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -21,7 +21,7 @@ const ZExpenseNotificationPayload = z.object({
 });
 
 const ZIncomeNotificationPayload = z.object({
-  type: z.literal('INCOME'),
+  type: z.literal("INCOME"),
   groupSheet: z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -32,18 +32,18 @@ const ZIncomeNotificationPayload = z.object({
 });
 
 const ZTransferNotificationPayload = z.object({
-  type: z.literal('TRANSFER'),
+  type: z.literal("TRANSFER"),
   groupSheet: z.object({
     id: z.string().min(1),
     name: z.string().min(1),
   }),
   transaction: ZNotificationTransaction.extend({
-    type: z.enum(['sent', 'received']),
+    type: z.enum(["sent", "received"]),
   }),
 });
 
 const ZTestNotificationPayload = z.object({
-  type: z.literal('TEST'),
+  type: z.literal("TEST"),
   message: z.string().min(1),
 });
 

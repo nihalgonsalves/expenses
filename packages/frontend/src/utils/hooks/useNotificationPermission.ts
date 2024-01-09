@@ -1,53 +1,53 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 
-import { useServiceWorkerRegistration } from './useServiceWorkerRegistration';
+import { useServiceWorkerRegistration } from "./useServiceWorkerRegistration";
 
 // undefined on iOS when not installed, for example
 const notificationGlobal =
-  'Notification' in globalThis ? globalThis.Notification : undefined;
+  "Notification" in globalThis ? globalThis.Notification : undefined;
 
 const navigatorPermissions =
-  'permissions' in globalThis.navigator
+  "permissions" in globalThis.navigator
     ? globalThis.navigator.permissions
     : undefined;
 
 const PUSH_SUPPORTED =
-  'serviceWorker' in globalThis.navigator && 'PushManager' in globalThis.window;
+  "serviceWorker" in globalThis.navigator && "PushManager" in globalThis.window;
 
 export const useNotificationPermission = (): {
-  permission: NotificationPermission | 'not_supported';
-  request: () => Promise<NotificationPermission | 'not_supported'>;
+  permission: NotificationPermission | "not_supported";
+  request: () => Promise<NotificationPermission | "not_supported">;
 } => {
   const serviceWorkerRegistration = useServiceWorkerRegistration();
 
   const [permission, setPermission] = useState<
-    NotificationPermission | 'not_supported'
-  >(notificationGlobal?.permission ?? 'not_supported');
+    NotificationPermission | "not_supported"
+  >(notificationGlobal?.permission ?? "not_supported");
 
   useEffect(() => {
     const handler = () => {
-      setPermission(notificationGlobal?.permission ?? 'not_supported');
+      setPermission(notificationGlobal?.permission ?? "not_supported");
     };
 
     if (navigatorPermissions) {
       void (async () => {
         const status = await navigatorPermissions.query({
-          name: 'notifications',
+          name: "notifications",
         });
 
-        status.addEventListener('change', handler);
+        status.addEventListener("change", handler);
 
         return () => {
-          status.removeEventListener('change', handler);
+          status.removeEventListener("change", handler);
         };
       })();
     }
   }, []);
 
   const request = useCallback(async () => {
-    if (permission === 'granted') return permission;
+    if (permission === "granted") return permission;
 
-    if (!notificationGlobal) return 'not_supported';
+    if (!notificationGlobal) return "not_supported";
 
     const newPermission = await notificationGlobal.requestPermission();
 
@@ -60,8 +60,8 @@ export const useNotificationPermission = (): {
 
   if (!PUSH_SUPPORTED || !serviceWorkerRegistration) {
     return {
-      permission: 'not_supported',
-      request: async () => 'not_supported',
+      permission: "not_supported",
+      request: async () => "not_supported",
     };
   }
 

@@ -1,14 +1,14 @@
-import { CheckIcon, Cross2Icon, PersonIcon } from '@radix-ui/react-icons';
-import { useState } from 'react';
+import { CheckIcon, Cross2Icon, PersonIcon } from "@radix-ui/react-icons";
+import { useState } from "react";
 
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { prevalidateEmail } from '../../utils/utils';
-import { Avatar } from '../Avatar';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { prevalidateEmail } from "../../utils/utils";
+import { Avatar } from "../Avatar";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
-import { ParticipantListItem } from './ParticipantListItem';
+import { ParticipantListItem } from "./ParticipantListItem";
 
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const onLine = useNavigatorOnLine();
@@ -18,13 +18,13 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const utils = trpc.useUtils();
 
   const [addMemberOpen, setAddMemberOpen] = useState(false);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const valid = prevalidateEmail(email);
 
   const handleClose = () => {
     setAddMemberOpen(false);
-    setEmail('');
+    setEmail("");
   };
 
   const handleAddMember = async () => {

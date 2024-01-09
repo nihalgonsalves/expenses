@@ -1,12 +1,12 @@
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
-import type { Meta, StoryObj } from '@storybook/react';
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { Alert, AlertDescription, AlertTitle } from './alert';
+import { Alert, AlertDescription, AlertTitle } from "./alert";
 
 const meta: Meta<typeof Alert> = {
   component: Alert,
   args: {
-    $variant: 'default',
+    $variant: "default",
   },
   render: (props) => (
     <Alert {...props}>
@@ -21,6 +21,6 @@ type Story = StoryObj<typeof Alert>;
 
 export const Default: Story = {};
 
-export const Destructive: Story = { args: { $variant: 'destructive' } };
+export const Destructive: Story = { args: { $variant: "destructive" } };
 
 export default meta;

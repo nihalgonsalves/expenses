@@ -1,6 +1,6 @@
-import { Slot } from '@radix-ui/react-slot';
-import { motion, type HTMLMotionProps } from 'framer-motion';
-import * as React from 'react';
+import { Slot } from "@radix-ui/react-slot";
+import { motion, type HTMLMotionProps } from "framer-motion";
+import * as React from "react";
 import {
   Controller,
   type ControllerProps,
@@ -8,12 +8,12 @@ import {
   type FieldValues,
   FormProvider,
   useFormContext,
-} from 'react-hook-form';
+} from "react-hook-form";
 
-import { fadeInOut } from '../../utils/framer';
+import { fadeInOut } from "../../utils/framer";
 
-import { Label } from './label';
-import { cn } from './utils';
+import { Label } from "./label";
+import { cn } from "./utils";
 
 const Form: typeof FormProvider = ({ children, ...props }) => (
   <div className="relative">
@@ -33,7 +33,7 @@ const Form: typeof FormProvider = ({ children, ...props }) => (
         }}
       />
     )} */}
-    <FormProvider {...props}>{children}</FormProvider>{' '}
+    <FormProvider {...props}>{children}</FormProvider>{" "}
   </div>
 );
 
@@ -78,7 +78,7 @@ const useFormField = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
   if (!fieldContext) {
-    throw new Error('useFormField should be used within <FormField>');
+    throw new Error("useFormField should be used within <FormField>");
   }
 
   const { id } = itemContext;
@@ -101,13 +101,13 @@ const FormItem = React.forwardRef<
 
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn('space-y-2', className)} {...props}>
+      <div ref={ref} className={cn("space-y-2", className)} {...props}>
         {children}
       </div>
     </FormItemContext.Provider>
   );
 });
-FormItem.displayName = 'FormItem';
+FormItem.displayName = "FormItem";
 
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof Label>,
@@ -118,13 +118,13 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && 'text-destructive', className)}
+      className={cn(error && "text-destructive", className)}
       htmlFor={formItemId}
       {...props}
     />
   );
 });
-FormLabel.displayName = 'FormLabel';
+FormLabel.displayName = "FormLabel";
 
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
@@ -145,11 +145,11 @@ const FormControl = React.forwardRef<
     />
   );
 });
-FormControl.displayName = 'FormControl';
+FormControl.displayName = "FormControl";
 
 const FormDescription = React.forwardRef<
   HTMLParagraphElement,
-  HTMLMotionProps<'div'>
+  HTMLMotionProps<"div">
 >(({ className, ...props }, ref) => {
   const { formDescriptionId } = useFormField();
 
@@ -158,13 +158,13 @@ const FormDescription = React.forwardRef<
       ref={ref}
       key={formDescriptionId}
       id={formDescriptionId}
-      className={cn('text-muted-foreground text-[0.8rem]', className)}
+      className={cn("text-muted-foreground text-[0.8rem]", className)}
       {...fadeInOut}
       {...props}
     />
   );
 });
-FormDescription.displayName = 'FormDescription';
+FormDescription.displayName = "FormDescription";
 
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
@@ -182,14 +182,14 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn('text-destructive text-[0.8rem] font-medium', className)}
+      className={cn("text-destructive text-[0.8rem] font-medium", className)}
       {...props}
     >
       {body}
     </p>
   );
 });
-FormMessage.displayName = 'FormMessage';
+FormMessage.displayName = "FormMessage";
 
 export {
   useFormField,

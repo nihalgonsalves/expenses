@@ -1,5 +1,5 @@
-import { trpc } from './trpc';
-import { useCurrentUser } from './useCurrentUser';
+import { trpc } from "./trpc";
+import { useCurrentUser } from "./useCurrentUser";
 
 export const usePrefetchQueries = () => {
   const { data: me } = useCurrentUser();

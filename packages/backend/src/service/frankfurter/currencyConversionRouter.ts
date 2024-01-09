@@ -1,13 +1,13 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { z } from 'zod';
+import { Temporal } from "@js-temporal/polyfill";
+import { z } from "zod";
 
-import { protectedProcedure, router } from '../../trpc';
+import { protectedProcedure, router } from "../../trpc";
 
 // frankfurter would ideally return integer + scale or strings, but
 // returns JSON floats. this is unideal, but since the rates are only
 // ever up to ~6 decimal places, it works fine for non-accounting purposes
 const decimalToScaled = (decimal: number) => {
-  const scale = `${decimal}`.split('.')[1]?.length ?? 0;
+  const scale = `${decimal}`.split(".")[1]?.length ?? 0;
   const amount = Math.round(decimal * Math.pow(10, scale));
 
   return { scale, amount };

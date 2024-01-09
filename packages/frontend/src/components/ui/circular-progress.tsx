@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as React from 'react';
+import * as React from "react";
 
-import type { CssVariableName } from '@nihalgonsalves/expenses-shared/types/theme';
+import type { CssVariableName } from "@nihalgonsalves/expenses-shared/types/theme";
 
 const center = 16;
 const strokeWidth = 4;
@@ -19,7 +19,7 @@ const CircularProgress = ({
   className,
   size = 32,
   value,
-  color = 'primary',
+  color = "primary",
 }: CircularProgressProps) => (
   <svg
     className={className}

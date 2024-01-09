@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import type { DialogProps } from '@radix-ui/react-dialog';
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { Command as CommandPrimitive } from 'cmdk';
-import * as React from 'react';
+import type { DialogProps } from "@radix-ui/react-dialog";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { Command as CommandPrimitive } from "cmdk";
+import * as React from "react";
 
-import { Dialog, DialogContent } from './dialog';
-import { ScrollArea } from './scroll-area';
-import { cn, twx } from './utils';
+import { Dialog, DialogContent } from "./dialog";
+import { ScrollArea } from "./scroll-area";
+import { cn, twx } from "./utils";
 
 const Command = twx(
   CommandPrimitive,
@@ -39,7 +39,7 @@ const CommandInput = React.forwardRef<
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
-        'placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50',
+        "placeholder:text-muted-foreground flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
@@ -55,7 +55,7 @@ const CommandList = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={cn('overflow-x-hidden', className)}
+    className={cn("overflow-x-hidden", className)}
     {...props}
   >
     <ScrollArea viewportClassName="max-h-72">{children}</ScrollArea>
@@ -81,7 +81,7 @@ const CommandItem = twx(
 CommandItem.displayName = CommandPrimitive.Item.displayName;
 
 const CommandShortcut = twx.span`ml-auto text-xs tracking-widest text-muted-foreground`;
-CommandShortcut.displayName = 'CommandShortcut';
+CommandShortcut.displayName = "CommandShortcut";
 
 export {
   Command,

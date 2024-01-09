@@ -1,17 +1,17 @@
-import { ListBulletIcon } from '@radix-ui/react-icons';
-import { Link } from 'react-router-dom';
+import { ListBulletIcon } from "@radix-ui/react-icons";
+import { Link } from "react-router-dom";
 
-import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from '../../api/trpc';
-import { Alert, AlertTitle } from '../ui/alert';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { ScrollArea } from '../ui/scroll-area';
+import { trpc } from "../../api/trpc";
+import { Alert, AlertTitle } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { ScrollArea } from "../ui/scroll-area";
 
-import { AddMemberButton } from './AddMemberButton';
-import { type ActorInfo, BalanceSummary } from './BalanceSummary';
-import { GroupSheetTransactionsDenseList } from './GroupSheetTransactionsDenseList';
+import { AddMemberButton } from "./AddMemberButton";
+import { type ActorInfo, BalanceSummary } from "./BalanceSummary";
+import { GroupSheetTransactionsDenseList } from "./GroupSheetTransactionsDenseList";
 
 export const GroupSheet = ({
   groupSheet,

@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import { trpc } from '../../api/trpc';
-import { useResetCache } from '../../api/useCacheReset';
-import { useServiceWorkerRegistration } from '../../utils/hooks/useServiceWorkerRegistration';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { trpc } from "../../api/trpc";
+import { useResetCache } from "../../api/useCacheReset";
+import { useServiceWorkerRegistration } from "../../utils/hooks/useServiceWorkerRegistration";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 export const TroubleshootingForm = () => {
-  const [state, setState] = useState<'initial' | 'loading' | 'done'>('initial');
+  const [state, setState] = useState<"initial" | "loading" | "done">("initial");
 
   const resetCache = useResetCache();
   const serviceWorker = useServiceWorkerRegistration();
@@ -15,7 +15,7 @@ export const TroubleshootingForm = () => {
   const { mutateAsync: signOut } = trpc.user.signOut.useMutation();
 
   const handleReset = async () => {
-    setState('loading');
+    setState("loading");
 
     // wait at least 1 second
     const minTimer = new Promise((resolve) => setTimeout(resolve, 1000));
@@ -28,7 +28,7 @@ export const TroubleshootingForm = () => {
     await signOut();
 
     await minTimer;
-    setState('done');
+    setState("done");
 
     window.location.reload();
   };
@@ -45,9 +45,9 @@ export const TroubleshootingForm = () => {
         <Button
           $variant="destructive"
           onClick={handleReset}
-          isLoading={state === 'loading'}
+          isLoading={state === "loading"}
         >
-          {state === 'done' ? 'Done, reloading...' : 'Reset Cache'}
+          {state === "done" ? "Done, reloading..." : "Reset Cache"}
         </Button>
       </CardContent>
     </Card>

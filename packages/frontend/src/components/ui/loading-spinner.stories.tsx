@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { LoadingSpinner } from './loading-spinner';
+import { LoadingSpinner } from "./loading-spinner";
 
 const meta: Meta<typeof LoadingSpinner> = {
   component: LoadingSpinner,

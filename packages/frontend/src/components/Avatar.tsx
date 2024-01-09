@@ -1,13 +1,13 @@
-import { getInitials } from '../utils/utils';
+import { getInitials } from "../utils/utils";
 
-import { Avatar as UIAvatar, AvatarFallback } from './ui/avatar';
+import { Avatar as UIAvatar, AvatarFallback } from "./ui/avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from './ui/tooltip';
-import { cn } from './ui/utils';
+} from "./ui/tooltip";
+import { cn } from "./ui/utils";
 
 export const Avatar = ({ name }: { name: string }) => (
   <TooltipProvider delayDuration={100}>
@@ -42,7 +42,7 @@ export const AvatarGroup = ({
   const hidden = users.length - visible.length;
 
   return (
-    <div className={cn('flex -space-x-4', className)}>
+    <div className={cn("flex -space-x-4", className)}>
       {visible.map(({ id, name }) => (
         <Avatar key={id} name={name} />
       ))}

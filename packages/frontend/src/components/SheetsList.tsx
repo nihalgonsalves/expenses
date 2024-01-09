@@ -1,21 +1,21 @@
-import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
-import { PlusIcon } from '@radix-ui/react-icons';
-import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
-import type { SheetsResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { SheetsResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { Avatar } from './Avatar';
-import { ExpandMoreButton } from './ExpandMoreButton';
-import { NewGroupSheetDialog, NewPersonalSheetDialog } from './NewSheetDialog';
-import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Avatar } from "./Avatar";
+import { ExpandMoreButton } from "./ExpandMoreButton";
+import { NewGroupSheetDialog, NewPersonalSheetDialog } from "./NewSheetDialog";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from './ui/collapsible';
-import { cn, twx } from './ui/utils';
+} from "./ui/collapsible";
+import { cn, twx } from "./ui/utils";
 
 const partitionSheets = (sheets: SheetsResponse) => {
   const personal: SheetsResponse = [];
@@ -25,7 +25,7 @@ const partitionSheets = (sheets: SheetsResponse) => {
   for (const sheet of sheets) {
     if (sheet.isArchived) {
       archived.push(sheet);
-    } else if (sheet.type === 'PERSONAL') {
+    } else if (sheet.type === "PERSONAL") {
       personal.push(sheet);
     } else {
       group.push(sheet);
@@ -37,7 +37,7 @@ const partitionSheets = (sheets: SheetsResponse) => {
 
 const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
   const link =
-    sheet.type === 'PERSONAL' ? `/sheets/${sheet.id}` : `/groups/${sheet.id}`;
+    sheet.type === "PERSONAL" ? `/sheets/${sheet.id}` : `/groups/${sheet.id}`;
 
   return (
     <div key={sheet.id} className="flex h-14 items-center gap-4">
@@ -48,7 +48,7 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
       >
         <Link to={link}>{sheet.name}</Link>
       </Button>
-      {sheet.type === 'GROUP' && (
+      {sheet.type === "GROUP" && (
         <div className="flex -space-x-4">
           {sheet.participants.map((participant) => (
             <Avatar key={participant.id} name={participant.name} />
@@ -117,7 +117,7 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
         </CardContent>
       </Card>
 
-      <Card className={cn(showArchived ? '' : 'opacity-50')}>
+      <Card className={cn(showArchived ? "" : "opacity-50")}>
         <Collapsible open={showArchived}>
           <CardHeader>
             <CardTitleWithButton>

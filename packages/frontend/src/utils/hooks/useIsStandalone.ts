@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const DISPLAY_MODE_STANDALONE = window.matchMedia('(display-mode: standalone)');
+const DISPLAY_MODE_STANDALONE = window.matchMedia("(display-mode: standalone)");
 
 export const useIsStandalone = () => {
   const [isStandalone, setIsStandalone] = useState(
@@ -8,13 +8,13 @@ export const useIsStandalone = () => {
   );
 
   useEffect(() => {
-    const handler = (e: MediaQueryListEventMap['change']) => {
+    const handler = (e: MediaQueryListEventMap["change"]) => {
       setIsStandalone(e.matches);
     };
 
-    DISPLAY_MODE_STANDALONE.addEventListener('change', handler);
+    DISPLAY_MODE_STANDALONE.addEventListener("change", handler);
     return () => {
-      DISPLAY_MODE_STANDALONE.removeEventListener('change', handler);
+      DISPLAY_MODE_STANDALONE.removeEventListener("change", handler);
     };
   }, [isStandalone]);
 

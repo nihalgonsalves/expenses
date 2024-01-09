@@ -2,25 +2,25 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   ExclamationTriangleIcon,
-} from '@radix-ui/react-icons';
-import { parse as dateFnsParse } from 'date-fns';
-import Papa from 'papaparse';
-import { useCallback, useId, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { z } from 'zod';
+} from "@radix-ui/react-icons";
+import { parse as dateFnsParse } from "date-fns";
+import Papa from "papaparse";
+import { useCallback, useId, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
-import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { CreateSheetTransactionInput } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
+import type { CreateSheetTransactionInput } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from '../../api/trpc';
-import { formatCurrency } from '../../utils/money';
-import { dateToISOString } from '../../utils/temporal';
-import { noop } from '../../utils/utils';
-import { Select, type SelectOption } from '../form/Select';
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import { trpc } from "../../api/trpc";
+import { formatCurrency } from "../../utils/money";
+import { dateToISOString } from "../../utils/temporal";
+import { noop } from "../../utils/utils";
+import { Select, type SelectOption } from "../form/Select";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Table,
   TableBody,
@@ -28,13 +28,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
+} from "../ui/table";
 import {
   Tooltip,
   TooltipProvider,
   TooltipTrigger,
   TooltipContent,
-} from '../ui/tooltip';
+} from "../ui/tooltip";
 
 enum ImportStep {
   UPLOAD_FILE,
@@ -49,21 +49,21 @@ const fieldMatchers = {
 };
 
 export enum CategoryId {
-  Groceries = 'groceries',
-  Restaurants = 'restaurants',
-  Bars = 'bars',
-  Entertainment = 'entertainment',
-  Cinema = 'cinema',
-  Shopping = 'shopping',
-  Travel = 'travel',
-  Transportation = 'transportation',
-  Hobbies = 'hobbies',
-  Home = 'home',
-  Rent = 'rent',
-  Utilities = 'utilities',
-  Other = 'other',
-  Transfer = 'transfer',
-  Income = 'income',
+  Groceries = "groceries",
+  Restaurants = "restaurants",
+  Bars = "bars",
+  Entertainment = "entertainment",
+  Cinema = "cinema",
+  Shopping = "shopping",
+  Travel = "travel",
+  Transportation = "transportation",
+  Hobbies = "hobbies",
+  Home = "home",
+  Rent = "rent",
+  Utilities = "utilities",
+  Other = "other",
+  Transfer = "transfer",
+  Income = "income",
 }
 
 const categoryMatchers: [CategoryId, RegExp][] = [
@@ -93,29 +93,29 @@ const findCategory = (value: string | undefined) =>
     : CategoryId.Other;
 
 const ZAmountFormat = z.enum([
-  'decimal-dot',
-  'decimal-comma',
-  'decimal-dot-inverse',
-  'decimal-comma-inverse',
+  "decimal-dot",
+  "decimal-comma",
+  "decimal-dot-inverse",
+  "decimal-comma-inverse",
 ]);
 
 type AmountFormat = z.infer<typeof ZAmountFormat>;
 const amountFormatOptions: SelectOption<typeof ZAmountFormat>[] = [
   {
-    value: 'decimal-dot',
-    label: 'Decimal, dot (1,000.50), expenses negative.',
+    value: "decimal-dot",
+    label: "Decimal, dot (1,000.50), expenses negative.",
   },
   {
-    value: 'decimal-dot-inverse',
-    label: 'Decimal, dot (1,000.50), expenses positive.',
+    value: "decimal-dot-inverse",
+    label: "Decimal, dot (1,000.50), expenses positive.",
   },
   {
-    value: 'decimal-comma',
-    label: 'Decimal, comma (1.000,50), expenses negative.',
+    value: "decimal-comma",
+    label: "Decimal, comma (1.000,50), expenses negative.",
   },
   {
-    value: 'decimal-comma-inverse',
-    label: 'Decimal, comma (1.000,50), expenses positive.',
+    value: "decimal-comma-inverse",
+    label: "Decimal, comma (1.000,50), expenses positive.",
   },
 ];
 
@@ -125,10 +125,10 @@ const MAX_PRECISION = 4;
 
 const parseAmount = (value: string, amountFormat: AmountFormat) => {
   const cleaner =
-    amountFormat === 'decimal-dot' || amountFormat === 'decimal-dot-inverse'
+    amountFormat === "decimal-dot" || amountFormat === "decimal-dot-inverse"
       ? /[^0-9.-]/g
       : /[^0-9,-]/g;
-  const valueInt = parseFloat(value.replace(cleaner, ''));
+  const valueInt = parseFloat(value.replace(cleaner, ""));
 
   if (Number.isNaN(valueInt)) {
     throw new Error(`Unable to parse amount ${value}`);
@@ -136,12 +136,12 @@ const parseAmount = (value: string, amountFormat: AmountFormat) => {
 
   // unsure if this could actuall be a non-string
   // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
-  const scale = Math.min(`${value}`.split('.')[1]?.length ?? 0, MAX_PRECISION);
+  const scale = Math.min(`${value}`.split(".")[1]?.length ?? 0, MAX_PRECISION);
 
   const amount = Math.round(valueInt * Math.pow(10, scale));
   const normalizedAmount =
-    amountFormat === 'decimal-dot-inverse' ||
-    amountFormat === 'decimal-comma-inverse'
+    amountFormat === "decimal-dot-inverse" ||
+    amountFormat === "decimal-comma-inverse"
       ? -amount
       : amount;
 
@@ -158,7 +158,7 @@ const SafeDisplay = ({
   try {
     return (
       <div className="flex flex-col">
-        <span>{value ? formatter(value) : '–'}</span>
+        <span>{value ? formatter(value) : "–"}</span>
         <span className="text-gray-500">{value}</span>
       </div>
     );
@@ -171,7 +171,7 @@ const SafeDisplay = ({
           </TooltipTrigger>
           <TooltipContent side="top">
             <p>{`${
-              e instanceof Error ? e.message : 'Unknown Error'
+              e instanceof Error ? e.message : "Unknown Error"
             } (${value})`}</p>
           </TooltipContent>
         </Tooltip>
@@ -179,7 +179,7 @@ const SafeDisplay = ({
     );
   }
 };
-const unsetFieldOption = { value: undefined, label: '–' };
+const unsetFieldOption = { value: undefined, label: "–" };
 
 const DataPreview = ({
   data,
@@ -221,7 +221,7 @@ const DataPreview = ({
         </TableHeader>
         <TableBody>
           {rows.map((row) => (
-            <TableRow key={row['id']}>
+            <TableRow key={row["id"]}>
               <TableCell>
                 {amountField ? (
                   <SafeDisplay
@@ -234,7 +234,7 @@ const DataPreview = ({
                     }
                   />
                 ) : (
-                  '–'
+                  "–"
                 )}
               </TableCell>
               <TableCell>
@@ -244,7 +244,7 @@ const DataPreview = ({
                     formatter={(v) => dateToISOString(dateParser(v))}
                   />
                 ) : (
-                  '– set to today –'
+                  "– set to today –"
                 )}
               </TableCell>
               <TableCell>
@@ -254,11 +254,11 @@ const DataPreview = ({
                     formatter={findCategory}
                   />
                 ) : (
-                  '– set to other –'
+                  "– set to other –"
                 )}
               </TableCell>
               <TableCell>
-                {descriptionField ? row[descriptionField] : '–'}
+                {descriptionField ? row[descriptionField] : "–"}
               </TableCell>
             </TableRow>
           ))}
@@ -304,17 +304,17 @@ export const PersonalTransactionsImporter = ({
 
   const [headers, setHeaders] = useState<string[]>();
   const [data, setData] = useState<Record<string, string>[]>();
-  const [csvError, setCsvError] = useState('');
+  const [csvError, setCsvError] = useState("");
 
   const [amountField, setAmountField] = useState<string>();
-  const [amountFormat, setAmountFormat] = useState<AmountFormat>('decimal-dot');
+  const [amountFormat, setAmountFormat] = useState<AmountFormat>("decimal-dot");
   const amountParser = useCallback(
     (value: string) => parseAmount(value, amountFormat),
     [amountFormat],
   );
 
   const [dateField, setDateField] = useState<string>();
-  const [dateFormat, setDateFormat] = useState('yyyy-MM-dd');
+  const [dateFormat, setDateFormat] = useState("yyyy-MM-dd");
   const dateParser = useCallback(
     (value: string) => dateFnsParse(value, dateFormat, new Date()),
     [dateFormat],
@@ -342,13 +342,13 @@ export const PersonalTransactionsImporter = ({
                 : undefined;
 
               if (!amountValue) {
-                throw new Error('Missing amount');
+                throw new Error("Missing amount");
               }
 
               const { amount, scale } = amountParser(amountValue);
 
               return {
-                type: amount < 0 ? 'EXPENSE' : 'INCOME',
+                type: amount < 0 ? "EXPENSE" : "INCOME",
                 money: {
                   amount: Math.abs(amount),
                   scale,
@@ -358,7 +358,7 @@ export const PersonalTransactionsImporter = ({
                   dateValue ? dateParser(dateValue) : new Date(),
                 ),
                 category: findCategory(categoryValue),
-                description: descriptionValue ?? '',
+                description: descriptionValue ?? "",
               };
             } catch {
               return [];
@@ -414,7 +414,7 @@ export const PersonalTransactionsImporter = ({
         transformHeader: (header) => header.toLowerCase().trim(),
         complete: ({ data: papaData, errors, meta }) => {
           if (errors.length > 0) {
-            setCsvError(errors[0]?.message ?? 'Unknown error');
+            setCsvError(errors[0]?.message ?? "Unknown error");
             return;
           }
 

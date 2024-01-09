@@ -1,13 +1,13 @@
-import Picker from '@emoji-mart/react';
-import { QuestionMarkCircledIcon } from '@radix-ui/react-icons';
-import toast from 'react-hot-toast';
-import { z } from 'zod';
+import Picker from "@emoji-mart/react";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import toast from "react-hot-toast";
+import { z } from "zod";
 
-import { trpc } from '../../api/trpc';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Popover, PopoverTrigger, PopoverContent } from '../ui/popover';
-import { ScrollArea } from '../ui/scroll-area';
+import { trpc } from "../../api/trpc";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
+import { ScrollArea } from "../ui/scroll-area";
 
 const ZEmojiData = z.object({
   id: z.string(),
@@ -33,8 +33,8 @@ export const CategoryForm = () => {
 
     if (!emoji.success) {
       // TODO: Sentry report or similar?
-      toast.error('Emoji data was invalid');
-      console.error('Emoji data was invalid', emoji.error);
+      toast.error("Emoji data was invalid");
+      console.error("Emoji data was invalid", emoji.error);
       return;
     }
 

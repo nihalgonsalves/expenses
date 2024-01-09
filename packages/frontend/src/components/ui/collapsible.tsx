@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
-import { AnimatePresence } from 'framer-motion';
-import { motion } from 'framer-motion';
-import React from 'react';
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import React from "react";
 
-import { collapse } from '../../utils/framer';
+import { collapse } from "../../utils/framer";
 
 const Collapsible = CollapsiblePrimitive.Root;
 

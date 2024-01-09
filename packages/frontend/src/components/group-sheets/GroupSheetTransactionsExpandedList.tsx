@@ -1,30 +1,30 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { Collapsible } from '@radix-ui/react-collapsible';
-import { motion, AnimatePresence } from 'framer-motion';
-import { forwardRef, useState } from 'react';
+import { Temporal } from "@js-temporal/polyfill";
+import { Collapsible } from "@radix-ui/react-collapsible";
+import { motion, AnimatePresence } from "framer-motion";
+import { forwardRef, useState } from "react";
 
-import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
-import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import { sumMoneyOrUndefined } from "@nihalgonsalves/expenses-shared/money";
+import type { GroupSheetTransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from '../../api/trpc';
-import { scaleOut } from '../../utils/framer';
-import { formatCurrency } from '../../utils/money';
-import { formatDateRelative, groupBySpentAt } from '../../utils/temporal';
+import { trpc } from "../../api/trpc";
+import { scaleOut } from "../../utils/framer";
+import { formatCurrency } from "../../utils/money";
+import { formatDateRelative, groupBySpentAt } from "../../utils/temporal";
 import {
   getTransactionDescription,
   getGroupSheetTransactionSummaryText,
-} from '../../utils/utils';
-import { Avatar } from '../Avatar';
-import { CategoryAvatar } from '../CategoryAvatar';
-import { ExpandMoreButton } from '../ExpandMoreButton';
-import { TransactionActions } from '../TransactionActions';
-import { Alert, AlertTitle } from '../ui/alert';
-import { Badge } from '../ui/badge';
-import { Card, CardContent, CardHeader } from '../ui/card';
-import { CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
-import { Separator } from '../ui/separator';
+} from "../../utils/utils";
+import { Avatar } from "../Avatar";
+import { CategoryAvatar } from "../CategoryAvatar";
+import { ExpandMoreButton } from "../ExpandMoreButton";
+import { TransactionActions } from "../TransactionActions";
+import { Alert, AlertTitle } from "../ui/alert";
+import { Badge } from "../ui/badge";
+import { Card, CardContent, CardHeader } from "../ui/card";
+import { CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { Separator } from "../ui/separator";
 
-import { ParticipantListItem } from './ParticipantListItem';
+import { ParticipantListItem } from "./ParticipantListItem";
 
 const MotionCard = motion(Card);
 
@@ -72,7 +72,7 @@ const ExpandedTransactionListItem = forwardRef<
 
         <CollapsibleContent>
           <CardContent className="flex flex-col gap-4">
-            {transaction.type !== 'TRANSFER' && (
+            {transaction.type !== "TRANSFER" && (
               <>
                 {transaction.participants.map(({ id, name, balance }) => (
                   <ParticipantListItem key={id} avatar={<Avatar name={name} />}>
@@ -81,12 +81,12 @@ const ExpandedTransactionListItem = forwardRef<
                         <span className="font-semibold">{name}</span>
                         {balance.actual.amount !== 0 && (
                           <>
-                            {transaction.type === 'EXPENSE'
-                              ? ' paid '
-                              : ' received '}
+                            {transaction.type === "EXPENSE"
+                              ? " paid "
+                              : " received "}
                             <Badge>
                               {formatCurrency(balance.actual, {
-                                signDisplay: 'never',
+                                signDisplay: "never",
                               })}
                             </Badge>
                           </>
@@ -95,7 +95,7 @@ const ExpandedTransactionListItem = forwardRef<
                       <div>
                         <Badge variant="secondary">
                           {formatCurrency(balance.share, {
-                            signDisplay: 'never',
+                            signDisplay: "never",
                           })}
                         </Badge>
                       </div>
@@ -127,7 +127,7 @@ const ExpandedTransactionListItem = forwardRef<
     </MotionCard>
   );
 });
-ExpandedTransactionListItem.displayName = 'ExpandedTransactionListItem';
+ExpandedTransactionListItem.displayName = "ExpandedTransactionListItem";
 
 export const GroupSheetTransactionsExpandedList = ({
   groupSheetId,
@@ -160,7 +160,7 @@ export const GroupSheetTransactionsExpandedList = ({
             >
               {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
               <Separator className="relative top-[1.5px] w-auto grow" />
-              {sum ? formatCurrency(sum) : '–'}
+              {sum ? formatCurrency(sum) : "–"}
             </motion.div>,
             groupedByDate
               .get(date)

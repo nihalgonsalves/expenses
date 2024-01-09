@@ -1,16 +1,16 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { makeWaitForQueueSuccess } from '../../../test/bullMQUtils';
+import { makeWaitForQueueSuccess } from "../../../test/bullMQUtils";
 import {
   notificationSubscriptionFactory,
   userFactory,
-} from '../../../test/factories';
-import { getPrisma } from '../../../test/getPrisma';
-import { getRedis } from '../../../test/getRedis';
-import { createPushService, getVapidDetails } from '../../../test/webPushUtils';
-import { NOTIFICATION_BULLMQ_QUEUE } from '../../config';
+} from "../../../test/factories";
+import { getPrisma } from "../../../test/getPrisma";
+import { getRedis } from "../../../test/getRedis";
+import { createPushService, getVapidDetails } from "../../../test/webPushUtils";
+import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
 
-import { NotificationDispatchService } from './service';
+import { NotificationDispatchService } from "./service";
 
 const prisma = await getPrisma();
 const redis = await getRedis();
@@ -22,19 +22,19 @@ const notificationDispatchService = new NotificationDispatchService(
 
 beforeAll(() => {
   // self-signed test certificate
-  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
+  process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 });
 
 afterAll(() => {
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-  delete process.env['NODE_TLS_REJECT_UNAUTHORIZED'];
+  delete process.env["NODE_TLS_REJECT_UNAUTHORIZED"];
 });
 
 const sendTestNotification = async (userId: string) =>
   notificationDispatchService.sendNotifications({
     [userId]: {
-      type: 'TEST',
-      message: 'test',
+      type: "TEST",
+      message: "test",
     },
   });
 
@@ -43,9 +43,9 @@ const waitForQueueSuccess = makeWaitForQueueSuccess(
   redis,
 );
 
-describe('NotificationService', () => {
-  describe('sendNotifications', () => {
-    it('sends notifications to all users', async () => {
+describe("NotificationService", () => {
+  describe("sendNotifications", () => {
+    it("sends notifications to all users", async () => {
       // since assertions are within callbacks
       expect.assertions(2);
 
@@ -56,16 +56,16 @@ describe('NotificationService', () => {
         expect(req.headers).toEqual({
           authorization: expect.stringMatching(/^vapid t=.*$/),
           connection: expect.stringMatching(/^(keep-alive|close)$/),
-          'content-encoding': 'aes128gcm',
-          'content-length': '135',
-          'content-type': 'application/octet-stream',
+          "content-encoding": "aes128gcm",
+          "content-length": "135",
+          "content-type": "application/octet-stream",
           host: expect.stringMatching(/localhost:\d+/),
-          ttl: '2419200',
-          urgency: 'normal',
+          ttl: "2419200",
+          urgency: "normal",
         });
 
         res.writeHead(201);
-        res.end('okay');
+        res.end("okay");
       });
 
       const { id } = await notificationSubscriptionFactory(
@@ -85,7 +85,7 @@ describe('NotificationService', () => {
       });
     });
 
-    it('unsubscribes on failure (e.g. 410 Gone)', async () => {
+    it("unsubscribes on failure (e.g. 410 Gone)", async () => {
       const user = await userFactory(prisma);
 
       const address = await createPushService((_req, res) => {
@@ -107,7 +107,7 @@ describe('NotificationService', () => {
         id,
         userId: user.id,
         success: false,
-        errorType: 'SERVER',
+        errorType: "SERVER",
         statusCode: 410,
       });
 

@@ -1,14 +1,14 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { ZTheme } from '@nihalgonsalves/expenses-shared/types/theme';
+import { ZTheme } from "@nihalgonsalves/expenses-shared/types/theme";
 import {
   ZAuthorizeUserInput,
   ZUser,
   ZCreateUserInput,
   ZUpdateUserInput,
-} from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/user";
 
-import { publicProcedure, protectedProcedure, router } from '../../trpc';
+import { publicProcedure, protectedProcedure, router } from "../../trpc";
 
 export const userRouter = router({
   createUser: publicProcedure

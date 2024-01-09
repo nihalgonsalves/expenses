@@ -1,6 +1,6 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Temporal } from '@js-temporal/polyfill';
-import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Temporal } from "@js-temporal/polyfill";
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
   Pencil1Icon,
   PieChartIcon,
@@ -8,53 +8,53 @@ import {
   ReloadIcon,
   SwitchIcon,
   TokensIcon,
-} from '@radix-ui/react-icons';
-import { type Dinero, allocate } from 'dinero.js';
-import { useCallback, useMemo, useState } from 'react';
+} from "@radix-ui/react-icons";
+import { type Dinero, allocate } from "dinero.js";
+import { useCallback, useMemo, useState } from "react";
 import {
   useFieldArray,
   useForm,
   useFormContext,
   useWatch,
-} from 'react-hook-form';
-import { z } from 'zod';
+} from "react-hook-form";
+import { z } from "zod";
 
 import {
   type Money,
   dineroToMoney,
   moneyToDinero,
   zeroMoney,
-} from '@nihalgonsalves/expenses-shared/money';
-import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
+} from "@nihalgonsalves/expenses-shared/money";
+import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 import {
   ZCreateGroupSheetTransactionInput,
   type TransactionType,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { useCurrencyConversion } from '../../api/currencyConversion';
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { allocateByCount } from '../../utils/math';
+import { useCurrencyConversion } from "../../api/currencyConversion";
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { allocateByCount } from "../../utils/math";
 import {
   convertCurrency,
   formatCurrency,
   formatDecimalCurrency,
   toDinero,
   useMoneyValues,
-} from '../../utils/money';
+} from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
-} from '../../utils/temporal';
-import { Avatar } from '../Avatar';
-import { CategorySelect, OTHER_CATEGORY } from '../form/CategorySelect';
-import { CurrencySelect } from '../form/CurrencySelect';
-import { MoneyField } from '../form/MoneyField';
-import { useDialog } from '../form/ResponsiveDialog';
-import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
-import { Alert, AlertTitle } from '../ui/alert';
-import { Button } from '../ui/button';
+} from "../../utils/temporal";
+import { Avatar } from "../Avatar";
+import { CategorySelect, OTHER_CATEGORY } from "../form/CategorySelect";
+import { CurrencySelect } from "../form/CurrencySelect";
+import { MoneyField } from "../form/MoneyField";
+import { useDialog } from "../form/ResponsiveDialog";
+import { ToggleButtonGroup } from "../form/ToggleButtonGroup";
+import { Alert, AlertTitle } from "../ui/alert";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -63,14 +63,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { Separator } from '../ui/separator';
-import { Switch } from '../ui/switch';
-import { cn } from '../ui/utils';
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Separator } from "../ui/separator";
+import { Switch } from "../ui/switch";
+import { cn } from "../ui/utils";
 
-import { ParticipantListItem } from './ParticipantListItem';
-import { ParticipantSelect } from './ParticipantSelect';
+import { ParticipantListItem } from "./ParticipantListItem";
+import { ParticipantSelect } from "./ParticipantSelect";
 
 const ZRatio = z.object({
   participantId: z.string().min(1),
@@ -84,11 +84,11 @@ type GroupTransactionShare = {
 };
 
 enum GroupTransactionSplitType {
-  Evenly = 'evenly',
-  Selected = 'selected',
-  Shares = 'shares',
-  Percentage = 'percentage',
-  Amounts = 'amounts',
+  Evenly = "evenly",
+  Selected = "selected",
+  Shares = "shares",
+  Percentage = "percentage",
+  Amounts = "amounts",
 }
 
 const calcSplits = (
@@ -125,7 +125,7 @@ const getDefaultRatios = (participants: { id: string }[], ratio = 1): Ratio[] =>
 type SplitConfig = (
   | {
       hasInput: true;
-      inputMode: 'decimal' | 'numeric';
+      inputMode: "decimal" | "numeric";
       unit: [singular: string, plural: string];
     }
   | { hasInput: false }
@@ -201,8 +201,8 @@ const SPLIT_CONFIG: Record<GroupTransactionSplitType, SplitConfig> = {
   [GroupTransactionSplitType.Shares]: {
     expectedSum: undefined,
     hasInput: true,
-    inputMode: 'numeric',
-    unit: ['share', 'shares'],
+    inputMode: "numeric",
+    unit: ["share", "shares"],
     resetNumber: 1,
   },
   [GroupTransactionSplitType.Percentage]: {
@@ -216,8 +216,8 @@ const SPLIT_CONFIG: Record<GroupTransactionSplitType, SplitConfig> = {
         2,
       )} percent.`,
     hasInput: true,
-    inputMode: 'decimal',
-    unit: ['%', '%'],
+    inputMode: "decimal",
+    unit: ["%", "%"],
     resetNumber: 0,
     isRedistributable: true,
   },
@@ -245,15 +245,15 @@ const formSchema = ZCreateGroupSheetTransactionInput.omit({
   splits: true,
 }).extend({
   currencyCode: z.string().min(1),
-  amount: z.number().positive({ message: 'Amount is required' }),
+  amount: z.number().positive({ message: "Amount is required" }),
   splitType: z.nativeEnum(GroupTransactionSplitType),
   ratios: z.array(ZRatio),
 });
 
 const getNewRatioValue = (newValue: number | string) => {
-  if (typeof newValue === 'number') {
+  if (typeof newValue === "number") {
     return newValue;
-  } else if (newValue === '') {
+  } else if (newValue === "") {
     return 0;
   }
 
@@ -274,13 +274,13 @@ const SplitsFormSection = ({
 }) => {
   const form = useFormContext<z.infer<typeof formSchema>>();
 
-  const amount = useWatch({ name: 'amount', control: form.control });
+  const amount = useWatch({ name: "amount", control: form.control });
   const currencyCode = useWatch({
-    name: 'currencyCode',
+    name: "currencyCode",
     control: form.control,
   });
-  const splitType = useWatch({ name: 'splitType', control: form.control });
-  const ratios = useWatch({ name: 'ratios', control: form.control });
+  const splitType = useWatch({ name: "splitType", control: form.control });
+  const ratios = useWatch({ name: "ratios", control: form.control });
 
   const money = useMemo(
     () => toDinero(amount, currencyCode),
@@ -288,7 +288,7 @@ const SplitsFormSection = ({
   );
 
   const { fields } = useFieldArray({
-    name: 'ratios',
+    name: "ratios",
     control: form.control,
   });
 
@@ -319,7 +319,7 @@ const SplitsFormSection = ({
     const totalSum = ratios.reduce((sum, { ratio }) => sum + ratio, 0);
 
     if (totalSum === 0) {
-      return 'You need to select a ratio for at least one participant.';
+      return "You need to select a ratio for at least one participant.";
     }
 
     if (!splitConfig.expectedSum) {
@@ -488,13 +488,13 @@ const SplitsFormSection = ({
           )}
         />
       </FormItem>
-      <div role="list" className="grid gap-2" style={{ paddingBlock: '1rem' }}>
+      <div role="list" className="grid gap-2" style={{ paddingBlock: "1rem" }}>
         {fields.map(({ id, participantId, ratio }, i) => {
           const participantName = participantNameById[participantId];
           const share = shareByParticipantId[participantId];
 
           if (!participantName || !share) {
-            throw new Error('Invalid form state');
+            throw new Error("Invalid form state");
           }
 
           return (
@@ -558,10 +558,10 @@ const SplitsFormSection = ({
                         <FormControl>
                           <Input
                             className={cn(
-                              'w-24 md:w-48',
+                              "w-24 md:w-48",
                               form.formState.dirtyFields.ratios?.[i]?.ratio
-                                ? 'border-primary'
-                                : '',
+                                ? "border-primary"
+                                : "",
                             )}
                             inputMode={splitConfig.inputMode}
                             maxLength={4}
@@ -589,10 +589,10 @@ const SplitsFormSection = ({
                         <FormControl>
                           <MoneyField
                             className={cn(
-                              'w-24 md:w-48',
+                              "w-24 md:w-48",
                               form.formState.dirtyFields.ratios?.[i]?.ratio
-                                ? 'border-primary'
-                                : '',
+                                ? "border-primary"
+                                : "",
                             )}
                             currencyCode={currencyCode}
                             {...field}
@@ -643,7 +643,7 @@ export const TransactionForm = ({
 }: {
   groupSheet: GroupSheetByIdResponse;
   me: User;
-  type: Exclude<TransactionType, 'TRANSFER'>;
+  type: Exclude<TransactionType, "TRANSFER">;
 }) => {
   const dialog = useDialog();
 
@@ -655,13 +655,13 @@ export const TransactionForm = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
       type,
       currencyCode: groupSheet.currencyCode,
       category: OTHER_CATEGORY,
       amount: 0,
-      description: '',
+      description: "",
       spentAt: nowForDateTimeInput(),
       paidOrReceivedById: me.id,
       splitType: GroupTransactionSplitType.Evenly,
@@ -669,12 +669,12 @@ export const TransactionForm = ({
     },
   });
 
-  const amount = useWatch({ name: 'amount', control: form.control });
+  const amount = useWatch({ name: "amount", control: form.control });
   const currencyCode = useWatch({
-    name: 'currencyCode',
+    name: "currencyCode",
     control: form.control,
   });
-  const spentAt = useWatch({ name: 'spentAt', control: form.control });
+  const spentAt = useWatch({ name: "spentAt", control: form.control });
 
   const [dineroValue, moneySnapshot] = useMoneyValues(amount, currencyCode);
 
@@ -749,9 +749,9 @@ export const TransactionForm = ({
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>
-                    {type === 'EXPENSE'
-                      ? 'How much was spent?'
-                      : 'How much was received?'}
+                    {type === "EXPENSE"
+                      ? "How much was spent?"
+                      : "How much was received?"}
                   </FormLabel>
                   <FormControl>
                     <MoneyField
@@ -797,7 +797,7 @@ export const TransactionForm = ({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>
-                {type === 'EXPENSE' ? 'Who paid?' : 'Who received money?'}
+                {type === "EXPENSE" ? "Who paid?" : "Who received money?"}
               </FormLabel>
               <FormControl>
                 <ParticipantSelect

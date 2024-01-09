@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
+import type { Meta, StoryObj } from "@storybook/react";
+import { userEvent, within } from "@storybook/test";
 
 import {
   Select,
@@ -9,7 +9,7 @@ import {
   SelectLabel,
   SelectItem,
   SelectContent,
-} from './select';
+} from "./select";
 
 const meta: Meta<typeof Select> = {
   component: Select,
@@ -34,7 +34,7 @@ const meta: Meta<typeof Select> = {
     const canvas = within(canvasElement);
     // https://github.com/storybookjs/storybook/issues/25258
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    await userEvent.click(canvas.getByRole('combobox'));
+    await userEvent.click(canvas.getByRole("combobox"));
 
     // TODO: select and verify selection
   },

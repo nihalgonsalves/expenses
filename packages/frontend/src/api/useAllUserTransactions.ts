@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
-import type { UndefinedOnPartialDeep } from 'type-fest';
+import { useMemo } from "react";
+import type { UndefinedOnPartialDeep } from "type-fest";
 
-import type { Money } from '@nihalgonsalves/expenses-shared/money';
-import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { Money } from "@nihalgonsalves/expenses-shared/money";
+import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type {
   GetAllUserTransactionsInput,
   TransactionListItem,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useConvertToPreferredCurrency } from './currencyConversion';
-import { trpc } from './trpc';
+import { useConvertToPreferredCurrency } from "./currencyConversion";
+import { trpc } from "./trpc";
 
 export type ConvertedTransactionWithSheet = {
   transaction: TransactionListItem & { convertedMoney: Money | undefined };
@@ -23,7 +23,7 @@ export type AllConvertedUserTransactions = {
 
 type AllConvertedUserTransactionsQueryResult = Pick<
   ReturnType<typeof trpc.transaction.getAllUserTransactions.useQuery>,
-  'error' | 'isLoading' | 'refetch' | 'dataUpdatedAt'
+  "error" | "isLoading" | "refetch" | "dataUpdatedAt"
 > & {
   data: AllConvertedUserTransactions | undefined;
 };
@@ -42,8 +42,8 @@ export const useAllUserTransactions = (
   } = trpc.transaction.getAllUserTransactions.useQuery(
     {
       ...input,
-      fromTimestamp: input.fromTimestamp ?? '',
-      toTimestamp: input.toTimestamp ?? '',
+      fromTimestamp: input.fromTimestamp ?? "",
+      toTimestamp: input.toTimestamp ?? "",
     },
     { enabled },
   );

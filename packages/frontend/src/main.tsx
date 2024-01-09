@@ -1,12 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React from "react";
+import ReactDOM from "react-dom/client";
 
-import './tailwind.css';
-import './main.css';
+import "./tailwind.css";
+import "./main.css";
 
-import { App } from './App';
+import { App } from "./App";
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 
 if (!rootElement) {
   throw new Error('div[id="root"] not found');

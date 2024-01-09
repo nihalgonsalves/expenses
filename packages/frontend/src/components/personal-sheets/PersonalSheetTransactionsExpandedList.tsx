@@ -1,34 +1,34 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { Pencil1Icon } from '@radix-ui/react-icons';
-import { AnimatePresence, motion } from 'framer-motion';
-import { forwardRef, useState } from 'react';
+import { Temporal } from "@js-temporal/polyfill";
+import { Pencil1Icon } from "@radix-ui/react-icons";
+import { AnimatePresence, motion } from "framer-motion";
+import { forwardRef, useState } from "react";
 
-import { sumMoneyOrUndefined } from '@nihalgonsalves/expenses-shared/money';
-import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import { sumMoneyOrUndefined } from "@nihalgonsalves/expenses-shared/money";
+import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from '../../api/trpc';
-import { scaleOut } from '../../utils/framer';
-import { formatCurrency } from '../../utils/money';
+import { trpc } from "../../api/trpc";
+import { scaleOut } from "../../utils/framer";
+import { formatCurrency } from "../../utils/money";
 import {
   formatDateRelative,
   formatDateTimeRelative,
   groupBySpentAt,
-} from '../../utils/temporal';
-import { getTransactionDescription } from '../../utils/utils';
-import { CategoryAvatar } from '../CategoryAvatar';
-import { ExpandMoreButton } from '../ExpandMoreButton';
-import { TransactionActions } from '../TransactionActions';
-import { Alert, AlertTitle } from '../ui/alert';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader } from '../ui/card';
+} from "../../utils/temporal";
+import { getTransactionDescription } from "../../utils/utils";
+import { CategoryAvatar } from "../CategoryAvatar";
+import { ExpandMoreButton } from "../ExpandMoreButton";
+import { TransactionActions } from "../TransactionActions";
+import { Alert, AlertTitle } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '../ui/collapsible';
-import { Separator } from '../ui/separator';
+} from "../ui/collapsible";
+import { Separator } from "../ui/separator";
 
-import { EditPersonalTransactionDialog } from './EditPersonalTransactionForm';
+import { EditPersonalTransactionDialog } from "./EditPersonalTransactionForm";
 
 const MotionCard = motion(Card);
 
@@ -101,7 +101,7 @@ const ExpandedTransactionListItem = forwardRef<
     </MotionCard>
   );
 });
-ExpandedTransactionListItem.displayName = 'ExpandedTransactionListItem';
+ExpandedTransactionListItem.displayName = "ExpandedTransactionListItem";
 
 export const PersonalSheetTransactionsExpandedList = ({
   personalSheetId,
@@ -134,7 +134,7 @@ export const PersonalSheetTransactionsExpandedList = ({
             >
               {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
               <Separator className="relative top-[1.5px] w-auto grow" />
-              {sum ? formatCurrency(sum) : '–'}
+              {sum ? formatCurrency(sum) : "–"}
             </motion.div>,
             dateTransactions.map((transaction) => (
               <ExpandedTransactionListItem

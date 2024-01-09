@@ -1,27 +1,27 @@
-import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
-import { AvatarIcon } from '@radix-ui/react-icons';
-import { Link } from 'react-router-dom';
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { AvatarIcon } from "@radix-ui/react-icons";
+import { Link } from "react-router-dom";
 
-import { trpc } from '../api/trpc';
-import { useResetCache } from '../api/useCacheReset';
-import { useCurrentUser } from '../api/useCurrentUser';
+import { trpc } from "../api/trpc";
+import { useResetCache } from "../api/useCacheReset";
+import { useCurrentUser } from "../api/useCurrentUser";
 
-import { Button } from './ui/button';
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import { Separator } from './ui/separator';
-import { cn } from './ui/utils';
+} from "./ui/dropdown-menu";
+import { Separator } from "./ui/separator";
+import { cn } from "./ui/utils";
 
 export const LoggedOutNavBarAvatar = ({
   className,
 }: {
   className?: string | undefined;
 }) => (
-  <div className={cn('flex place-items-center gap-4', className)}>
+  <div className={cn("flex place-items-center gap-4", className)}>
     <Separator orientation="vertical">&nbsp;</Separator>
 
     <Button
@@ -73,7 +73,7 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
     await resetCache();
   };
 
-  if (status == 'success') {
+  if (status == "success") {
     return (
       <LoggedInNavBarAvatar
         className={className}
@@ -83,7 +83,7 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
   }
 
   if (
-    status === 'error' &&
+    status === "error" &&
     (error.data?.httpStatus === 401 || error.data?.httpStatus === 403)
   ) {
     return <LoggedOutNavBarAvatar className={className} />;

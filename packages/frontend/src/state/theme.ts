@@ -1,31 +1,31 @@
-import { useCallback, useEffect } from 'react';
-import { useMedia } from 'react-use';
-import { z } from 'zod';
+import { useCallback, useEffect } from "react";
+import { useMedia } from "react-use";
+import { z } from "zod";
 
 import {
   type Theme,
   THEME_DEFAULT,
   ZTheme,
-} from '@nihalgonsalves/expenses-shared/types/theme';
+} from "@nihalgonsalves/expenses-shared/types/theme";
 
-import { trpc } from '../api/trpc';
-import { useCurrentUser } from '../api/useCurrentUser';
-import { useDialog } from '../components/form/ResponsiveDialog';
+import { trpc } from "../api/trpc";
+import { useCurrentUser } from "../api/useCurrentUser";
+import { useDialog } from "../components/form/ResponsiveDialog";
 
-import { createPreferenceWithDefault } from './preferences';
-import { useNavigatorOnLine } from './useNavigatorOnLine';
+import { createPreferenceWithDefault } from "./preferences";
+import { useNavigatorOnLine } from "./useNavigatorOnLine";
 
-const ZThemePreference = z.enum(['system', 'light', 'dark']);
+const ZThemePreference = z.enum(["system", "light", "dark"]);
 
 type ThemePreference = z.infer<typeof ZThemePreference>;
 
 export const [useThemePreference] = createPreferenceWithDefault(
-  'theme_preference',
+  "theme_preference",
   (v) => {
     const result = ZThemePreference.safeParse(v);
-    return result.success ? result.data : 'system';
+    return result.success ? result.data : "system";
   },
-  'system',
+  "system",
 );
 
 export const useTheme = () => {
@@ -35,13 +35,13 @@ export const useTheme = () => {
   const { mutateAsync: updateTheme } = trpc.user.updateTheme.useMutation();
 
   const parsedTheme = ZTheme.safeParse(
-    data?.theme ?? localStorage.getItem('theme'),
+    data?.theme ?? localStorage.getItem("theme"),
   );
 
   // cache preference locally to avoid flickering on load
   useEffect(() => {
     if (parsedTheme.success) {
-      localStorage.setItem('theme', parsedTheme.data);
+      localStorage.setItem("theme", parsedTheme.data);
     }
   }, [parsedTheme]);
 
@@ -61,24 +61,24 @@ export const useTheme = () => {
 };
 
 const isDarkMode = (pref: ThemePreference) => {
-  if (pref === 'system') {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (pref === "system") {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
   }
 
-  return pref === 'dark';
+  return pref === "dark";
 };
 
 export const getThemeDataAttribute = (
   themePreference: ThemePreference,
   theme: Theme,
-) => `${theme}-${isDarkMode(themePreference) ? 'dark' : 'light'}`;
+) => `${theme}-${isDarkMode(themePreference) ? "dark" : "light"}`;
 
 export const syncMetaThemeColor = (shouldDarken: boolean) => {
   // this works because the first header is the one that touches the status bar
   // if there's a "last updated at" or "offline" banner, it will still be first
   // see Root.tsx
 
-  const header = document.getElementsByTagName('header').item(0);
+  const header = document.getElementsByTagName("header").item(0);
 
   if (!header) {
     return;
@@ -97,7 +97,7 @@ export const syncMetaThemeColor = (shouldDarken: boolean) => {
   const [r, g, b] = result.data;
 
   document.querySelector('meta[name="theme-color"]')?.setAttribute(
-    'content',
+    "content",
     shouldDarken
       ? // the DrawerRoot is styled as bg-black/80, we can mimic the same 80% black effect by setting the RGB value to 20% of the original
         `rgb(${r * 0.2}, ${g * 0.2}, ${b * 0.2})`
@@ -107,13 +107,13 @@ export const syncMetaThemeColor = (shouldDarken: boolean) => {
 
 const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
   document.documentElement.setAttribute(
-    'data-theme',
+    "data-theme",
     getThemeDataAttribute(themePreference, theme),
   );
 
   document
-    .getElementById('rel-icon-png')
-    ?.setAttribute('href', `/assets/icon-${theme}.png`);
+    .getElementById("rel-icon-png")
+    ?.setAttribute("href", `/assets/icon-${theme}.png`);
 };
 
 export const useThemeSync = () => {
@@ -122,7 +122,7 @@ export const useThemeSync = () => {
   const dialog = useDialog();
   const navigatorOnLine = useNavigatorOnLine();
 
-  const systemDarkMode = useMedia('(prefers-color-scheme: dark)');
+  const systemDarkMode = useMedia("(prefers-color-scheme: dark)");
 
   useEffect(() => {
     syncTheme(themePreference, theme);

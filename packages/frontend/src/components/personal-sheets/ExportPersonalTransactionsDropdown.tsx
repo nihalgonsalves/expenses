@@ -1,13 +1,13 @@
-import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
+import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from '../../api/trpc';
-import { moneyToString } from '../../utils/money';
-import { ExportTransactionsDropdown } from '../ExportTransactionsDropdown';
+import { trpc } from "../../api/trpc";
+import { moneyToString } from "../../utils/money";
+import { ExportTransactionsDropdown } from "../ExportTransactionsDropdown";
 
 export const ExportPersonalTransactionsDropdown = ({
   personalSheet,
 }: {
-  personalSheet: Pick<Sheet, 'id' | 'name'>;
+  personalSheet: Pick<Sheet, "id" | "name">;
 }) => {
   const { refetch } = trpc.transaction.getPersonalSheetTransactions.useQuery(
     {
@@ -24,7 +24,7 @@ export const ExportPersonalTransactionsDropdown = ({
         const { data } = await refetch({ throwOnError: true });
 
         // should not be possible with throwOnError: true
-        if (!data) throw new Error('Unknown Error');
+        if (!data) throw new Error("Unknown Error");
 
         return data.transactions;
       }}

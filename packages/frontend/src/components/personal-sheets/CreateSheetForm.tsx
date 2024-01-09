@@ -1,16 +1,16 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { PlusCircledIcon } from '@radix-ui/react-icons';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import type { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import type { z } from "zod";
 
-import { ZCreatePersonalSheetInput } from '@nihalgonsalves/expenses-shared/types/sheet';
+import { ZCreatePersonalSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { CurrencySelect } from '../form/CurrencySelect';
-import { useDialog } from '../form/ResponsiveDialog';
-import { Button } from '../ui/button';
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { CurrencySelect } from "../form/CurrencySelect";
+import { useDialog } from "../form/ResponsiveDialog";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -18,8 +18,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from "../ui/form";
+import { Input } from "../ui/input";
 
 export const CreateSheetForm = ({
   defaultCurrencyCode,
@@ -37,9 +37,9 @@ export const CreateSheetForm = ({
 
   const form = useForm<z.infer<typeof ZCreatePersonalSheetInput>>({
     resolver: zodResolver(ZCreatePersonalSheetInput),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
-      name: '',
+      name: "",
       currencyCode: defaultCurrencyCode,
     },
   });

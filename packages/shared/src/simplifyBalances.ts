@@ -7,15 +7,15 @@ import {
   multiply,
   add,
   subtract,
-} from 'dinero.js';
-import FastPriorityQueue from 'fastpriorityqueue';
+} from "dinero.js";
+import FastPriorityQueue from "fastpriorityqueue";
 
 import {
   type Money,
   sumMoney,
   moneyToDinero,
   dineroToMoney,
-} from '@nihalgonsalves/expenses-shared/money';
+} from "@nihalgonsalves/expenses-shared/money";
 
 export type Balance = {
   id: string;
@@ -35,7 +35,7 @@ export const simplifyBalances = (
   balanceRecord: Record<string, Money>,
 ): Transfer[] => {
   if (sumMoney(Object.values(balanceRecord), currencyCode).amount !== 0) {
-    throw new Error('The sum of balances must be zero');
+    throw new Error("The sum of balances must be zero");
   }
 
   const balances: Balance[] = Object.entries(balanceRecord).map(
@@ -114,7 +114,7 @@ export const simplifyBalances = (
   if (
     Object.entries(balanceVerification).some(([_, dinero]) => !isZero(dinero))
   ) {
-    throw new Error('Assertion error: resolved balances do not sum to zero');
+    throw new Error("Assertion error: resolved balances do not sum to zero");
   }
 
   return transfers;

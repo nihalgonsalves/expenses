@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
-import { Temporal } from '@js-temporal/polyfill';
-import { describe, it, expect } from 'vitest';
+import { Temporal } from "@js-temporal/polyfill";
+import { describe, it, expect } from "vitest";
 
 import {
   CURRENT_TIMEZONE,
@@ -11,16 +11,16 @@ import {
   intervalGreaterThan,
   shortDateFormatter,
   shortDateTimeFormatter,
-} from './temporal';
+} from "./temporal";
 
-describe('durationMilliseconds', () => {
-  it('returns total milliseconds', () => {
+describe("durationMilliseconds", () => {
+  it("returns total milliseconds", () => {
     expect(durationMilliseconds({ hours: 1 })).toBe(36_000_00);
   });
 });
 
-describe('formatDateTimeRelative', () => {
-  it('returns a formatted date for durations >= 7 days ago', () => {
+describe("formatDateTimeRelative", () => {
+  it("returns a formatted date for durations >= 7 days ago", () => {
     const date = Temporal.Now.zonedDateTimeISO().subtract({ days: 7 });
 
     expect(formatDateTimeRelative(date.toString())).toBe(
@@ -29,16 +29,16 @@ describe('formatDateTimeRelative', () => {
   });
 
   it.each<[Temporal.DurationLike, string]>([
-    [{ days: 5, hours: 6 }, '5 days ago'],
-    [{ minutes: 30, seconds: 59 }, '30 min. ago'],
-    [{ minutes: 1 }, '1 min. ago'],
-    [{ seconds: 35 }, 'just now'],
+    [{ days: 5, hours: 6 }, "5 days ago"],
+    [{ minutes: 30, seconds: 59 }, "30 min. ago"],
+    [{ minutes: 1 }, "1 min. ago"],
+    [{ seconds: 35 }, "just now"],
 
-    [{ milliseconds: 100 }, 'just now'],
+    [{ milliseconds: 100 }, "just now"],
 
-    [{ hours: -1 }, 'in 1 hr.'],
-    [{ days: -1 }, 'in 1 day'],
-  ])('returns the correct relative time', (duration, expected) => {
+    [{ hours: -1 }, "in 1 hr."],
+    [{ days: -1 }, "in 1 day"],
+  ])("returns the correct relative time", (duration, expected) => {
     expect(
       formatDateTimeRelative(
         Temporal.Now.zonedDateTimeISO().subtract(duration).toString(),
@@ -47,8 +47,8 @@ describe('formatDateTimeRelative', () => {
   });
 });
 
-describe('formatDateRelative', () => {
-  it('returns a formatted date for durations >= 2 days ago', () => {
+describe("formatDateRelative", () => {
+  it("returns a formatted date for durations >= 2 days ago", () => {
     const date = Temporal.Now.zonedDateTimeISO().subtract({ days: 2 });
 
     expect(formatDateRelative(date.toString())).toBe(
@@ -57,10 +57,10 @@ describe('formatDateRelative', () => {
   });
 
   it.each<[Temporal.DurationLike, string]>([
-    [{ days: 1 }, 'Yesterday'],
-    [{ seconds: 0 }, 'Today'],
-    [{ days: -1 }, 'Tomorrow'],
-  ])('returns the correct relative date', (duration, expected) => {
+    [{ days: 1 }, "Yesterday"],
+    [{ seconds: 0 }, "Today"],
+    [{ days: -1 }, "Tomorrow"],
+  ])("returns the correct relative date", (duration, expected) => {
     expect(
       formatDateRelative(
         Temporal.Now.zonedDateTimeISO(CURRENT_TIMEZONE)
@@ -71,8 +71,8 @@ describe('formatDateRelative', () => {
   });
 });
 
-describe('intervalGreaterThan', () => {
-  it('returns true if the interval is greater than the duration', () => {
+describe("intervalGreaterThan", () => {
+  it("returns true if the interval is greater than the duration", () => {
     const a = Temporal.Now.instant();
     const b = a.subtract({ minutes: 1 });
 

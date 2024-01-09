@@ -1,7 +1,7 @@
-import { StarFilledIcon } from '@radix-ui/react-icons';
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within, screen, waitFor, expect } from '@storybook/test';
-import React from 'react';
+import { StarFilledIcon } from "@radix-ui/react-icons";
+import type { Meta, StoryObj } from "@storybook/react";
+import { userEvent, within, screen, waitFor, expect } from "@storybook/test";
+import React from "react";
 
 import {
   NavigationMenu,
@@ -11,57 +11,57 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from './navigation-menu';
-import { cn } from './utils';
+} from "./navigation-menu";
+import { cn } from "./utils";
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: 'Alert Dialog',
-    href: '/docs/primitives/alert-dialog',
+    title: "Alert Dialog",
+    href: "/docs/primitives/alert-dialog",
     description:
-      'A modal dialog that interrupts the user with important content and expects a response.',
+      "A modal dialog that interrupts the user with important content and expects a response.",
   },
   {
-    title: 'Hover Card',
-    href: '/docs/primitives/hover-card',
+    title: "Hover Card",
+    href: "/docs/primitives/hover-card",
     description:
-      'For sighted users to preview content available behind a link.',
+      "For sighted users to preview content available behind a link.",
   },
   {
-    title: 'Progress',
-    href: '/docs/primitives/progress',
+    title: "Progress",
+    href: "/docs/primitives/progress",
     description:
-      'Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.',
+      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
   },
   {
-    title: 'Scroll-area',
-    href: '/docs/primitives/scroll-area',
-    description: 'Visually or semantically separates content.',
+    title: "Scroll-area",
+    href: "/docs/primitives/scroll-area",
+    description: "Visually or semantically separates content.",
   },
   {
-    title: 'Tabs',
-    href: '/docs/primitives/tabs',
+    title: "Tabs",
+    href: "/docs/primitives/tabs",
     description:
-      'A set of layered sections of content—known as tab panels—that are displayed one at a time.',
+      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
   },
   {
-    title: 'Tooltip',
-    href: '/docs/primitives/tooltip',
+    title: "Tooltip",
+    href: "/docs/primitives/tooltip",
     description:
-      'A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.',
+      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
   },
 ];
 
 const ListItem = React.forwardRef<
-  React.ElementRef<'a'>,
-  React.ComponentPropsWithoutRef<'a'>
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => (
   <li>
     <NavigationMenuLink asChild>
       <a
         ref={ref}
         className={cn(
-          'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors',
+          "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors",
           className,
         )}
         {...props}
@@ -74,7 +74,7 @@ const ListItem = React.forwardRef<
     </NavigationMenuLink>
   </li>
 ));
-ListItem.displayName = 'ListItem';
+ListItem.displayName = "ListItem";
 
 const meta: Meta<typeof NavigationMenu> = {
   component: NavigationMenu,
@@ -145,11 +145,11 @@ const meta: Meta<typeof NavigationMenu> = {
     // https://github.com/storybookjs/storybook/issues/25258
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await userEvent.click(
-      canvas.getByRole('button', { name: 'Getting started' }),
+      canvas.getByRole("button", { name: "Getting started" }),
     );
 
     await waitFor(async () => {
-      await expect(screen.getByText('shadcn/ui', {})).toBeVisible();
+      await expect(screen.getByText("shadcn/ui", {})).toBeVisible();
     });
   },
 };

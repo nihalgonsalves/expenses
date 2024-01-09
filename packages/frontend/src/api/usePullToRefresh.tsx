@@ -1,10 +1,10 @@
-import { easeIn } from 'framer-motion';
-import { useEffect, useRef } from 'react';
-import { toast } from 'react-hot-toast';
+import { easeIn } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { toast } from "react-hot-toast";
 
-import { useDialog } from '../components/form/ResponsiveDialog';
-import { CircularProgress } from '../components/ui/circular-progress';
-import { useIsStandalone } from '../utils/hooks/useIsStandalone';
+import { useDialog } from "../components/form/ResponsiveDialog";
+import { CircularProgress } from "../components/ui/circular-progress";
+import { useIsStandalone } from "../utils/hooks/useIsStandalone";
 
 const displayThreshold = () => window.innerHeight * 0.05;
 const reloadThreshold = () => window.innerHeight * 0.4;
@@ -50,7 +50,7 @@ export const usePullToRefresh = (
 
         toast(() => <CircularProgress size={24} value={ratio * 100} />, {
           id: toastId,
-          className: 'w-48',
+          className: "w-48",
           duration: Infinity,
           style: {
             backgroundColor: `rgba(255, 255, 255, ${ratio.toFixed(2)})`,
@@ -72,14 +72,14 @@ export const usePullToRefresh = (
       touchDiffYRef.current = 0;
     };
 
-    window.addEventListener('touchstart', onTouchStart);
-    window.addEventListener('touchmove', onTouchMove);
-    window.addEventListener('touchend', onTouchEnd);
+    window.addEventListener("touchstart", onTouchStart);
+    window.addEventListener("touchmove", onTouchMove);
+    window.addEventListener("touchend", onTouchEnd);
 
     return () => {
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
     };
   }, [toastId, onRefetch, isStandalone, dialog.isOpen]);
 };

@@ -4,7 +4,7 @@
 
 @layer base {
   :root,
-  [data-theme='blue-light'] {
+  [data-theme="blue-light"] {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -27,7 +27,7 @@
     --radius: 0.5rem;
   }
 
-  [data-theme='blue-dark'] {
+  [data-theme="blue-dark"] {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -48,7 +48,7 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
   }
-  [data-theme='slate-light'] {
+  [data-theme="slate-light"] {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -70,7 +70,7 @@
     --ring: 222.2 84% 4.9%;
   }
 
-  [data-theme='slate-dark'] {
+  [data-theme="slate-dark"] {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -92,7 +92,7 @@
     --ring: 212.7 26.8% 83.9;
   }
 
-  [data-theme='rose-light'] {
+  [data-theme="rose-light"] {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -114,7 +114,7 @@
     --ring: 346.8 77.2% 49.8%;
   }
 
-  [data-theme='rose-dark'] {
+  [data-theme="rose-dark"] {
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
     --card: 24 9.8% 10%;
@@ -136,7 +136,7 @@
     --ring: 346.8 77.2% 49.8%;
   }
 
-  [data-theme='green-light'] {
+  [data-theme="green-light"] {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
@@ -158,7 +158,7 @@
     --ring: 142.1 76.2% 36.3%;
   }
 
-  [data-theme='green-dark'] {
+  [data-theme="green-dark"] {
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
     --card: 24 9.8% 10%;
@@ -180,7 +180,7 @@
     --ring: 142.4 71.8% 29.2%;
   }
 
-  [data-theme='orange-light'] {
+  [data-theme="orange-light"] {
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
@@ -202,7 +202,7 @@
     --ring: 24.6 95% 53.1%;
   }
 
-  [data-theme='orange-dark'] {
+  [data-theme="orange-dark"] {
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
     --card: 20 14.3% 4.1%;
@@ -224,7 +224,7 @@
     --ring: 20.5 90.2% 48.2%;
   }
 
-  [data-theme='yellow-light'] {
+  [data-theme="yellow-light"] {
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
@@ -246,7 +246,7 @@
     --ring: 20 14.3% 4.1%;
   }
 
-  [data-theme='yellow-dark'] {
+  [data-theme="yellow-dark"] {
     --background: 20 14.3% 4.1%;
     --foreground: 60 9.1% 97.8%;
     --card: 20 14.3% 4.1%;
@@ -268,7 +268,7 @@
     --ring: 35.5 91.7% 32.9%;
   }
 
-  [data-theme='violet-light'] {
+  [data-theme="violet-light"] {
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
     --card: 0 0% 100%;
@@ -290,7 +290,7 @@
     --ring: 262.1 83.3% 57.8%;
   }
 
-  [data-theme='violet-dark'] {
+  [data-theme="violet-dark"] {
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
     --card: 224 71.4% 4.1%;

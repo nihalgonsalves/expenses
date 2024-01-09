@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export const ZSheetType = z.union([z.literal('PERSONAL'), z.literal('GROUP')]);
+export const ZSheetType = z.union([z.literal("PERSONAL"), z.literal("GROUP")]);
 export type SheetType = z.infer<typeof ZSheetType>;
 
 export const ZSheet = z.object({
@@ -19,7 +19,7 @@ export const ZParticipant = z.object({
 
 export const ZFullParticipant = ZParticipant.extend({
   email: z.string(),
-  role: z.enum(['ADMIN', 'MEMBER']),
+  role: z.enum(["ADMIN", "MEMBER"]),
 });
 
 export const ZGroupSheetWithParticipants = ZSheet.extend({
@@ -30,10 +30,10 @@ export type GroupSheetWithParticipants = z.infer<
 >;
 
 export const ZCreateGroupSheetInput = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  currencyCode: z.string().length(3, { message: 'Currency code is required' }),
+  name: z.string().min(1, { message: "Name is required" }),
+  currencyCode: z.string().length(3, { message: "Currency code is required" }),
   additionalParticipantEmailAddresses: z.array(
-    z.object({ email: z.string().email({ message: 'Invalid email address' }) }),
+    z.object({ email: z.string().email({ message: "Invalid email address" }) }),
   ),
 });
 export type CreateGroupSheetInput = z.infer<typeof ZCreateGroupSheetInput>;
@@ -55,8 +55,8 @@ export const ZSheetsResponse = z.array(
 export type SheetsResponse = z.infer<typeof ZSheetsResponse>;
 
 export const ZCreatePersonalSheetInput = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  currencyCode: z.string().length(3, { message: 'Currency code is required' }),
+  name: z.string().min(1, { message: "Name is required" }),
+  currencyCode: z.string().length(3, { message: "Currency code is required" }),
 });
 export type CreatePersonalSheetInput = z.infer<
   typeof ZCreatePersonalSheetInput

@@ -3,27 +3,27 @@ import {
   DotsVerticalIcon,
   PlusIcon,
   TrashIcon,
-} from '@radix-ui/react-icons';
-import { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+} from "@radix-ui/react-icons";
+import { useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { trpc } from '../../api/trpc';
-import { useCurrentUser } from '../../api/useCurrentUser';
-import { FloatingActionButton } from '../../components/FloatingActionButton';
-import { ConfirmDialog } from '../../components/form/ConfirmDialog';
-import type { ActorInfo } from '../../components/group-sheets/BalanceSummary';
-import { CreateGroupSheetTransactionDialog } from '../../components/group-sheets/CreateGroupSheetTransactionDialog';
-import { ExportGroupTransactionsDropdown } from '../../components/group-sheets/ExportGroupTransactionsDropdown';
-import { GroupSheet } from '../../components/group-sheets/GroupSheet';
-import { Button } from '../../components/ui/button';
+import { trpc } from "../../api/trpc";
+import { useCurrentUser } from "../../api/useCurrentUser";
+import { FloatingActionButton } from "../../components/FloatingActionButton";
+import { ConfirmDialog } from "../../components/form/ConfirmDialog";
+import type { ActorInfo } from "../../components/group-sheets/BalanceSummary";
+import { CreateGroupSheetTransactionDialog } from "../../components/group-sheets/CreateGroupSheetTransactionDialog";
+import { ExportGroupTransactionsDropdown } from "../../components/group-sheets/ExportGroupTransactionsDropdown";
+import { GroupSheet } from "../../components/group-sheets/GroupSheet";
+import { Button } from "../../components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu';
-import { SheetParams, useParams } from '../../router';
-import { RootLoader } from '../Root';
+} from "../../components/ui/dropdown-menu";
+import { SheetParams, useParams } from "../../router";
+import { RootLoader } from "../Root";
 
 export const GroupDetailPage = () => {
   const navigate = useNavigate();
@@ -43,14 +43,14 @@ export const GroupDetailPage = () => {
     void utils.sheet.groupSheetById.invalidate(sheetId);
     void utils.sheet.mySheets.invalidate();
 
-    navigate('/groups');
+    navigate("/groups");
   }, [deleteGroupSheet, sheetId, navigate, utils]);
 
   const handleArchive = useCallback(async () => {
     await archiveSheet(sheetId);
     void utils.sheet.groupSheetById.invalidate(sheetId);
     void utils.sheet.mySheets.invalidate();
-    navigate('/sheets');
+    navigate("/sheets");
   }, [archiveSheet, sheetId, navigate, utils]);
 
   const actorInfo: ActorInfo | undefined = useMemo(
@@ -60,7 +60,7 @@ export const GroupDetailPage = () => {
             id: me.id,
             isAdmin:
               result.data.participants.find(({ id }) => id === me.id)?.role ===
-              'ADMIN',
+              "ADMIN",
           }
         : undefined,
     [result.data, me],

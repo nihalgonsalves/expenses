@@ -1,17 +1,17 @@
-import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
+import fs from "fs/promises";
+import { fileURLToPath } from "url";
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { format } from 'prettier';
-import { renderToString } from 'react-dom/server';
-import sharp from 'sharp';
+import { format } from "prettier";
+import { renderToString } from "react-dom/server";
+import sharp from "sharp";
 
 import {
   type ThemeColors,
   themeColors,
-} from '@nihalgonsalves/expenses-shared/types/theme';
+} from "@nihalgonsalves/expenses-shared/types/theme";
 
-const types = ['normal', 'maskable'] as const;
+const types = ["normal", "maskable"] as const;
 
 const icon = async (
   { background, primary, primaryStroke, backgroundStroke }: ThemeColors,
@@ -43,7 +43,7 @@ const icon = async (
         />
       </g>
       <defs>
-        {type === 'normal' ? (
+        {type === "normal" ? (
           <clipPath id="svg-mask">
             <rect width="512" height="512" rx="90" fill="white" />
           </clipPath>
@@ -61,7 +61,7 @@ const icon = async (
   const string = renderToString(component);
 
   const formattedString = await format(`${comment}\n${string}`, {
-    parser: 'html',
+    parser: "html",
   });
 
   return formattedString;
@@ -81,7 +81,7 @@ await Promise.all(
       );
     }),
 
-    icon(colors, 'normal').then(async (i) =>
+    icon(colors, "normal").then(async (i) =>
       sharp(Buffer.from(i))
         .resize(512)
         .png()

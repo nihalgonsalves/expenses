@@ -1,6 +1,6 @@
-import { SheetParticipantRole } from '@prisma/client';
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
+import { SheetParticipantRole } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 import {
   ZCreateGroupSheetInput,
@@ -11,9 +11,9 @@ import {
   ZSheetsResponse,
   ZSheet,
   ZSheetsQuery,
-} from '@nihalgonsalves/expenses-shared/types/sheet';
+} from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { protectedProcedure, router } from '../../trpc';
+import { protectedProcedure, router } from "../../trpc";
 
 export const sheetRouter = router({
   mySheets: protectedProcedure
@@ -43,7 +43,7 @@ export const sheetRouter = router({
       );
 
       if (!groupSheet) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Sheet not found' });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Sheet not found" });
       }
 
       return {
@@ -69,7 +69,7 @@ export const sheetRouter = router({
       );
 
       if (!sheet) {
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'Sheet not found' });
+        throw new TRPCError({ code: "NOT_FOUND", message: "Sheet not found" });
       }
 
       return sheet;
@@ -110,8 +110,8 @@ export const sheetRouter = router({
 
       if (role !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only admins can archive sheets',
+          code: "FORBIDDEN",
+          message: "Only admins can archive sheets",
         });
       }
 
@@ -129,8 +129,8 @@ export const sheetRouter = router({
 
       if (role !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only admins can delete sheets',
+          code: "FORBIDDEN",
+          message: "Only admins can delete sheets",
         });
       }
 
@@ -154,8 +154,8 @@ export const sheetRouter = router({
 
       if (actorRole !== SheetParticipantRole.ADMIN) {
         throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only admins can add participants',
+          code: "FORBIDDEN",
+          message: "Only admins can add participants",
         });
       }
 
@@ -191,14 +191,14 @@ export const sheetRouter = router({
         // TODO: modify when adding more admins is possible
         if (participantId === ctx.user.id) {
           throw new TRPCError({
-            code: 'BAD_REQUEST',
-            message: 'You cannot delete yourself as the last admin',
+            code: "BAD_REQUEST",
+            message: "You cannot delete yourself as the last admin",
           });
         }
       } else if (participantId !== ctx.user.id) {
         throw new TRPCError({
-          code: 'FORBIDDEN',
-          message: 'Only admins can remove other participants',
+          code: "FORBIDDEN",
+          message: "Only admins can remove other participants",
         });
       }
 

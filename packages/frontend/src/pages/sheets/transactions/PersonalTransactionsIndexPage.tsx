@@ -1,11 +1,11 @@
-import { PlusIcon } from '@radix-ui/react-icons';
+import { PlusIcon } from "@radix-ui/react-icons";
 
-import { trpc } from '../../../api/trpc';
-import { FloatingActionButton } from '../../../components/FloatingActionButton';
-import { CreatePersonalTransactionDialog } from '../../../components/personal-sheets/CreatePersonalTransactionDialog';
-import { PersonalSheetTransactionsExpandedList } from '../../../components/personal-sheets/PersonalSheetTransactionsExpandedList';
-import { SheetParams, useParams } from '../../../router';
-import { RootLoader } from '../../Root';
+import { trpc } from "../../../api/trpc";
+import { FloatingActionButton } from "../../../components/FloatingActionButton";
+import { CreatePersonalTransactionDialog } from "../../../components/personal-sheets/CreatePersonalTransactionDialog";
+import { PersonalSheetTransactionsExpandedList } from "../../../components/personal-sheets/PersonalSheetTransactionsExpandedList";
+import { SheetParams, useParams } from "../../../router";
+import { RootLoader } from "../../Root";
 
 export const PersonalExpensesIndexPage = () => {
   const { sheetId } = useParams(SheetParams);

@@ -4,15 +4,15 @@ import React, {
   useImperativeHandle,
   useRef,
   useState,
-} from 'react';
+} from "react";
 
 import {
   dineroToMoney,
   type Money,
-} from '@nihalgonsalves/expenses-shared/money';
+} from "@nihalgonsalves/expenses-shared/money";
 
-import { formatCurrency, toDinero } from '../../utils/money';
-import { Input, type InputProps } from '../ui/input';
+import { formatCurrency, toDinero } from "../../utils/money";
+import { Input, type InputProps } from "../ui/input";
 
 /**
  * this is not Number.MAX_SAFE_INTEGER since we'd have to use a BIGINT in postgres
@@ -25,12 +25,12 @@ const MAX_ALLOWED = 20_000_000_00;
 
 type MoneyFieldProps = Omit<
   InputProps,
-  'inputMode' | 'ref' | 'onKeyDown' | 'onChange' | 'value'
+  "inputMode" | "ref" | "onKeyDown" | "onChange" | "value"
 > & {
   value: number;
   onChange: (newAmount: number) => void;
   currencyCode: string;
-  mode?: 'onChange' | 'onBlur';
+  mode?: "onChange" | "onBlur";
 };
 
 export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
@@ -39,7 +39,7 @@ export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
       value,
       onChange: setAmount,
       currencyCode,
-      mode = 'onChange',
+      mode = "onChange",
       ...textFieldProps
     },
     ref: React.Ref<Partial<HTMLInputElement>>,
@@ -65,7 +65,7 @@ export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
     const onChange = useCallback(
       (newAmount: number) => {
         setLocalAmount(newAmount);
-        if (mode === 'onChange') {
+        if (mode === "onChange") {
           setAmount(newAmount);
         }
       },
@@ -73,7 +73,7 @@ export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
     );
 
     const onBlur = useCallback(() => {
-      if (mode === 'onBlur') {
+      if (mode === "onBlur") {
         setAmount(localAmount);
       }
     }, [mode, localAmount, setAmount]);
@@ -108,8 +108,8 @@ export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
               // Special case for when the entire value is selected, we can replace
               // or clear the entire value. Partial selections are not supported
               if (selectionStart === 0 && selectionEnd === length) {
-                if (e.key === 'Backspace' || e.key === 'Delete') {
-                  return '0';
+                if (e.key === "Backspace" || e.key === "Delete") {
+                  return "0";
                 } else if (/^[0-9]$/.exec(e.key)) {
                   return e.key;
                 }
@@ -122,8 +122,8 @@ export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
               return amountAsString;
             }
 
-            if (e.key === 'Backspace') {
-              return amountAsString.slice(0, -1) || '0';
+            if (e.key === "Backspace") {
+              return amountAsString.slice(0, -1) || "0";
             } else if (/^[0-9]$/.exec(e.key)) {
               return `${amountAsString}${e.key}`;
             }
@@ -165,4 +165,4 @@ export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
     );
   },
 );
-MoneyField.displayName = 'MoneyField';
+MoneyField.displayName = "MoneyField";

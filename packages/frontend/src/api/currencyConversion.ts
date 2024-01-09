@@ -1,13 +1,13 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { useCallback, useMemo } from 'react';
+import { Temporal } from "@js-temporal/polyfill";
+import { useCallback, useMemo } from "react";
 
-import type { Money } from '@nihalgonsalves/expenses-shared/money';
+import type { Money } from "@nihalgonsalves/expenses-shared/money";
 
-import { usePreferredCurrencyCode } from '../state/preferences';
-import { convertCurrency } from '../utils/money';
-import { durationMilliseconds } from '../utils/temporal';
+import { usePreferredCurrencyCode } from "../state/preferences";
+import { convertCurrency } from "../utils/money";
+import { durationMilliseconds } from "../utils/temporal";
 
-import { trpc } from './trpc';
+import { trpc } from "./trpc";
 
 export const useSupportedCurrencies = () =>
   trpc.currencyConversion.getSupportedCurrencies.useQuery(undefined, {
@@ -45,8 +45,8 @@ export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
       Object.fromEntries(
         rates
           .filter(
-            (r): r is typeof r & { status: 'success' } =>
-              r.status === 'success',
+            (r): r is typeof r & { status: "success" } =>
+              r.status === "success",
           )
           .map((r) => [r.data.from, r.data]),
       ),

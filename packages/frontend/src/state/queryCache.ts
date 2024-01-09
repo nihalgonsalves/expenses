@@ -1,6 +1,6 @@
-import Dexie, { type Table } from 'dexie';
+import Dexie, { type Table } from "dexie";
 
-import { REACT_QUERY_CACHE_DEXIE_TABLE } from '../config';
+import { REACT_QUERY_CACHE_DEXIE_TABLE } from "../config";
 
 type CacheItem = {
   key: string;
@@ -13,7 +13,7 @@ class CacheDexie extends Dexie {
   constructor() {
     super(REACT_QUERY_CACHE_DEXIE_TABLE);
     this.version(1).stores({
-      queryCache: 'key',
+      queryCache: "key",
     });
   }
 }

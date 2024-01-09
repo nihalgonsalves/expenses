@@ -1,7 +1,7 @@
-import { ChevronDownIcon } from '@radix-ui/react-icons';
-import { motion } from 'framer-motion';
+import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { motion } from "framer-motion";
 
-import { Button } from './ui/button';
+import { Button } from "./ui/button";
 
 type ExpandMoreProps = {
   expand: boolean;

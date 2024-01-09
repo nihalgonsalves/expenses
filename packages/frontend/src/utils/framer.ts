@@ -1,8 +1,8 @@
-import type { MotionProps } from 'framer-motion';
+import type { MotionProps } from "framer-motion";
 
 export const collapse = {
   initial: { height: 0, opacity: 0 },
-  animate: { height: 'auto', opacity: 1 },
+  animate: { height: "auto", opacity: 1 },
   exit: { height: 0, opacity: 0 },
   transition: { duration: 0.1 },
 } satisfies MotionProps;

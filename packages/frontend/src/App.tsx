@@ -1,14 +1,14 @@
-import emojiMartData from '@emoji-mart/data';
-import { init as initEmojiMart } from 'emoji-mart';
-import { MotionConfig } from 'framer-motion';
-import { Toaster } from 'react-hot-toast';
+import emojiMartData from "@emoji-mart/data";
+import { init as initEmojiMart } from "emoji-mart";
+import { MotionConfig } from "framer-motion";
+import { Toaster } from "react-hot-toast";
 
-import { TrpcProvider } from './api/TrpcProvider';
-import { useOffLineToaster } from './api/useOffLineToaster';
-import { usePrefetchQueries } from './api/usePrefetchQueries';
-import { registerSW, useSwUpdateCheck } from './registerSW';
-import { RouterProvider, router } from './router';
-import { useThemeSync } from './state/theme';
+import { TrpcProvider } from "./api/TrpcProvider";
+import { useOffLineToaster } from "./api/useOffLineToaster";
+import { usePrefetchQueries } from "./api/usePrefetchQueries";
+import { registerSW, useSwUpdateCheck } from "./registerSW";
+import { RouterProvider, router } from "./router";
+import { useThemeSync } from "./state/theme";
 
 await registerSW();
 
@@ -38,14 +38,14 @@ export const App = () => (
       toastOptions={{
         success: {
           iconTheme: {
-            primary: 'hsl(var(--primary))',
-            secondary: '#ffffff',
+            primary: "hsl(var(--primary))",
+            secondary: "#ffffff",
           },
         },
         error: {
           iconTheme: {
-            primary: 'hsl(var(--destructive))',
-            secondary: '#ffffff',
+            primary: "hsl(var(--destructive))",
+            secondary: "#ffffff",
           },
         },
       }}

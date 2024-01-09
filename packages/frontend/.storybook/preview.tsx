@@ -1,12 +1,12 @@
 // @ts-check
 
-import type { Preview } from '@storybook/react';
-import '../src/tailwind.css';
-import { MemoryRouter } from 'react-router-dom';
+import type { Preview } from "@storybook/react";
+import "../src/tailwind.css";
+import { MemoryRouter } from "react-router-dom";
 
 const preview: Preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
+    actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -15,7 +15,7 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (story) => <MemoryRouter initialEntries={['/']}>{story()}</MemoryRouter>,
+    (story) => <MemoryRouter initialEntries={["/"]}>{story()}</MemoryRouter>,
   ],
 };
 

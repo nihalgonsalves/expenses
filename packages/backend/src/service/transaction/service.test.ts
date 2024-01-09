@@ -1,22 +1,22 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
 import {
   groupSheetFactory,
   notificationSubscriptionFactory,
   userFactory,
-} from '../../../test/factories';
-import { getPrisma } from '../../../test/getPrisma';
-import { createGroupSheetTransactionInput } from '../../../test/input';
+} from "../../../test/factories";
+import { getPrisma } from "../../../test/getPrisma";
+import { createGroupSheetTransactionInput } from "../../../test/input";
 import {
   FakeNotificationDispatchService,
   type FakeNotificationItem,
-} from '../../../test/webPushUtils';
+} from "../../../test/webPushUtils";
 
-import { TransactionService } from './service';
+import { TransactionService } from "./service";
 
 const prisma = await getPrisma();
 
-const currencyCode = 'EUR';
+const currencyCode = "EUR";
 
 const subscribedUser = async () => {
   const user = await userFactory(prisma);
@@ -52,9 +52,9 @@ const useSetup = async () => {
   };
 };
 
-describe('TransactionService', () => {
-  describe('createGroupSheetExpense', () => {
-    it('sends a notification to all transaction participants except the creator', async () => {
+describe("TransactionService", () => {
+  describe("createGroupSheetExpense", () => {
+    it("sends a notification to all transaction participants except the creator", async () => {
       const {
         notificationDispatchService: webPushService,
         transactionService,
@@ -65,7 +65,7 @@ describe('TransactionService', () => {
       } = await useSetup();
 
       const input = createGroupSheetTransactionInput(
-        'EXPENSE',
+        "EXPENSE",
         groupSheet.id,
         currencyCode,
         creator.id,
@@ -82,11 +82,11 @@ describe('TransactionService', () => {
         {
           userId: otherParticipant.id,
           payload: {
-            type: 'EXPENSE',
+            type: "EXPENSE",
             transaction: {
               id,
-              category: 'other',
-              description: 'test group expense',
+              category: "other",
+              description: "test group expense",
               money: {
                 currencyCode: groupSheet.currencyCode,
                 amount: 100_00,
@@ -108,8 +108,8 @@ describe('TransactionService', () => {
     });
   });
 
-  describe('createSettlement', () => {
-    it('sends a notification to the receiver when created by the sender', async () => {
+  describe("createSettlement", () => {
+    it("sends a notification to the receiver when created by the sender", async () => {
       const {
         notificationDispatchService,
         transactionService,
@@ -138,12 +138,12 @@ describe('TransactionService', () => {
         {
           userId: toUser.id,
           payload: {
-            type: 'TRANSFER',
+            type: "TRANSFER",
             transaction: {
               id,
-              type: 'received',
-              category: 'transfer',
-              description: '',
+              type: "received",
+              category: "transfer",
+              description: "",
               money: {
                 currencyCode: groupSheet.currencyCode,
                 amount: 100_00,
@@ -159,7 +159,7 @@ describe('TransactionService', () => {
       ]);
     });
 
-    it('sends a notification to the sender when created by the receiver', async () => {
+    it("sends a notification to the sender when created by the receiver", async () => {
       const {
         notificationDispatchService: webPushService,
         transactionService,
@@ -186,12 +186,12 @@ describe('TransactionService', () => {
         {
           userId: fromUser.id,
           payload: {
-            type: 'TRANSFER',
+            type: "TRANSFER",
             transaction: {
               id,
-              type: 'sent',
-              category: 'transfer',
-              description: '',
+              type: "sent",
+              category: "transfer",
+              description: "",
               money: {
                 currencyCode: groupSheet.currencyCode,
                 amount: 100_00,

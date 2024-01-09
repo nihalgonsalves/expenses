@@ -1,8 +1,8 @@
-import { CopyIcon } from '@radix-ui/react-icons';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, within, waitFor, screen } from '@storybook/test';
+import { CopyIcon } from "@radix-ui/react-icons";
+import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, within, waitFor, screen } from "@storybook/test";
 
-import { Button } from './button';
+import { Button } from "./button";
 import {
   Dialog,
   DialogClose,
@@ -12,9 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './dialog';
-import { Input } from './input';
-import { Label } from './label';
+} from "./dialog";
+import { Input } from "./input";
+import { Label } from "./label";
 
 const meta: Meta<typeof Dialog> = {
   component: Dialog,
@@ -60,11 +60,11 @@ const meta: Meta<typeof Dialog> = {
     const canvas = within(canvasElement);
     // https://github.com/storybookjs/storybook/issues/25258
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    await userEvent.click(canvas.getByRole('button'));
+    await userEvent.click(canvas.getByRole("button"));
 
     await waitFor(async () => {
       await expect(
-        within(screen.getByRole('dialog')).getByText('Share link'),
+        within(screen.getByRole("dialog")).getByText("Share link"),
       ).toBeVisible();
     });
   },

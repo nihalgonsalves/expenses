@@ -1,5 +1,5 @@
-import type { PrismaClient } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import type { PrismaClient } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 import type {
   AuthorizeUserInput,
@@ -7,9 +7,9 @@ import type {
   CreateUserInput,
   JWTToken,
   UpdateUserInput,
-} from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/user";
 
-import { generateId } from '../../utils/nanoid';
+import { generateId } from "../../utils/nanoid";
 
 import {
   UserServiceError,
@@ -17,13 +17,13 @@ import {
   hashPassword,
   signJWT,
   verifyJWT,
-} from './utils';
+} from "./utils";
 
 export class UserService {
   constructor(
     private prismaClient: Pick<
       PrismaClient,
-      '$transaction' | 'user' | 'sheet' | 'category'
+      "$transaction" | "user" | "sheet" | "category"
     >,
   ) {}
 
@@ -35,8 +35,8 @@ export class UserService {
 
     if (!payload.sub) {
       throw new UserServiceError({
-        message: 'Invalid token',
-        code: 'FORBIDDEN',
+        message: "Invalid token",
+        code: "FORBIDDEN",
       });
     }
 
@@ -46,8 +46,8 @@ export class UserService {
 
     if (!user) {
       throw new UserServiceError({
-        message: 'Invalid token',
-        code: 'FORBIDDEN',
+        message: "Invalid token",
+        code: "FORBIDDEN",
       });
     }
 
@@ -64,8 +64,8 @@ export class UserService {
 
     if (!user?.passwordHash) {
       throw new UserServiceError({
-        message: 'Invalid credentials',
-        code: 'FORBIDDEN',
+        message: "Invalid credentials",
+        code: "FORBIDDEN",
       });
     }
 
@@ -76,8 +76,8 @@ export class UserService {
 
     if (!passwordMatches) {
       throw new UserServiceError({
-        message: 'Invalid credentials',
-        code: 'FORBIDDEN',
+        message: "Invalid credentials",
+        code: "FORBIDDEN",
       });
     }
 
@@ -104,14 +104,14 @@ export class UserService {
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
-        error.code === 'P2002'
+        error.code === "P2002"
       ) {
         return this.authorize(input);
       }
 
       throw new UserServiceError({
-        message: 'Error signing up',
-        code: 'INTERNAL_SERVER_ERROR',
+        message: "Error signing up",
+        code: "INTERNAL_SERVER_ERROR",
         cause: error,
       });
     }
@@ -121,8 +121,8 @@ export class UserService {
     if (input.newPassword != null) {
       if (input.password == null) {
         throw new UserServiceError({
-          message: 'The old password is required to set a new password',
-          code: 'BAD_REQUEST',
+          message: "The old password is required to set a new password",
+          code: "BAD_REQUEST",
         });
       }
 
@@ -162,7 +162,7 @@ export class UserService {
       this.prismaClient.user.update({
         where: { id },
         data: {
-          name: 'Deleted User',
+          name: "Deleted User",
           email: `deleted_${id}_${generateId()}@example.com`,
           passwordHash: null,
         },
@@ -170,8 +170,8 @@ export class UserService {
       // TODO: access via sheetService
       this.prismaClient.sheet.deleteMany({
         where: {
-          type: 'PERSONAL',
-          participants: { some: { participantId: id, role: 'ADMIN' } },
+          type: "PERSONAL",
+          participants: { some: { participantId: id, role: "ADMIN" } },
         },
       }),
     ]);
@@ -213,7 +213,7 @@ export class UserService {
       });
     } catch (error) {
       throw new UserServiceError({
-        code: 'INTERNAL_SERVER_ERROR',
+        code: "INTERNAL_SERVER_ERROR",
         cause: error,
       });
     }
@@ -230,15 +230,15 @@ export class UserService {
 
     if (!user) {
       throw new UserServiceError({
-        message: 'Invalid credentials',
-        code: 'FORBIDDEN',
+        message: "Invalid credentials",
+        code: "FORBIDDEN",
       });
     }
 
     if (!user.passwordHash) {
       throw new UserServiceError({
         message: "Can't update or delete with no existing password",
-        code: 'BAD_REQUEST',
+        code: "BAD_REQUEST",
       });
     }
 
@@ -246,8 +246,8 @@ export class UserService {
 
     if (!passwordMatches) {
       throw new UserServiceError({
-        message: 'Invalid credentials',
-        code: 'FORBIDDEN',
+        message: "Invalid credentials",
+        code: "FORBIDDEN",
       });
     }
   }

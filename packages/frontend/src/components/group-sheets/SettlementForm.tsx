@@ -1,17 +1,17 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import type { GroupSheetByIdResponse } from '@nihalgonsalves/expenses-shared/types/sheet';
-import { ZCreateGroupSheetSettlementInput } from '@nihalgonsalves/expenses-shared/types/transaction';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
+import { ZCreateGroupSheetSettlementInput } from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from '../../api/trpc';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { toMoneyValues } from '../../utils/money';
-import { MoneyField } from '../form/MoneyField';
-import { useDialog } from '../form/ResponsiveDialog';
-import { Button } from '../ui/button';
+import { trpc } from "../../api/trpc";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { toMoneyValues } from "../../utils/money";
+import { MoneyField } from "../form/MoneyField";
+import { useDialog } from "../form/ResponsiveDialog";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -19,9 +19,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
+} from "../ui/form";
 
-import { ParticipantSelect } from './ParticipantSelect';
+import { ParticipantSelect } from "./ParticipantSelect";
 
 export const SettlementForm = ({
   groupSheet,
@@ -37,16 +37,16 @@ export const SettlementForm = ({
   const formSchema = ZCreateGroupSheetSettlementInput.omit({
     money: true,
   }).extend({
-    amount: z.number().positive({ message: 'Amount is required' }),
+    amount: z.number().positive({ message: "Amount is required" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onTouched',
+    mode: "onTouched",
     defaultValues: {
       groupSheetId: groupSheet.id,
       fromId: me.id,
-      toId: '',
+      toId: "",
       amount: 0,
     },
   });

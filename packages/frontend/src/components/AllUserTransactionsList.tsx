@@ -2,34 +2,34 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@radix-ui/react-collapsible';
-import { CalendarIcon, MixerHorizontalIcon } from '@radix-ui/react-icons';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Fragment, useMemo, useState } from 'react';
-import type { DateRange } from 'react-day-picker';
+} from "@radix-ui/react-collapsible";
+import { CalendarIcon, MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { motion, AnimatePresence } from "framer-motion";
+import { Fragment, useMemo, useState } from "react";
+import type { DateRange } from "react-day-picker";
 
-import { sumMoney, type Money } from '@nihalgonsalves/expenses-shared/money';
-import type { Sheet } from '@nihalgonsalves/expenses-shared/types/sheet';
-import type { TransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import { sumMoney, type Money } from "@nihalgonsalves/expenses-shared/money";
+import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
+import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import type { AllConvertedUserTransactions } from '../api/useAllUserTransactions';
-import { usePreferredCurrencyCode } from '../state/preferences';
-import { fadeInOut } from '../utils/framer';
-import { formatCurrency } from '../utils/money';
+import type { AllConvertedUserTransactions } from "../api/useAllUserTransactions";
+import { usePreferredCurrencyCode } from "../state/preferences";
+import { fadeInOut } from "../utils/framer";
+import { formatCurrency } from "../utils/money";
 import {
   formatDateTimeRelative,
   groupBySpentAt,
   shortDateFormatter,
-} from '../utils/temporal';
-import { getTransactionDescription, noop } from '../utils/utils';
+} from "../utils/temporal";
+import { getTransactionDescription, noop } from "../utils/utils";
 
-import { CategoryAvatar } from './CategoryAvatar';
-import { CategorySelect } from './form/CategorySelect';
-import { SheetSelect } from './form/SheetSelect';
-import { Alert, AlertDescription } from './ui/alert';
-import { Button } from './ui/button';
-import { Calendar } from './ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { CategoryAvatar } from "./CategoryAvatar";
+import { CategorySelect } from "./form/CategorySelect";
+import { SheetSelect } from "./form/SheetSelect";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Button } from "./ui/button";
+import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import {
   Table,
   TableBody,
@@ -37,8 +37,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from './ui/table';
-import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
+} from "./ui/table";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 const MotionTableRow = motion(TableRow);
 
@@ -50,11 +50,11 @@ const TransactionRow = ({
   sheet: Sheet;
 }) => {
   const money = formatCurrency(transaction.money, {
-    signDisplay: transaction.type === 'TRANSFER' ? 'never' : 'always',
+    signDisplay: transaction.type === "TRANSFER" ? "never" : "always",
   });
   const convertedMoney = transaction.convertedMoney
     ? formatCurrency(transaction.convertedMoney, {
-        signDisplay: transaction.type === 'TRANSFER' ? 'never' : 'always',
+        signDisplay: transaction.type === "TRANSFER" ? "never" : "always",
       })
     : undefined;
 
@@ -120,8 +120,8 @@ export const AllUserTransactionsList = ({
 }) => {
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
-  const [selectedView, setSelectedView] = useState<'EXPENSES' | 'INCOME'>(
-    'EXPENSES',
+  const [selectedView, setSelectedView] = useState<"EXPENSES" | "INCOME">(
+    "EXPENSES",
   );
 
   const totalSpent = sumMoney(
@@ -141,7 +141,7 @@ export const AllUserTransactionsList = ({
   const groupedByDate = useMemo(
     () =>
       groupBySpentAt(
-        selectedView === 'EXPENSES' ? data.expenses : data.earnings,
+        selectedView === "EXPENSES" ? data.expenses : data.earnings,
         ({ transaction }) => transaction.spentAt,
       ),
     [selectedView, data.expenses, data.earnings],
@@ -162,7 +162,7 @@ export const AllUserTransactionsList = ({
                   <CalendarIcon className="mr-2 size-4" />
                   {dateRange?.from && dateRange.to ? (
                     <>
-                      {shortDateFormatter.format(dateRange.from)} -{' '}
+                      {shortDateFormatter.format(dateRange.from)} -{" "}
                       {shortDateFormatter.format(dateRange.to)}
                     </>
                   ) : (
@@ -207,7 +207,7 @@ export const AllUserTransactionsList = ({
               <TabsTrigger
                 value="EXPENSES"
                 onClick={() => {
-                  setSelectedView('EXPENSES');
+                  setSelectedView("EXPENSES");
                 }}
               >
                 Expenses ({formatCurrency(totalSpent)})
@@ -215,7 +215,7 @@ export const AllUserTransactionsList = ({
               <TabsTrigger
                 value="INCOME"
                 onClick={() => {
-                  setSelectedView('INCOME');
+                  setSelectedView("INCOME");
                 }}
               >
                 Income ({formatCurrency(totalEarned)})

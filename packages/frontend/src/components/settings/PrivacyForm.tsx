@@ -1,16 +1,16 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import type { z } from 'zod';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import type { z } from "zod";
 
-import { ZAuthorizeUserInput } from '@nihalgonsalves/expenses-shared/types/user';
+import { ZAuthorizeUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from '../../api/trpc';
-import { useResetCache } from '../../api/useCacheReset';
-import { useNavigatorOnLine } from '../../state/useNavigatorOnLine';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { trpc } from "../../api/trpc";
+import { useResetCache } from "../../api/useCacheReset";
+import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Form,
   FormControl,
@@ -18,8 +18,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from "../ui/form";
+import { Input } from "../ui/input";
 
 export const PrivacyForm = () => {
   const onLine = useNavigatorOnLine();
@@ -29,7 +29,7 @@ export const PrivacyForm = () => {
 
   const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
     resolver: zodResolver(ZAuthorizeUserInput),
-    mode: 'onTouched',
+    mode: "onTouched",
   });
 
   const resetCache = useResetCache();
@@ -45,7 +45,7 @@ export const PrivacyForm = () => {
     await anonymizeUser({ email: values.email, password: values.password });
 
     await resetCache();
-    navigate('/');
+    navigate("/");
   };
 
   const disabled = !onLine;
@@ -62,7 +62,7 @@ export const PrivacyForm = () => {
             and transactions, as well as anonymize your name and email address.
           </p>
           <p>
-            If you would like to delete or leave any groups, please do this{' '}
+            If you would like to delete or leave any groups, please do this{" "}
             <strong>before</strong> anonymising your account. Note that the
             anonymized account will remain linked to any remaining groups as a
             Deleted User.
@@ -113,7 +113,7 @@ export const PrivacyForm = () => {
               $variant="destructive"
               className="w-full"
             >
-              {isReconfirming ? 'Are you sure?' : 'Anonymise your account'}
+              {isReconfirming ? "Are you sure?" : "Anonymise your account"}
             </Button>
           </form>
         </Form>

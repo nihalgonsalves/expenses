@@ -1,31 +1,31 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: '/'
+    directory: "/"
     schedule:
       interval: weekly
     versioning-strategy: increase
     groups:
       all:
         patterns:
-          - '*'
+          - "*"
     ignore:
-      - dependency-name: '@types/node'
+      - dependency-name: "@types/node"
         update-types:
-          - 'version-update:semver-major'
-      - dependency-name: '@tanstack/query-async-storage-persister'
+          - "version-update:semver-major"
+      - dependency-name: "@tanstack/query-async-storage-persister"
         update-types:
-          - 'version-update:semver-major'
-      - dependency-name: '@tanstack/react-query'
+          - "version-update:semver-major"
+      - dependency-name: "@tanstack/react-query"
         update-types:
-          - 'version-update:semver-major'
-      - dependency-name: '@tanstack/react-query-devtools'
+          - "version-update:semver-major"
+      - dependency-name: "@tanstack/react-query-devtools"
         update-types:
-          - 'version-update:semver-major'
-      - dependency-name: '@tanstack/react-query-persist-client'
+          - "version-update:semver-major"
+      - dependency-name: "@tanstack/react-query-persist-client"
         update-types:
-          - 'version-update:semver-major'
+          - "version-update:semver-major"
   - package-ecosystem: github-actions
-    directory: '/'
+    directory: "/"
     schedule:
       interval: monthly

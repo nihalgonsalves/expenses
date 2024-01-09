@@ -1,8 +1,8 @@
-import { usePreferredCurrencyCode } from '../state/preferences';
+import { usePreferredCurrencyCode } from "../state/preferences";
 
-import { ResponsiveDialog } from './form/ResponsiveDialog';
-import { CreateGroupForm } from './group-sheets/CreateGroupForm';
-import { CreateSheetForm } from './personal-sheets/CreateSheetForm';
+import { ResponsiveDialog } from "./form/ResponsiveDialog";
+import { CreateGroupForm } from "./group-sheets/CreateGroupForm";
+import { CreateSheetForm } from "./personal-sheets/CreateSheetForm";
 
 export const NewPersonalSheetDialog = ({
   trigger,

@@ -1,15 +1,15 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import { forwardRef } from 'react';
+import { AnimatePresence, motion } from "framer-motion";
+import { forwardRef } from "react";
 
-import type { GroupSheetTransactionListItem } from '@nihalgonsalves/expenses-shared/types/transaction';
+import type { GroupSheetTransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { formatCurrency } from '../../utils/money';
+import { formatCurrency } from "../../utils/money";
 import {
   getTransactionDescription,
   getGroupSheetTransactionSummaryText,
-} from '../../utils/utils';
-import { AvatarGroup } from '../Avatar';
-import { CategoryAvatar } from '../CategoryAvatar';
+} from "../../utils/utils";
+import { AvatarGroup } from "../Avatar";
+import { CategoryAvatar } from "../CategoryAvatar";
 
 const DenseTransactionListItem = forwardRef<
   HTMLDivElement,
@@ -35,14 +35,14 @@ const DenseTransactionListItem = forwardRef<
         <span
           className="inline-block text-gray-500"
           style={{
-            overflow: 'hidden',
+            overflow: "hidden",
             // non-standard but does work in all browsers, should
             // be replaced with `lineClamp` eventually
             // https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-line-clamp
             // https://drafts.csswg.org/css-overflow-4/#propdef-line-clamp
-            display: '-webkit-box',
-            WebkitLineClamp: '1',
-            WebkitBoxOrient: 'vertical',
+            display: "-webkit-box",
+            WebkitLineClamp: "1",
+            WebkitBoxOrient: "vertical",
           }}
         >
           {getGroupSheetTransactionSummaryText(transaction)}
@@ -53,7 +53,7 @@ const DenseTransactionListItem = forwardRef<
     </motion.div>
   );
 });
-DenseTransactionListItem.displayName = 'DenseTransactionListItem';
+DenseTransactionListItem.displayName = "DenseTransactionListItem";
 
 export const GroupSheetTransactionsDenseList = ({
   transactions,

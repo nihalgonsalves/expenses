@@ -1,8 +1,8 @@
-import Dexie, { type Table } from 'dexie';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { z } from 'zod';
+import Dexie, { type Table } from "dexie";
+import { useLiveQuery } from "dexie-react-hooks";
+import { z } from "zod";
 
-import { PREFERENCES_DEXIE_TABLE } from '../config';
+import { PREFERENCES_DEXIE_TABLE } from "../config";
 
 type KeyValueItem = {
   key: string;
@@ -15,7 +15,7 @@ class PreferencesDexie extends Dexie {
   constructor() {
     super(PREFERENCES_DEXIE_TABLE);
     this.version(1).stores({
-      preferences: 'key',
+      preferences: "key",
     });
   }
 }
@@ -63,12 +63,12 @@ export const createPreferenceWithDefault = <T>(
 };
 
 export const [usePreferredCurrencyCode] = createPreferenceWithDefault(
-  'preferred_currency_code',
+  "preferred_currency_code",
   (v) => z.string().length(3).parse(v),
-  'EUR',
+  "EUR",
 );
 
 export const [useSubscriptionEndpoint] = createUsePreference(
-  'subscription_endpoint',
+  "subscription_endpoint",
   (v) => z.string().parse(v),
 );

@@ -1,25 +1,25 @@
-import { CalendarIcon } from '@radix-ui/react-icons';
-import { useMemo } from 'react';
-import type { DateRange } from 'react-day-picker';
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { useMemo } from "react";
+import type { DateRange } from "react-day-picker";
 
 import {
   addMoney,
   compareMoney,
   type Money,
-} from '@nihalgonsalves/expenses-shared/money';
+} from "@nihalgonsalves/expenses-shared/money";
 
 import type {
   AllConvertedUserTransactions,
   ConvertedTransactionWithSheet,
-} from '../api/useAllUserTransactions';
-import { formatCurrency } from '../utils/money';
-import { shortDateFormatter } from '../utils/temporal';
+} from "../api/useAllUserTransactions";
+import { formatCurrency } from "../utils/money";
+import { shortDateFormatter } from "../utils/temporal";
 
-import { CategoryIcon } from './CategoryAvatar';
-import { Button } from './ui/button';
-import { Calendar } from './ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { cn } from './ui/utils';
+import { CategoryIcon } from "./CategoryAvatar";
+import { Button } from "./ui/button";
+import { Calendar } from "./ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { cn } from "./ui/utils";
 
 const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
   const categorySums: Record<string, Money> = {};
@@ -92,7 +92,7 @@ export const CategoryStats = ({
               <CalendarIcon className="mr-2 size-4" />
               {dateRange?.from && dateRange.to ? (
                 <>
-                  {shortDateFormatter.format(dateRange.from)} -{' '}
+                  {shortDateFormatter.format(dateRange.from)} -{" "}
                   {shortDateFormatter.format(dateRange.to)}
                 </>
               ) : (
@@ -112,11 +112,11 @@ export const CategoryStats = ({
       </div>
       <div
         className={cn(
-          'grid gap-2 md:gap-4',
+          "grid gap-2 md:gap-4",
           categoryExpenseSumEntries.length > 0 &&
             categoryIncomeSumEntries.length > 0
-            ? 'grid-cols-2'
-            : 'grid-cols-1',
+            ? "grid-cols-2"
+            : "grid-cols-1",
         )}
       >
         {categoryExpenseSumEntries.length > 0 && (

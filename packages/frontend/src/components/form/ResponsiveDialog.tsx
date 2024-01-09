@@ -1,8 +1,8 @@
-import { ScrollArea } from '@radix-ui/react-scroll-area';
-import type { VariantProps } from 'class-variance-authority';
-import { atom, useAtom } from 'jotai';
-import { useCallback, useEffect, useState } from 'react';
-import { useMedia } from 'react-use';
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import type { VariantProps } from "class-variance-authority";
+import { atom, useAtom } from "jotai";
+import { useCallback, useEffect, useState } from "react";
+import { useMedia } from "react-use";
 
 import {
   AlertDialog,
@@ -14,8 +14,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '../ui/alert-dialog';
-import { Button, type buttonVariants } from '../ui/button';
+} from "../ui/alert-dialog";
+import { Button, type buttonVariants } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
+} from "../ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -33,7 +33,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '../ui/drawer';
+} from "../ui/drawer";
 
 type ResponsiveDialogProps = {
   trigger: React.ReactNode;
@@ -49,7 +49,7 @@ type ResponsiveDialogProps = {
         e: React.MouseEvent<HTMLButtonElement>,
       ) => Promise<void> | void;
       isLoading: boolean;
-      variant?: VariantProps<typeof buttonVariants>['$variant'];
+      variant?: VariantProps<typeof buttonVariants>["$variant"];
     }
 );
 
@@ -73,7 +73,7 @@ const ResponsiveDialogInner = ({
   children,
   ...props
 }: ResponsiveDialogProps) => {
-  const isDesktop = useMedia('(min-width: 768px)');
+  const isDesktop = useMedia("(min-width: 768px)");
 
   const [open, setOpen] = useState(false);
   const [globalOpen, setGlobalOpen] = useAtom(responsiveDialogOpen);

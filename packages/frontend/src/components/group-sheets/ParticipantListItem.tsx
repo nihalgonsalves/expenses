@@ -1,4 +1,4 @@
-import { cn } from '../ui/utils';
+import { cn } from "../ui/utils";
 
 export const ParticipantListItem = ({
   children,
@@ -9,7 +9,7 @@ export const ParticipantListItem = ({
   avatar?: React.ReactNode;
   className?: string;
 }) => (
-  <div className={cn('flex items-center gap-4', className)} role="listitem">
+  <div className={cn("flex items-center gap-4", className)} role="listitem">
     <div>{avatar}</div>
     {children}
   </div>

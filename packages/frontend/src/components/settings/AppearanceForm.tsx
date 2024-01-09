@@ -3,29 +3,29 @@ import {
   MoonIcon,
   SunIcon,
   TargetIcon,
-} from '@radix-ui/react-icons';
+} from "@radix-ui/react-icons";
 
 import {
   type Theme,
   THEMES,
-} from '@nihalgonsalves/expenses-shared/types/theme';
+} from "@nihalgonsalves/expenses-shared/types/theme";
 
-import { useSupportedCurrencies } from '../../api/currencyConversion';
-import { usePreferredCurrencyCode } from '../../state/preferences';
+import { useSupportedCurrencies } from "../../api/currencyConversion";
+import { usePreferredCurrencyCode } from "../../state/preferences";
 import {
   useThemePreference,
   useTheme,
   getThemeDataAttribute,
-} from '../../state/theme';
-import { useIsStandalone } from '../../utils/hooks/useIsStandalone';
-import { noop } from '../../utils/utils';
-import { CurrencySelect } from '../form/CurrencySelect';
-import { ToggleButtonGroup } from '../form/ToggleButtonGroup';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Label } from '../ui/label';
-import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group';
+} from "../../state/theme";
+import { useIsStandalone } from "../../utils/hooks/useIsStandalone";
+import { noop } from "../../utils/utils";
+import { CurrencySelect } from "../form/CurrencySelect";
+import { ToggleButtonGroup } from "../form/ToggleButtonGroup";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Label } from "../ui/label";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
-import { IconPreview } from './IconPreview';
+import { IconPreview } from "./IconPreview";
 
 export const AppearanceForm = () => {
   const [themePreference, setThemePreference] = useThemePreference();
@@ -49,7 +49,7 @@ export const AppearanceForm = () => {
           className="[&>button]:grow"
           options={[
             {
-              value: 'light',
+              value: "light",
               label: (
                 <>
                   <SunIcon className="mr-2" /> Light
@@ -57,7 +57,7 @@ export const AppearanceForm = () => {
               ),
             },
             {
-              value: 'system',
+              value: "system",
               label: (
                 <>
                   <TargetIcon className="mr-2" /> System
@@ -65,7 +65,7 @@ export const AppearanceForm = () => {
               ),
             },
             {
-              value: 'dark',
+              value: "dark",
               label: (
                 <>
                   <MoonIcon className="mr-2" /> Dark

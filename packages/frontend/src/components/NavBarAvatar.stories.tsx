@@ -1,10 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
 import {
   NavBarAvatar,
   LoggedInNavBarAvatar,
   LoggedOutNavBarAvatar,
-} from './NavBarAvatar';
+} from "./NavBarAvatar";
 
 const meta: Meta<typeof NavBarAvatar> = {
   component: NavBarAvatar,

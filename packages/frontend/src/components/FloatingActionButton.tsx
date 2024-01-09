@@ -1,15 +1,15 @@
-import { AccessibleIcon } from '@radix-ui/react-accessible-icon';
-import { motion } from 'framer-motion';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { motion } from "framer-motion";
+import React from "react";
+import { Link } from "react-router-dom";
 
-import { Button } from './ui/button';
+import { Button } from "./ui/button";
 import {
   TooltipProvider,
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from './ui/tooltip';
+} from "./ui/tooltip";
 
 const MotionButton = motion(Button);
 
@@ -73,4 +73,4 @@ export const FloatingActionButton = React.forwardRef<
     </TooltipProvider>
   </div>
 ));
-FloatingActionButton.displayName = 'FloatingActionButton';
+FloatingActionButton.displayName = "FloatingActionButton";

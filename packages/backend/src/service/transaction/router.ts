@@ -1,8 +1,8 @@
-import { Temporal } from '@js-temporal/polyfill';
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
+import { Temporal } from "@js-temporal/polyfill";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
-import type { Money } from '@nihalgonsalves/expenses-shared/money';
+import type { Money } from "@nihalgonsalves/expenses-shared/money";
 import {
   ZCreateGroupSheetTransactionInput,
   ZCreateSheetTransactionResponse,
@@ -22,17 +22,17 @@ import {
   ZUpdatePersonalSheetTransactionInput,
   ZGetAllUserTransactionsInput,
   ZBalanceSimplificationResponse,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
-import { ZCategoryEmoji } from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
+import { ZCategoryEmoji } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { protectedProcedure, router } from '../../trpc';
+import { protectedProcedure, router } from "../../trpc";
 
 const mapTransaction = <
   T extends { amount: number; scale: number; spentAt: Date },
 >(
   { amount, scale, spentAt, ...transaction }: T,
   sheet: { currencyCode: string },
-): Omit<T, 'amount' | 'scale' | 'spentAt'> & {
+): Omit<T, "amount" | "scale" | "spentAt"> & {
   spentAt: string;
   money: Money;
 } => ({
@@ -122,8 +122,8 @@ export const transactionRouter = router({
 
       if (transactionParticipants.some((id) => !groupParticipants.has(id))) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Invalid participants',
+          code: "BAD_REQUEST",
+          message: "Invalid participants",
         });
       }
 
@@ -150,8 +150,8 @@ export const transactionRouter = router({
         !groupParticipants.has(input.toId)
       ) {
         throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Invalid participants',
+          code: "BAD_REQUEST",
+          message: "Invalid participants",
         });
       }
 
@@ -216,8 +216,8 @@ export const transactionRouter = router({
 
       if (!transaction) {
         throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Transaction not found',
+          code: "NOT_FOUND",
+          message: "Transaction not found",
         });
       }
 

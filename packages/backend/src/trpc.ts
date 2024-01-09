@@ -1,7 +1,7 @@
-import { TRPCError, initTRPC } from '@trpc/server';
-import { ZodError } from 'zod';
+import { TRPCError, initTRPC } from "@trpc/server";
+import { ZodError } from "zod";
 
-import type { ContextFn } from './context';
+import type { ContextFn } from "./context";
 
 export const t = initTRPC.context<ContextFn>().create({
   errorFormatter({ shape, error }) {
@@ -10,7 +10,7 @@ export const t = initTRPC.context<ContextFn>().create({
       data: {
         ...shape.data,
         zodError:
-          error.code === 'BAD_REQUEST' && error.cause instanceof ZodError
+          error.code === "BAD_REQUEST" && error.cause instanceof ZodError
             ? error.cause.flatten()
             : null,
       },
@@ -24,7 +24,7 @@ export const publicProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(
   t.middleware(async ({ ctx, next }) => {
     if (!ctx.user) {
-      throw new TRPCError({ code: 'UNAUTHORIZED' });
+      throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
     return next({

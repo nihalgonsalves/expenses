@@ -1,28 +1,28 @@
-import type { PrismaClient } from '@prisma/client';
-import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
-import cookie from 'cookie';
-import { UAParser } from 'ua-parser-js';
+import type { PrismaClient } from "@prisma/client";
+import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
+import cookie from "cookie";
+import { UAParser } from "ua-parser-js";
 
 import {
   type JWTToken,
   ZJWTToken,
-} from '@nihalgonsalves/expenses-shared/types/user';
+} from "@nihalgonsalves/expenses-shared/types/user";
 
-import { config } from './config';
-import { FrankfurterService } from './service/frankfurter/FrankfurterService';
-import { NotificationSubscriptionService } from './service/notification/service';
-import { SheetService } from './service/sheet/service';
-import { TransactionService } from './service/transaction/service';
-import { UserService } from './service/user/service';
-import { UserServiceError } from './service/user/utils';
-import type { Workers } from './startWorkers';
+import { config } from "./config";
+import { FrankfurterService } from "./service/frankfurter/FrankfurterService";
+import { NotificationSubscriptionService } from "./service/notification/service";
+import { SheetService } from "./service/sheet/service";
+import { TransactionService } from "./service/transaction/service";
+import { UserService } from "./service/user/service";
+import { UserServiceError } from "./service/user/utils";
+import type { Workers } from "./startWorkers";
 
-export const AUTH_COOKIE_NAME = 'auth';
+export const AUTH_COOKIE_NAME = "auth";
 
 export const getMaybeUser = async (
   cookieHeader: string | null,
   setJwtToken: (value: JWTToken | null) => Promise<void>,
-  userServiceImpl: Pick<UserService, 'exchangeToken'>,
+  userServiceImpl: Pick<UserService, "exchangeToken">,
 ) => {
   if (!cookieHeader) {
     return undefined;
@@ -45,7 +45,7 @@ export const getMaybeUser = async (
 
     return user;
   } catch (e) {
-    if (e instanceof UserServiceError && e.code === 'FORBIDDEN') {
+    if (e instanceof UserServiceError && e.code === "FORBIDDEN") {
       await setJwtToken(null);
     }
     throw e;
@@ -72,14 +72,14 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
   return async ({ req, resHeaders }: FetchCreateContextFnOptions) => {
     const setJwtToken = async (value: JWTToken | null) => {
       if (!value) {
-        resHeaders.set('clear-site-data', '"*"');
+        resHeaders.set("clear-site-data", '"*"');
       }
 
       // Clear old versions of the cookie
       resHeaders.append(
-        'Set-Cookie',
-        cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
-          path: '/api/trpc',
+        "Set-Cookie",
+        cookie.serialize(AUTH_COOKIE_NAME, value ?? "", {
+          path: "/api/trpc",
           httpOnly: true,
           secure: config.SECURE,
           maxAge: -1,
@@ -87,12 +87,12 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
       );
 
       resHeaders.append(
-        'Set-Cookie',
-        cookie.serialize(AUTH_COOKIE_NAME, value ?? '', {
-          path: '/',
+        "Set-Cookie",
+        cookie.serialize(AUTH_COOKIE_NAME, value ?? "", {
+          path: "/",
           httpOnly: true,
           secure: config.SECURE,
-          sameSite: 'strict',
+          sameSite: "strict",
           maxAge: value ? config.JWT_EXPIRY_SECONDS : -1,
         }),
       );
@@ -101,13 +101,13 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
     return {
       prisma,
       user: await getMaybeUser(
-        req.headers.get('cookie'),
+        req.headers.get("cookie"),
         setJwtToken,
         userService,
       ),
       get userAgent() {
         return new UAParser(
-          req.headers.get('user-agent') ?? undefined,
+          req.headers.get("user-agent") ?? undefined,
         ).getResult();
       },
       userService,

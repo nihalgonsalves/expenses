@@ -1,12 +1,12 @@
-import { CaretSortIcon } from '@radix-ui/react-icons';
-import type { Meta, StoryObj } from '@storybook/react';
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { Button } from './button';
+import { Button } from "./button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from './collapsible';
+} from "./collapsible";
 
 const meta: Meta<typeof Collapsible> = {
   component: Collapsible,

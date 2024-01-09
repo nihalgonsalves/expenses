@@ -1,18 +1,18 @@
-import fs from 'fs/promises';
-import { fileURLToPath } from 'url';
+import fs from "fs/promises";
+import { fileURLToPath } from "url";
 
-import { test as base, expect } from '@playwright/test';
+import { test as base, expect } from "@playwright/test";
 import {
   type CreateTRPCProxyClient,
   createTRPCProxyClient,
   httpBatchLink,
-} from '@trpc/client';
-import { nanoid } from 'nanoid';
+} from "@trpc/client";
+import { nanoid } from "nanoid";
 
-import type { AppRouter } from '@nihalgonsalves/expenses-backend';
-import type { User } from '@nihalgonsalves/expenses-shared/types/user';
+import type { AppRouter } from "@nihalgonsalves/expenses-backend";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { getUserData } from './misc';
+import { getUserData } from "./misc";
 
 type Fixtures = {
   serverTRPCClient: CreateTRPCProxyClient<AppRouter>;
@@ -33,17 +33,17 @@ declare global {
 export const test = base.extend<Fixtures>({
   context: async ({ context }, use) => {
     await context.addInitScript(() => {
-      window.addEventListener('beforeunload', () => {
+      window.addEventListener("beforeunload", () => {
         globalThis.collectIstanbulCoverage(
           JSON.stringify(globalThis.__coverage__),
         );
       });
     });
 
-    await fs.mkdir(relativePath('../coverage/'), { recursive: true });
+    await fs.mkdir(relativePath("../coverage/"), { recursive: true });
 
     await context.exposeFunction(
-      'collectIstanbulCoverage',
+      "collectIstanbulCoverage",
       async (coverageJSON: string) => {
         if (coverageJSON)
           await fs.writeFile(
@@ -70,10 +70,10 @@ export const test = base.extend<Fixtures>({
     const client = createTRPCProxyClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: new URL('/api/trpc', baseURL),
+          url: new URL("/api/trpc", baseURL),
           // @ts-expect-error we're not handling theunion member body: ... | () => Promise<Buffer>
           fetch: async (input, { headers, body, ...init } = {}) => {
-            if (typeof input === 'string') {
+            if (typeof input === "string") {
               const response = await request.fetch(input, {
                 ...init,
                 data: body,
@@ -114,17 +114,17 @@ export const test = base.extend<Fixtures>({
     await use(async () => {
       const { id, name, email, password, theme } = await createUser();
 
-      await page.goto('/auth/sign-in');
+      await page.goto("/auth/sign-in");
 
       await expect(page).toHaveTitle(/sign in/i);
 
       await page.getByLabel(/email/i).fill(email);
       await page.getByLabel(/password/i).fill(password);
-      await page.getByRole('button', { name: /sign in/i }).click();
+      await page.getByRole("button", { name: /sign in/i }).click();
 
       return { id, name, email, password, theme };
     });
   },
 });
 
-export { expect } from '@playwright/test';
+export { expect } from "@playwright/test";

@@ -1,10 +1,10 @@
-import { forwardRef, useMemo } from 'react';
-import type { ControllerRenderProps } from 'react-hook-form';
-import { z } from 'zod';
+import { forwardRef, useMemo } from "react";
+import type { ControllerRenderProps } from "react-hook-form";
+import { z } from "zod";
 
-import { trpc } from '../../api/trpc';
+import { trpc } from "../../api/trpc";
 
-import { Select, type SelectOption } from './Select';
+import { Select, type SelectOption } from "./Select";
 
 const schema = z.string().min(1).optional();
 type Schema = z.infer<typeof schema>;
@@ -14,7 +14,7 @@ type SheetSelectProps = {
   className?: string;
   value: Schema;
   onChange: (value: Schema) => void;
-} & Omit<ControllerRenderProps, 'value' | 'onChange' | 'ref'>;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 const emptyOption = {
   label: <span className="opacity-80">Clear Selection</span>,
@@ -24,7 +24,7 @@ const emptyOption = {
 export const SheetSelect = forwardRef<HTMLButtonElement, SheetSelectProps>(
   (
     {
-      placeholder = 'Select a sheet',
+      placeholder = "Select a sheet",
       value,
       onChange,
       className,
@@ -63,4 +63,4 @@ export const SheetSelect = forwardRef<HTMLButtonElement, SheetSelectProps>(
     );
   },
 );
-SheetSelect.displayName = 'SheetSelect';
+SheetSelect.displayName = "SheetSelect";

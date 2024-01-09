@@ -1,11 +1,11 @@
-import { Temporal } from '@js-temporal/polyfill';
-import type { TransactionSchedule } from '@prisma/client';
-import { Frequency, RRule } from 'rrule';
+import { Temporal } from "@js-temporal/polyfill";
+import type { TransactionSchedule } from "@prisma/client";
+import { Frequency, RRule } from "rrule";
 
 import {
   ZRecurrenceFrequency,
   type RecurrenceFrequency,
-} from '@nihalgonsalves/expenses-shared/types/transaction';
+} from "@nihalgonsalves/expenses-shared/types/transaction";
 
 const frequencyToRRuleEnum: Record<RecurrenceFrequency, Frequency> = {
   WEEKLY: Frequency.WEEKLY,
@@ -15,14 +15,14 @@ const frequencyToRRuleEnum: Record<RecurrenceFrequency, Frequency> = {
 export const getFloatingRRuleDate = (isoString: string) =>
   new Date(
     Temporal.PlainDateTime.from(isoString).toZonedDateTime(
-      'UTC',
+      "UTC",
     ).epochMilliseconds,
   );
 
 const floatingDateToZonedDateTime = (floatingDate: Date, tzId: string) =>
   Temporal.Instant.fromEpochMilliseconds(floatingDate.valueOf())
     // pretend the date is UTC
-    .toZonedDateTimeISO('UTC')
+    .toZonedDateTimeISO("UTC")
     // truncate the timezone
     .toPlainDateTime()
     // and replace it with the local timezone
@@ -34,7 +34,7 @@ const zonedDateTimeToFloatingDate = (zonedDateTime: Temporal.ZonedDateTime) =>
       // truncate the timezone
       .toPlainDateTime()
       // replace it with UTC
-      .toZonedDateTime('UTC')
+      .toZonedDateTime("UTC")
       .toInstant().epochMilliseconds,
   );
 
@@ -46,7 +46,7 @@ const zonedDateTimeFromDate = (date: Date, tzId: string) =>
 export const getRRuleInstancesTzAware = (
   transactionSchedule: Pick<
     TransactionSchedule,
-    'nextOccurrenceTzId' | 'nextOccurrenceAt' | 'rruleFreq'
+    "nextOccurrenceTzId" | "nextOccurrenceAt" | "rruleFreq"
   >,
   now = Temporal.Now.zonedDateTimeISO(),
 ) => {
@@ -86,7 +86,7 @@ export const getRRuleInstancesTzAware = (
   // should not be possible, as that is the condition for the rrule.all iterator to stop
   if (nextOccurrenceAt == null) {
     throw new Error(
-      'Error calculating rrule: unexpected nextOccurrenceAt null',
+      "Error calculating rrule: unexpected nextOccurrenceAt null",
     );
   }
 

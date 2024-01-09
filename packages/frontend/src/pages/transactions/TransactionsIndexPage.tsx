@@ -1,11 +1,11 @@
-import { endOfMonth, startOfMonth } from 'date-fns';
-import { useState } from 'react';
-import type { DateRange } from 'react-day-picker';
+import { endOfMonth, startOfMonth } from "date-fns";
+import { useState } from "react";
+import type { DateRange } from "react-day-picker";
 
-import { useAllUserTransactions } from '../../api/useAllUserTransactions';
-import { AllUserTransactionsList } from '../../components/AllUserTransactionsList';
-import { QuickCreateTransactionFAB } from '../../components/expenses/QuickCreateTransactionFAB';
-import { RootLoader } from '../Root';
+import { useAllUserTransactions } from "../../api/useAllUserTransactions";
+import { AllUserTransactionsList } from "../../components/AllUserTransactionsList";
+import { QuickCreateTransactionFAB } from "../../components/expenses/QuickCreateTransactionFAB";
+import { RootLoader } from "../Root";
 
 export const TransactionsIndexPage = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
