@@ -121,7 +121,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
+      mailpit:
+        image: axllent/mailpit
     steps:
       - uses: actions/checkout@v4
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989

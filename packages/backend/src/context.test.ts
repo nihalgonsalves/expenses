@@ -18,9 +18,11 @@ describe("getMaybeUser", () => {
           user: {
             id: "id",
             name: `name (${token})`,
-            email: "email",
+            email: "email@example.com",
+            emailVerified: false,
             theme: null,
           },
+          payload: {},
           newToken: undefined,
         }),
       },
@@ -29,7 +31,8 @@ describe("getMaybeUser", () => {
     expect(result).toEqual<User>({
       id: "id",
       name: "name (<jwt-token>)",
-      email: "email",
+      email: "email@example.com",
+      emailVerified: false,
       theme: null,
     });
   });

@@ -1,4 +1,5 @@
 import { UAParser } from "ua-parser-js";
+import { beforeEach } from "vitest";
 
 import type {
   User,
@@ -12,7 +13,7 @@ import { FrankfurterService } from "../src/service/frankfurter/FrankfurterServic
 import { NotificationSubscriptionService } from "../src/service/notification/service";
 import { SheetService } from "../src/service/sheet/service";
 import { TransactionService } from "../src/service/transaction/service";
-import { UserService } from "../src/service/user/service";
+import { UserService, type EmailPayload } from "../src/service/user/service";
 import { t } from "../src/trpc";
 
 import { getPrisma } from "./getPrisma";
@@ -20,6 +21,11 @@ import { FakeNotificationDispatchService } from "./webPushUtils";
 
 export const getTRPCCaller = async () => {
   const prisma = await getPrisma();
+  const mailbox: { messages: EmailPayload[] } = { messages: [] };
+
+  beforeEach(() => {
+    mailbox.messages = [];
+  });
 
   const useCaller = (
     user: User | undefined,
@@ -27,7 +33,9 @@ export const getTRPCCaller = async () => {
   ) => {
     const notificationDispatchService = new FakeNotificationDispatchService();
 
-    const userService = new UserService(prisma);
+    const userService = new UserService(prisma, async (email) => {
+      mailbox.messages.push(email);
+    });
     const notificationSubscriptionService = new NotificationSubscriptionService(
       prisma,
     );
@@ -63,6 +71,7 @@ export const getTRPCCaller = async () => {
 
   return {
     prisma,
+    mailbox,
     usePublicCaller: (setJwtToken = async (_token: JWTToken | null) => {}) =>
       useCaller(undefined, setJwtToken),
     useProtectedCaller: (

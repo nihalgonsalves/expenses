@@ -1,6 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import cookie from "cookie";
+import nodemailer from "nodemailer";
 import { UAParser } from "ua-parser-js";
 
 import {
@@ -13,7 +14,7 @@ import { FrankfurterService } from "./service/frankfurter/FrankfurterService";
 import { NotificationSubscriptionService } from "./service/notification/service";
 import { SheetService } from "./service/sheet/service";
 import { TransactionService } from "./service/transaction/service";
-import { UserService } from "./service/user/service";
+import { UserService, type EmailPayload } from "./service/user/service";
 import { UserServiceError } from "./service/user/utils";
 import type { Workers } from "./startWorkers";
 
@@ -52,8 +53,22 @@ export const getMaybeUser = async (
   }
 };
 
+const nodemailerTransport = nodemailer.createTransport({
+  host: config.SMTP_HOST,
+  port: config.SMTP_PORT,
+  secure: config.SECURE,
+  auth: {
+    user: config.SMTP_USER,
+    pass: config.SMTP_PASSWORD,
+  },
+});
+
+const sendEmail = async (email: EmailPayload) => {
+  await nodemailerTransport.sendMail(email);
+};
+
 export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
-  const userService = new UserService(prisma);
+  const userService = new UserService(prisma, sendEmail);
 
   const notificationSubscriptionService = new NotificationSubscriptionService(
     prisma,

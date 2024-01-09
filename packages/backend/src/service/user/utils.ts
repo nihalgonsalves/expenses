@@ -33,16 +33,21 @@ const secret = new TextEncoder().encode(config.JWT_SECRET);
 
 export const signJWT = async (
   user: Pick<User, "id">,
-  identity = config.JWT_IDENTITY,
+  {
+    identity = config.JWT_IDENTITY,
+    payload = {},
+    expiry = { seconds: config.JWT_EXPIRY_SECONDS },
+  }: {
+    identity?: string;
+    payload?: Record<string, unknown>;
+    expiry?: Temporal.DurationLike;
+  } = {},
 ): Promise<JWTToken> => {
-  const token = await new SignJWT({})
+  const token = await new SignJWT(payload)
     .setSubject(user.id)
     .setProtectedHeader({ alg })
     .setIssuedAt()
-    .setExpirationTime(
-      Temporal.Now.instant().add({ seconds: config.JWT_EXPIRY_SECONDS })
-        .epochSeconds,
-    )
+    .setExpirationTime(Temporal.Now.instant().add(expiry).epochSeconds)
     .setIssuer(identity)
     .setAudience(identity)
     .sign(secret);

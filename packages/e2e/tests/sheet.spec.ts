@@ -3,6 +3,7 @@ import { expect, test } from "../utils/test";
 ["personal", "group"].forEach((type) => {
   test(`creates a ${type} sheet successfully`, async ({ page, signIn }) => {
     await signIn();
+    await page.goto("/");
 
     await page.getByRole("link", { name: "Sheets" }).click();
 

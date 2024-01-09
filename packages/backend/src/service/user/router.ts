@@ -6,6 +6,7 @@ import {
   ZUser,
   ZCreateUserInput,
   ZUpdateUserInput,
+  ZResetPasswordInput,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { publicProcedure, protectedProcedure, router } from "../../trpc";
@@ -27,6 +28,20 @@ export const userRouter = router({
       const { user, token } = await ctx.userService.authorize(input);
       await ctx.setJwtToken(token);
       return user;
+    }),
+
+  requestPasswordReset: publicProcedure
+    .input(z.string().email())
+    .output(z.void())
+    .mutation(async ({ ctx, input }) => {
+      await ctx.userService.requestPasswordReset(input);
+    }),
+
+  resetPassword: publicProcedure
+    .input(ZResetPasswordInput)
+    .output(z.void())
+    .mutation(async ({ ctx, input }) => {
+      await ctx.userService.resetPassword(input.token, input.password);
     }),
 
   updateUser: protectedProcedure

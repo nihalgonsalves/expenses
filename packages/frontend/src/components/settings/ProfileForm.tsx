@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import type { z } from "zod";
@@ -89,6 +90,11 @@ export const ProfileForm = ({ me }: { me: User }) => {
                   <FormControl>
                     <Input type="email" autoComplete="email" {...field} />
                   </FormControl>
+                  {me.emailVerified && (
+                    <FormDescription className="flex items-center gap-1.5">
+                      <CheckCircledIcon /> Verified
+                    </FormDescription>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
