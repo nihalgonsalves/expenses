@@ -6,6 +6,7 @@ import {
   themeColors,
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
+import { config } from "./config";
 import type { makeCreateContext } from "./context";
 
 /**
@@ -26,44 +27,50 @@ export const makePWARouter = (
     const theme = ZTheme.catch(THEME_DEFAULT).parse(context.user?.theme);
     const { primary } = themeColors[theme];
 
-    c.json({
-      id: "/",
-      name: "Expenses",
-      short_name: "Expenses",
-      start_url: "/",
-      display: "standalone",
-      background_color: "#ffffff",
-      lang: "en",
-      scope: "/",
-      description: "Expenses App",
-      theme_color: primary,
-      icons: [
-        ...["any", "maskable"].map((purpose) => ({
-          src: `/assets/icon-normal-${theme}.svg`,
-          type: "image/svg+xml",
-          sizes: "any 512x512",
-          purpose,
-        })),
-        {
-          src: `/assets/icon-maskable-${theme}.svg`,
-          type: "image/svg+xml",
-          sizes: "any 512x512 192x192 180x180 120x120",
-          purpose: "maskable",
-        },
-        {
-          src: `/assets/icon-${theme}.png`,
-          type: "image/png",
-          sizes: "180x180",
-          purpose: "any",
-        },
-        {
-          src: "/assets/icon-monochrome.svg",
-          type: "image/svg+xml",
-          sizes: "16x16",
-          purpose: "monochrome",
-        },
-      ],
-    });
+    return c.json(
+      {
+        id: "/",
+        name: config.APP_NAME,
+        short_name: config.APP_NAME,
+        start_url: "/",
+        display: "standalone",
+        background_color: "#ffffff",
+        lang: "en",
+        scope: "/",
+        description: "Expenses App",
+        theme_color: primary,
+        icons: [
+          ...["any", "maskable"].map((purpose) => ({
+            src: `/assets/icon-normal-${theme}.svg`,
+            type: "image/svg+xml",
+            sizes: "any 512x512",
+            purpose,
+          })),
+          {
+            src: `/assets/icon-maskable-${theme}.svg`,
+            type: "image/svg+xml",
+            sizes: "any 512x512 192x192 180x180 120x120",
+            purpose: "maskable",
+          },
+          {
+            src: `/assets/icon-${theme}.png`,
+            type: "image/png",
+            sizes: "180x180",
+            purpose: "any",
+          },
+          {
+            src: "/assets/icon-monochrome.svg",
+            type: "image/svg+xml",
+            sizes: "16x16",
+            purpose: "monochrome",
+          },
+        ],
+      },
+      200,
+      {
+        "content-type": "application/manifest+json",
+      },
+    );
   });
 
   return app;
