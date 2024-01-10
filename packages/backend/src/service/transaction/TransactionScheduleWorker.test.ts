@@ -7,8 +7,8 @@ import { getPrisma } from "../../../test/getPrisma";
 import { getRedis } from "../../../test/getRedis";
 import { createPersonalSheetTransactionScheduleInput } from "../../../test/input";
 
+import { TransactionScheduleWorker } from "./TransactionScheduleWorker";
 import { mapInputToCreatePersonalTransactionSchedule } from "./prismaMappers";
-import { TransactionScheduleWorker } from "./worker";
 
 const prisma = await getPrisma();
 const redis = await getRedis();

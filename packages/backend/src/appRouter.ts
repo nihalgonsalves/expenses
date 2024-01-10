@@ -2,10 +2,10 @@ import { z } from "zod";
 
 import { config } from "./config";
 import { currencyConversionRouter } from "./service/frankfurter/currencyConversionRouter";
-import { notificationRouter } from "./service/notification/router";
-import { sheetRouter } from "./service/sheet/router";
-import { transactionRouter } from "./service/transaction/router";
-import { userRouter } from "./service/user/router";
+import { notificationRouter } from "./service/notification/notificationRouter";
+import { sheetRouter } from "./service/sheet/sheetRouter";
+import { transactionRouter } from "./service/transaction/transactionRouter";
+import { userRouter } from "./service/user/userRouter";
 import { publicProcedure, router } from "./trpc";
 import { getErrorMessage } from "./utils/trpcUtils";
 

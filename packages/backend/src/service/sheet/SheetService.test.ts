@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { nameFromEmail } from "./service";
+import { nameFromEmail } from "./SheetService";
 
 describe("nameFromEmail", () => {
   it("returns a name", () => {

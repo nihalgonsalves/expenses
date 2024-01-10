@@ -3,8 +3,8 @@ import type { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
 import { config } from "./config";
-import { NotificationDispatchService } from "./service/notification/service";
-import { TransactionScheduleWorker } from "./service/transaction/worker";
+import { NotificationDispatchWorker } from "./service/notification/NotificationDispatchWorker";
+import { TransactionScheduleWorker } from "./service/transaction/TransactionScheduleWorker";
 
 export type IWorker<TData, TResult> = {
   worker: Worker<TData, TResult>;
@@ -37,15 +37,11 @@ const closeWorker = async ({ worker }: IWorker<any, any>) => {
 
 export const startWorkers = async (prisma: PrismaClient, redis: Redis) => {
   const workers = {
-    notificationDispatchService: new NotificationDispatchService(
-      prisma,
-      redis,
-      {
-        publicKey: config.VAPID_PUBLIC_KEY,
-        privateKey: config.VAPID_PRIVATE_KEY,
-        subject: `mailto:${config.VAPID_EMAIL}`,
-      },
-    ),
+    notificationDispatchService: new NotificationDispatchWorker(prisma, redis, {
+      publicKey: config.VAPID_PUBLIC_KEY,
+      privateKey: config.VAPID_PRIVATE_KEY,
+      subject: `mailto:${config.VAPID_EMAIL}`,
+    }),
     transactionScheduleWorker: new TransactionScheduleWorker(prisma, redis),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as const satisfies Record<string, IWorker<any, any>>;

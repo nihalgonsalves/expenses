@@ -11,10 +11,10 @@ import {
 
 import { config } from "./config";
 import { FrankfurterService } from "./service/frankfurter/FrankfurterService";
-import { NotificationSubscriptionService } from "./service/notification/service";
-import { SheetService } from "./service/sheet/service";
-import { TransactionService } from "./service/transaction/service";
-import { UserService, type EmailPayload } from "./service/user/service";
+import { NotificationService } from "./service/notification/NotificationService";
+import { SheetService } from "./service/sheet/SheetService";
+import { TransactionService } from "./service/transaction/TransactionService";
+import { UserService, type EmailPayload } from "./service/user/UserService";
 import { UserServiceError } from "./service/user/utils";
 import type { Workers } from "./startWorkers";
 
@@ -70,9 +70,7 @@ const sendEmail = async (email: EmailPayload) => {
 export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
   const userService = new UserService(prisma, sendEmail);
 
-  const notificationSubscriptionService = new NotificationSubscriptionService(
-    prisma,
-  );
+  const notificationSubscriptionService = new NotificationService(prisma);
 
   const transactionService = new TransactionService(
     prisma,

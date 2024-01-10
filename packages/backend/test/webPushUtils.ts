@@ -10,7 +10,7 @@ import {
   type NotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import type { INotificationDispatchService } from "../src/service/notification/service";
+import type { INotificationDispatchWorker } from "../src/service/notification/NotificationDispatchWorker";
 
 export const getVapidDetails = () => {
   const { publicKey, privateKey } = generateVAPIDKeys();
@@ -27,7 +27,7 @@ export type FakeNotificationItem = {
   payload: NotificationPayload;
 };
 export class FakeNotificationDispatchService
-  implements INotificationDispatchService
+  implements INotificationDispatchWorker
 {
   public messages: FakeNotificationItem[] = [];
 

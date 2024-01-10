@@ -36,7 +36,7 @@ import type {
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { generateId } from "../../utils/nanoid";
-import type { INotificationDispatchService } from "../notification/service";
+import type { INotificationDispatchWorker } from "../notification/NotificationDispatchWorker";
 
 import {
   transactionToNotificationPayload,
@@ -161,7 +161,7 @@ export class TransactionService {
       | "transactionEntry"
       | "sheetMemberships"
     >,
-    private notificationService: INotificationDispatchService,
+    private notificationService: INotificationDispatchWorker,
   ) {}
 
   async getAllUserTransactions(

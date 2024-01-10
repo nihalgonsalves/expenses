@@ -9,10 +9,10 @@ import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
 import IORedis from "ioredis";
 
+import { appRouter } from "./appRouter";
 import { config } from "./config";
 import { makeCreateContext } from "./context";
 import { makePWARouter } from "./pwaRouter";
-import { appRouter } from "./router";
 import { startWorkers } from "./startWorkers";
 
 export const createApp = async (prisma: PrismaClient, redis: IORedis) => {

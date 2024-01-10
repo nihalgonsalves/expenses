@@ -12,7 +12,7 @@ import {
   type FakeNotificationItem,
 } from "../../../test/webPushUtils";
 
-import { TransactionService } from "./service";
+import { TransactionService } from "./TransactionService";
 
 const prisma = await getPrisma();
 

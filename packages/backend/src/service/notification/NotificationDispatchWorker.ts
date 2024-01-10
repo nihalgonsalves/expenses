@@ -8,61 +8,12 @@ import webPush, {
 } from "web-push";
 
 import {
-  type NotificationSubscriptionUpsertInput,
   type NotificationPayload,
   ZNotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
-import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
 import type { IWorker } from "../../startWorkers";
-import { generateId } from "../../utils/nanoid";
-
-export class NotificationSubscriptionService {
-  constructor(
-    private prismaClient: Pick<PrismaClient, "notificationSubscription">,
-  ) {}
-
-  async getSubscriptions(user: User) {
-    return this.prismaClient.notificationSubscription.findMany({
-      where: {
-        userId: user.id,
-      },
-    });
-  }
-
-  async upsertSubscription(
-    user: User,
-    input: NotificationSubscriptionUpsertInput,
-    description: string,
-  ) {
-    const createOrUpdate = {
-      userId: user.id,
-      description,
-
-      endpoint: input.pushSubscription.endpoint,
-      keyAuth: input.pushSubscription.keys.auth,
-      keyP256dh: input.pushSubscription.keys.p256dh,
-    };
-
-    return this.prismaClient.notificationSubscription.upsert({
-      where: {
-        endpoint: input.pushSubscription.endpoint,
-      },
-      create: { ...createOrUpdate, id: generateId() },
-      update: createOrUpdate,
-    });
-  }
-
-  async deleteSubscription(user: User, id: string) {
-    await this.prismaClient.notificationSubscription.delete({
-      where: {
-        id,
-        userId: user.id,
-      },
-    });
-  }
-}
 
 type WebPushQueueItem = {
   userId: string;
@@ -70,22 +21,21 @@ type WebPushQueueItem = {
   pushSubscription: PushSubscription;
   payload: NotificationPayload;
 };
-
 type NotificationDispatchResult = { id: string; userId: string } & (
   | { success: false; errorType: "SERVER"; statusCode: number }
   | { success: false; errorType: "UNKNOWN"; error: unknown }
   | { success: true }
 );
 
-export type INotificationDispatchService = {
+export type INotificationDispatchWorker = {
   sendNotifications: (
     messagesByUserId: Record<string, NotificationPayload>,
   ) => Promise<void>;
 };
 
-export class NotificationDispatchService
+export class NotificationDispatchWorker
   implements
-    INotificationDispatchService,
+    INotificationDispatchWorker,
     IWorker<WebPushQueueItem, NotificationDispatchResult>
 {
   queue: Queue<WebPushQueueItem, NotificationDispatchResult>;

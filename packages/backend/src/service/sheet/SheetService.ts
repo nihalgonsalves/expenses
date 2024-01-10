@@ -19,7 +19,7 @@ import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { generateId } from "../../utils/nanoid";
 import { getTRPCError } from "../../utils/trpcUtils";
-import type { TransactionService } from "../transaction/service";
+import type { TransactionService } from "../transaction/TransactionService";
 
 class SheetServiceError extends TRPCError {}
 

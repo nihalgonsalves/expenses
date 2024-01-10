@@ -6,14 +6,17 @@ import type {
   JWTToken,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
+import { appRouter } from "../src/appRouter";
 import { config } from "../src/config";
 import type { ContextObj } from "../src/context";
-import { appRouter } from "../src/router";
 import { FrankfurterService } from "../src/service/frankfurter/FrankfurterService";
-import { NotificationSubscriptionService } from "../src/service/notification/service";
-import { SheetService } from "../src/service/sheet/service";
-import { TransactionService } from "../src/service/transaction/service";
-import { UserService, type EmailPayload } from "../src/service/user/service";
+import { NotificationService } from "../src/service/notification/NotificationService";
+import { SheetService } from "../src/service/sheet/SheetService";
+import { TransactionService } from "../src/service/transaction/TransactionService";
+import {
+  UserService,
+  type EmailPayload,
+} from "../src/service/user/UserService";
 import { t } from "../src/trpc";
 
 import { getPrisma } from "./getPrisma";
@@ -36,9 +39,7 @@ export const getTRPCCaller = async () => {
     const userService = new UserService(prisma, async (email) => {
       mailbox.messages.push(email);
     });
-    const notificationSubscriptionService = new NotificationSubscriptionService(
-      prisma,
-    );
+    const notificationSubscriptionService = new NotificationService(prisma);
     const transactionService = new TransactionService(
       prisma,
       notificationDispatchService,

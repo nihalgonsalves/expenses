@@ -10,11 +10,11 @@ import { getRedis } from "../../../test/getRedis";
 import { createPushService, getVapidDetails } from "../../../test/webPushUtils";
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
 
-import { NotificationDispatchService } from "./service";
+import { NotificationDispatchWorker } from "./NotificationDispatchWorker";
 
 const prisma = await getPrisma();
 const redis = await getRedis();
-const notificationDispatchService = new NotificationDispatchService(
+const notificationDispatchService = new NotificationDispatchWorker(
   prisma,
   redis,
   getVapidDetails(),
