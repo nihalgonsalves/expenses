@@ -1,7 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import type { JWTPayload } from "jose";
-import type Mail from "nodemailer/lib/mailer";
 import { z } from "zod";
 
 import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
@@ -15,6 +14,7 @@ import type {
 
 import { config } from "../../config";
 import { generateId } from "../../utils/nanoid";
+import type { IEmailWorker } from "../email/EmailWorker";
 
 import {
   UserServiceError,
@@ -29,20 +29,13 @@ const ZPasswordResetJWTPayload = z.object({
   passwordResetToken: z.string(),
 });
 
-export type EmailPayload = Pick<
-  Mail.Options,
-  "from" | "to" | "subject" | "text"
->;
-
-type SendEmailFn = (options: EmailPayload) => Promise<void>;
-
 export class UserService {
   constructor(
     private prismaClient: Pick<
       PrismaClient,
       "$transaction" | "user" | "sheet" | "category"
     >,
-    private sendEmail: SendEmailFn,
+    private emailWorker: IEmailWorker,
   ) {}
 
   async exchangeToken(token: JWTToken): Promise<{
@@ -293,8 +286,7 @@ export class UserService {
       data: { passwordResetToken },
     });
 
-    // TODO: put on bullmq queue
-    await this.sendEmail({
+    await this.emailWorker.sendEmail({
       from: `${config.APP_NAME} <${config.EMAIL_FROM}>`,
       to: `${user.name} <${user.email}>`,
       subject: `Your reset password link for ${config.APP_NAME}`,

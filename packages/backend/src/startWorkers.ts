@@ -3,6 +3,7 @@ import type { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
 import { config } from "./config";
+import { EmailWorker } from "./service/email/EmailWorker";
 import { NotificationDispatchWorker } from "./service/notification/NotificationDispatchWorker";
 import { TransactionScheduleWorker } from "./service/transaction/TransactionScheduleWorker";
 
@@ -43,6 +44,7 @@ export const startWorkers = async (prisma: PrismaClient, redis: Redis) => {
       subject: `mailto:${config.VAPID_EMAIL}`,
     }),
     transactionScheduleWorker: new TransactionScheduleWorker(prisma, redis),
+    emailWorker: new EmailWorker(redis),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as const satisfies Record<string, IWorker<any, any>>;
 

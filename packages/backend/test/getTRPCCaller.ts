@@ -13,21 +13,19 @@ import { FrankfurterService } from "../src/service/frankfurter/FrankfurterServic
 import { NotificationService } from "../src/service/notification/NotificationService";
 import { SheetService } from "../src/service/sheet/SheetService";
 import { TransactionService } from "../src/service/transaction/TransactionService";
-import {
-  UserService,
-  type EmailPayload,
-} from "../src/service/user/UserService";
+import { UserService } from "../src/service/user/UserService";
 import { t } from "../src/trpc";
 
+import { FakeEmailWorker } from "./FakeEmailWorker";
 import { getPrisma } from "./getPrisma";
 import { FakeNotificationDispatchService } from "./webPushUtils";
 
 export const getTRPCCaller = async () => {
   const prisma = await getPrisma();
-  const mailbox: { messages: EmailPayload[] } = { messages: [] };
 
+  const emailWorker = new FakeEmailWorker();
   beforeEach(() => {
-    mailbox.messages = [];
+    emailWorker.messages = [];
   });
 
   const useCaller = (
@@ -36,9 +34,7 @@ export const getTRPCCaller = async () => {
   ) => {
     const notificationDispatchService = new FakeNotificationDispatchService();
 
-    const userService = new UserService(prisma, async (email) => {
-      mailbox.messages.push(email);
-    });
+    const userService = new UserService(prisma, emailWorker);
     const notificationSubscriptionService = new NotificationService(prisma);
     const transactionService = new TransactionService(
       prisma,
@@ -72,7 +68,7 @@ export const getTRPCCaller = async () => {
 
   return {
     prisma,
-    mailbox,
+    emailWorker,
     usePublicCaller: (setJwtToken = async (_token: JWTToken | null) => {}) =>
       useCaller(undefined, setJwtToken),
     useProtectedCaller: (

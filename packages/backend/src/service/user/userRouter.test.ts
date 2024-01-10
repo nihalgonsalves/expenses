@@ -19,7 +19,7 @@ const userArgs = {
   password: "correct-horse-battery-staple",
 };
 
-const { usePublicCaller, useProtectedCaller, mailbox, prisma } =
+const { usePublicCaller, useProtectedCaller, prisma, emailWorker } =
   await getTRPCCaller();
 
 describe("createUser", () => {
@@ -336,7 +336,7 @@ describe("requestPasswordReset", () => {
 
     await caller.user.requestPasswordReset(faker.internet.email());
 
-    expect(mailbox.messages).toHaveLength(0);
+    expect(emailWorker.messages).toHaveLength(0);
   });
 
   it("sends an email if the user exists", async () => {
@@ -346,12 +346,14 @@ describe("requestPasswordReset", () => {
 
     await caller.user.requestPasswordReset(user.email);
 
-    expect(mailbox.messages).toHaveLength(1);
+    expect(emailWorker.messages).toHaveLength(1);
 
-    expect(mailbox.messages[0]?.from).toMatch(config.EMAIL_FROM);
-    expect(mailbox.messages[0]?.to).toMatch(user.email);
-    expect(mailbox.messages[0]?.subject).toMatch(/your reset password link/i);
-    expect(mailbox.messages[0]?.text).toMatch(
+    expect(emailWorker.messages[0]?.from).toMatch(config.EMAIL_FROM);
+    expect(emailWorker.messages[0]?.to).toMatch(user.email);
+    expect(emailWorker.messages[0]?.subject).toMatch(
+      /your reset password link/i,
+    );
+    expect(emailWorker.messages[0]?.text).toMatch(
       /click here to reset your password/i,
     );
 
@@ -365,7 +367,7 @@ describe("requestPasswordReset", () => {
 
 describe("resetPassword", () => {
   const getResetTokenFromMailbox = (index = 0) => {
-    const emailText = mailbox.messages[index]?.text;
+    const emailText = emailWorker.messages[index]?.text;
     if (typeof emailText !== "string") {
       throw new Error("No email text");
     }

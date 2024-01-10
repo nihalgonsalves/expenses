@@ -161,7 +161,7 @@ export class TransactionService {
       | "transactionEntry"
       | "sheetMemberships"
     >,
-    private notificationService: INotificationDispatchWorker,
+    private notificationDispatchWorker: INotificationDispatchWorker,
   ) {}
 
   async getAllUserTransactions(
@@ -528,7 +528,7 @@ export class TransactionService {
       transaction.transactionEntries,
     );
 
-    await this.notificationService.sendNotifications(
+    await this.notificationDispatchWorker.sendNotifications(
       Object.fromEntries(
         balances
           .filter(({ id }) => id !== user.id)
@@ -597,7 +597,7 @@ export class TransactionService {
         "received",
       );
 
-    await this.notificationService.sendNotifications(messages);
+    await this.notificationDispatchWorker.sendNotifications(messages);
 
     return transaction;
   }
