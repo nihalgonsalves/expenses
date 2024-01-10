@@ -39,6 +39,8 @@ const ZEnv = z.object({
   FRANKFURTER_BASE_URL: devOnlyDefault(z.string(), "http://localhost:5200/"),
 
   ENABLE_ADMIN: z.coerce.boolean().default(!IS_PROD),
+
+  SENTRY_DSN: z.string().optional(),
 });
 
 export const NOTIFICATION_BULLMQ_QUEUE = "notifications";

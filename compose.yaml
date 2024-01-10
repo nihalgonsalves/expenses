@@ -29,6 +29,7 @@ services:
     init: true
     # TODO: centralise/autogenerate this
     # must contain DATABASE_URL, JWT_SECRET, VAPID_EMAIL, VAPID_PRIVATE_KEY, VAPID_PUBLIC_KEY, PUBLIC_ORIGIN, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD
+    # optional SENTRY_DSN
     env_file:
       - .env.backend
     environment:

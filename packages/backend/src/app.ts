@@ -5,6 +5,8 @@ import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
 import { PrismaClient } from "@prisma/client";
+import * as Sentry from "@sentry/node";
+import { ProfilingIntegration } from "@sentry/profiling-node";
 import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
 import IORedis from "ioredis";
@@ -57,6 +59,13 @@ const getAddress = (address: string) => {
 };
 
 void (async () => {
+  Sentry.init({
+    ...(config.SENTRY_DSN ? { dsn: config.SENTRY_DSN } : {}),
+    integrations: [new ProfilingIntegration()],
+    tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0,
+  });
+
   const prisma = new PrismaClient();
   const redis = new IORedis(config.REDIS_URL, { maxRetriesPerRequest: null });
 

@@ -6,6 +6,7 @@
 import { writeFile } from "fs/promises";
 import { fileURLToPath } from "url";
 
+import { sentryEsbuildPlugin } from "@sentry/esbuild-plugin";
 import { context } from "esbuild";
 import { z } from "zod";
 
@@ -39,6 +40,17 @@ const ctx = await context({
     // must match `src/globals.d.ts` and `vitest.config.ts`
     IS_PROD: JSON.stringify(nodeEnv === "production"),
   },
+  loader: {
+    // https://github.com/getsentry/profiling-node/issues/189#issuecomment-1695841736
+    ".node": "copy",
+  },
+  plugins: [
+    sentryEsbuildPlugin({
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+    }),
+  ],
 });
 
 const newPackage = {

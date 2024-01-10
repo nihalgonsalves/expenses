@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
 
@@ -18,10 +19,16 @@ export const t = initTRPC.context<ContextFn>().create({
   },
 });
 
-export const router = t.router;
-export const publicProcedure = t.procedure;
+const sentryMiddleware = t.middleware(
+  Sentry.Handlers.trpcMiddleware({
+    attachRpcInput: false,
+  }),
+);
 
-export const protectedProcedure = t.procedure.use(
+export const router = t.router;
+export const publicProcedure = t.procedure.use(sentryMiddleware);
+
+export const protectedProcedure = t.procedure.use(sentryMiddleware).use(
   t.middleware(async ({ ctx, next }) => {
     if (!ctx.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
