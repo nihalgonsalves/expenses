@@ -61,6 +61,7 @@ const getAddress = (address: string) => {
 void (async () => {
   Sentry.init({
     ...(config.SENTRY_DSN ? { dsn: config.SENTRY_DSN } : {}),
+    release: config.GIT_COMMIT_SHA,
     integrations: [new ProfilingIntegration()],
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
