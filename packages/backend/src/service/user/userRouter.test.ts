@@ -9,7 +9,6 @@ import {
 import { personalSheetFactory, userFactory } from "../../../test/factories";
 import { getTRPCCaller } from "../../../test/getTRPCCaller";
 import { createPersonalSheetTransactionInput } from "../../../test/input";
-import { config } from "../../config";
 
 import { comparePassword, hashPassword, signJWT } from "./utils";
 
@@ -22,8 +21,8 @@ const userArgs = {
 const { usePublicCaller, useProtectedCaller, prisma, emailWorker } =
   await getTRPCCaller();
 
-const getResetTokenFromMailbox = (index = 0) => {
-  const emailText = emailWorker.messages[index]?.text;
+const getTokenFromMailbox = (index = 0) => {
+  const emailText = emailWorker.messages.at(index)?.text;
   if (typeof emailText !== "string") {
     throw new Error("No email text");
   }
@@ -98,7 +97,7 @@ describe("updateUser", () => {
     expect(updatedUser.emailVerified).toBe(true);
   });
 
-  it("resets emailVerified / passwordResetToken when changed", async () => {
+  it("resets emailVerified / passwordResetToken when changed, sends a new email", async () => {
     const user = await userFactory(prisma, {
       emailVerified: true,
       passwordResetToken: "abc",
@@ -119,6 +118,8 @@ describe("updateUser", () => {
 
     expect(updatedUser.emailVerified).toBe(false);
     expect(updatedUser.passwordResetToken).toBe(null);
+
+    expect(emailWorker.messages[0]?.subject).toMatch(/your verification link/i);
   });
 
   it("updates a user's password", async () => {
@@ -243,7 +244,7 @@ describe("authorizeUser", () => {
 
     await expect(
       caller.user.resetPassword({
-        token: ZJWTToken.parse(getResetTokenFromMailbox()),
+        token: ZJWTToken.parse(getTokenFromMailbox()),
         password: "new-password",
       }),
     ).rejects.toThrow("That reset link is invalid or expired");
@@ -386,7 +387,6 @@ describe("requestPasswordReset", () => {
 
     expect(emailWorker.messages).toHaveLength(1);
 
-    expect(emailWorker.messages[0]?.from).toMatch(config.EMAIL_FROM);
     expect(emailWorker.messages[0]?.to).toMatch(user.email);
     expect(emailWorker.messages[0]?.subject).toMatch(
       /your reset password link/i,
@@ -415,7 +415,7 @@ describe("resetPassword", () => {
     await caller.user.requestPasswordReset(user.email);
 
     await caller.user.resetPassword({
-      token: ZJWTToken.parse(getResetTokenFromMailbox()),
+      token: ZJWTToken.parse(getTokenFromMailbox()),
       password: "new-password",
     });
 
@@ -450,7 +450,7 @@ describe("resetPassword", () => {
 
     await expect(
       caller.user.resetPassword({
-        token: ZJWTToken.parse(getResetTokenFromMailbox()),
+        token: ZJWTToken.parse(getTokenFromMailbox()),
         password: "new-password",
       }),
     ).rejects.toThrowError("That reset link is invalid or expired");
@@ -464,15 +464,60 @@ describe("resetPassword", () => {
     await caller.user.requestPasswordReset(user.email);
 
     await caller.user.resetPassword({
-      token: ZJWTToken.parse(getResetTokenFromMailbox()),
+      token: ZJWTToken.parse(getTokenFromMailbox()),
       password: "new-password",
     });
 
     await expect(
       caller.user.resetPassword({
-        token: ZJWTToken.parse(getResetTokenFromMailbox()),
+        token: ZJWTToken.parse(getTokenFromMailbox()),
         password: "new-password",
       }),
     ).rejects.toThrowError("That reset link is invalid or expired");
+  });
+});
+
+describe("verifyEmail", () => {
+  it("verifies an email", async () => {
+    const user = await userFactory(prisma);
+
+    expect(user.emailVerified).toBe(false);
+    expect(user.passwordHash).toBeNull();
+
+    const caller = useProtectedCaller(user);
+
+    await caller.user.requestEmailVerification();
+    await caller.user.verifyEmail(ZJWTToken.parse(getTokenFromMailbox()));
+
+    const { emailVerified } = await prisma.user.findUniqueOrThrow({
+      where: { id: user.id },
+    });
+
+    expect(emailVerified).toBe(true);
+  });
+
+  it("throws an error on an invalid token", async () => {
+    const caller = usePublicCaller();
+
+    await expect(
+      caller.user.verifyEmail(ZJWTToken.parse(await signJWT({ id: "foobar" }))),
+    ).rejects.toThrowError("Invalid token");
+  });
+
+  it("throws an error if the email doesn't match", async () => {
+    const user = await userFactory(prisma);
+
+    const caller = useProtectedCaller(user);
+
+    await caller.user.requestEmailVerification();
+
+    await caller.user.updateUser({
+      name: user.name,
+      email: "new-email@example.com",
+    });
+
+    await expect(
+      caller.user.verifyEmail(ZJWTToken.parse(getTokenFromMailbox())),
+    ).rejects.toThrowError("Please request a new verification link");
   });
 });

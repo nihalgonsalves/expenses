@@ -27,6 +27,8 @@ export const ProfileForm = ({ me }: { me: User }) => {
   const utils = trpc.useUtils();
   const { mutateAsync: updateUser, isLoading } =
     trpc.user.updateUser.useMutation();
+  const { mutateAsync: requestEmailVerification } =
+    trpc.user.requestEmailVerification.useMutation();
 
   const form = useForm<z.infer<typeof ZUpdateUserInput>>({
     resolver: zodResolver(ZUpdateUserInput),
@@ -57,6 +59,12 @@ export const ProfileForm = ({ me }: { me: User }) => {
       name: newName,
       email: newEmail,
     });
+  };
+
+  const onVerifyEmail = async () => {
+    await requestEmailVerification();
+
+    toast.success("Please check your email for a verification link.");
   };
 
   return (
@@ -90,11 +98,24 @@ export const ProfileForm = ({ me }: { me: User }) => {
                   <FormControl>
                     <Input type="email" autoComplete="email" {...field} />
                   </FormControl>
-                  {me.emailVerified && (
-                    <FormDescription className="flex items-center gap-1.5">
-                      <CheckCircledIcon /> Verified
-                    </FormDescription>
-                  )}
+
+                  <FormDescription className="flex items-center gap-1.5">
+                    {me.emailVerified ? (
+                      <>
+                        <CheckCircledIcon /> Verified
+                      </>
+                    ) : (
+                      <Button
+                        onClick={onVerifyEmail}
+                        type="button"
+                        $variant="link"
+                        className="p-0"
+                      >
+                        Not verified. Resend verification email?
+                      </Button>
+                    )}
+                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

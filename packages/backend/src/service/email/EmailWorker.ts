@@ -6,10 +6,7 @@ import type Mail from "nodemailer/lib/mailer";
 import { EMAIL_BULLMQ_QUEUE, config } from "../../config";
 import type { IWorker } from "../../startWorkers";
 
-export type EmailPayload = Pick<
-  Mail.Options,
-  "from" | "to" | "subject" | "text"
->;
+export type EmailPayload = Pick<Mail.Options, "to" | "subject" | "text">;
 
 export type IEmailWorker = {
   sendEmail: (email: EmailPayload) => Promise<void>;
@@ -49,6 +46,9 @@ export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
   }
 
   private async process(payload: EmailPayload): Promise<void> {
-    await nodemailerTransport.sendMail(payload);
+    await nodemailerTransport.sendMail({
+      ...payload,
+      from: `${config.APP_NAME} <${config.EMAIL_FROM}>`,
+    });
   }
 }

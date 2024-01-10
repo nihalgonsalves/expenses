@@ -3,7 +3,10 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import type { JWTPayload } from "jose";
 import { z } from "zod";
 
-import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
+import {
+  RESET_PASSWORD_ROUTE,
+  VERIFY_EMAIL_ROUTE,
+} from "@nihalgonsalves/expenses-shared/routes";
 import type {
   AuthorizeUserInput,
   User,
@@ -27,6 +30,11 @@ import {
 const ZPasswordResetJWTPayload = z.object({
   purpose: z.literal("PASSWORD_RESET"),
   passwordResetToken: z.string(),
+});
+
+const ZVerifyEmailJWTPayload = z.object({
+  purpose: z.literal("VERIFY_EMAIL"),
+  email: z.string().email(),
 });
 
 export class UserService {
@@ -158,18 +166,26 @@ export class UserService {
       where: { id },
     });
 
-    return this.prismaClient.user.update({
+    const emailUnchanged = user.email === input.email;
+
+    const updatedUser = await this.prismaClient.user.update({
       where: { id },
       data: {
         name: input.name,
         email: input.email,
-        emailVerified: user.email === input.email ? user.emailVerified : false,
+        emailVerified: emailUnchanged ? user.emailVerified : false,
         passwordResetToken: null,
         ...(input.newPassword
           ? { passwordHash: await hashPassword(input.newPassword) }
           : {}),
       },
     });
+
+    if (!emailUnchanged) {
+      await this.requestEmailVerification(updatedUser);
+    }
+
+    return updatedUser;
   }
 
   async updateTheme(id: string, theme: string) {
@@ -295,10 +311,79 @@ export class UserService {
     });
 
     await this.emailWorker.sendEmail({
-      from: `${config.APP_NAME} <${config.EMAIL_FROM}>`,
       to: `${user.name} <${user.email}>`,
       subject: `Your reset password link for ${config.APP_NAME}`,
-      text: `Click here to reset your password:\n${link.toString()}\n\nIf you did not request this reset, please ignore this email.`,
+      text: [
+        "Click here to reset your password:",
+        link.toString(),
+        "",
+        "---",
+        "If you did not request this reset, please ignore this email.",
+      ].join("\n"),
+    });
+  }
+
+  async verifyEmail(token: JWTToken) {
+    const { payload } = await verifyJWT(token);
+
+    const parsedPayload = ZVerifyEmailJWTPayload.safeParse(payload);
+
+    if (!payload.sub || !parsedPayload.success) {
+      throw new UserServiceError({
+        message: "Invalid token",
+        code: "FORBIDDEN",
+      });
+    }
+
+    const { email } = parsedPayload.data;
+
+    const user = await this.prismaClient.user.findUnique({
+      where: {
+        id: payload.sub,
+        email,
+      },
+    });
+
+    if (!user) {
+      throw new UserServiceError({
+        message: "Please request a new verification link",
+        code: "FORBIDDEN",
+      });
+    }
+
+    await this.prismaClient.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        email,
+        emailVerified: true,
+      },
+    });
+  }
+
+  async requestEmailVerification(user: User) {
+    const token = await signJWT(user, {
+      payload: {
+        purpose: "VERIFY_EMAIL",
+        email: user.email,
+      } satisfies z.infer<typeof ZVerifyEmailJWTPayload>,
+      expiry: { hours: 24 },
+    });
+
+    const link = new URL(VERIFY_EMAIL_ROUTE, config.PUBLIC_ORIGIN);
+    link.searchParams.set("token", token);
+
+    await this.emailWorker.sendEmail({
+      to: `${user.name} <${user.email}>`,
+      subject: `Your verification link for ${config.APP_NAME}`,
+      text: [
+        "Click here to verify your email:",
+        link.toString(),
+        "",
+        "---",
+        "If you did not request this link, please ignore this email.",
+      ].join("\n"),
     });
   }
 

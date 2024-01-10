@@ -7,7 +7,10 @@ import {
 } from "react-router-dom";
 import { z, type ZodRawShape } from "zod";
 
-import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
+import {
+  RESET_PASSWORD_ROUTE,
+  VERIFY_EMAIL_ROUTE,
+} from "@nihalgonsalves/expenses-shared/routes";
 
 import { useCurrentUser } from "./api/useCurrentUser";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -16,6 +19,7 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import { ResetPasswordPage } from "./pages/ResetPasswordPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { SheetsIndexPage } from "./pages/SheetsIndexPage";
+import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import { GroupDetailPage } from "./pages/groups/GroupDetailPage";
 import { GroupTransactionsIndexPage } from "./pages/groups/transactions/GroupTransactionsIndexPage";
 import { SheetDetailPage } from "./pages/sheets/SheetDetailPage";
@@ -76,6 +80,10 @@ export const router = createBrowserRouter([
       {
         path: RESET_PASSWORD_ROUTE,
         element: <ResetPasswordPage />,
+      },
+      {
+        path: VERIFY_EMAIL_ROUTE,
+        element: <VerifyEmailPage />,
       },
       {
         path: "/groups",

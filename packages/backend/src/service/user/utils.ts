@@ -40,7 +40,7 @@ export const signJWT = async (
   }: {
     identity?: string;
     payload?: Record<string, unknown>;
-    expiry?: Temporal.DurationLike;
+    expiry?: Omit<Temporal.DurationLike, "years" | "months" | "weeks" | "days">;
   } = {},
 ): Promise<JWTToken> => {
   const token = await new SignJWT(payload)

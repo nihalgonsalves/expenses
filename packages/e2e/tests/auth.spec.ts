@@ -70,3 +70,30 @@ test("resets password successfully", async ({ page, request, createUser }) => {
 
   await expect(page).toHaveTitle(/transactions/i);
 });
+
+test("verifies email successfully", async ({ page, request, signIn }) => {
+  // TODO: Enable on CI
+  test.skip(process.env.CI != null);
+
+  await signIn();
+
+  await page.goto("/settings");
+  await page.getByRole("button", { name: "Not verified. Resend" }).click();
+
+  await expect(
+    page.getByRole("status").filter({ hasText: "check your email" }),
+  ).toBeVisible();
+
+  const mailpitResponse = await request.get(
+    new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
+  );
+
+  const message = ZEmail.parse(await mailpitResponse.json());
+
+  // HACK: depends on the message format
+  await page.goto(message.Text.split("\n")[1]);
+
+  await page.getByRole("button", { name: /confirm/i }).click();
+
+  await expect(page.getByText("Verified")).toBeVisible();
+});
