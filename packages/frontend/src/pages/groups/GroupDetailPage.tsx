@@ -22,7 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import { SheetParams, useParams } from "../../router";
+import { SheetParams, useParams } from "../../routes";
 import { RootLoader } from "../Root";
 
 export const GroupDetailPage = () => {

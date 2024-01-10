@@ -1,16 +1,12 @@
+import { Collapsible } from "@radix-ui/react-collapsible";
+import * as Sentry from "@sentry/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "react-hot-toast";
 
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
-
-type ErrorBoundaryState = {
-  hasError: boolean;
-  error: unknown;
-  componentStack: string;
-  displayError: boolean;
-};
+import { CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 
 const RetryErrorButton = ({ reset }: { reset: () => void }) => {
   const queryClient = useQueryClient();
@@ -29,30 +25,9 @@ const RetryErrorButton = ({ reset }: { reset: () => void }) => {
   );
 };
 
-const initialState: ErrorBoundaryState = {
-  hasError: false,
-  error: undefined,
-  componentStack: "",
-  displayError: false,
-};
-
-export class ErrorBoundary extends React.Component<{
-  children: React.ReactNode;
-}> {
-  override state = initialState;
-
-  static getDerivedStateFromError(_error: unknown) {
-    return { hasError: true };
-  }
-
-  override componentDidCatch(error: unknown, info: React.ErrorInfo) {
-    this.setState({ error, componentStack: info.componentStack });
-  }
-
-  override render() {
-    const { displayError, hasError, error, componentStack } = this.state;
-
-    if (hasError) {
+export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => (
+  <Sentry.ErrorBoundary
+    fallback={({ error, componentStack, resetError }) => {
       const errorMessage =
         error instanceof Error
           ? error.message
@@ -62,24 +37,15 @@ export class ErrorBoundary extends React.Component<{
           : "Unknown Error";
 
       return (
-        <div className="p-4">
+        <Collapsible className="p-4">
           <Alert $variant="destructive" className="flex flex-col gap-2">
             <AlertTitle>Something went wrong</AlertTitle>
             <AlertDescription className="flex gap-2">
-              <RetryErrorButton
-                reset={() => {
-                  this.setState(initialState);
-                }}
-              />
+              <RetryErrorButton reset={resetError} />
 
-              <Button
-                $variant="outline"
-                onClick={() => {
-                  this.setState({ displayError: true });
-                }}
-              >
-                Display error
-              </Button>
+              <CollapsibleTrigger asChild>
+                <Button $variant="outline">Display error</Button>
+              </CollapsibleTrigger>
               <Button
                 $variant="outline"
                 onClick={async () => {
@@ -101,31 +67,29 @@ export class ErrorBoundary extends React.Component<{
               </Button>
             </AlertDescription>
 
-            {displayError && (
-              <div className="mt-4 text-xs">
-                <pre>
-                  {errorMessage}
-                  <br />
-                  {componentStack
-                    .split("\n")
-                    .map((line) => line.trim())
-                    .filter((line) => line !== "")
-                    .map((line, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
-                      <React.Fragment key={index}>
-                        {"> "}
-                        {line}
-                        <br />
-                      </React.Fragment>
-                    ))}
-                </pre>
-              </div>
-            )}
+            <CollapsibleContent className="mt-4 text-xs">
+              <pre>
+                {errorMessage}
+                <br />
+                {componentStack
+                  .split("\n")
+                  .map((line) => line.trim())
+                  .filter((line) => line !== "")
+                  .map((line, index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <React.Fragment key={index}>
+                      {"> "}
+                      {line}
+                      <br />
+                    </React.Fragment>
+                  ))}
+              </pre>
+            </CollapsibleContent>
           </Alert>
-        </div>
+        </Collapsible>
       );
-    }
-
-    return this.props.children;
-  }
-}
+    }}
+  >
+    {children}
+  </Sentry.ErrorBoundary>
+);

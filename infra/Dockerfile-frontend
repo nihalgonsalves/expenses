@@ -1,5 +1,12 @@
 FROM node:20-slim as builder
 
+# "Pin versions in apt-get install"
+# hadolint ignore=DL3008
+RUN apt-get update -y && \
+  apt-get install -y --no-install-recommends \
+    ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 
@@ -22,9 +29,17 @@ COPY ./packages/e2e/ ./packages/e2e/
 
 ARG VITE_ENV_NAME=production
 ARG VITE_GIT_COMMIT_SHA
+ARG VITE_SENTRY_DSN
+ARG SENTRY_AUTH_TOKEN
+ARG SENTRY_ORG
+ARG SENTRY_PROJECT
 
 ENV VITE_ENV_NAME=${VITE_ENV_NAME}
 ENV VITE_GIT_COMMIT_SHA=${VITE_GIT_COMMIT_SHA}
+ENV VITE_SENTRY_DSN=${VITE_SENTRY_DSN}
+ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+ENV SENTRY_ORG=${SENTRY_ORG}
+ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 
 RUN yarn fe build:vite
 

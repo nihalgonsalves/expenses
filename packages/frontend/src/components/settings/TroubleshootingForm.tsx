@@ -58,13 +58,9 @@ export const TroubleshootingForm = () => {
         </Button>
       </CardContent>
       <CardFooter>
-        <div className="flex flex-col gap-2 text-xs">
-          <div>
-            <strong>Version:</strong> {config.VITE_GIT_COMMIT_SHA}
-          </div>
-          <div>
-            <strong>Environment:</strong> {config.VITE_ENV_NAME}
-          </div>
+        <div className="grow text-center text-xs opacity-25">
+          Version {config.VITE_GIT_COMMIT_SHA.slice(0, 8)} (
+          {config.VITE_ENV_NAME})
         </div>
       </CardFooter>
     </Card>

@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import IstanbulPlugin from "vite-plugin-istanbul";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
@@ -46,5 +47,11 @@ export default defineConfig(({ mode }) => ({
           }),
         ]
       : []),
+    sentryVitePlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      release: { name: process.env.VITE_GIT_COMMIT_SHA },
+    }),
   ],
 }));

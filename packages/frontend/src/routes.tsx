@@ -1,9 +1,9 @@
 import {
-  createBrowserRouter,
   useParams as useParamsOriginal,
   Navigate,
   useLocation,
   Outlet,
+  type RouteObject,
 } from "react-router-dom";
 import { z, type ZodRawShape } from "zod";
 
@@ -44,7 +44,7 @@ const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
 
-export const router = createBrowserRouter([
+export const routes = [
   {
     path: "/",
     element: (
@@ -167,7 +167,7 @@ export const router = createBrowserRouter([
       },
     ],
   },
-]);
+] satisfies RouteObject[];
 
 export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
   const params = useParamsOriginal();

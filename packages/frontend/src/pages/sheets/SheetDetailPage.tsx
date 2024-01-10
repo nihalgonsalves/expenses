@@ -21,7 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "../../components/ui/dropdown-menu";
-import { useParams, SheetParams } from "../../router";
+import { useParams, SheetParams } from "../../routes";
 import { RootLoader } from "../Root";
 
 export const SheetDetailPage = () => {

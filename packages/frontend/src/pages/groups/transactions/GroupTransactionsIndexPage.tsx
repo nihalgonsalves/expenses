@@ -4,7 +4,7 @@ import { trpc } from "../../../api/trpc";
 import { FloatingActionButton } from "../../../components/FloatingActionButton";
 import { CreateGroupSheetTransactionDialog } from "../../../components/group-sheets/CreateGroupSheetTransactionDialog";
 import { GroupSheetTransactionsExpandedList } from "../../../components/group-sheets/GroupSheetTransactionsExpandedList";
-import { SheetParams, useParams } from "../../../router";
+import { SheetParams, useParams } from "../../../routes";
 import { RootLoader } from "../../Root";
 
 export const GroupTransactionsIndexPage = () => {

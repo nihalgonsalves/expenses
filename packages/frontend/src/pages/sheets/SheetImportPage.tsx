@@ -1,6 +1,6 @@
 import { trpc } from "../../api/trpc";
 import { PersonalTransactionsImporter } from "../../components/personal-sheets/PersonalTransactionsImporter";
-import { useParams, SheetParams } from "../../router";
+import { useParams, SheetParams } from "../../routes";
 import { Root } from "../Root";
 
 export const SheetImportPage = () => {

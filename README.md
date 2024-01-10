@@ -25,3 +25,15 @@
    ```sh
    yarn dev
    ```
+
+## Additional deployment setup
+
+Docker build args:
+
+- GIT_COMMIT_SHA
+- VITE_GIT_COMMIT_SHA
+- VITE_ENV_NAME
+- VITE_SENTRY_DSN
+- SENTRY_AUTH_TOKEN
+- SENTRY_ORG
+- SENTRY_PROJECT

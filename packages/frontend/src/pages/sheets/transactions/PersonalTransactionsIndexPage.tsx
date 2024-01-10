@@ -4,7 +4,7 @@ import { trpc } from "../../../api/trpc";
 import { FloatingActionButton } from "../../../components/FloatingActionButton";
 import { CreatePersonalTransactionDialog } from "../../../components/personal-sheets/CreatePersonalTransactionDialog";
 import { PersonalSheetTransactionsExpandedList } from "../../../components/personal-sheets/PersonalSheetTransactionsExpandedList";
-import { SheetParams, useParams } from "../../../router";
+import { SheetParams, useParams } from "../../../routes";
 import { RootLoader } from "../../Root";
 
 export const PersonalExpensesIndexPage = () => {
