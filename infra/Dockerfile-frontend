@@ -1,5 +1,11 @@
 FROM node:20-slim as builder
 
+ARG VITE_ENV_NAME=production
+ARG VITE_GIT_COMMIT_SHA
+
+ENV VITE_ENV_NAME=${VITE_ENV_NAME}
+ENV VITE_GIT_COMMIT_SHA=${VITE_GIT_COMMIT_SHA}
+
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 

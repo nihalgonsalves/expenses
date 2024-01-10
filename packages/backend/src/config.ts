@@ -11,6 +11,8 @@ const devOnlyDefault = <T extends ZodTypeAny>(
 ) => (IS_PROD ? type : type.default(defaultValue));
 
 const ZEnv = z.object({
+  GIT_COMMIT_SHA: z.string().default("unknown"),
+
   LISTEN_HOST: z.string().min(1).default("0.0.0.0"),
   PORT: z.coerce.number().default(5174),
   PUBLIC_ORIGIN: devOnlyDefault(z.string().url(), "http://localhost:5173"),

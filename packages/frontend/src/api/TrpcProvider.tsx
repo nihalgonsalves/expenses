@@ -7,7 +7,7 @@ import React, { useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 
-import { API_BASE_URL } from "../config";
+import { config } from "../config";
 import { queryCache } from "../state/queryCache";
 import { durationMilliseconds } from "../utils/temporal";
 
@@ -90,7 +90,7 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
       trpc.createClient({
         links: [
           httpBatchLink({
-            url: API_BASE_URL,
+            url: config.VITE_API_BASE_URL,
           }),
         ],
       }),
@@ -101,7 +101,10 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <PersistQueryClientProvider
         client={queryClient}
-        persistOptions={{ persister: asyncStoragePersister }}
+        persistOptions={{
+          persister: asyncStoragePersister,
+          buster: config.VITE_GIT_COMMIT_SHA,
+        }}
       >
         {children}
         <ReactQueryDevtools initialIsOpen={false} />

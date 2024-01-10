@@ -2,9 +2,16 @@ import { useState } from "react";
 
 import { trpc } from "../../api/trpc";
 import { useResetCache } from "../../api/useCacheReset";
+import { config } from "../../config";
 import { useServiceWorkerRegistration } from "../../utils/hooks/useServiceWorkerRegistration";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 
 export const TroubleshootingForm = () => {
   const [state, setState] = useState<"initial" | "loading" | "done">("initial");
@@ -50,6 +57,16 @@ export const TroubleshootingForm = () => {
           {state === "done" ? "Done, reloading..." : "Reset Cache"}
         </Button>
       </CardContent>
+      <CardFooter>
+        <div className="flex flex-col gap-2 text-xs">
+          <div>
+            <strong>Version:</strong> {config.VITE_GIT_COMMIT_SHA}
+          </div>
+          <div>
+            <strong>Environment:</strong> {config.VITE_ENV_NAME}
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   );
 };
