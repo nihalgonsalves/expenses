@@ -2,6 +2,8 @@ import Dexie, { type Table } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 import { z } from "zod";
 
+import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
+
 import { PREFERENCES_DEXIE_TABLE } from "../config";
 
 type KeyValueItem = {
@@ -64,7 +66,7 @@ export const createPreferenceWithDefault = <T>(
 
 export const [usePreferredCurrencyCode] = createPreferenceWithDefault(
   "preferred_currency_code",
-  (v) => z.string().length(3).parse(v),
+  (v) => ZCurrencyCode.parse(v),
   "EUR",
 );
 

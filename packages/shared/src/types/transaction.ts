@@ -1,11 +1,13 @@
 import { z } from "zod";
 
+import { ZCurrencyCode } from "../money";
+
 import { ZParticipant, ZSheet } from "./sheet";
 
 export const ZMoney = z.object({
   amount: z.number().int(),
   scale: z.number().int().nonnegative(),
-  currencyCode: z.string().length(3),
+  currencyCode: ZCurrencyCode,
 });
 
 const ZCreateSheetTransactionInput = z.object({

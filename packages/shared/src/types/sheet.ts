@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { ZCurrencyCode } from "../money";
+
 export const ZSheetType = z.union([z.literal("PERSONAL"), z.literal("GROUP")]);
 export type SheetType = z.infer<typeof ZSheetType>;
 
@@ -7,7 +9,7 @@ export const ZSheet = z.object({
   id: z.string().min(1),
   type: ZSheetType,
   name: z.string().min(1),
-  currencyCode: z.string().length(3),
+  currencyCode: ZCurrencyCode,
   isArchived: z.boolean(),
 });
 export type Sheet = z.infer<typeof ZSheet>;

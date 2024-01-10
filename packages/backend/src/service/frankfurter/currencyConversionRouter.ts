@@ -1,6 +1,8 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { z } from "zod";
 
+import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
+
 import { protectedProcedure, router } from "../../trpc";
 
 // frankfurter would ideally return integer + scale or strings, but
@@ -26,14 +28,14 @@ export const currencyConversionRouter = router({
       z.object({
         // ISO date-only string
         date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-        from: z.string().length(3),
-        to: z.string().length(3),
+        from: ZCurrencyCode,
+        to: ZCurrencyCode,
       }),
     )
     .output(
       z.object({
-        from: z.string().length(3),
-        to: z.string().length(3),
+        from: ZCurrencyCode,
+        to: ZCurrencyCode,
         amount: z.number(),
         scale: z.number(),
       }),

@@ -11,10 +11,14 @@ import { z } from "zod";
 
 export const CURRENCY_CODES = Object.keys(Currencies);
 
+export const ZCurrencyCode = z.string().length(3, {
+  message: "Currency must be a 3-letter ISO 4217 code",
+});
+
 export const ZMoney = z.object({
   amount: z.number().int(),
   scale: z.number().int().nonnegative(),
-  currencyCode: z.string().length(3),
+  currencyCode: ZCurrencyCode,
 });
 
 export type Money = z.infer<typeof ZMoney>;
