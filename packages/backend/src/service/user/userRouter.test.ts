@@ -22,6 +22,15 @@ const userArgs = {
 const { usePublicCaller, useProtectedCaller, prisma, emailWorker } =
   await getTRPCCaller();
 
+const getResetTokenFromMailbox = (index = 0) => {
+  const emailText = emailWorker.messages[index]?.text;
+  if (typeof emailText !== "string") {
+    throw new Error("No email text");
+  }
+
+  return new URL(emailText.split("\n")[1] ?? "").searchParams.get("token");
+};
+
 describe("createUser", () => {
   it("creates a user ", async () => {
     const caller = usePublicCaller();
@@ -89,18 +98,27 @@ describe("updateUser", () => {
     expect(updatedUser.emailVerified).toBe(true);
   });
 
-  it("resets emailVerified when changed", async () => {
-    const user = await userFactory(prisma, { emailVerified: true });
+  it("resets emailVerified / passwordResetToken when changed", async () => {
+    const user = await userFactory(prisma, {
+      emailVerified: true,
+      passwordResetToken: "abc",
+    });
     const caller = useProtectedCaller(user);
 
     expect(user.emailVerified).toBe(true);
+    expect(user.passwordResetToken).toBe("abc");
 
-    const updatedUser = await caller.user.updateUser({
+    await caller.user.updateUser({
       name: "Juan",
       email: "juan@example.com",
     });
 
+    const updatedUser = await prisma.user.findUniqueOrThrow({
+      where: { id: user.id },
+    });
+
     expect(updatedUser.emailVerified).toBe(false);
+    expect(updatedUser.passwordResetToken).toBe(null);
   });
 
   it("updates a user's password", async () => {
@@ -209,6 +227,26 @@ describe("authorizeUser", () => {
         password: "aaa",
       }),
     ).rejects.toThrow("Invalid credentials");
+  });
+
+  // invalid reset password emails
+  it("clears a passwordResetToken on login", async () => {
+    const caller = usePublicCaller();
+
+    await caller.user.createUser(userArgs);
+    await caller.user.requestPasswordReset(userArgs.email);
+
+    await caller.user.authorizeUser({
+      email: userArgs.email,
+      password: userArgs.password,
+    });
+
+    await expect(
+      caller.user.resetPassword({
+        token: ZJWTToken.parse(getResetTokenFromMailbox()),
+        password: "new-password",
+      }),
+    ).rejects.toThrow("That reset link is invalid or expired");
   });
 });
 
@@ -366,14 +404,6 @@ describe("requestPasswordReset", () => {
 });
 
 describe("resetPassword", () => {
-  const getResetTokenFromMailbox = (index = 0) => {
-    const emailText = emailWorker.messages[index]?.text;
-    if (typeof emailText !== "string") {
-      throw new Error("No email text");
-    }
-
-    return new URL(emailText.split("\n")[1] ?? "").searchParams.get("token");
-  };
   it("resets a password and sets emailVerified", async () => {
     const user = await userFactory(prisma);
 

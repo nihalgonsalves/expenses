@@ -94,6 +94,13 @@ export class UserService {
       });
     }
 
+    if (user.passwordResetToken) {
+      await this.prismaClient.user.update({
+        where: { id: user.id },
+        data: { passwordResetToken: null },
+      });
+    }
+
     return {
       user,
       token: await signJWT(user),
@@ -157,6 +164,7 @@ export class UserService {
         name: input.name,
         email: input.email,
         emailVerified: user.email === input.email ? user.emailVerified : false,
+        passwordResetToken: null,
         ...(input.newPassword
           ? { passwordHash: await hashPassword(input.newPassword) }
           : {}),
