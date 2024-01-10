@@ -33,9 +33,6 @@ RUN yarn be build
 
 FROM node:20-slim
 
-ARG GIT_COMMIT_SHA
-ENV GIT_COMMIT_SHA=${GIT_COMMIT_SHA}
-
 # hadolint ignore=DL3008
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
@@ -54,5 +51,8 @@ RUN yarn install && yarn cache clean
 ENV NODE_ENV=production
 
 USER node
+
+ARG GIT_COMMIT_SHA
+ENV GIT_COMMIT_SHA=${GIT_COMMIT_SHA}
 
 CMD ["node", "--enable-source-maps", "/opt/app/app.js"]
