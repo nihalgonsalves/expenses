@@ -12,10 +12,10 @@ import type {
   AllConvertedUserTransactions,
   ConvertedTransactionWithSheet,
 } from "../api/useAllUserTransactions";
-import { formatCurrency } from "../utils/money";
 import { shortDateFormatter } from "../utils/temporal";
 
 import { CategoryIcon } from "./CategoryAvatar";
+import { CurrencySpan } from "./CurrencySpan";
 import { Button } from "./ui/button";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -45,7 +45,7 @@ const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
       </div>
 
       <div className="text-base font-bold md:text-3xl">
-        {formatCurrency(sum)}
+        <CurrencySpan money={sum} />
       </div>
     </div>
 

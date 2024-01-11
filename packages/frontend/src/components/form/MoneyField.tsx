@@ -148,6 +148,7 @@ export const MoneyField = React.forwardRef<HTMLInputElement, MoneyFieldProps>(
       <Input
         {...textFieldProps}
         ref={inputRef}
+        className="tabular-nums"
         inputMode="numeric"
         value={formatCurrency(moneySnapshot)}
         onBlur={(e) => {

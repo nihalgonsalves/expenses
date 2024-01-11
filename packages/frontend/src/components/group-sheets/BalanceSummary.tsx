@@ -17,8 +17,8 @@ import type {
 
 import { trpc } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
-import { formatCurrency } from "../../utils/money";
 import { Avatar } from "../Avatar";
+import { CurrencySpan } from "../CurrencySpan";
 import { ConfirmDialog } from "../form/ConfirmDialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -124,9 +124,7 @@ const BalanceText = ({ balance }: { balance: Money }) => {
     return <Badge variant="outline">Settled up</Badge>;
   }
 
-  const amount = formatCurrency(balance, {
-    signDisplay: "never",
-  });
+  const amount = <CurrencySpan money={balance} signDisplay="never" />;
 
   if (balance.amount > 0) {
     return (
@@ -198,7 +196,7 @@ const TransferItem = ({
             : "bg-green-100 text-green-800 hover:bg-green-100",
         )}
       >
-        {formatCurrency(t.money)}
+        <CurrencySpan money={t.money} />
       </Badge>
       <ConfirmDialog
         onConfirm={handleSettleUp}
@@ -210,8 +208,11 @@ const TransferItem = ({
         confirmLabel="Settle up"
         description={
           <>
-            Log a transfer of <strong>{formatCurrency(t.money)}</strong> from{" "}
-            <strong>{t.from.name}</strong> to <strong>{t.to.name}</strong>
+            Log a transfer of{" "}
+            <strong>
+              <CurrencySpan money={t.money} />
+            </strong>{" "}
+            from <strong>{t.from.name}</strong> to <strong>{t.to.name}</strong>
           </>
         }
       />

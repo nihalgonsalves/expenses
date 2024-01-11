@@ -8,7 +8,6 @@ import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/
 
 import { trpc } from "../../api/trpc";
 import { scaleOut } from "../../utils/framer";
-import { formatCurrency } from "../../utils/money";
 import {
   formatDateRelative,
   formatDateTimeRelative,
@@ -16,6 +15,7 @@ import {
 } from "../../utils/temporal";
 import { getTransactionDescription } from "../../utils/utils";
 import { CategoryAvatar } from "../CategoryAvatar";
+import { CurrencySpan } from "../CurrencySpan";
 import { ExpandMoreButton } from "../ExpandMoreButton";
 import { TransactionActions } from "../TransactionActions";
 import { Alert, AlertTitle } from "../ui/alert";
@@ -47,7 +47,8 @@ const ExpandedTransactionListItem = forwardRef<
 
   const title = (
     <>
-      <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
+      <strong>{descriptionText}</strong>{" "}
+      <CurrencySpan money={transaction.money} />
     </>
   );
 
@@ -134,7 +135,7 @@ export const PersonalSheetTransactionsExpandedList = ({
             >
               {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
               <Separator className="relative top-[1.5px] w-auto grow" />
-              {sum ? formatCurrency(sum) : "–"}
+              {sum ? <CurrencySpan money={sum} /> : "–"}
             </motion.div>,
             dateTransactions.map((transaction) => (
               <ExpandedTransactionListItem

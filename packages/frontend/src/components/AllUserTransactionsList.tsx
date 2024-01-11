@@ -24,6 +24,7 @@ import {
 import { getTransactionDescription, noop } from "../utils/utils";
 
 import { CategoryAvatar } from "./CategoryAvatar";
+import { CurrencySpan } from "./CurrencySpan";
 import { CategorySelect } from "./form/CategorySelect";
 import { SheetSelect } from "./form/SheetSelect";
 import { Alert, AlertDescription } from "./ui/alert";
@@ -82,7 +83,7 @@ const TransactionRow = ({
         {sheet.name}
       </TableCell>
 
-      <TableCell className="text-right">
+      <TableCell className="text-right tabular-nums">
         {convertedMoney == undefined || convertedMoney === money ? (
           <span>{money}</span>
         ) : (
@@ -210,7 +211,7 @@ export const AllUserTransactionsList = ({
                   setSelectedView("EXPENSES");
                 }}
               >
-                Expenses ({formatCurrency(totalSpent)})
+                Expenses (<CurrencySpan money={totalSpent} />)
               </TabsTrigger>
               <TabsTrigger
                 value="INCOME"
@@ -218,7 +219,7 @@ export const AllUserTransactionsList = ({
                   setSelectedView("INCOME");
                 }}
               >
-                Income ({formatCurrency(totalEarned)})
+                Income (<CurrencySpan money={totalEarned} />)
               </TabsTrigger>
             </TabsList>
 

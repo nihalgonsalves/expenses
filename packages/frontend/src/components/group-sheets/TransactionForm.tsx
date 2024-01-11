@@ -48,6 +48,7 @@ import {
   nowForDateTimeInput,
 } from "../../utils/temporal";
 import { Avatar } from "../Avatar";
+import { CurrencySpan } from "../CurrencySpan";
 import { CategorySelect, OTHER_CATEGORY } from "../form/CategorySelect";
 import { CurrencySelect } from "../form/CurrencySelect";
 import { MoneyField } from "../form/MoneyField";
@@ -513,7 +514,7 @@ const SplitsFormSection = ({
                         {participantNameById[participantId]}
                       </FormLabel>
                       <br />
-                      <span className="text-gray-500">
+                      <span className="tabular-nums text-gray-500">
                         {splitValid ? (
                           <>
                             {formatCurrency(share)}
@@ -764,7 +765,7 @@ export const TransactionForm = ({
 
                   {convertedMoneySnapshot && (
                     <FormDescription>
-                      {formatCurrency(convertedMoneySnapshot)}
+                      <CurrencySpan money={convertedMoneySnapshot} />
                     </FormDescription>
                   )}
 

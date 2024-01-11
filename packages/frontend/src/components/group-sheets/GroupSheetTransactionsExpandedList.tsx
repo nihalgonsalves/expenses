@@ -8,7 +8,6 @@ import type { GroupSheetTransactionListItem } from "@nihalgonsalves/expenses-sha
 
 import { trpc } from "../../api/trpc";
 import { scaleOut } from "../../utils/framer";
-import { formatCurrency } from "../../utils/money";
 import { formatDateRelative, groupBySpentAt } from "../../utils/temporal";
 import {
   getTransactionDescription,
@@ -16,6 +15,7 @@ import {
 } from "../../utils/utils";
 import { Avatar } from "../Avatar";
 import { CategoryAvatar } from "../CategoryAvatar";
+import { CurrencySpan } from "../CurrencySpan";
 import { ExpandMoreButton } from "../ExpandMoreButton";
 import { TransactionActions } from "../TransactionActions";
 import { Alert, AlertTitle } from "../ui/alert";
@@ -43,7 +43,8 @@ const ExpandedTransactionListItem = forwardRef<
 
   const title = (
     <>
-      <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
+      <strong>{descriptionText}</strong>{" "}
+      <CurrencySpan money={transaction.money} />
     </>
   );
 
@@ -85,18 +86,20 @@ const ExpandedTransactionListItem = forwardRef<
                               ? " paid "
                               : " received "}
                             <Badge>
-                              {formatCurrency(balance.actual, {
-                                signDisplay: "never",
-                              })}
+                              <CurrencySpan
+                                money={balance.actual}
+                                signDisplay="never"
+                              />
                             </Badge>
                           </>
                         )}
                       </div>
                       <div>
                         <Badge variant="secondary">
-                          {formatCurrency(balance.share, {
-                            signDisplay: "never",
-                          })}
+                          <CurrencySpan
+                            money={balance.share}
+                            signDisplay="never"
+                          />
                         </Badge>
                       </div>
                     </div>
@@ -155,12 +158,12 @@ export const GroupSheetTransactionsExpandedList = ({
           return [
             <motion.div
               key={date}
-              className="flex items-center gap-4 px-2 "
+              className="flex items-center gap-4 px-2"
               {...scaleOut}
             >
               {formatDateRelative(Temporal.Instant.fromEpochMilliseconds(date))}
               <Separator className="relative top-[1.5px] w-auto grow" />
-              {sum ? formatCurrency(sum) : "–"}
+              {sum ? <CurrencySpan money={sum} /> : "–"}
             </motion.div>,
             groupedByDate
               .get(date)

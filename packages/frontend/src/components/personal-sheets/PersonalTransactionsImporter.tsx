@@ -222,7 +222,7 @@ const DataPreview = ({
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row["id"]}>
-              <TableCell>
+              <TableCell className="tabular-nums">
                 {amountField ? (
                   <SafeDisplay
                     value={row[amountField]}

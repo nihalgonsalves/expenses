@@ -3,13 +3,13 @@ import { forwardRef } from "react";
 
 import type { GroupSheetTransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { formatCurrency } from "../../utils/money";
 import {
   getTransactionDescription,
   getGroupSheetTransactionSummaryText,
 } from "../../utils/utils";
 import { AvatarGroup } from "../Avatar";
 import { CategoryAvatar } from "../CategoryAvatar";
+import { CurrencySpan } from "../CurrencySpan";
 
 const DenseTransactionListItem = forwardRef<
   HTMLDivElement,
@@ -31,7 +31,8 @@ const DenseTransactionListItem = forwardRef<
     >
       <CategoryAvatar category={transaction.category} />
       <div>
-        <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
+        <strong>{descriptionText}</strong>{" "}
+        <CurrencySpan money={transaction.money} />
         <span
           className="inline-block text-gray-500"
           style={{
