@@ -67,7 +67,13 @@ export const CreateSheetForm = ({
             <FormItem className="flex flex-col">
               <FormLabel>Sheet name</FormLabel>
               <FormControl>
-                <Input autoFocus placeholder="Personal Expenses" {...field} />
+                <Input
+                  autoFocus
+                  autoComplete="off"
+                  data-1p-ignore
+                  placeholder="Personal Expenses"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

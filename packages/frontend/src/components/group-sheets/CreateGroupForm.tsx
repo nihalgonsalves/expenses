@@ -81,7 +81,13 @@ export const CreateGroupForm = ({
             <FormItem className="flex flex-col">
               <FormLabel>Group sheet name</FormLabel>
               <FormControl>
-                <Input autoFocus placeholder="e.g.: Flat Expenses" {...field} />
+                <Input
+                  autoFocus
+                  autoComplete="off"
+                  data-1p-ignore
+                  placeholder="e.g.: Flat Expenses"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

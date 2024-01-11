@@ -69,7 +69,7 @@ export const CurrencySelect = forwardRef<
         </PopoverTrigger>
         <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
           <Command>
-            <CommandInput placeholder="Search" />
+            <CommandInput inputMode="search" placeholder="Search" />
             <CommandList>
               <CommandEmpty>
                 <span className="visible md:hidden">Not found</span>

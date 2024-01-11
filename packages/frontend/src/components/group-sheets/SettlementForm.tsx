@@ -85,6 +85,25 @@ export const SettlementForm = ({
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
+          name="amount"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>How much was given?</FormLabel>
+              <FormControl>
+                <MoneyField
+                  className="grow"
+                  autoFocus
+                  currencyCode={groupSheet.currencyCode}
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="fromId"
           render={({ field }) => (
             <FormItem className="flex flex-col">
@@ -105,25 +124,6 @@ export const SettlementForm = ({
               <FormLabel>To</FormLabel>
               <FormControl>
                 <ParticipantSelect groupSheet={groupSheet} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>How much was given?</FormLabel>
-              <FormControl>
-                <MoneyField
-                  className="grow"
-                  autoFocus
-                  currencyCode={groupSheet.currencyCode}
-                  {...field}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

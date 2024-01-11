@@ -70,6 +70,7 @@ export const CategorySelect = forwardRef<
         <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
           <Command>
             <CommandInput
+              inputMode="search"
               placeholder="Search"
               value={searchValue}
               onValueChange={setSearchValue}
