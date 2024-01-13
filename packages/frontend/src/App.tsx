@@ -34,7 +34,7 @@ Sentry.init({
       ),
     }),
     new Sentry.Replay({
-      maskAllText: false,
+      maskAllText: true,
       blockAllMedia: false,
     }),
   ],
