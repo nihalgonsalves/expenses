@@ -649,7 +649,7 @@ export const TransactionForm = ({
   const dialog = useDialog();
 
   const utils = trpc.useUtils();
-  const { mutateAsync: createGroupSheetTransaction, isLoading } =
+  const { mutateAsync: createGroupSheetTransaction, isPending } =
     trpc.transaction.createGroupSheetTransaction.useMutation();
 
   const onLine = useNavigatorOnLine();
@@ -872,7 +872,7 @@ export const TransactionForm = ({
 
         <Button
           className="w-full capitalize"
-          isLoading={isLoading}
+          isLoading={isPending}
           type="submit"
           disabled={disabled}
         >

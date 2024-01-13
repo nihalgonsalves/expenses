@@ -13,7 +13,7 @@ import { ParticipantListItem } from "./ParticipantListItem";
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const onLine = useNavigatorOnLine();
 
-  const { mutateAsync: addGroupSheetMember, isLoading } =
+  const { mutateAsync: addGroupSheetMember, isPending } =
     trpc.sheet.addGroupSheetMember.useMutation();
   const utils = trpc.useUtils();
 
@@ -59,7 +59,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
           className="grow"
           autoFocus
           placeholder="Email address"
-          disabled={isLoading}
+          disabled={isPending}
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);

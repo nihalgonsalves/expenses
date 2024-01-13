@@ -35,7 +35,7 @@ const asyncStoragePersister = createAsyncStoragePersister({
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: durationMilliseconds({ days: 1 }),
+      gcTime: durationMilliseconds({ days: 1 }),
       staleTime: 0,
       retry(failureCount, error) {
         if (error instanceof TRPCClientError) {
@@ -107,7 +107,10 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
         }}
       >
         {children}
-        <ReactQueryDevtools initialIsOpen={false} />
+        <ReactQueryDevtools
+          initialIsOpen={false}
+          buttonPosition="bottom-left"
+        />
       </PersistQueryClientProvider>
     </trpc.Provider>
   );

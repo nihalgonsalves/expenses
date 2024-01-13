@@ -41,7 +41,7 @@ test("signs in and out succesfully", async ({ page, createUser }) => {
 
 test("resets password successfully", async ({ page, request, createUser }) => {
   // TODO: Enable on CI
-  test.skip(process.env.CI != null);
+  test.skip(process.env["CI"] != null);
 
   const { email } = await createUser();
 
@@ -61,7 +61,7 @@ test("resets password successfully", async ({ page, request, createUser }) => {
   const message = ZEmail.parse(await mailpitResponse.json());
 
   // HACK: depends on the message format
-  await page.goto(message.Text.split("\n")[1]);
+  await page.goto(message.Text.split("\n")[1]!);
 
   await page.getByLabel(/password/i).fill("new-password");
   await page.getByRole("button", { name: /reset password/i }).click();
@@ -73,7 +73,7 @@ test("resets password successfully", async ({ page, request, createUser }) => {
 
 test("verifies email successfully", async ({ page, request, signIn }) => {
   // TODO: Enable on CI
-  test.skip(process.env.CI != null);
+  test.skip(process.env["CI"] != null);
 
   await signIn();
 
@@ -91,7 +91,7 @@ test("verifies email successfully", async ({ page, request, signIn }) => {
   const message = ZEmail.parse(await mailpitResponse.json());
 
   // HACK: depends on the message format
-  await page.goto(message.Text.split("\n")[1]);
+  await page.goto(message.Text.split("\n")[1]!);
 
   await page.getByRole("button", { name: /confirm/i }).click();
 

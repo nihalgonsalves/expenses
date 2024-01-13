@@ -32,7 +32,7 @@ export const CreateSheetForm = ({
   const navigate = useNavigate();
 
   const utils = trpc.useUtils();
-  const { mutateAsync: createSheet, isLoading } =
+  const { mutateAsync: createSheet, isPending } =
     trpc.sheet.createPersonalSheet.useMutation();
 
   const form = useForm<z.infer<typeof ZCreatePersonalSheetInput>>({
@@ -98,7 +98,7 @@ export const CreateSheetForm = ({
           className="mt-4 w-full"
           type="submit"
           disabled={disabled}
-          isLoading={isLoading}
+          isLoading={isPending}
         >
           <PlusCircledIcon className="mr-2" /> Create Sheet
         </Button>

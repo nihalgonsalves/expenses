@@ -67,7 +67,10 @@ export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
     config.FRANKFURTER_BASE_URL,
   );
 
-  return async ({ req, resHeaders }: FetchCreateContextFnOptions) => {
+  return async ({
+    req,
+    resHeaders,
+  }: Pick<FetchCreateContextFnOptions, "req" | "resHeaders">) => {
     const setJwtToken = async (value: JWTToken | null) => {
       if (!value) {
         resHeaders.set("clear-site-data", '"*"');

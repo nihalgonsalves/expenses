@@ -25,8 +25,8 @@ export const useSwUpdateCheck = () => {
       return null;
     },
     enabled: "serviceWorker" in globalThis.navigator,
-    networkMode: "always",
-    cacheTime: 0,
+    networkMode: "online",
+    gcTime: 0,
     staleTime: 0,
     // fetch new sw every 5 mins while running
     // note that this also runs on window focus

@@ -21,7 +21,7 @@ import {
 import { Input } from "./ui/input";
 
 export const SignUpForm = () => {
-  const { mutateAsync: createUser, isLoading } =
+  const { mutateAsync: createUser, isPending } =
     trpc.user.createUser.useMutation();
 
   const form = useForm<z.infer<typeof ZCreateUserInput>>({
@@ -97,7 +97,7 @@ export const SignUpForm = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit" isLoading={isLoading}>
+            <Button className="w-full" type="submit" isLoading={isPending}>
               Sign Up
             </Button>
           </form>

@@ -33,7 +33,7 @@ export const PrivacyForm = () => {
   });
 
   const resetCache = useResetCache();
-  const { mutateAsync: anonymizeUser, isLoading } =
+  const { mutateAsync: anonymizeUser, isPending } =
     trpc.user.anonymizeUser.useMutation();
 
   const onSubmit = async (values: z.infer<typeof ZAuthorizeUserInput>) => {
@@ -107,7 +107,7 @@ export const PrivacyForm = () => {
             />
 
             <Button
-              isLoading={isLoading}
+              isLoading={isPending}
               disabled={disabled}
               type="submit"
               $variant="destructive"

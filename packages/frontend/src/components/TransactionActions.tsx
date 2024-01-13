@@ -16,7 +16,7 @@ export const TransactionActions = ({
   transaction: TransactionListItem;
   onDelete: () => Promise<void> | void;
 }) => {
-  const { mutateAsync: deleteTransaction, isLoading } =
+  const { mutateAsync: deleteTransaction, isPending } =
     trpc.transaction.deleteTransaction.useMutation();
 
   const handleDelete = async () => {
@@ -31,7 +31,7 @@ export const TransactionActions = ({
   return (
     <ConfirmDialog
       trigger={
-        <Button isLoading={isLoading} $variant="destructive">
+        <Button isLoading={isPending} $variant="destructive">
           <TrashIcon className="mr-2" /> Delete Transaction
         </Button>
       }

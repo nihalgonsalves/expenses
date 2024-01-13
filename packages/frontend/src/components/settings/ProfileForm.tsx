@@ -25,7 +25,7 @@ import { Input } from "../ui/input";
 export const ProfileForm = ({ me }: { me: User }) => {
   const onLine = useNavigatorOnLine();
   const utils = trpc.useUtils();
-  const { mutateAsync: updateUser, isLoading } =
+  const { mutateAsync: updateUser, isPending } =
     trpc.user.updateUser.useMutation();
   const { mutateAsync: requestEmailVerification } =
     trpc.user.requestEmailVerification.useMutation();
@@ -156,7 +156,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
             <Button
               type="submit"
-              isLoading={isLoading}
+              isLoading={isPending}
               disabled={disabled}
               className="w-full"
             >

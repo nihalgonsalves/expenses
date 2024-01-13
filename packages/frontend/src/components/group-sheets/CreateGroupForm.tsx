@@ -34,7 +34,7 @@ export const CreateGroupForm = ({
   const onLine = useNavigatorOnLine();
 
   const utils = trpc.useUtils();
-  const { mutateAsync: createGroupSheet, isLoading } =
+  const { mutateAsync: createGroupSheet, isPending } =
     trpc.sheet.createGroupSheet.useMutation();
 
   const form = useForm<z.infer<typeof ZCreateGroupSheetInput>>({
@@ -158,7 +158,7 @@ export const CreateGroupForm = ({
           className="w-full"
           type="submit"
           disabled={disabled}
-          isLoading={isLoading}
+          isLoading={isPending}
         >
           <PlusIcon className="mr-2" /> Create Group
         </Button>

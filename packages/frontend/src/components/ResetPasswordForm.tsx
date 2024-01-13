@@ -23,7 +23,7 @@ import { Input } from "./ui/input";
 export const ResetPasswordForm = ({ token }: { token: string }) => {
   const navigate = useNavigate();
 
-  const { mutateAsync: resetPassword, isLoading } =
+  const { mutateAsync: resetPassword, isPending } =
     trpc.user.resetPassword.useMutation();
 
   const form = useForm<z.infer<typeof ZResetPasswordInput>>({
@@ -62,7 +62,7 @@ export const ResetPasswordForm = ({ token }: { token: string }) => {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit" isLoading={isLoading}>
+            <Button className="w-full" type="submit" isLoading={isPending}>
               Reset Password
             </Button>
           </form>

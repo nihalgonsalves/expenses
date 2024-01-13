@@ -13,18 +13,6 @@ updates:
       - dependency-name: "@types/node"
         update-types:
           - "version-update:semver-major"
-      - dependency-name: "@tanstack/query-async-storage-persister"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "@tanstack/react-query"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "@tanstack/react-query-devtools"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "@tanstack/react-query-persist-client"
-        update-types:
-          - "version-update:semver-major"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:

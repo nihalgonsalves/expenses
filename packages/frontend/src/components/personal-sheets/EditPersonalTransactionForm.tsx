@@ -86,7 +86,7 @@ const EditPersonalTransactionForm = ({
     );
 
   const utils = trpc.useUtils();
-  const { mutateAsync: updatePersonalSheetTransaction, isLoading } =
+  const { mutateAsync: updatePersonalSheetTransaction, isPending } =
     trpc.transaction.updatePersonalSheetTransaction.useMutation();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -220,7 +220,7 @@ const EditPersonalTransactionForm = ({
           className="w-full"
           type="submit"
           disabled={disabled}
-          isLoading={isLoading}
+          isLoading={isPending}
         >
           Update
         </Button>

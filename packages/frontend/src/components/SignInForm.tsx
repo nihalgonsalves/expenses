@@ -34,7 +34,7 @@ export const SingleScreenCard = twx(
 )`border-0 rounded-none bg-inherit sm:bg-card sm:border sm:rounded-md`;
 
 export const SignInForm = () => {
-  const { mutateAsync: authorizeUser, isLoading } =
+  const { mutateAsync: authorizeUser, isPending } =
     trpc.user.authorizeUser.useMutation();
 
   const { mutateAsync: requestPasswordReset } =
@@ -112,7 +112,7 @@ export const SignInForm = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit" isLoading={isLoading}>
+            <Button className="w-full" type="submit" isLoading={isPending}>
               Sign In
             </Button>
           </form>

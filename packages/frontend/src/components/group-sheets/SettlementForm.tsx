@@ -52,7 +52,7 @@ export const SettlementForm = ({
   });
 
   const utils = trpc.useUtils();
-  const { mutateAsync: createGroupSheetSettlement, isLoading } =
+  const { mutateAsync: createGroupSheetSettlement, isPending } =
     trpc.transaction.createGroupSheetSettlement.useMutation();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -134,7 +134,7 @@ export const SettlementForm = ({
           className=" w-full"
           type="submit"
           disabled={disabled}
-          isLoading={isLoading}
+          isLoading={isPending}
         >
           Log Settlement
         </Button>

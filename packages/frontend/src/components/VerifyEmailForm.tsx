@@ -11,7 +11,7 @@ export const VerifyEmailForm = ({ token }: { token: string }) => {
 
   const utils = trpc.useUtils();
 
-  const { mutateAsync: verifyEmail, isLoading } =
+  const { mutateAsync: verifyEmail, isPending } =
     trpc.user.verifyEmail.useMutation();
 
   const onSubmit = async () => {
@@ -31,7 +31,7 @@ export const VerifyEmailForm = ({ token }: { token: string }) => {
           className="w-full"
           onClick={onSubmit}
           type="submit"
-          isLoading={isLoading}
+          isLoading={isPending}
         >
           Confirm email verification
         </Button>

@@ -36,7 +36,7 @@
     "dev:fe": "yarn fe dev",
     "dev:be": "yarn be dev",
     "dev:build": "yarn build:tsc --watch",
-    "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn' 'e2e test'"
+    "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "^0.8.0",

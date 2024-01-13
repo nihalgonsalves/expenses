@@ -143,15 +143,15 @@ const CreatePersonalTransactionForm = ({
   const utils = trpc.useUtils();
   const {
     mutateAsync: createPersonalSheetTransaction,
-    isLoading: noScheduleMutationIsLoading,
+    isPending: noScheduleMutationIsPending,
   } = trpc.transaction.createPersonalSheetTransaction.useMutation();
 
   const {
     mutateAsync: createPersonalSheetTransactionSchedule,
-    isLoading: scheduleMutationIsLoading,
+    isPending: scheduleMutationIsPending,
   } = trpc.transaction.createPersonalSheetTransactionSchedule.useMutation();
 
-  const isLoading = noScheduleMutationIsLoading || scheduleMutationIsLoading;
+  const isPending = noScheduleMutationIsPending || scheduleMutationIsPending;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const commonValues = {
@@ -336,7 +336,7 @@ const CreatePersonalTransactionForm = ({
           className="w-full capitalize"
           type="submit"
           disabled={disabled}
-          isLoading={isLoading}
+          isLoading={isPending}
         >
           Add {type.toLocaleLowerCase()}
         </Button>

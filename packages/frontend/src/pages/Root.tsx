@@ -8,8 +8,7 @@ import {
   SymbolIcon,
 } from "@radix-ui/react-icons";
 import type { TRPCClientErrorLike } from "@trpc/client";
-import type { AnyProcedure, AnyRouter } from "@trpc/server";
-import type { TRPCErrorShape } from "@trpc/server/rpc";
+import type { TRPCInferrable } from "@trpc/core";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -237,9 +236,7 @@ const ROOT_TOAST = "root-toast";
 
 export const RootLoader = <
   TData,
-  TError extends TRPCClientErrorLike<
-    AnyProcedure | AnyRouter | TRPCErrorShape<number>
-  >,
+  TError extends TRPCClientErrorLike<TRPCInferrable>,
 >({
   result,
   render,

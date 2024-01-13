@@ -4,7 +4,7 @@
     "rootDir": "./",
     "outDir": "./build/tsc/"
   },
-  "include": ["./src/", "./utils/"],
+  "include": ["./src/", "./tests", "./utils/"],
   "references": [
     {
       "path": "../backend"

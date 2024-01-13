@@ -158,7 +158,7 @@ const TransferItem = ({
 }) => {
   const utils = trpc.useUtils();
 
-  const { mutateAsync: createGroupSheetSettlement, isLoading } =
+  const { mutateAsync: createGroupSheetSettlement, isPending } =
     trpc.transaction.createGroupSheetSettlement.useMutation();
 
   const handleSettleUp = useCallback(async () => {
@@ -201,7 +201,7 @@ const TransferItem = ({
       <ConfirmDialog
         onConfirm={handleSettleUp}
         trigger={
-          <Button isLoading={isLoading} type="button" $variant="outline">
+          <Button isLoading={isPending} type="button" $variant="outline">
             <CheckIcon className="mr-2" /> Settled
           </Button>
         }

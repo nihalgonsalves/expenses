@@ -7,7 +7,7 @@ export const useServiceWorkerRegistration = () => {
       (await globalThis.navigator.serviceWorker.getRegistration()) ?? null,
     enabled: "serviceWorker" in globalThis.navigator,
     networkMode: "always",
-    cacheTime: 0,
+    gcTime: 0,
     staleTime: 0,
   });
 
