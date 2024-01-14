@@ -1,37 +1,46 @@
-import { CheckIcon, Cross2Icon, PersonIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
+
+import { ZAddGroupSheetMemberInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { trpc } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
-import { prevalidateEmail } from "../../utils/utils";
-import { Avatar } from "../Avatar";
+import { ResponsiveDialog, useDialog } from "../form/ResponsiveDialog";
 import { Button } from "../ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 
-import { ParticipantListItem } from "./ParticipantListItem";
-
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
+  const dialog = useDialog();
   const onLine = useNavigatorOnLine();
 
   const { mutateAsync: addGroupSheetMember, isPending } =
     trpc.sheet.addGroupSheetMember.useMutation();
   const utils = trpc.useUtils();
 
-  const [addMemberOpen, setAddMemberOpen] = useState(false);
-  const [email, setEmail] = useState("");
-
-  const valid = prevalidateEmail(email);
-
-  const handleClose = () => {
-    setAddMemberOpen(false);
-    setEmail("");
-  };
-
-  const handleAddMember = async () => {
-    await addGroupSheetMember({
+  const form = useForm<z.infer<typeof ZAddGroupSheetMemberInput>>({
+    resolver: zodResolver(ZAddGroupSheetMemberInput),
+    mode: "onSubmit",
+    defaultValues: {
       groupSheetId,
-      email,
-    });
+      email: "",
+    },
+  });
+
+  const onSubmit = async (
+    values: z.infer<typeof ZAddGroupSheetMemberInput>,
+  ) => {
+    await addGroupSheetMember(values);
 
     await Promise.all([
       utils.sheet.groupSheetById.invalidate(groupSheetId),
@@ -39,63 +48,45 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
       utils.transaction.getSimplifiedBalances.invalidate(groupSheetId),
     ]);
 
-    handleClose();
+    dialog.dismiss();
   };
 
-  return addMemberOpen ? (
-    <ParticipantListItem className="items-end" avatar={<Avatar name="" />}>
-      <form
-        className="flex grow items-end gap-2"
-        onSubmit={(e) => {
-          if (!valid) {
-            return;
-          }
-
-          e.preventDefault();
-          void handleAddMember();
-        }}
-      >
-        <Input
-          className="grow"
-          autoFocus
-          placeholder="Email address"
-          disabled={isPending}
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        />
-
-        <Button
-          $variant="outline"
-          type="reset"
-          aria-label="Cancel"
-          onClick={handleClose}
-        >
-          <Cross2Icon />
+  return (
+    <ResponsiveDialog
+      trigger={
+        <Button $variant="outline" $size="icon" disabled={!onLine}>
+          <AccessibleIcon label="Add Participant">
+            <PlusIcon />
+          </AccessibleIcon>
         </Button>
-
-        <Button
-          $variant="outline"
-          type="submit"
-          aria-label="Add"
-          disabled={!valid}
-        >
-          <CheckIcon />
-        </Button>
-      </form>
-    </ParticipantListItem>
-  ) : (
-    <Button
-      className="w-full"
-      $variant="outline"
-      disabled={!onLine}
-      onClick={() => {
-        setAddMemberOpen(true);
-      }}
+      }
+      title="Add Participant"
     >
-      <PersonIcon />
-      Add Participant
-    </Button>
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email address</FormLabel>
+                <FormControl>
+                  <Input type="email" autoComplete="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button isLoading={isPending} type="submit">
+            <PlusIcon className="mr-2" />
+            Add
+          </Button>
+        </form>
+      </Form>
+    </ResponsiveDialog>
   );
 };

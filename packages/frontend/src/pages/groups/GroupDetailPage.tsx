@@ -1,7 +1,6 @@
 import {
   ArchiveIcon,
   DotsVerticalIcon,
-  PlusIcon,
   TrashIcon,
 } from "@radix-ui/react-icons";
 import { useCallback, useMemo } from "react";
@@ -9,10 +8,8 @@ import { useNavigate } from "react-router-dom";
 
 import { trpc } from "../../api/trpc";
 import { useCurrentUser } from "../../api/useCurrentUser";
-import { FloatingActionButton } from "../../components/FloatingActionButton";
 import { ConfirmDialog } from "../../components/form/ConfirmDialog";
 import type { ActorInfo } from "../../components/group-sheets/BalanceSummary";
-import { CreateGroupSheetTransactionDialog } from "../../components/group-sheets/CreateGroupSheetTransactionDialog";
 import { ExportGroupTransactionsDropdown } from "../../components/group-sheets/ExportGroupTransactionsDropdown";
 import { GroupSheet } from "../../components/group-sheets/GroupSheet";
 import { Button } from "../../components/ui/button";
@@ -75,14 +72,6 @@ export const GroupDetailPage = () => {
         <GroupSheet actorInfo={actorInfo} groupSheet={groupSheet} />
       )}
       showBackButton
-      additionalChildren={
-        <CreateGroupSheetTransactionDialog
-          sheetId={sheetId}
-          trigger={
-            <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
-          }
-        />
-      }
       rightNavBarItems={
         <DropdownMenu aria-label="Actions">
           <DropdownMenuTrigger asChild>

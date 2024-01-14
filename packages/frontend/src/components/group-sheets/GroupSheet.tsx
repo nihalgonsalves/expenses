@@ -1,4 +1,5 @@
-import { ListBulletIcon } from "@radix-ui/react-icons";
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { ListBulletIcon, PlusIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -8,10 +9,16 @@ import { Alert, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
+import { twx } from "../ui/utils";
 
 import { AddMemberButton } from "./AddMemberButton";
 import { type ActorInfo, BalanceSummary } from "./BalanceSummary";
+import { CreateGroupSheetTransactionDialog } from "./CreateGroupSheetTransactionDialog";
 import { GroupSheetTransactionsDenseList } from "./GroupSheetTransactionsDenseList";
+
+const CardTitleWithButton = twx(
+  CardTitle,
+)`flex place-items-center justify-between`;
 
 export const GroupSheet = ({
   groupSheet,
@@ -29,7 +36,12 @@ export const GroupSheet = ({
     <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>People</CardTitle>
+          <CardTitleWithButton>
+            People
+            {actorInfo?.isAdmin && (
+              <AddMemberButton groupSheetId={groupSheet.id} />
+            )}
+          </CardTitleWithButton>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {actorInfo && (
@@ -38,16 +50,24 @@ export const GroupSheet = ({
               actorInfo={actorInfo}
             />
           )}
-
-          {actorInfo?.isAdmin && (
-            <AddMemberButton groupSheetId={groupSheet.id} />
-          )}
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Latest Transactions</CardTitle>
+          <CardTitleWithButton>
+            Latest Transactions
+            <CreateGroupSheetTransactionDialog
+              sheetId={groupSheet.id}
+              trigger={
+                <Button $variant="outline" $size="icon">
+                  <AccessibleIcon label="Add Transaction">
+                    <PlusIcon />
+                  </AccessibleIcon>
+                </Button>
+              }
+            />
+          </CardTitleWithButton>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           {groupSheetTransactionsResponse &&

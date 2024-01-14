@@ -2,7 +2,6 @@ import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
   ArchiveIcon,
   DotsVerticalIcon,
-  PlusIcon,
   TrashIcon,
   UploadIcon,
 } from "@radix-ui/react-icons";
@@ -10,9 +9,7 @@ import { useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { trpc } from "../../api/trpc";
-import { FloatingActionButton } from "../../components/FloatingActionButton";
 import { ConfirmDialog } from "../../components/form/ConfirmDialog";
-import { CreatePersonalTransactionDialog } from "../../components/personal-sheets/CreatePersonalTransactionDialog";
 import { ExportPersonalTransactionsDropdown } from "../../components/personal-sheets/ExportPersonalTransactionsDropdown";
 import { PersonalSheet } from "../../components/personal-sheets/PersonalSheet";
 import { Button } from "../../components/ui/button";
@@ -110,14 +107,6 @@ export const SheetDetailPage = () => {
             />
           </DropdownMenuContent>
         </DropdownMenu>
-      }
-      additionalChildren={
-        <CreatePersonalTransactionDialog
-          sheetId={sheetId}
-          trigger={
-            <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
-          }
-        />
       }
     />
   );

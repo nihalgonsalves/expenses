@@ -3,6 +3,7 @@ import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
   DotsVerticalIcon,
   ListBulletIcon,
+  PlusIcon,
   TimerIcon,
   TrashIcon,
 } from "@radix-ui/react-icons";
@@ -36,7 +37,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { cn } from "../ui/utils";
+import { cn, twx } from "../ui/utils";
+
+import { CreatePersonalTransactionDialog } from "./CreatePersonalTransactionDialog";
 
 const TransactionListItemComponent = ({
   transaction,
@@ -111,6 +114,10 @@ const TransactionScheduleDropdownMenu = ({
   );
 };
 
+const CardTitleWithButton = twx(
+  CardTitle,
+)`flex place-items-center justify-between`;
+
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const { data: getPersonalSheetTransactionsResponse } =
     trpc.transaction.getPersonalSheetTransactions.useQuery({
@@ -122,11 +129,26 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
       personalSheetId: personalSheet.id,
     });
 
+  const addButton = (
+    <CreatePersonalTransactionDialog
+      sheetId={personalSheet.id}
+      trigger={
+        <Button $variant="outline" $size="icon">
+          <AccessibleIcon label="Add Transaction">
+            <PlusIcon />
+          </AccessibleIcon>
+        </Button>
+      }
+    />
+  );
+
   return (
     <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Latest Transactions</CardTitle>
+          <CardTitleWithButton>
+            Latest Transactions {addButton}
+          </CardTitleWithButton>
         </CardHeader>
         <CardContent className="flex flex-col gap-2 md:gap-4">
           <ScrollArea viewportClassName="max-h-96">
@@ -153,10 +175,10 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
 
       <Card>
         <CardHeader>
-          <CardTitle>
+          <CardTitleWithButton>
             Scheduled Transactions (
-            {getPersonalSheetTransactionSchedulesResponse?.length})
-          </CardTitle>
+            {getPersonalSheetTransactionSchedulesResponse?.length}) {addButton}
+          </CardTitleWithButton>
         </CardHeader>
         <CardContent role="list" className="flex flex-col gap-2 md:gap-4">
           {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => {

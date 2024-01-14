@@ -40,6 +40,14 @@ export const ZCreateGroupSheetInput = z.object({
 });
 export type CreateGroupSheetInput = z.infer<typeof ZCreateGroupSheetInput>;
 
+export const ZAddGroupSheetMemberInput = z.object({
+  groupSheetId: z.string().min(1),
+  email: z.string().email({ message: "Invalid email address" }),
+});
+export type AddGroupSheetMemberInput = z.infer<
+  typeof ZAddGroupSheetMemberInput
+>;
+
 export const ZGroupSheetByIdResponse = ZSheet.extend({
   participants: z.array(ZFullParticipant),
 });

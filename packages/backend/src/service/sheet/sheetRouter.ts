@@ -11,6 +11,7 @@ import {
   ZSheetsResponse,
   ZSheet,
   ZSheetsQuery,
+  ZAddGroupSheetMemberInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { protectedProcedure, router } from "../../trpc";
@@ -138,12 +139,7 @@ export const sheetRouter = router({
     }),
 
   addGroupSheetMember: protectedProcedure
-    .input(
-      z.object({
-        groupSheetId: z.string().min(1),
-        email: z.string(),
-      }),
-    )
+    .input(ZAddGroupSheetMemberInput)
     .output(ZFullParticipant)
     .mutation(async ({ input: { groupSheetId, email }, ctx }) => {
       const { sheet, role: actorRole } =
