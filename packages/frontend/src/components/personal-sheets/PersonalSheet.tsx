@@ -13,13 +13,13 @@ import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { trpc } from "../../api/trpc";
-import { formatCurrency } from "../../utils/money";
 import {
   formatDateTimeRelative,
   shortDateTimeFormatter,
 } from "../../utils/temporal";
 import { getTransactionDescription } from "../../utils/utils";
 import { CategoryAvatar } from "../CategoryAvatar";
+import { CurrencySpan } from "../CurrencySpan";
 import { ConfirmDialog } from "../form/ConfirmDialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -59,7 +59,8 @@ const TransactionListItemComponent = ({
       <CategoryAvatar category={transaction.category} />
       <div className="flex flex-col">
         <span>
-          <strong>{descriptionText}</strong> {formatCurrency(transaction.money)}
+          <strong>{descriptionText}</strong>{" "}
+          <CurrencySpan money={transaction.money} />
         </span>
         <span>{description}</span>
       </div>

@@ -8,5 +8,7 @@ export const CurrencySpan = ({
 }: {
   money: Money;
 } & Pick<Intl.NumberFormatOptions, "signDisplay" | "currencyDisplay">) => (
-  <span className="tabular-nums">{formatCurrency(money, options)}</span>
+  <span className="whitespace-nowrap tabular-nums">
+    {formatCurrency(money, options)}
+  </span>
 );
