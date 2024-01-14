@@ -321,7 +321,6 @@ const CreatePersonalTransactionForm = ({
               <FormLabel>Recurring?</FormLabel>
               <FormControl>
                 <Select
-                  placeholder="Recurring?"
                   options={RECURRENCE_OPTIONS}
                   schema={ZRecurrenceFrequency}
                   {...field}

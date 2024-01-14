@@ -476,12 +476,12 @@ const SplitsFormSection = ({
               <FormControl>
                 <ToggleButtonGroup<GroupTransactionSplitType>
                   className="grid w-full grid-cols-1 grid-rows-5 lg:grid-cols-5 lg:grid-rows-1"
-                  value={field.value}
+                  options={SPLIT_OPTIONS}
+                  {...field}
                   setValue={(value) => {
                     handleChangeSplitType(value);
                     field.onChange(value);
                   }}
-                  options={SPLIT_OPTIONS}
                 />
               </FormControl>
               <FormMessage />

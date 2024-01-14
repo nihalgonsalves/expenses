@@ -20,7 +20,7 @@ const UNSET = "unset" as const;
 
 type SelectProps<T extends z.Schema<string | undefined>> = {
   id?: string | undefined;
-  placeholder: string;
+  placeholder?: string;
   options: SelectOption<T>[];
   value: z.infer<T> | undefined;
   onChange: (newValue: z.infer<T>) => void;
@@ -43,7 +43,12 @@ const SelectInner = <T extends z.Schema<string | undefined>>(
   ref: React.ForwardedRef<HTMLButtonElement>,
 ) => (
   <UISelect
-    value={value ?? ""}
+    value={
+      value ??
+      // if there's a placeholder, use "" so that the select displays it.
+      // if not, fallback a value with `undefined` in it
+      (placeholder ? "" : UNSET)
+    }
     onValueChange={(newValue) => {
       onBlur();
       setValue(
