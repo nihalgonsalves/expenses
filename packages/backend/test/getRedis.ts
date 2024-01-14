@@ -1,18 +1,14 @@
+import { RedisContainer } from "@testcontainers/redis";
 import IORedis from "ioredis";
-import { GenericContainer, Wait } from "testcontainers";
 import { afterAll } from "vitest";
 
 export const getRedis = async () => {
-  const container = await new GenericContainer("redis:7-alpine")
+  const container = await new RedisContainer("redis:7-alpine")
     .withName(`vitest-redis-${process.env["VITEST_WORKER_ID"] ?? 0}`)
-    .withExposedPorts(6379)
     .withReuse()
-    .withWaitStrategy(Wait.forLogMessage("Ready to accept connections"))
     .start();
 
-  const redis = new IORedis({
-    host: container.getHost(),
-    port: container.getMappedPort(6379),
+  const redis = new IORedis(container.getConnectionUrl(), {
     maxRetriesPerRequest: null,
   });
 
