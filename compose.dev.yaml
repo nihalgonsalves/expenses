@@ -4,7 +4,11 @@ services:
   postgres:
     image: "postgres:15.3-alpine"
     environment:
+      # server
       POSTGRES_PASSWORD: postgres
+      # for psql executed inside the container
+      PGUSER: postgres
+      PGPASSWORD: postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
