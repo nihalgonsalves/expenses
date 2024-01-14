@@ -27,9 +27,9 @@ const startWorker = async (worker: IWorker<any, any>) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const closeWorker = async ({ worker }: IWorker<any, any>) => {
+export const closeWorker = async ({ worker, queue }: IWorker<any, any>) => {
   try {
-    await worker.close();
+    await Promise.all([worker.close(), queue.close()]);
     console.log(`Worker '${worker.name}' closed`);
   } catch (e) {
     console.error(`Error closing worker '${worker.name}'`, e);

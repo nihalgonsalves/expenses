@@ -9,6 +9,7 @@ import { getPrisma } from "../../../test/getPrisma";
 import { getRedis } from "../../../test/getRedis";
 import { createPushService, getVapidDetails } from "../../../test/webPushUtils";
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
+import { closeWorker } from "../../startWorkers";
 
 import { NotificationDispatchWorker } from "./NotificationDispatchWorker";
 
@@ -25,7 +26,8 @@ beforeAll(() => {
   process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 });
 
-afterAll(() => {
+afterAll(async () => {
+  await closeWorker(notificationDispatchService);
   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete process.env["NODE_TLS_REJECT_UNAUTHORIZED"];
 });

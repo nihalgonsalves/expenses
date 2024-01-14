@@ -6,4 +6,11 @@ export default defineConfig({
     setupFiles: fileURLToPath(new URL("./test/setup.ts", import.meta.url)),
     include: ["./{src,test}/**/*.test.ts"],
   },
+  // `using` is not supported yet:
+  // https://github.com/vitejs/vite/issues/15464
+  esbuild: {
+    target: "es2022",
+    include: /\.m?[jt]sx?$/,
+    exclude: [],
+  },
 });

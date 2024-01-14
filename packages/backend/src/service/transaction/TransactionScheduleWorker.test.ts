@@ -6,6 +6,7 @@ import { personalSheetFactory, userFactory } from "../../../test/factories";
 import { getPrisma } from "../../../test/getPrisma";
 import { getRedis } from "../../../test/getRedis";
 import { createPersonalSheetTransactionScheduleInput } from "../../../test/input";
+import { closeWorker } from "../../startWorkers";
 
 import { TransactionScheduleWorker } from "./TransactionScheduleWorker";
 import { mapInputToCreatePersonalTransactionSchedule } from "./prismaMappers";
@@ -13,9 +14,21 @@ import { mapInputToCreatePersonalTransactionSchedule } from "./prismaMappers";
 const prisma = await getPrisma();
 const redis = await getRedis();
 
+const getWorker = async () => {
+  const worker = new TransactionScheduleWorker(prisma, redis);
+
+  return {
+    worker,
+    [Symbol.asyncDispose]: async () => {
+      await closeWorker(worker);
+    },
+  };
+};
+
 describe("TransactionScheduleWorker", () => {
   it("processes transaction schedules with next occurrence timestamps in the past", async () => {
-    const worker = new TransactionScheduleWorker(prisma, redis);
+    await using useWorker = await getWorker();
+    const worker = useWorker.worker;
 
     const waitForQueueSuccess = makeWaitForQueueSuccess(
       worker.queue.name,
@@ -123,7 +136,8 @@ describe("TransactionScheduleWorker", () => {
   });
 
   it("processes without now set", async () => {
-    const worker = new TransactionScheduleWorker(prisma, redis);
+    await using useWorker = await getWorker();
+    const worker = useWorker.worker;
 
     const waitForQueueSuccess = makeWaitForQueueSuccess(
       worker.queue.name,
