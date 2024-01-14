@@ -38,11 +38,10 @@ export const FloatingActionButton = React.forwardRef<
   <div ref={ref} className="sticky bottom-0 w-full">
     <TooltipProvider delayDuration={100}>
       <Tooltip>
-        <TooltipTrigger className="absolute bottom-4 right-4" asChild>
+        <TooltipTrigger asChild>
           {to ? (
             <MotionButton
               asChild
-              $variant="outline"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
               className="absolute bottom-4 right-4 size-12 rounded-full text-2xl"
@@ -53,7 +52,6 @@ export const FloatingActionButton = React.forwardRef<
             </MotionButton>
           ) : (
             <MotionButton
-              $variant="outline"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
               className="absolute bottom-4 right-4 size-12 rounded-full text-2xl"
@@ -65,6 +63,7 @@ export const FloatingActionButton = React.forwardRef<
         </TooltipTrigger>
         <TooltipContent
           side="left"
+          sideOffset={4}
           className="bg-primary text-primary-foreground"
         >
           <p>{label}</p>
