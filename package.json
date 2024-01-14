@@ -2,7 +2,7 @@
   "name": "@nihalgonsalves/expenses",
   "description": "",
   "version": "0.0.1",
-  "main": "build/index.js",
+  "type": "module",
   "author": "Nihal Gonsalves <nihal@nihalgonsalves.com>",
   "private": true,
   "license": "UNLICENSED",
