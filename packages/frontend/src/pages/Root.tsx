@@ -1,4 +1,5 @@
 import { Temporal } from "@js-temporal/polyfill";
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
   ArrowLeftIcon,
   GearIcon,
@@ -316,7 +317,9 @@ export const RootLoader = <
               className="ml-2"
               onClick={refetch}
             >
-              <SymbolIcon />
+              <AccessibleIcon label="Refresh">
+                <SymbolIcon />
+              </AccessibleIcon>
             </Button>
           )}
         </>
