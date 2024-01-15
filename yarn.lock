@@ -6767,18 +6767,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:>=16":
-  version: 18.2.47
-  resolution: "@types/react@npm:18.2.47"
-  dependencies:
-    "@types/prop-types": "npm:*"
-    "@types/scheduler": "npm:*"
-    csstype: "npm:^3.0.2"
-  checksum: e98ea1827fe60636d0f7ce206397159a29fc30613fae43e349e32c10ad3c0b7e0ed2ded2f3239e07bd5a3cba8736b6114ba196acccc39905ca4a06f56a8d2841
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^18.2.48":
+"@types/react@npm:*, @types/react@npm:>=16, @types/react@npm:^18.2.48":
   version: 18.2.48
   resolution: "@types/react@npm:18.2.48"
   dependencies:
@@ -11861,14 +11850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^3.12.0":
-  version: 3.12.3
-  resolution: "hono@npm:3.12.3"
-  checksum: 84a674ef0c6e51657b984d32dbd4e92ff0db13ab72d71f180e0ad4f801d4ed8d761b7c6dac364b302e9ea2d8e44569d444f678c72f221f7f3cfc4cd18dcef24a
-  languageName: node
-  linkType: hard
-
-"hono@npm:^3.12.4":
+"hono@npm:^3.12.0, hono@npm:^3.12.4":
   version: 3.12.4
   resolution: "hono@npm:3.12.4"
   checksum: f5d52b4914c8a2396f15a1a49fcb6543aff8bd87ceb4cb8766c89cd75c0dbd48e475973b091b713c1694e609eb6c3946456636d7a77d6d7bf95a2b984ae8499e
