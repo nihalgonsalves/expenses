@@ -16,7 +16,7 @@ test(`creates a personal sheet transaction successfully`, async ({
   await page.getByRole("link", { name: "Sheets" }).click();
   await page.getByRole("link", { name: "Test Sheet" }).click();
 
-  await page.getByRole("button", { name: "Add Transaction" }).click();
+  await page.getByRole("button", { name: "Add Transaction" }).first().click();
 
   // create
 
