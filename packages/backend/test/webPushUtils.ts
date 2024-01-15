@@ -58,7 +58,11 @@ const { clientKey, certificate } = await new Promise<CertificateCreationResult>(
   (resolve, reject) => {
     createCertificate({ days: 1, selfSigned: true }, (err, keys) => {
       if (err != null) {
-        reject(err);
+        reject(
+          err instanceof Error
+            ? err
+            : new Error("Error creating certificate", { cause: err }),
+        );
       } else {
         resolve(keys);
       }
