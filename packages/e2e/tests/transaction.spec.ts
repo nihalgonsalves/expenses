@@ -1,6 +1,6 @@
 import { expect, test } from "../utils/test";
 
-test(`creates a personal sheet transaction successfully`, async ({
+test(`creates and edits a personal sheet transaction successfully`, async ({
   page,
   serverTRPCClient,
   signIn,
@@ -43,20 +43,14 @@ test(`creates a personal sheet transaction successfully`, async ({
 
   await expect(listItem).toBeVisible();
 
-  // list on transactions page
-
-  await page.getByRole("link", { name: /all transactions/i }).click();
-
-  await listItem.getByLabel(/show more/i).click();
-  await listItem.getByRole("button", { name: /edit/i }).click();
-
   // edit
+
+  await listItem.getByRole("button", { name: /actions/i }).click();
+  await listItem.getByRole("menuitem", { name: "Edit" }).click();
 
   await page.getByLabel(/amount/i).clear();
   await page.getByLabel(/amount/i).pressSequentially("20000");
   await page.getByRole("button", { name: /update/i }).click();
-
-  await expect(page).toHaveTitle(/transactions/i);
 
   // list again
 

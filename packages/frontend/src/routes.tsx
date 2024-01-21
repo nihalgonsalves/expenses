@@ -24,7 +24,6 @@ import { GroupDetailPage } from "./pages/groups/GroupDetailPage";
 import { GroupTransactionsIndexPage } from "./pages/groups/transactions/GroupTransactionsIndexPage";
 import { SheetDetailPage } from "./pages/sheets/SheetDetailPage";
 import { SheetImportPage } from "./pages/sheets/SheetImportPage";
-import { PersonalExpensesIndexPage } from "./pages/sheets/transactions/PersonalTransactionsIndexPage";
 import { StatsIndexPage } from "./pages/stats/StatsIndexPage";
 import { TransactionsIndexPage } from "./pages/transactions/TransactionsIndexPage";
 
@@ -134,14 +133,6 @@ export const routes = [
                 element: (
                   <AuthenticatedRoute>
                     <SheetDetailPage />
-                  </AuthenticatedRoute>
-                ),
-              },
-              {
-                path: "/sheets/:sheetId/transactions",
-                element: (
-                  <AuthenticatedRoute>
-                    <PersonalExpensesIndexPage />
                   </AuthenticatedRoute>
                 ),
               },

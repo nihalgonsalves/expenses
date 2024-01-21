@@ -2,7 +2,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
   DotsVerticalIcon,
-  ListBulletIcon,
+  Pencil1Icon,
   PlusIcon,
   TimerIcon,
   TrashIcon,
@@ -42,6 +42,7 @@ import {
 import { cn, twx } from "../ui/utils";
 
 import { CreatePersonalTransactionDialog } from "./CreatePersonalTransactionDialog";
+import { EditPersonalTransactionDialog } from "./EditPersonalTransactionForm";
 import { PersonalSheetAdminSection } from "./PersonalSheetAdminSection";
 import { PersonalSheetExportSection } from "./PersonalSheetExportSection";
 import { PersonalSheetFormSection } from "./PersonalSheetFormSection";
@@ -75,6 +76,72 @@ const TransactionListItemComponent = ({
   );
 };
 
+const TransactionDropdownMenu = ({
+  sheetId,
+  transactionId,
+}: {
+  sheetId: string;
+  transactionId: string;
+}) => {
+  const utils = trpc.useUtils();
+  const { mutateAsync: deleteTransaction } =
+    trpc.transaction.deleteTransaction.useMutation();
+
+  const handleDelete = async () => {
+    await deleteTransaction({
+      sheetId,
+      transactionId,
+    });
+
+    await utils.transaction.getPersonalSheetTransactions.invalidate({
+      personalSheetId: sheetId,
+    });
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button $size="icon" $variant="outline" className="bg-inherit">
+          <AccessibleIcon label="Actions">
+            <DotsVerticalIcon />
+          </AccessibleIcon>
+        </Button>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent align="end">
+        <EditPersonalTransactionDialog
+          sheetId={sheetId}
+          transactionId={transactionId}
+          trigger={
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <Pencil1Icon className="mr-2" /> Edit
+            </DropdownMenuItem>
+          }
+        />
+        <ConfirmDialog
+          confirmLabel="Confirm Delete"
+          description="Are you sure you want to delete this transaction?"
+          onConfirm={handleDelete}
+          variant="destructive"
+          trigger={
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <TrashIcon className="mr-2" /> Delete
+            </DropdownMenuItem>
+          }
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 const TransactionScheduleDropdownMenu = ({
   sheetId,
   transactionScheduleId,
@@ -99,7 +166,7 @@ const TransactionScheduleDropdownMenu = ({
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent side="left">
+      <DropdownMenuContent align="end">
         <ConfirmDialog
           confirmLabel="Confirm Delete"
           description="Delete transaction schedule? Existing transactions will not be affected."
@@ -152,11 +219,9 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3">
       <Card>
         <CardHeader>
-          <CardTitleWithButton>
-            Latest Transactions {addButton}
-          </CardTitleWithButton>
+          <CardTitleWithButton>Transactions {addButton}</CardTitleWithButton>
         </CardHeader>
-        <CardContent className="flex flex-col gap-2 md:gap-4">
+        <CardContent>
           <ScrollArea viewportClassName="max-h-96">
             <div role="list" className="flex flex-col gap-2 md:gap-4">
               {getPersonalSheetTransactionsResponse?.transactions.map(
@@ -165,17 +230,17 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                     key={transaction.id}
                     transaction={transaction}
                     description={formatDateTimeRelative(transaction.spentAt)}
+                    addons={
+                      <TransactionDropdownMenu
+                        sheetId={personalSheet.id}
+                        transactionId={transaction.id}
+                      />
+                    }
                   />
                 ),
               )}
             </div>
           </ScrollArea>
-          <Button $variant="outline" asChild>
-            <Link to={`/sheets/${personalSheet.id}/transactions`}>
-              <ListBulletIcon className="mr-2" /> All Transactions (
-              {getPersonalSheetTransactionsResponse?.total})
-            </Link>
-          </Button>
         </CardContent>
       </Card>
 
