@@ -12,13 +12,6 @@ const frequencyToRRuleEnum: Record<RecurrenceFrequency, Frequency> = {
   MONTHLY: Frequency.MONTHLY,
 };
 
-export const getFloatingRRuleDate = (isoString: string) =>
-  new Date(
-    Temporal.PlainDateTime.from(isoString).toZonedDateTime(
-      "UTC",
-    ).epochMilliseconds,
-  );
-
 const floatingDateToZonedDateTime = (floatingDate: Date, tzId: string) =>
   Temporal.Instant.fromEpochMilliseconds(floatingDate.valueOf())
     // pretend the date is UTC

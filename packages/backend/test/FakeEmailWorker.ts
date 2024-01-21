@@ -3,11 +3,6 @@ import type {
   IEmailWorker,
 } from "../src/service/email/EmailWorker";
 
-export type FakeNotificationItem = {
-  userId: string;
-  payload: EmailPayload;
-};
-
 export class FakeEmailWorker implements IEmailWorker {
   public messages: EmailPayload[] = [];
 

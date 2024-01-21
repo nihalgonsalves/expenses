@@ -73,7 +73,7 @@ export const getThemeDataAttribute = (
   theme: Theme,
 ) => `${theme}-${isDarkMode(themePreference) ? "dark" : "light"}`;
 
-export const syncMetaThemeColor = (shouldDarken: boolean) => {
+const syncMetaThemeColor = (shouldDarken: boolean) => {
   // this works because the first header is the one that touches the status bar
   // if there's a "last updated at" or "offline" banner, it will still be first
   // see Root.tsx

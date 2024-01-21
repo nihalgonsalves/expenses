@@ -7,10 +7,6 @@ import { formatCurrency } from "./money";
 
 export const getUserLanguage = () => globalThis.navigator.languages[0];
 
-// simply check for anything@anything.anytld
-export const prevalidateEmail = (email: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
 export const getInitials = (name: string): string => {
   const [first, last] = name.split(" ");
 

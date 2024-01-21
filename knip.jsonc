@@ -1,0 +1,20 @@
+{
+  "$schema": "https://unpkg.com/knip@4/schema.json",
+  "entry": [
+    "packages/backend/src/app.ts!",
+    "packages/frontend/src/main.tsx!",
+    "packages/frontend/src/sw.ts!",
+  ],
+  "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}"],
+  "rules": {
+    "files": "warn",
+    "classMembers": "off",
+    "duplicates": "off",
+  },
+  "ignoreExportsUsedInFile": true,
+  "ignore": [
+    // knip isn't `working-directory` aware
+    ".github/workflows/build.yml",
+  ],
+  "ignoreBinaries": ["touch"],
+}

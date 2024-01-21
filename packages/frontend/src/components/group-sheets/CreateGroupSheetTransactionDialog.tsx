@@ -47,7 +47,7 @@ const TYPE_OPTIONS = [
   },
 ] as const;
 
-export const CreateGroupSheetTransactionForm = ({
+const CreateGroupSheetTransactionForm = ({
   groupSheet,
   me,
 }: {

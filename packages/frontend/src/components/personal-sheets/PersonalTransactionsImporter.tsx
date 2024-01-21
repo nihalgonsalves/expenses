@@ -48,7 +48,7 @@ const fieldMatchers = {
   description: /(description|note)/i,
 };
 
-export enum CategoryId {
+enum CategoryId {
   Groceries = "groceries",
   Restaurants = "restaurants",
   Bars = "bars",

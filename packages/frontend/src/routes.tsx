@@ -167,8 +167,4 @@ export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
 
 export const SheetParams = z.object({ sheetId: z.string() });
 
-export const TransactionParams = SheetParams.extend({
-  transactionId: z.string(),
-});
-
 export { RouterProvider } from "react-router-dom";

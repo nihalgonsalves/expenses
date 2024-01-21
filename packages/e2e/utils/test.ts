@@ -21,7 +21,7 @@ type Fixtures = {
   signIn: () => Promise<User & { password: string }>;
 };
 
-export const relativePath = (path: string) =>
+const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
 
 declare global {
