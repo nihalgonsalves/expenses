@@ -34,7 +34,11 @@ import { ScrollArea } from "../components/ui/scroll-area";
 import { cn } from "../components/ui/utils";
 import { useNavigatorOnLine } from "../state/useNavigatorOnLine";
 import { useIsStandalone } from "../utils/hooks/useIsStandalone";
-import { formatDateTimeRelative, intervalGreaterThan } from "../utils/temporal";
+import {
+  durationMilliseconds,
+  formatDateTimeRelative,
+  intervalGreaterThan,
+} from "../utils/temporal";
 
 type RootProps = {
   title: string | undefined;
@@ -294,16 +298,19 @@ export const RootLoader = <
     result.dataUpdatedAt,
   );
 
-  useInterval(() => {
-    setIsOldData(
-      dataUpdatedAt.epochMilliseconds !== 0 &&
-        intervalGreaterThan(
-          Temporal.Now.instant(),
-          dataUpdatedAt,
-          Temporal.Duration.from({ minutes: 1 }),
-        ),
-    );
-  });
+  useInterval(
+    () => {
+      setIsOldData(
+        dataUpdatedAt.epochMilliseconds !== 0 &&
+          intervalGreaterThan(
+            Temporal.Now.instant(),
+            dataUpdatedAt,
+            Temporal.Duration.from({ minutes: 1 }),
+          ),
+      );
+    },
+    durationMilliseconds({ seconds: 3 }),
+  );
 
   return (
     <Root
