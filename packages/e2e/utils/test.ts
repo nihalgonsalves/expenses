@@ -15,6 +15,7 @@ import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 import { getUserData } from "./misc";
 
 type Fixtures = {
+  setup: () => void;
   serverTRPCClient: CreateTRPCProxyClient<AppRouter>;
   createUser: () => Promise<User & { password: string }>;
   signIn: () => Promise<User & { password: string }>;
@@ -65,6 +66,16 @@ export const test = base.extend<Fixtures>({
       ),
     );
   },
+
+  setup: [
+    async ({ page }, use) => {
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await use(() => {
+        // noop
+      });
+    },
+    { auto: true },
+  ],
 
   serverTRPCClient: async ({ request, baseURL }, use) => {
     const client = createTRPCProxyClient<AppRouter>({

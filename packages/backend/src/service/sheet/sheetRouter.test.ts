@@ -265,6 +265,51 @@ describe("mySheets", () => {
   });
 });
 
+describe("updateSheet", () => {
+  describe.each([
+    ["personalSheet", personalSheetFactory],
+    ["groupSheet", groupSheetFactory],
+  ])("%s", (sheetType, factory) => {
+    it(`updates a ${sheetType}`, async () => {
+      const user = await userFactory(prisma);
+      const caller = useProtectedCaller(user);
+      const sheet = await factory(prisma, {
+        withOwnerId: user.id,
+      });
+
+      await caller.sheet.updateSheet({ id: sheet.id, name: "Updated sheet" });
+
+      expect(
+        await prisma.sheet.findUnique({ where: { id: sheet.id } }),
+      ).toMatchObject({ name: "Updated sheet" });
+    });
+
+    it("returns a 404 if the participant has no access", async () => {
+      const user = await userFactory(prisma);
+      const caller = useProtectedCaller(user);
+      const sheet = await factory(prisma);
+
+      await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
+        "Sheet not found",
+      );
+    });
+
+    if (sheetType === "groupSheet") {
+      it("returns a 403 if the participant is not an admin", async () => {
+        const user = await userFactory(prisma);
+        const caller = useProtectedCaller(user);
+        const sheet = await factory(prisma, {
+          withParticipantIds: [user.id],
+        });
+
+        await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
+          "Only admins can delete sheets",
+        );
+      });
+    }
+  });
+});
+
 describe("deleteSheet", () => {
   describe.each([
     ["personalSheet", personalSheetFactory],
@@ -317,30 +362,32 @@ describe("archiveSheet", () => {
     ["personalSheet", personalSheetFactory],
     ["groupSheet", groupSheetFactory],
   ])("%s", (sheetType, factory) => {
-    it(`archives a ${sheetType}`, async () => {
+    it(`archives and unarchives a ${sheetType}`, async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
       const sheet = await factory(prisma, {
         withOwnerId: user.id,
       });
 
-      await caller.sheet.archiveSheet(sheet.id);
+      for (const isArchived of [true, false]) {
+        await caller.sheet.archiveSheet({ sheetId: sheet.id, isArchived });
 
-      expect(
-        await prisma.sheet.findUnique({ where: { id: sheet.id } }),
-      ).toMatchObject({ isArchived: true });
+        expect(
+          await prisma.sheet.findUnique({ where: { id: sheet.id } }),
+        ).toMatchObject({ isArchived });
+      }
     });
 
-    it.todo(`archives a ${sheetType} with transactions`);
+    it.todo(`archives and unarchives a ${sheetType} with transactions`);
 
     it("returns a 404 if the participant has no access", async () => {
       const user = await userFactory(prisma);
       const caller = useProtectedCaller(user);
       const sheet = await factory(prisma);
 
-      await expect(caller.sheet.archiveSheet(sheet.id)).rejects.toThrow(
-        "Sheet not found",
-      );
+      await expect(
+        caller.sheet.archiveSheet({ sheetId: sheet.id, isArchived: true }),
+      ).rejects.toThrow("Sheet not found");
     });
 
     if (sheetType === "groupSheet") {
@@ -351,9 +398,9 @@ describe("archiveSheet", () => {
           withParticipantIds: [user.id],
         });
 
-        await expect(caller.sheet.archiveSheet(sheet.id)).rejects.toThrow(
-          "Only admins can archive sheets",
-        );
+        await expect(
+          caller.sheet.archiveSheet({ sheetId: sheet.id, isArchived: true }),
+        ).rejects.toThrow("Only admins can archive sheets");
       });
     }
   });

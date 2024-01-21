@@ -12,6 +12,7 @@ import {
   ZSheet,
   ZSheetsQuery,
   ZAddGroupSheetMemberInput,
+  ZUpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { protectedProcedure, router } from "../../trpc";
@@ -100,12 +101,31 @@ export const sheetRouter = router({
       };
     }),
 
-  archiveSheet: protectedProcedure
-    .input(z.string().min(1))
+  updateSheet: protectedProcedure
+    .input(ZUpdateSheetInput)
     .output(z.void())
     .mutation(async ({ input, ctx }) => {
       const { role } = await ctx.sheetService.ensureSheetMembership(
-        input,
+        input.id,
+        ctx.user.id,
+      );
+
+      if (role !== SheetParticipantRole.ADMIN) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Only admins can update sheets",
+        });
+      }
+
+      await ctx.sheetService.updateSheet(input);
+    }),
+
+  archiveSheet: protectedProcedure
+    .input(z.object({ sheetId: z.string().min(1), isArchived: z.boolean() }))
+    .output(z.void())
+    .mutation(async ({ input, ctx }) => {
+      const { role } = await ctx.sheetService.ensureSheetMembership(
+        input.sheetId,
         ctx.user.id,
       );
 
@@ -116,7 +136,7 @@ export const sheetRouter = router({
         });
       }
 
-      await ctx.sheetService.archiveSheet(input);
+      await ctx.sheetService.setSheetArchived(input.sheetId, input.isArchived);
     }),
 
   deleteSheet: protectedProcedure

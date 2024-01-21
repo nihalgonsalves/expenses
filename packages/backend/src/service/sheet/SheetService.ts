@@ -14,6 +14,7 @@ import type {
   CreateGroupSheetInput,
   CreatePersonalSheetInput,
   GroupSheetWithParticipants,
+  UpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
@@ -166,13 +167,24 @@ export class SheetService {
     });
   }
 
-  async archiveSheet(id: string) {
+  async updateSheet(input: UpdateSheetInput) {
+    return this.prismaClient.sheet.update({
+      where: {
+        id: input.id,
+      },
+      data: {
+        name: input.name,
+      },
+    });
+  }
+
+  async setSheetArchived(id: string, isArchived: boolean) {
     return this.prismaClient.sheet.update({
       where: {
         id,
       },
       data: {
-        isArchived: true,
+        isArchived,
       },
     });
   }

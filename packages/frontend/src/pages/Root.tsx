@@ -10,7 +10,7 @@ import {
 } from "@radix-ui/react-icons";
 import type { TRPCClientErrorLike } from "@trpc/client";
 import type { TRPCInferrable } from "@trpc/core";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useState } from "react";
 import { Helmet } from "react-helmet";
 import { toast } from "react-hot-toast";
@@ -262,6 +262,7 @@ export const RootLoader = <
   )) => {
   const onLine = useNavigatorOnLine();
   const isStandalone = useIsStandalone();
+  const shouldReduceMotion = useReducedMotion();
 
   const mobileStandalone = isStandalone && "ontouchstart" in window;
 
@@ -340,9 +341,9 @@ export const RootLoader = <
           )}
           {result.data != null && (
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: shouldReduceMotion ? 1 : 0 }}
             >
               {render(result.data)}
             </motion.div>

@@ -9,11 +9,15 @@ import { Alert, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
 import { twx } from "../ui/utils";
 
 import { AddMemberButton } from "./AddMemberButton";
 import { type ActorInfo, BalanceSummary } from "./BalanceSummary";
 import { CreateGroupSheetTransactionDialog } from "./CreateGroupSheetTransactionDialog";
+import { GroupSheetAdminSection } from "./GroupSheetAdminSection";
+import { GroupSheetExportSection } from "./GroupSheetExportSection";
+import { GroupSheetFormSection } from "./GroupSheetFormSection";
 import { GroupSheetTransactionsDenseList } from "./GroupSheetTransactionsDenseList";
 
 const CardTitleWithButton = twx(
@@ -33,7 +37,7 @@ export const GroupSheet = ({
     });
 
   return (
-    <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4">
+    <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3">
       <Card>
         <CardHeader>
           <CardTitleWithButton>
@@ -89,6 +93,32 @@ export const GroupSheet = ({
             <Alert>
               <AlertTitle>No transactions yet</AlertTitle>
             </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Group Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-8">
+          <div>
+            <GroupSheetFormSection groupSheet={groupSheet} />
+          </div>
+
+          <Separator />
+
+          <div className="grid grid-cols-2 gap-2">
+            <GroupSheetExportSection groupSheet={groupSheet} />
+          </div>
+
+          {actorInfo?.isAdmin && (
+            <>
+              <Separator />
+              <div className="grid grid-cols-2 gap-2">
+                <GroupSheetAdminSection groupSheet={groupSheet} />
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
