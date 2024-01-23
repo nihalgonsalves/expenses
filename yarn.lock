@@ -2246,10 +2246,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@hono/node-server@npm:1.4.0"
-  checksum: 9c409d18257610d1b67efecfbde3325e6594299383407ce7dd82e7c39761881c00523432638e5676e072861e213d00170ae3b6f7d76c84cc8ff4c33dcd6a63fe
+"@hono/node-server@npm:^1.4.1":
+  version: 1.5.0
+  resolution: "@hono/node-server@npm:1.5.0"
+  checksum: 1e5cf01a8a93f740305e549cddc3030bede29249995205c9470bf4d945d0c733de1c9000f05634c45ad901233b7739f8486b6a3859f99d57e2358b1132386034
   languageName: node
   linkType: hard
 
@@ -2995,7 +2995,7 @@ __metadata:
     "@bull-board/api": "npm:^5.13.0"
     "@bull-board/hono": "npm:^5.13.0"
     "@faker-js/faker": "npm:^8.3.1"
-    "@hono/node-server": "npm:^1.4.0"
+    "@hono/node-server": "npm:^1.4.1"
     "@hono/trpc-server": "npm:^0.1.0"
     "@js-temporal/polyfill": "npm:^0.4.4"
     "@nihalgonsalves/expenses-shared": "npm:*"
