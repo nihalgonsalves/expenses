@@ -2,15 +2,15 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "./",
-    "outDir": "./build/tsc/"
+    "outDir": "./build/tsc/",
   },
   "include": ["./src/", "./tests", "./utils/"],
   "references": [
     {
-      "path": "../backend"
+      "path": "../backend",
     },
     {
-      "path": "../shared"
-    }
-  ]
+      "path": "../shared",
+    },
+  ],
 }

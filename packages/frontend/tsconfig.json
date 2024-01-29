@@ -4,15 +4,15 @@
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "WebWorker"],
     "rootDir": "./",
-    "outDir": "./build/tsc/"
+    "outDir": "./build/tsc/",
   },
   "include": ["./src/", "./bin/", "./.storybook/*"],
   "references": [
     {
-      "path": "../backend"
+      "path": "../backend",
     },
     {
-      "path": "../shared"
-    }
-  ]
+      "path": "../shared",
+    },
+  ],
 }

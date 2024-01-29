@@ -4,6 +4,6 @@
     { "path": "./packages/backend/" },
     { "path": "./packages/frontend/" },
     { "path": "./packages/shared/" },
-    { "path": "./packages/e2e/" }
-  ]
+    { "path": "./packages/e2e/" },
+  ],
 }
