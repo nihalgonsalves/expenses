@@ -3134,7 +3134,7 @@ __metadata:
     "@types/react-helmet": "npm:^6"
     "@types/sharp": "npm:^0.32.0"
     "@vitejs/plugin-react": "npm:^4.2.1"
-    "@vitest/coverage-v8": "npm:^1.2.0"
+    "@vitest/coverage-v8": "npm:^1.2.2"
     autoprefixer: "npm:^10.4.17"
     chromatic: "npm:^10.6.1"
     class-variance-authority: "npm:^0.7.0"
@@ -7420,7 +7420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-v8@npm:^1.2.0, @vitest/coverage-v8@npm:^1.2.2":
+"@vitest/coverage-v8@npm:^1.2.2":
   version: 1.2.2
   resolution: "@vitest/coverage-v8@npm:1.2.2"
   dependencies:

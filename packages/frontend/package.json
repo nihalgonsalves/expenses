@@ -95,7 +95,7 @@
     "@types/react-helmet": "^6",
     "@types/sharp": "^0.32.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.2.0",
+    "@vitest/coverage-v8": "^1.2.2",
     "autoprefixer": "^10.4.17",
     "chromatic": "^10.6.1",
     "happy-dom": "^13.3.5",
