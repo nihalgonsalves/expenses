@@ -21,7 +21,7 @@
   "dependencies": {
     "@bull-board/api": "^5.13.0",
     "@bull-board/hono": "^5.13.0",
-    "@hono/node-server": "^1.4.0",
+    "@hono/node-server": "^1.4.1",
     "@hono/trpc-server": "^0.1.0",
     "@js-temporal/polyfill": "^0.4.4",
     "@nihalgonsalves/expenses-shared": "*",
