@@ -36,7 +36,7 @@
     "ioredis": "^5.3.2",
     "jose": "^5.2.0",
     "nanoid": "^5.0.4",
-    "nodemailer": "^6.9.8",
+    "nodemailer": "^6.9.9",
     "rrule": "^2.8.1",
     "ua-parser-js": "^1.0.37",
     "web-push": "^3.6.6",
