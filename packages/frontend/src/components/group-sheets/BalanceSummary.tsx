@@ -99,7 +99,7 @@ const PersonMenu = ({
           </AccessibleIcon>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="left">
+      <DropdownMenuContent align="end">
         <DropdownMenuItem
           onSelect={handleDelete}
           disabled={balance.amount !== 0 || !onLine}
@@ -202,7 +202,7 @@ const TransferItem = ({
         onConfirm={handleSettleUp}
         trigger={
           <Button isLoading={isPending} type="button" $variant="outline">
-            <CheckIcon className="mr-2" /> Settled
+            <CheckIcon className="mr-2" /> Settled?
           </Button>
         }
         confirmLabel="Settle up"

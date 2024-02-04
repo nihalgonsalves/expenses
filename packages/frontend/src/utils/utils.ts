@@ -32,7 +32,7 @@ export const getGroupSheetTransactionSummaryText = ({
 
     return `${getShortName(to?.name ?? "")} paid ${getShortName(
       from?.name ?? "",
-    )}`;
+    )} ${to?.balance.actual ? formatCurrency(to.balance.actual) : undefined}`;
   }
 
   if (yourBalance == null) {

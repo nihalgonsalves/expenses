@@ -21,7 +21,6 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { SheetsIndexPage } from "./pages/SheetsIndexPage";
 import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import { GroupDetailPage } from "./pages/groups/GroupDetailPage";
-import { GroupTransactionsIndexPage } from "./pages/groups/transactions/GroupTransactionsIndexPage";
 import { SheetDetailPage } from "./pages/sheets/SheetDetailPage";
 import { SheetImportPage } from "./pages/sheets/SheetImportPage";
 import { StatsIndexPage } from "./pages/stats/StatsIndexPage";
@@ -99,14 +98,6 @@ export const routes = [
                 element: (
                   <AuthenticatedRoute>
                     <GroupDetailPage />
-                  </AuthenticatedRoute>
-                ),
-              },
-              {
-                path: "/groups/:sheetId/transactions",
-                element: (
-                  <AuthenticatedRoute>
-                    <GroupTransactionsIndexPage />
                   </AuthenticatedRoute>
                 ),
               },

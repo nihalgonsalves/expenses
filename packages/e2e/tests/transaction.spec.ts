@@ -13,10 +13,8 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
     currencyCode: "EUR",
   });
 
-  await page.getByRole("link", { name: "Sheets" }).click();
-  await page.getByRole("link", { name: "Test Sheet" }).click();
-
   await page.getByRole("button", { name: "Add Transaction" }).first().click();
+  await page.getByRole("button", { name: "Test Sheet" }).click();
 
   // create
 
@@ -36,17 +34,15 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
 
   // list on sheet page
 
-  const listItem = page
-    .getByRole("listitem")
-    .filter({ hasText: "test transaction -€100.00" })
-    .first();
-
-  await expect(listItem).toBeVisible();
+  const row = page
+    .getByRole("button", { name: /test transaction/ })
+    .filter({ hasText: "-€100.00" });
+  await expect(row).toBeVisible();
 
   // edit
 
-  await listItem.getByRole("button", { name: /actions/i }).click();
-  await listItem.getByRole("menuitem", { name: "Edit" }).click();
+  await row.getByRole("button", { name: /open menu/i, exact: true }).click();
+  await page.getByRole("menuitem", { name: "Edit" }).click();
 
   await page.getByLabel(/amount/i).clear();
   await page.getByLabel(/amount/i).pressSequentially("20000");
@@ -55,8 +51,8 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
   // list again
 
   const updatedListItem = page
-    .getByRole("listitem")
-    .filter({ hasText: "test transaction -€200.00" })
+    .getByRole("button")
+    .filter({ hasText: "-€200.00" })
     .first();
 
   await expect(updatedListItem).toBeVisible();
@@ -76,10 +72,8 @@ test(`creates a shared sheet transaction successfully`, async ({
     additionalParticipantEmailAddresses: [],
   });
 
-  await page.getByRole("link", { name: "Sheets" }).click();
-  await page.getByRole("link", { name: "Test Sheet" }).click();
-
-  await page.getByRole("button", { name: "Add Transaction" }).click();
+  await page.getByRole("button", { name: "Add Transaction" }).first().click();
+  await page.getByRole("button", { name: "Test Sheet" }).click();
 
   // create
 
@@ -99,10 +93,9 @@ test(`creates a shared sheet transaction successfully`, async ({
 
   // list
 
-  const listItem = page
-    .getByRole("listitem")
-    // .filter({ hasText: /test transaction/ })
-    .first();
+  const row = page
+    .getByRole("button", { name: /test transaction/ })
+    .filter({ hasText: "-€100.00" });
 
-  await expect(listItem).toBeVisible();
+  await expect(row).toBeVisible();
 });

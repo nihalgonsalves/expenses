@@ -22,10 +22,13 @@ import {
   ZUpdatePersonalSheetTransactionInput,
   ZGetAllUserTransactionsInput,
   ZBalanceSimplificationResponse,
+  type TransactionWithSheet,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import { ZCategoryEmoji } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { protectedProcedure, router } from "../../trpc";
+
+import { calculateBalances } from "./TransactionService";
 
 const mapTransaction = <
   T extends { amount: number; scale: number; spentAt: Date },
@@ -209,6 +212,16 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
+      const sheetType = sheet.type;
+
+      // TODO
+      if (sheetType === "GROUP") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot getTransaction for a group sheet",
+        });
+      }
+
       const transaction = await ctx.transactionService.getTransaction(
         transactionId,
         sheet,
@@ -222,8 +235,9 @@ export const transactionRouter = router({
       }
 
       return {
-        transaction: mapTransaction(transaction, sheet),
+        ...mapTransaction(transaction, sheet),
         sheet,
+        sheetType,
       };
     }),
 
@@ -231,24 +245,45 @@ export const transactionRouter = router({
     .input(ZGetAllUserTransactionsInput)
     .output(ZGetAllUserTransactionsResponse)
     .query(async ({ ctx, input }) => {
-      const { expenses, earnings } =
-        await ctx.transactionService.getAllUserTransactions(ctx.user, {
+      const data = await ctx.transactionService.getAllUserTransactions(
+        ctx.user,
+        {
           from: Temporal.Instant.from(input.fromTimestamp),
           to: Temporal.Instant.from(input.toTimestamp),
-          category: input.category,
-          sheetId: input.sheetId,
-        });
+        },
+      );
 
-      return {
-        expenses: expenses.map(({ sheet, spentAt, ...transaction }) => ({
-          transaction: { ...transaction, spentAt: spentAt.toISOString() },
-          sheet,
-        })),
-        earnings: earnings.map(({ sheet, spentAt, ...transaction }) => ({
-          transaction: { ...transaction, spentAt: spentAt.toISOString() },
-          sheet,
-        })),
-      };
+      return data.map(
+        ({ sheet, spentAt, ...transaction }): TransactionWithSheet => {
+          const sheetType = sheet.type;
+
+          if (sheetType === "PERSONAL") {
+            return {
+              ...transaction,
+              sheet,
+              sheetType,
+              spentAt: spentAt.toISOString(),
+            };
+          }
+
+          const participantBalances = calculateBalances(
+            sheet,
+            transaction.type,
+            transaction.transactionEntries,
+          );
+
+          return {
+            ...transaction,
+            sheet,
+            sheetType,
+            spentAt: spentAt.toISOString(),
+            participants: participantBalances,
+            yourBalance: participantBalances.find(
+              ({ id }) => id === ctx.user.id,
+            )?.balance,
+          };
+        },
+      );
     }),
 
   getPersonalSheetTransactions: protectedProcedure
@@ -343,15 +378,21 @@ export const transactionRouter = router({
         });
 
       return {
-        transactions: transactions.map(
-          ({ participantBalances, ...transaction }) => ({
+        transactions: transactions.map((transaction) => {
+          const participantBalances = calculateBalances(
+            sheet,
+            transaction.type,
+            transaction.transactionEntries,
+          );
+
+          return {
             ...mapTransaction(transaction, sheet),
             participants: participantBalances,
             yourBalance: participantBalances.find(
               ({ id }) => id === ctx.user.id,
             )?.balance,
-          }),
-        ),
+          };
+        }),
         total,
       };
     }),

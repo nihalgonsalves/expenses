@@ -1,5 +1,3 @@
-import { QuestionMarkIcon } from "@radix-ui/react-icons";
-
 import { useCategoryEmojiShortCode } from "../data/useCategoryEmojiShortCode";
 
 import {
@@ -12,7 +10,7 @@ import {
 export const CategoryIcon = ({ category }: { category: string }) => {
   const shortCode = useCategoryEmojiShortCode(category);
 
-  return shortCode ? <em-emoji shortcodes={shortCode} /> : <QuestionMarkIcon />;
+  return shortCode ? <em-emoji shortcodes={shortCode} /> : "❓";
 };
 
 export const CategoryAvatar = ({ category }: { category: string }) => (

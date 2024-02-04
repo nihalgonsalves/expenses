@@ -3,8 +3,9 @@ import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 
 import { useAllUserTransactions } from "../../api/useAllUserTransactions";
-import { AllUserTransactionsList } from "../../components/AllUserTransactionsList";
 import { QuickCreateTransactionFAB } from "../../components/expenses/QuickCreateTransactionFAB";
+import { columns } from "../../components/transactions/columns";
+import { DataTable } from "../../components/transactions/data-table";
 import { RootLoader } from "../Root";
 
 export const TransactionsIndexPage = () => {
@@ -13,15 +14,9 @@ export const TransactionsIndexPage = () => {
     to: endOfMonth(new Date()),
   });
 
-  const [sheetId, setSheetId] = useState<string | undefined>(undefined);
-
-  const [category, setCategory] = useState<string | undefined>();
-
   const result = useAllUserTransactions({
     fromTimestamp: dateRange?.from?.toISOString(),
     toTimestamp: dateRange?.to?.toISOString(),
-    sheetId,
-    category,
   });
 
   return (
@@ -30,14 +25,11 @@ export const TransactionsIndexPage = () => {
       title="Transactions"
       additionalChildren={<QuickCreateTransactionFAB />}
       render={(data) => (
-        <AllUserTransactionsList
+        <DataTable
+          columns={columns}
           data={data}
           dateRange={dateRange}
           setDateRange={setDateRange}
-          category={category}
-          setCategory={setCategory}
-          sheetId={sheetId}
-          setSheetId={setSheetId}
         />
       )}
     />

@@ -27,7 +27,6 @@ type CategorySelectProps = {
   onChange: (newCategory: string | undefined) => void;
   className?: string;
   placeholder?: string;
-  allowCreate?: boolean;
 } & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const CategorySelect = forwardRef<
@@ -42,7 +41,6 @@ export const CategorySelect = forwardRef<
       onBlur,
       className,
       placeholder = "Select a category",
-      allowCreate = true,
       ...controllerProps
     },
     ref,
@@ -95,8 +93,7 @@ export const CategorySelect = forwardRef<
                     <CommandSeparator />
                   </>
                 )}
-                {allowCreate &&
-                  searchValue.length > 2 &&
+                {searchValue.length > 2 &&
                   !categories?.some((c) => c.id === searchValue) && (
                     <CommandItem
                       value={searchValue}

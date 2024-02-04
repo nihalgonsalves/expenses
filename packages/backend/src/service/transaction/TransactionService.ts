@@ -63,7 +63,7 @@ const sumTransactions = (
     currencyCode,
   );
 
-const calculateBalances = (
+export const calculateBalances = (
   groupSheet: Sheet,
   type: TransactionType,
   transactions: (TransactionEntry & { user: PrismaUser })[],
@@ -169,25 +169,22 @@ export class TransactionService {
     {
       from,
       to,
-      category,
-      sheetId,
     }: {
       from: Temporal.Instant;
       to: Temporal.Instant;
-      category: string | undefined;
-      sheetId: string | undefined;
     },
   ) {
     const data = await this.prismaClient.transaction.findMany({
       where: {
-        type: { in: ["EXPENSE", "INCOME"] },
-        transactionEntries: { some: { userId: user.id } },
+        sheet: {
+          participants: {
+            some: { participantId: user.id },
+          },
+        },
         spentAt: {
           gte: from.toString(),
           lte: to.toString(),
         },
-        ...(category ? { category } : undefined),
-        ...(sheetId ? { sheetId } : undefined),
       },
       include: {
         sheet: true,
@@ -200,54 +197,23 @@ export class TransactionService {
       orderBy: { spentAt: "desc" },
     });
 
-    const expenses = data
-      .map(
-        ({
-          transactionEntries,
-          amount: _amount,
-          scale: _scale,
-          ...transaction
-        }) => ({
-          ...transaction,
-          money: sumTransactions(
-            transaction.sheet.currencyCode,
-            transactionEntries.filter(
-              ({ amount, userId }) =>
-                transaction.type === "EXPENSE" &&
-                amount < 0 &&
-                userId === user.id,
-            ),
-          ),
-        }),
-      )
-      .filter(({ money }) => money.amount !== 0);
+    return data.map(({ amount: _amount, scale: _scale, ...transaction }) => ({
+      ...transaction,
 
-    const earnings = data
-      .map(
-        ({
-          transactionEntries,
-          amount: _amount,
-          scale: _scale,
-          ...transaction
-        }) => ({
-          ...transaction,
-          money: sumTransactions(
-            transaction.sheet.currencyCode,
-            transactionEntries.filter(
-              ({ amount, userId }) =>
-                transaction.type === "INCOME" &&
-                amount > 0 &&
-                userId === user.id,
-            ),
-          ),
+      money: sumTransactions(
+        transaction.sheet.currencyCode,
+        transaction.transactionEntries.filter(({ amount, userId }) => {
+          switch (transaction.type) {
+            case "EXPENSE":
+              return amount < 0 && userId === user.id;
+            case "INCOME":
+              return amount > 0 && userId === user.id;
+            case "TRANSFER":
+              return false;
+          }
         }),
-      )
-      .filter(({ money }) => money.amount !== 0);
-
-    return {
-      expenses,
-      earnings,
-    };
+      ),
+    }));
   }
 
   async getPersonalSheetTransactions({
@@ -273,14 +239,7 @@ export class TransactionService {
     });
 
     return {
-      transactions: transactions.map((transaction) => ({
-        ...transaction,
-        participantBalances: calculateBalances(
-          groupSheet,
-          transaction.type,
-          transaction.transactionEntries,
-        ),
-      })),
+      transactions,
       total,
     };
   }

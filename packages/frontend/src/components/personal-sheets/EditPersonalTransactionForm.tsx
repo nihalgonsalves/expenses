@@ -3,10 +3,9 @@ import { Temporal } from "@js-temporal/polyfill";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
-import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import {
   ZUpdatePersonalSheetTransactionInput,
-  type TransactionListItem,
+  type TransactionWithSheet,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { useCurrencyConversion } from "../../api/currencyConversion";
@@ -45,12 +44,12 @@ const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
 });
 
 const EditPersonalTransactionForm = ({
-  transaction,
-  personalSheet,
+  data,
 }: {
-  transaction: TransactionListItem;
-  personalSheet: Sheet;
+  data: TransactionWithSheet;
 }) => {
+  const { sheet: personalSheet, ...transaction } = data;
+
   const dialog = useDialog();
 
   const onLine = useNavigatorOnLine();
@@ -245,12 +244,7 @@ export const EditPersonalTransactionDialog = ({
 
   return (
     <ResponsiveDialog title="Edit Transaction" trigger={trigger}>
-      {data && (
-        <EditPersonalTransactionForm
-          transaction={data.transaction}
-          personalSheet={data.sheet}
-        />
-      )}
+      {data && <EditPersonalTransactionForm data={data} />}
     </ResponsiveDialog>
   );
 };

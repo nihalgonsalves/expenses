@@ -5,21 +5,18 @@ import type { Money } from "@nihalgonsalves/expenses-shared/money";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type {
   GetAllUserTransactionsInput,
-  TransactionListItem,
+  TransactionWithSheet,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { useConvertToPreferredCurrency } from "./currencyConversion";
 import { trpc } from "./trpc";
 
-export type ConvertedTransactionWithSheet = {
-  transaction: TransactionListItem & { convertedMoney: Money | undefined };
+export type ConvertedTransactionWithSheet = TransactionWithSheet & {
+  convertedMoney: Money | undefined;
   sheet: Sheet;
 };
 
-export type AllConvertedUserTransactions = {
-  expenses: ConvertedTransactionWithSheet[];
-  earnings: ConvertedTransactionWithSheet[];
-};
+export type AllConvertedUserTransactions = ConvertedTransactionWithSheet[];
 
 type AllConvertedUserTransactionsQueryResult = Pick<
   ReturnType<typeof trpc.transaction.getAllUserTransactions.useQuery>,
@@ -34,7 +31,7 @@ export const useAllUserTransactions = (
   const enabled = input.fromTimestamp != null && input.toTimestamp != null;
 
   const {
-    data = { expenses: [], earnings: [] },
+    data = [],
     isLoading,
     error,
     refetch,
@@ -48,37 +45,22 @@ export const useAllUserTransactions = (
     { enabled },
   );
 
-  const [convertCurrency] = useConvertToPreferredCurrency([
-    ...data.expenses.map(({ transaction }) => transaction.money.currencyCode),
-    ...data.earnings.map(({ transaction }) => transaction.money.currencyCode),
-  ]);
-
-  const convertedExpenses = useMemo(
-    () =>
-      data.expenses.map(({ sheet, transaction }) => ({
-        sheet,
-        transaction: {
-          ...transaction,
-          convertedMoney: convertCurrency(transaction.money),
-        },
-      })),
-    [data.expenses, convertCurrency],
+  const [convertCurrency] = useConvertToPreferredCurrency(
+    data.map((transaction) => transaction.money.currencyCode),
   );
 
-  const convertedEarnings = useMemo(
+  const convertedTransactions = useMemo(
     () =>
-      data.earnings.map(({ sheet, transaction }) => ({
+      data.map(({ sheet, ...transaction }) => ({
+        ...transaction,
+        convertedMoney: convertCurrency(transaction.money),
         sheet,
-        transaction: {
-          ...transaction,
-          convertedMoney: convertCurrency(transaction.money),
-        },
       })),
-    [data.earnings, convertCurrency],
+    [data, convertCurrency],
   );
 
   return {
-    data: { expenses: convertedExpenses, earnings: convertedEarnings },
+    data: convertedTransactions,
     isLoading: enabled ? isLoading : false,
     error,
     refetch,

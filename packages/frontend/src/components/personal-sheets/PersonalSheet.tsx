@@ -1,8 +1,8 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
+  ActivityLogIcon,
   DotsVerticalIcon,
-  Pencil1Icon,
   PlusIcon,
   TimerIcon,
   TrashIcon,
@@ -42,7 +42,6 @@ import {
 import { cn, twx } from "../ui/utils";
 
 import { CreatePersonalTransactionDialog } from "./CreatePersonalTransactionDialog";
-import { EditPersonalTransactionDialog } from "./EditPersonalTransactionForm";
 import { PersonalSheetAdminSection } from "./PersonalSheetAdminSection";
 import { PersonalSheetExportSection } from "./PersonalSheetExportSection";
 import { PersonalSheetFormSection } from "./PersonalSheetFormSection";
@@ -73,72 +72,6 @@ const TransactionListItemComponent = ({
       <div className="grow" />
       {addons}
     </div>
-  );
-};
-
-const TransactionDropdownMenu = ({
-  sheetId,
-  transactionId,
-}: {
-  sheetId: string;
-  transactionId: string;
-}) => {
-  const utils = trpc.useUtils();
-  const { mutateAsync: deleteTransaction } =
-    trpc.transaction.deleteTransaction.useMutation();
-
-  const handleDelete = async () => {
-    await deleteTransaction({
-      sheetId,
-      transactionId,
-    });
-
-    await utils.transaction.getPersonalSheetTransactions.invalidate({
-      personalSheetId: sheetId,
-    });
-  };
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button $size="icon" $variant="outline" className="bg-inherit">
-          <AccessibleIcon label="Actions">
-            <DotsVerticalIcon />
-          </AccessibleIcon>
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent align="end">
-        <EditPersonalTransactionDialog
-          sheetId={sheetId}
-          transactionId={transactionId}
-          trigger={
-            <DropdownMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <Pencil1Icon className="mr-2" /> Edit
-            </DropdownMenuItem>
-          }
-        />
-        <ConfirmDialog
-          confirmLabel="Confirm Delete"
-          description="Are you sure you want to delete this transaction?"
-          onConfirm={handleDelete}
-          variant="destructive"
-          trigger={
-            <DropdownMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <TrashIcon className="mr-2" /> Delete
-            </DropdownMenuItem>
-          }
-        />
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 };
 
@@ -192,11 +125,6 @@ const CardTitleWithButton = twx(
 )`flex place-items-center justify-between`;
 
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
-  const { data: getPersonalSheetTransactionsResponse } =
-    trpc.transaction.getPersonalSheetTransactions.useQuery({
-      personalSheetId: personalSheet.id,
-    });
-
   const { data: getPersonalSheetTransactionSchedulesResponse } =
     trpc.transaction.getPersonalSheetTransactionSchedules.useQuery({
       personalSheetId: personalSheet.id,
@@ -216,141 +144,131 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   );
 
   return (
-    <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3">
-      <Card>
-        <CardHeader>
-          <CardTitleWithButton>Transactions {addButton}</CardTitleWithButton>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea viewportClassName="max-h-96">
-            <div role="list" className="flex flex-col gap-2 md:gap-4">
-              {getPersonalSheetTransactionsResponse?.transactions.map(
-                (transaction) => (
-                  <TransactionListItemComponent
-                    key={transaction.id}
-                    transaction={transaction}
-                    description={formatDateTimeRelative(transaction.spentAt)}
-                    addons={
-                      <TransactionDropdownMenu
-                        sheetId={personalSheet.id}
-                        transactionId={transaction.id}
+    <div className="flex flex-col gap-2">
+      <div className="p-2">
+        <Button $variant="outline" className="w-full" asChild>
+          <Link
+            to={`/?${new URLSearchParams({ sheetId: personalSheet.id }).toString()}`}
+          >
+            <ActivityLogIcon className="mr-2" /> Transactions
+          </Link>
+        </Button>
+      </div>
+      <div className="gap-2 md:grid md:grid-cols-2 md:gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitleWithButton>
+              Scheduled Transactions (
+              {getPersonalSheetTransactionSchedulesResponse?.length}){" "}
+              {addButton}
+            </CardTitleWithButton>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea viewportClassName="max-h-96">
+              <div role="list" className="flex  flex-col gap-2 md:gap-4">
+                {getPersonalSheetTransactionSchedulesResponse?.map(
+                  (schedule) => {
+                    const nextOccurrenceAt = Temporal.ZonedDateTime.from(
+                      schedule.nextOccurrenceAt,
+                    ).toInstant();
+
+                    const isPast =
+                      nextOccurrenceAt.epochMilliseconds <
+                      Temporal.Now.instant().epochMilliseconds;
+
+                    return (
+                      <TransactionListItemComponent
+                        key={schedule.id}
+                        transaction={schedule}
+                        description={
+                          <div className={cn("flex gap-1")}>
+                            <Badge variant="outline" className="capitalize">
+                              {schedule.recurrenceRule.freq.toLowerCase()}
+                            </Badge>
+
+                            <TooltipProvider delayDuration={100}>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Badge variant="outline">
+                                    {formatDateTimeRelative(
+                                      nextOccurrenceAt,
+                                      90,
+                                    )}
+                                  </Badge>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-muted text-muted-foreground">
+                                  <p>
+                                    {shortDateTimeFormatter.format(
+                                      nextOccurrenceAt.epochMilliseconds,
+                                    )}
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+
+                              {isPast && (
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <Badge variant="outline">
+                                      <AccessibleIcon label="Pending processing">
+                                        <TimerIcon />
+                                      </AccessibleIcon>
+                                    </Badge>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-muted text-muted-foreground">
+                                    <p>Pending processing</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </TooltipProvider>
+                          </div>
+                        }
+                        addons={
+                          <TransactionScheduleDropdownMenu
+                            sheetId={personalSheet.id}
+                            transactionScheduleId={schedule.id}
+                          />
+                        }
                       />
-                    }
-                  />
-                ),
-              )}
+                    );
+                  },
+                )}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Sheet Settings</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-8">
+            <div>
+              <PersonalSheetFormSection personalSheet={personalSheet} />
             </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitleWithButton>
-            Scheduled Transactions (
-            {getPersonalSheetTransactionSchedulesResponse?.length}) {addButton}
-          </CardTitleWithButton>
-        </CardHeader>
-        <CardContent>
-          <ScrollArea viewportClassName="max-h-96">
-            <div role="list" className="flex  flex-col gap-2 md:gap-4">
-              {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => {
-                const nextOccurrenceAt = Temporal.ZonedDateTime.from(
-                  schedule.nextOccurrenceAt,
-                ).toInstant();
+            <Separator />
 
-                const isPast =
-                  nextOccurrenceAt.epochMilliseconds <
-                  Temporal.Now.instant().epochMilliseconds;
+            <Button $variant="outline" asChild>
+              <Link to={`/sheets/${personalSheet.id}/import`}>
+                <UploadIcon className="mr-2" />
+                Import .csv
+              </Link>
+            </Button>
 
-                return (
-                  <TransactionListItemComponent
-                    key={schedule.id}
-                    transaction={schedule}
-                    description={
-                      <div className={cn("flex gap-1")}>
-                        <Badge variant="outline" className="capitalize">
-                          {schedule.recurrenceRule.freq.toLowerCase()}
-                        </Badge>
+            <Separator />
 
-                        <TooltipProvider delayDuration={100}>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Badge variant="outline">
-                                {formatDateTimeRelative(nextOccurrenceAt, 90)}
-                              </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent className="bg-muted text-muted-foreground">
-                              <p>
-                                {shortDateTimeFormatter.format(
-                                  nextOccurrenceAt.epochMilliseconds,
-                                )}
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-
-                          {isPast && (
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <Badge variant="outline">
-                                  <AccessibleIcon label="Pending processing">
-                                    <TimerIcon />
-                                  </AccessibleIcon>
-                                </Badge>
-                              </TooltipTrigger>
-                              <TooltipContent className="bg-muted text-muted-foreground">
-                                <p>Pending processing</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          )}
-                        </TooltipProvider>
-                      </div>
-                    }
-                    addons={
-                      <TransactionScheduleDropdownMenu
-                        sheetId={personalSheet.id}
-                        transactionScheduleId={schedule.id}
-                      />
-                    }
-                  />
-                );
-              })}
+            <div className="grid grid-cols-2 gap-2">
+              <PersonalSheetExportSection personalSheet={personalSheet} />
             </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Sheet Settings</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-8">
-          <div>
-            <PersonalSheetFormSection personalSheet={personalSheet} />
-          </div>
+            <Separator />
 
-          <Separator />
-
-          <Button $variant="outline" asChild>
-            <Link to={`/sheets/${personalSheet.id}/import`}>
-              <UploadIcon className="mr-2" />
-              Import .csv
-            </Link>
-          </Button>
-
-          <Separator />
-
-          <div className="grid grid-cols-2 gap-2">
-            <PersonalSheetExportSection personalSheet={personalSheet} />
-          </div>
-
-          <Separator />
-
-          <div className="grid grid-cols-2 gap-2">
-            <PersonalSheetAdminSection personalSheet={personalSheet} />
-          </div>
-        </CardContent>
-      </Card>
+            <div className="grid grid-cols-2 gap-2">
+              <PersonalSheetAdminSection personalSheet={personalSheet} />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

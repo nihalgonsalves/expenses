@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { ZCurrencyCode } from "../money";
 
-import { ZParticipant, ZSheet } from "./sheet";
+import { ZParticipant, ZSheet, type SheetType } from "./sheet";
 
 export const ZMoney = z.object({
   amount: z.number().int(),
@@ -129,30 +129,6 @@ export type TransactionScheduleListItem = z.infer<
   typeof ZTransactionScheduleListItem
 >;
 
-export const ZTransactionWithSheet = z.object({
-  transaction: ZTransactionListItem,
-  sheet: ZSheet,
-});
-
-export const ZGetAllUserTransactionsInput = z.object({
-  fromTimestamp: z.string().datetime(),
-  toTimestamp: z.string().datetime(),
-  category: z.string().optional(),
-  sheetId: z.string().optional(),
-});
-export type GetAllUserTransactionsInput = z.infer<
-  typeof ZGetAllUserTransactionsInput
->;
-
-export const ZGetAllUserTransactionsResponse = z.object({
-  expenses: z.array(ZTransactionWithSheet),
-  earnings: z.array(ZTransactionWithSheet),
-});
-
-export type GetAllUserTransactionsResponse = z.infer<
-  typeof ZGetAllUserTransactionsResponse
->;
-
 export const ZGetPersonalSheetTransactionsResponse = z.object({
   transactions: z.array(ZTransactionListItem),
   total: z.number().nonnegative(),
@@ -195,6 +171,32 @@ export const ZGetGroupSheetTransactionsResponse = z.object({
   transactions: z.array(ZGroupSheetTransactionListItem),
   total: z.number().nonnegative(),
 });
+
+export const ZTransactionWithSheet = z.discriminatedUnion("sheetType", [
+  ZTransactionListItem.extend({
+    sheetType: z.literal("PERSONAL" satisfies SheetType),
+    sheet: ZSheet,
+  }),
+  ZGroupSheetTransactionListItem.extend({
+    sheetType: z.literal("GROUP" satisfies SheetType),
+    sheet: ZSheet,
+  }),
+]);
+export type TransactionWithSheet = z.infer<typeof ZTransactionWithSheet>;
+
+export const ZGetAllUserTransactionsInput = z.object({
+  fromTimestamp: z.string().datetime(),
+  toTimestamp: z.string().datetime(),
+});
+export type GetAllUserTransactionsInput = z.infer<
+  typeof ZGetAllUserTransactionsInput
+>;
+
+export const ZGetAllUserTransactionsResponse = z.array(ZTransactionWithSheet);
+
+export type GetAllUserTransactionsResponse = z.infer<
+  typeof ZGetAllUserTransactionsResponse
+>;
 
 const ZParticipantBalance = ZParticipant.extend({
   balance: ZMoney,

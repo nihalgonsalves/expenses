@@ -1,6 +1,7 @@
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { useMemo } from "react";
 import type { DateRange } from "react-day-picker";
+import { Link } from "react-router-dom";
 
 import {
   addMoney,
@@ -24,7 +25,7 @@ import { cn } from "./ui/utils";
 const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
   const categorySums: Record<string, Money> = {};
 
-  data.forEach(({ transaction }) => {
+  data.forEach((transaction) => {
     if (!transaction.convertedMoney) return;
 
     const currentSum = categorySums[transaction.category];
@@ -41,7 +42,11 @@ const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
   <div className="bg-card flex place-items-center content-between justify-between rounded-lg border p-6 shadow">
     <div>
       <div className="text-sm capitalize text-neutral-500 md:text-lg">
-        {category}
+        <Button $variant="link" className="h-auto p-0" asChild>
+          <Link to={`/?${new URLSearchParams({ category }).toString()}`}>
+            {category}
+          </Link>
+        </Button>
       </div>
 
       <div className="text-base font-bold md:text-3xl">
@@ -56,7 +61,7 @@ const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
 );
 
 export const CategoryStats = ({
-  data,
+  data = [],
   dateRange,
   setDateRange,
 }: {
@@ -66,17 +71,21 @@ export const CategoryStats = ({
 }) => {
   const categoryExpenseSumEntries = useMemo(
     () =>
-      Object.entries(getCategorySums(data.expenses)).sort(([, a], [, b]) =>
-        compareMoney(a, b),
-      ),
-    [data.expenses],
+      Object.entries(
+        getCategorySums(
+          data.filter((t) => t.type !== "TRANSFER" && t.money.amount < 0),
+        ),
+      ).sort(([, a], [, b]) => compareMoney(a, b)),
+    [data],
   );
   const categoryIncomeSumEntries = useMemo(
     () =>
-      Object.entries(getCategorySums(data.earnings)).sort(([, a], [, b]) =>
-        compareMoney(a, b),
-      ),
-    [data.earnings],
+      Object.entries(
+        getCategorySums(
+          data.filter((t) => t.type !== "TRANSFER" && t.money.amount > 0),
+        ),
+      ).sort(([, a], [, b]) => compareMoney(a, b)),
+    [data],
   );
 
   return (

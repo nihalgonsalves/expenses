@@ -3126,6 +3126,7 @@ __metadata:
     "@tanstack/react-query": "npm:^5.17.19"
     "@tanstack/react-query-devtools": "npm:^5.17.21"
     "@tanstack/react-query-persist-client": "npm:^5.17.19"
+    "@tanstack/react-table": "npm:^8.11.8"
     "@trpc/client": "npm:11.0.0-next-beta.193"
     "@trpc/react-query": "npm:11.0.0-next-beta.193"
     "@types/papaparse": "npm:^5.3.14"
@@ -6456,6 +6457,25 @@ __metadata:
   peerDependencies:
     react: ^18.0.0
   checksum: 10c0/b3ab0a51f08a2118ff2023ea98768b0b81237be177e215675712ad71b86946d65ce0020affdd2ba7a70b0796af5d8a8896c5b95b7e43a38002bc89c2fd13217d
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-table@npm:^8.11.8":
+  version: 8.11.8
+  resolution: "@tanstack/react-table@npm:8.11.8"
+  dependencies:
+    "@tanstack/table-core": "npm:8.11.8"
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 10c0/c3ce8a679058da31ff10fb53a5aeb512b168b7e7997a3f5a93c91b2fa2b93d620e44dd33c00c03991b259286039581be7ca608081421dc8fd6f0c93b308a5068
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.11.8":
+  version: 8.11.8
+  resolution: "@tanstack/table-core@npm:8.11.8"
+  checksum: 10c0/3e36220b16952d4356a74aa762ebf58d6e51033defe87aa482f03b6f342a91783ad755af2bccc27eafb6debfa73d8fa4e91d7fe57282c95322fdde86f0951c0c
   languageName: node
   linkType: hard
 

@@ -1071,7 +1071,7 @@ describe("getTransaction", () => {
         transactionId: id,
       }),
     ).toMatchObject({
-      transaction: { id },
+      id,
     });
   });
 
@@ -1134,192 +1134,69 @@ describe("getAllUserTransactions", () => {
       }),
     );
 
-    expect(
-      await caller.transaction.getAllUserTransactions({
-        fromTimestamp: Temporal.Now.instant()
-          .subtract({ minutes: 1 })
-          .toString(),
-        toTimestamp: Temporal.Now.instant().add({ minutes: 1 }).toString(),
-      }),
-    ).toMatchObject({
-      earnings: [
-        {
-          sheet: {
-            type: "GROUP",
-          },
-          transaction: {
-            type: "INCOME",
-            category: "other",
-            description: "test group income",
-            money: {
-              amount: 2500,
-              scale: 2,
-            },
-          },
-        },
-        {
-          sheet: {
-            type: "PERSONAL",
-          },
-          transaction: {
-            type: "INCOME",
-            category: "other",
-            description: "test personal income",
-            money: {
-              amount: 10000,
-              scale: 2,
-            },
-          },
-        },
-      ],
-      expenses: [
-        {
-          sheet: {
-            type: "GROUP",
-          },
-          transaction: {
-            type: "EXPENSE",
-            category: "other",
-            description: "test group expense",
-            money: {
-              amount: -2500,
-              scale: 2,
-            },
-          },
-        },
-        {
-          sheet: {
-            type: "PERSONAL",
-          },
-          transaction: {
-            type: "EXPENSE",
-            category: "other",
-            description: "test personal expense",
-            money: {
-              amount: -10000,
-              scale: 2,
-            },
-          },
-        },
-      ],
-    });
-  });
-
-  it("filters by category", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
-    const personalSheet = await personalSheetFactory(prisma, {
-      withOwnerId: user.id,
-    });
-
-    await caller.transaction.createPersonalSheetTransaction(
-      createPersonalSheetTransactionInput(
-        personalSheet.id,
-        personalSheet.currencyCode,
-        "EXPENSE",
-      ),
-    );
-
-    const fromTimestamp = Temporal.Now.instant()
-      .subtract({ minutes: 1 })
-      .toString();
-    const toTimestamp = Temporal.Now.instant().add({ minutes: 1 }).toString();
-
-    expect(
-      await caller.transaction.getAllUserTransactions({
-        fromTimestamp,
-        toTimestamp,
-        category: "other",
-      }),
-    ).toMatchObject({
-      earnings: [],
-      expenses: [
-        {
-          sheet: {
-            type: "PERSONAL",
-          },
-          transaction: {
-            type: "EXPENSE",
-            category: "other",
-            description: "test personal expense",
-            money: {
-              amount: -10000,
-              scale: 2,
-            },
-          },
-        },
-      ],
+    const result = await caller.transaction.getAllUserTransactions({
+      fromTimestamp: Temporal.Now.instant().subtract({ minutes: 1 }).toString(),
+      toTimestamp: Temporal.Now.instant().add({ minutes: 1 }).toString(),
     });
 
     expect(
-      await caller.transaction.getAllUserTransactions({
-        fromTimestamp,
-        toTimestamp,
-        category: "groceries",
-      }),
+      result.find(({ description }) => description === "test group expense"),
     ).toMatchObject({
-      earnings: [],
-      expenses: [],
-    });
-  });
-
-  it("filters by sheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
-    const personalSheet = await personalSheetFactory(prisma, {
-      withOwnerId: user.id,
-    });
-
-    await caller.transaction.createPersonalSheetTransaction(
-      createPersonalSheetTransactionInput(
-        personalSheet.id,
-        personalSheet.currencyCode,
-        "EXPENSE",
-      ),
-    );
-
-    const fromTimestamp = Temporal.Now.instant()
-      .subtract({ minutes: 1 })
-      .toString();
-    const toTimestamp = Temporal.Now.instant().add({ minutes: 1 }).toString();
-
-    expect(
-      await caller.transaction.getAllUserTransactions({
-        fromTimestamp,
-        toTimestamp,
-        sheetId: personalSheet.id,
-      }),
-    ).toMatchObject({
-      earnings: [],
-      expenses: [
-        {
-          sheet: {
-            type: "PERSONAL",
-          },
-          transaction: {
-            type: "EXPENSE",
-            category: "other",
-            description: "test personal expense",
-            money: {
-              amount: -10000,
-              scale: 2,
-            },
-          },
-        },
-      ],
+      type: "EXPENSE",
+      category: "other",
+      description: "test group expense",
+      money: {
+        amount: -2500,
+        scale: 2,
+      },
+      sheet: {
+        type: "GROUP",
+      },
     });
 
     expect(
-      await caller.transaction.getAllUserTransactions({
-        fromTimestamp,
-        toTimestamp,
-        sheetId: generateId(),
-      }),
+      result.find(({ description }) => description === "test group income"),
     ).toMatchObject({
-      earnings: [],
-      expenses: [],
+      type: "INCOME",
+      category: "other",
+      description: "test group income",
+      money: {
+        amount: 2500,
+        scale: 2,
+      },
+      sheet: {
+        type: "GROUP",
+      },
+    });
+
+    expect(
+      result.find(({ description }) => description === "test personal expense"),
+    ).toMatchObject({
+      type: "EXPENSE",
+      category: "other",
+      description: "test personal expense",
+      money: {
+        amount: -10000,
+        scale: 2,
+      },
+      sheet: {
+        type: "PERSONAL",
+      },
+    });
+
+    expect(
+      result.find(({ description }) => description === "test personal income"),
+    ).toMatchObject({
+      type: "INCOME",
+      category: "other",
+      description: "test personal income",
+      money: {
+        amount: 10000,
+        scale: 2,
+      },
+      sheet: {
+        type: "PERSONAL",
+      },
     });
   });
 });
