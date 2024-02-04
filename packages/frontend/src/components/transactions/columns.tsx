@@ -1,6 +1,6 @@
 "use client";
 
-import { createColumnHelper } from "@tanstack/react-table";
+import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
@@ -17,8 +17,6 @@ import { Button } from "../ui/button";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
 
 import { DataTableRowActions } from "./data-table-row-actions";
-
-const columnHelper = createColumnHelper<ConvertedTransactionWithSheet>();
 
 const MeAvatar = () => {
   const { data: me } = useCurrentUser();
@@ -43,8 +41,10 @@ const SheetLink = ({
     </Link>
   </Button>
 );
+const columnHelper = createColumnHelper<ConvertedTransactionWithSheet>();
 
-export const columns = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
   columnHelper.accessor("category", {
     id: "category",
     header: ({ column }) => (
@@ -55,6 +55,7 @@ export const columns = [
     filterFn: "arrIncludesSome",
   }),
   columnHelper.accessor("type", {
+    id: "type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
     ),
