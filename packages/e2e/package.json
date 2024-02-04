@@ -11,12 +11,12 @@
     "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@argos-ci/playwright": "^1.7.1",
+    "@argos-ci/playwright": "^1.9.1",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
-    "@playwright/test": "^1.41.1",
+    "@playwright/test": "^1.41.2",
     "@trpc/client": "11.0.0-next-beta.193",
-    "nanoid": "^5.0.4",
+    "nanoid": "^5.0.5",
     "zod": "^3.22.4"
   }
 }

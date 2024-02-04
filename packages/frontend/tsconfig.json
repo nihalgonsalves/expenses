@@ -5,15 +5,15 @@
     "lib": ["ES2022", "DOM", "WebWorker"],
     "rootDir": "./",
     "outDir": "./build/tsc/",
-    "allowJs": true,
+    "allowJs": true
   },
   "include": ["./tailwind.config.js", "./src/", "./bin/", "./.storybook/*"],
   "references": [
     {
-      "path": "../backend",
+      "path": "../backend"
     },
     {
-      "path": "../shared",
-    },
-  ],
+      "path": "../shared"
+    }
+  ]
 }
