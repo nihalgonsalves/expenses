@@ -44,6 +44,7 @@ export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
     });
 
     serverAdapter.setBasePath("/admin/queue");
+    // @ts-expect-error Hono Adapter needs to be updated to allow v4
     app.route("/admin/queue", serverAdapter.registerPlugin());
   }
 
