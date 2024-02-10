@@ -90,17 +90,22 @@ export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
   columnHelper.accessor("convertedMoney.amount", {
     id: "amount",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
+      <DataTableColumnHeader
+        className="justify-end"
+        column={column}
+        title="Amount"
+      />
     ),
+    invertSorting: true,
     cell: ({ row }) => {
       const money = row.original.convertedMoney ?? row.original.money;
 
       if (money.amount === 0) {
-        return <span>–</span>;
+        return <span className="flex flex-col text-right">–</span>;
       }
 
       return (
-        <div className="flex flex-col">
+        <div className="flex flex-col text-right">
           <CurrencySpan
             money={row.original.convertedMoney ?? row.original.money}
             signDisplay={row.original.type === "TRANSFER" ? "never" : "always"}

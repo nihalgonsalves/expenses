@@ -137,17 +137,17 @@ export const DataTable = ({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  const breakpointMedium = useBreakpoint("md");
+  const breakpointSm = useBreakpoint("sm");
 
   useEffect(() => {
     setColumnVisibility((prev) => ({
       ...prev,
-      category: breakpointMedium,
-      sheetId: breakpointMedium,
-      spentAt: breakpointMedium,
-      participants: breakpointMedium,
+      category: breakpointSm,
+      sheetId: breakpointSm,
+      spentAt: breakpointSm,
+      participants: breakpointSm,
     }));
-  }, [breakpointMedium]);
+  }, [breakpointSm]);
 
   return (
     <div className="space-y-4">
