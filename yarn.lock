@@ -3077,7 +3077,7 @@ __metadata:
     esbuild: "npm:^0.20.0"
     hono: "npm:^4.0.1"
     ioredis: "npm:^5.3.2"
-    jose: "npm:^5.2.1"
+    jose: "npm:^5.2.2"
     nanoid: "npm:^5.0.5"
     nodemailer: "npm:^6.9.9"
     npm-run-all2: "npm:^6.1.2"
@@ -3160,7 +3160,6 @@ __metadata:
     "@types/react": "npm:^18.2.55"
     "@types/react-dom": "npm:^18.2.19"
     "@types/react-helmet": "npm:^6"
-    "@types/sharp": "npm:^0.32.0"
     "@vitejs/plugin-react": "npm:^4.2.1"
     "@vitest/coverage-v8": "npm:^1.2.2"
     autoprefixer: "npm:^10.4.17"
@@ -3199,7 +3198,7 @@ __metadata:
     vaul: "npm:^0.9.0"
     vite: "npm:^5.1.1"
     vite-plugin-istanbul: "npm:^5.0.0"
-    vite-plugin-pwa: "npm:^0.18.0"
+    vite-plugin-pwa: "npm:^0.18.1"
     vitest: "npm:^1.2.2"
     wait-on: "npm:^7.2.0"
     workbox-build: "npm:^7.0.0"
@@ -7144,15 +7143,6 @@ __metadata:
     "@types/mime": "npm:*"
     "@types/node": "npm:*"
   checksum: 10c0/811d1a2f7e74a872195e7a013bcd87a2fb1edf07eaedcb9dcfd20c1eb4bc56ad4ea0d52141c13192c91ccda7c8aeb8a530d8a7e60b9c27f5990d7e62e0fecb03
-  languageName: node
-  linkType: hard
-
-"@types/sharp@npm:^0.32.0":
-  version: 0.32.0
-  resolution: "@types/sharp@npm:0.32.0"
-  dependencies:
-    sharp: "npm:*"
-  checksum: 10c0/a101c5bf17220b51e339164fabf779993e1757fcae1610f2647d36a24d7f15bf857fd747ec559b8fef667c9ea38caab09dc3ba4d49095fef2a06e5ae1819e639
   languageName: node
   linkType: hard
 
@@ -13876,10 +13866,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^5.2.1":
-  version: 5.2.1
-  resolution: "jose@npm:5.2.1"
-  checksum: 10c0/76044e4cba28a4326c9fd8ba8bd1c1d99624d4dad4a20238b3fe44e2227d301ca7cb049d3ad3bb481b61a77c929c814ab59bafafbbe2b1d901d4007411a1d97a
+"jose@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "jose@npm:5.2.2"
+  checksum: 10c0/f6a439d41fa36e1c0a3a1554c1955ba656f37a7fc5e353bdcbda144cc9210fe513cc1b0480ec5bd5de50c0ec23714c82d82ae89f1b906656b683aa35ae075b68
   languageName: node
   linkType: hard
 
@@ -18040,7 +18030,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sharp@npm:*, sharp@npm:^0.33.2":
+"sharp@npm:^0.32.5":
+  version: 0.32.6
+  resolution: "sharp@npm:0.32.6"
+  dependencies:
+    color: "npm:^4.2.3"
+    detect-libc: "npm:^2.0.2"
+    node-addon-api: "npm:^6.1.0"
+    node-gyp: "npm:latest"
+    prebuild-install: "npm:^7.1.1"
+    semver: "npm:^7.5.4"
+    simple-get: "npm:^4.0.1"
+    tar-fs: "npm:^3.0.4"
+    tunnel-agent: "npm:^0.6.0"
+  checksum: 10c0/f6a756fec5051ef2f9341e0543cde1da4e822982dd5398010baad92e2262bd177e08b753eb19b2fbee30f2fcb0e8756f24088fafc48293a364e9a8f8dc65a300
+  languageName: node
+  linkType: hard
+
+"sharp@npm:^0.33.2":
   version: 0.33.2
   resolution: "sharp@npm:0.33.2"
   dependencies:
@@ -18106,23 +18113,6 @@ __metadata:
     "@img/sharp-win32-x64":
       optional: true
   checksum: 10c0/4727fcf5e3e680f2f837f897c9fcff765a43a60c802ccb7064ab939b06318695e0d5d900039adb104370c1e675743bba16a514632193cbee64eae522270adc48
-  languageName: node
-  linkType: hard
-
-"sharp@npm:^0.32.5":
-  version: 0.32.6
-  resolution: "sharp@npm:0.32.6"
-  dependencies:
-    color: "npm:^4.2.3"
-    detect-libc: "npm:^2.0.2"
-    node-addon-api: "npm:^6.1.0"
-    node-gyp: "npm:latest"
-    prebuild-install: "npm:^7.1.1"
-    semver: "npm:^7.5.4"
-    simple-get: "npm:^4.0.1"
-    tar-fs: "npm:^3.0.4"
-    tunnel-agent: "npm:^0.6.0"
-  checksum: 10c0/f6a756fec5051ef2f9341e0543cde1da4e822982dd5398010baad92e2262bd177e08b753eb19b2fbee30f2fcb0e8756f24088fafc48293a364e9a8f8dc65a300
   languageName: node
   linkType: hard
 
@@ -20105,9 +20095,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-pwa@npm:^0.18.0":
-  version: 0.18.0
-  resolution: "vite-plugin-pwa@npm:0.18.0"
+"vite-plugin-pwa@npm:^0.18.1":
+  version: 0.18.1
+  resolution: "vite-plugin-pwa@npm:0.18.1"
   dependencies:
     debug: "npm:^4.3.4"
     fast-glob: "npm:^3.3.2"
@@ -20118,7 +20108,7 @@ __metadata:
     vite: ^3.1.0 || ^4.0.0 || ^5.0.0
     workbox-build: ^7.0.0
     workbox-window: ^7.0.0
-  checksum: 10c0/685fa389d1195ecb18ec1399eed69ee1b0b4ac10dcce8bc46909d7064a03fc6262f5e0bfacec53570f4c917c074639c1a4c58833d765ecb5f9b2b119cb1bcf61
+  checksum: 10c0/17d510b7f7b18b82cecde67bb70d3a78a6855473b578bcafb60a5df777a2f8f683fa269e5815c8789012e14a22a9f29dfa0063489e387cfe025bfd7b5680a55c
   languageName: node
   linkType: hard
 
