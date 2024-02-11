@@ -3,7 +3,7 @@ import { SheetsList } from "../components/SheetsList";
 
 import { RootLoader } from "./Root";
 
-export const SheetsIndexPage = () => {
+const SheetsIndexPage = () => {
   const result = trpc.sheet.mySheets.useQuery({ includeArchived: true });
 
   return (
@@ -15,3 +15,5 @@ export const SheetsIndexPage = () => {
     />
   );
 };
+
+export default SheetsIndexPage;

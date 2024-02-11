@@ -6,7 +6,7 @@ import { SignUpForm } from "../components/SignUpForm";
 
 import { Root } from "./Root";
 
-export const AuthenticationPage = () => {
+const AuthenticationPage = () => {
   const [searchParams] = useSearchParams();
   const isSignUp = useMatch("/auth/sign-up");
 
@@ -27,3 +27,5 @@ export const AuthenticationPage = () => {
     </Root>
   );
 };
+
+export default AuthenticationPage;

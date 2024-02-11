@@ -3,7 +3,7 @@ import { PersonalSheet } from "../../components/personal-sheets/PersonalSheet";
 import { useParams, SheetParams } from "../../routes";
 import { RootLoader } from "../Root";
 
-export const SheetDetailPage = () => {
+const SheetDetailPage = () => {
   const { sheetId } = useParams(SheetParams);
   const result = trpc.sheet.personalSheetById.useQuery(sheetId);
 
@@ -17,3 +17,5 @@ export const SheetDetailPage = () => {
     />
   );
 };
+
+export default SheetDetailPage;

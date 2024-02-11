@@ -5,7 +5,7 @@ import { Alert, AlertTitle } from "../components/ui/alert";
 
 import { Root } from "./Root";
 
-export const VerifyEmailPage = () => {
+const VerifyEmailPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
@@ -24,3 +24,5 @@ export const VerifyEmailPage = () => {
     </Root>
   );
 };
+
+export default VerifyEmailPage;

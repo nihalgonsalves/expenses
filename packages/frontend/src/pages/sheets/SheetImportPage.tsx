@@ -3,7 +3,7 @@ import { PersonalTransactionsImporter } from "../../components/personal-sheets/P
 import { useParams, SheetParams } from "../../routes";
 import { Root } from "../Root";
 
-export const SheetImportPage = () => {
+const SheetImportPage = () => {
   const { sheetId } = useParams(SheetParams);
   const { data } = trpc.sheet.personalSheetById.useQuery(sheetId);
 
@@ -13,3 +13,5 @@ export const SheetImportPage = () => {
     </Root>
   );
 };
+
+export default SheetImportPage;

@@ -6,7 +6,7 @@ import { useAllUserTransactions } from "../../api/useAllUserTransactions";
 import { CategoryStats } from "../../components/CategoryStats";
 import { RootLoader } from "../Root";
 
-export const StatsIndexPage = () => {
+const StatsIndexPage = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
@@ -31,3 +31,5 @@ export const StatsIndexPage = () => {
     />
   );
 };
+
+export default StatsIndexPage;

@@ -7,7 +7,7 @@ import { GroupSheet } from "../../components/group-sheets/GroupSheet";
 import { SheetParams, useParams } from "../../routes";
 import { RootLoader } from "../Root";
 
-export const GroupDetailPage = () => {
+const GroupDetailPage = () => {
   const { sheetId } = useParams(SheetParams);
 
   const result = trpc.sheet.groupSheetById.useQuery(sheetId);
@@ -38,3 +38,5 @@ export const GroupDetailPage = () => {
     />
   );
 };
+
+export default GroupDetailPage;

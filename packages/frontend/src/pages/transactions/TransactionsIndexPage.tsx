@@ -8,7 +8,7 @@ import { columns } from "../../components/transactions/columns";
 import { DataTable } from "../../components/transactions/data-table";
 import { RootLoader } from "../Root";
 
-export const TransactionsIndexPage = () => {
+const TransactionsIndexPage = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
@@ -35,3 +35,5 @@ export const TransactionsIndexPage = () => {
     />
   );
 };
+
+export default TransactionsIndexPage;

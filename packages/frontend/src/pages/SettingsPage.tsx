@@ -8,7 +8,7 @@ import { TroubleshootingForm } from "../components/settings/TroubleshootingForm"
 
 import { Root } from "./Root";
 
-export const SettingsPage = () => {
+const SettingsPage = () => {
   const { data, status } = useCurrentUser();
 
   return (
@@ -28,3 +28,5 @@ export const SettingsPage = () => {
     </Root>
   );
 };
+
+export default SettingsPage;

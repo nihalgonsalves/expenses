@@ -37,6 +37,9 @@ export default defineConfig(({ mode }) => ({
         resolveTempFolder: () => relativePath("./dist/vite-pwa-dev/"),
       },
       manifest: false,
+      injectManifest: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+      },
     }),
     ...(process.env["VITE_COVERAGE"]
       ? [

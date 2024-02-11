@@ -1,3 +1,4 @@
+import loadable from "@loadable/component";
 import {
   useParams as useParamsOriginal,
   Navigate,
@@ -14,17 +15,32 @@ import {
 
 import { useCurrentUser } from "./api/useCurrentUser";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { AuthenticationPage } from "./pages/AuthenticationPage";
-import { NotFoundPage } from "./pages/NotFoundPage";
-import { ResetPasswordPage } from "./pages/ResetPasswordPage";
-import { SettingsPage } from "./pages/SettingsPage";
-import { SheetsIndexPage } from "./pages/SheetsIndexPage";
-import { VerifyEmailPage } from "./pages/VerifyEmailPage";
-import { GroupDetailPage } from "./pages/groups/GroupDetailPage";
-import { SheetDetailPage } from "./pages/sheets/SheetDetailPage";
-import { SheetImportPage } from "./pages/sheets/SheetImportPage";
-import { StatsIndexPage } from "./pages/stats/StatsIndexPage";
-import { TransactionsIndexPage } from "./pages/transactions/TransactionsIndexPage";
+
+const AuthenticationPage = loadable(
+  async () => import("./pages/AuthenticationPage"),
+);
+const NotFoundPage = loadable(async () => import("./pages/NotFoundPage"));
+const ResetPasswordPage = loadable(
+  async () => import("./pages/ResetPasswordPage"),
+);
+const SettingsPage = loadable(async () => import("./pages/SettingsPage"));
+const SheetsIndexPage = loadable(async () => import("./pages/SheetsIndexPage"));
+const VerifyEmailPage = loadable(async () => import("./pages/VerifyEmailPage"));
+const GroupDetailPage = loadable(
+  async () => import("./pages/groups/GroupDetailPage"),
+);
+const SheetDetailPage = loadable(
+  async () => import("./pages/sheets/SheetDetailPage"),
+);
+const SheetImportPage = loadable(
+  async () => import("./pages/sheets/SheetImportPage"),
+);
+const StatsIndexPage = loadable(
+  async () => import("./pages/stats/StatsIndexPage"),
+);
+const TransactionsIndexPage = loadable(
+  async () => import("./pages/transactions/TransactionsIndexPage"),
+);
 
 const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();

@@ -5,7 +5,7 @@ import { Alert, AlertTitle } from "../components/ui/alert";
 
 import { Root } from "./Root";
 
-export const ResetPasswordPage = () => {
+const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
@@ -24,3 +24,5 @@ export const ResetPasswordPage = () => {
     </Root>
   );
 };
+
+export default ResetPasswordPage;

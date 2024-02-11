@@ -49,5 +49,11 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ["src/pages/**/*"],
+      rules: {
+        "import/no-default-export": "off",
+      },
+    },
   ],
 };
