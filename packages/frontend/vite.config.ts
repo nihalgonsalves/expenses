@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import IstanbulPlugin from "vite-plugin-istanbul";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { visualizer } from "rollup-plugin-visualizer";
 
 const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
@@ -23,6 +24,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [
+    process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
     react(),
     VitePWA({
       srcDir: "src",

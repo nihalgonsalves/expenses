@@ -3198,6 +3198,7 @@ __metadata:
     react-router-dom: "npm:^6.22.0"
     react-twc: "npm:^1.4.1"
     react-use: "npm:^17.5.0"
+    rollup-plugin-visualizer: "npm:^5.12.0"
     serve: "npm:^14.2.1"
     sharp: "npm:^0.33.2"
     storybook: "npm:^7.6.14"
@@ -17688,6 +17689,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rollup-plugin-visualizer@npm:^5.12.0":
+  version: 5.12.0
+  resolution: "rollup-plugin-visualizer@npm:5.12.0"
+  dependencies:
+    open: "npm:^8.4.0"
+    picomatch: "npm:^2.3.1"
+    source-map: "npm:^0.7.4"
+    yargs: "npm:^17.5.1"
+  peerDependencies:
+    rollup: 2.x || 3.x || 4.x
+  peerDependenciesMeta:
+    rollup:
+      optional: true
+  bin:
+    rollup-plugin-visualizer: dist/bin/cli.js
+  checksum: 10c0/0e44a641223377ebb472bb10f2b22efa773b5f6fbe8d54f197f07c68d7a432cbf00abad79a0aa1570f70c673c792f24700d926d663ed9a4d0ad8406ae5a0f4e4
+  languageName: node
+  linkType: hard
+
 "rollup@npm:^2.25.0 || ^3.3.0":
   version: 3.29.4
   resolution: "rollup@npm:3.29.4"
@@ -20856,7 +20876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.3.1":
+"yargs@npm:^17.3.1, yargs@npm:^17.5.1":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:

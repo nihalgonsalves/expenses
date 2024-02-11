@@ -100,6 +100,9 @@ dist
 # lefthook local-only file
 lefthook-local.yml
 
+# rollup-plugin-visualizer
+packages/frontend/stats.html
+
 # e2e
 packages/e2e/test-results/
 packages/e2e/playwright-report/
