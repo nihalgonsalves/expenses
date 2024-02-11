@@ -1,3 +1,5 @@
+import "temporal-polyfill/global";
+
 import { vi } from "vitest";
 
 // must match `bin/bundle.mjs` and `globals.d.ts`

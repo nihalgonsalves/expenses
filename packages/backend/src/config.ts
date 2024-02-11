@@ -1,6 +1,5 @@
 import { hostname } from "os";
 
-import { Temporal } from "@js-temporal/polyfill";
 import { type ZodTypeAny, z } from "zod";
 
 const defaultSecret = "test-secret";

@@ -1,4 +1,3 @@
-import { Temporal } from "@js-temporal/polyfill";
 import { describe, expect, it, vi } from "vitest";
 
 import { signJWT, verifyJWT } from "./utils";

@@ -1,4 +1,3 @@
-import { Temporal } from "@js-temporal/polyfill";
 import type { TransactionSchedule } from "@prisma/client";
 import { Frequency, RRule } from "rrule";
 

@@ -7,7 +7,13 @@
     "outDir": "./build/tsc/",
     "allowJs": true
   },
-  "include": ["./tailwind.config.js", "./src/", "./bin/", "./.storybook/*"],
+  "include": [
+    "./tailwind.config.js",
+    "./src/",
+    "./bin/",
+    "./test/",
+    "./.storybook/*"
+  ],
   "references": [
     {
       "path": "../backend"

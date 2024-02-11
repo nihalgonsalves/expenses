@@ -2909,16 +2909,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@js-temporal/polyfill@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "@js-temporal/polyfill@npm:0.4.4"
-  dependencies:
-    jsbi: "npm:^4.3.0"
-    tslib: "npm:^2.4.1"
-  checksum: 10c0/9edd8431f38837235c7dc88c48bfb2235ca13ec24f22848cd3ca7ebfdb169a2cb9654e04a7efca1488d2b67b851d84013f0bfa8dc3df207bd496ad13560ec937
-  languageName: node
-  linkType: hard
-
 "@jsdevtools/coverage-istanbul-loader@npm:^3.0.5":
   version: 3.0.5
   resolution: "@jsdevtools/coverage-istanbul-loader@npm:3.0.5"
@@ -3065,7 +3055,6 @@ __metadata:
     "@faker-js/faker": "npm:^8.4.1"
     "@hono/node-server": "npm:^1.7.0"
     "@hono/trpc-server": "npm:^0.1.1"
-    "@js-temporal/polyfill": "npm:^0.4.4"
     "@nihalgonsalves/expenses-shared": "npm:*"
     "@prisma/client": "npm:*"
     "@sentry/esbuild-plugin": "npm:^2.14.0"
@@ -3096,6 +3085,7 @@ __metadata:
     prisma: "npm:*"
     rrule: "npm:^2.8.1"
     squawk-cli: "npm:^0.28.0"
+    temporal-polyfill: "npm:^0.2.1"
     testcontainers: "npm:^10.7.1"
     ua-parser-js: "npm:^1.0.37"
     vitest: "npm:^1.2.2"
@@ -3126,7 +3116,6 @@ __metadata:
     "@emoji-mart/data": "npm:^1.1.2"
     "@emoji-mart/react": "npm:^1.1.1"
     "@hookform/resolvers": "npm:^3.3.4"
-    "@js-temporal/polyfill": "npm:^0.4.4"
     "@loadable/component": "npm:^5.16.3"
     "@nihalgonsalves/expenses-backend": "npm:*"
     "@nihalgonsalves/expenses-shared": "npm:*"
@@ -3205,6 +3194,7 @@ __metadata:
     tailwind-merge: "npm:^2.2.1"
     tailwindcss: "npm:^3.4.1"
     tailwindcss-animate: "npm:^1.0.7"
+    temporal-polyfill: "npm:^0.2.1"
     tsx: "npm:^4.7.1"
     vaul: "npm:^0.9.0"
     vite: "npm:^5.1.1"
@@ -13945,13 +13935,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsbi@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "jsbi@npm:4.3.0"
-  checksum: 10c0/1817ac1b50ea3f4438bcd84cadc9aee7a8657829f65b55ea6f151f401dbbd3babedbfdd3e4f481bd7b5472abb7823efa640fd7e5eee7c30cea6431f7a8b74696
-  languageName: node
-  linkType: hard
-
 "jscodeshift@npm:^0.15.1":
   version: 0.15.1
   resolution: "jscodeshift@npm:0.15.1"
@@ -19161,6 +19144,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"temporal-polyfill@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "temporal-polyfill@npm:0.2.1"
+  dependencies:
+    temporal-spec: "npm:^0.2.0"
+  checksum: 10c0/f7c0bb0d7c76af42e2733682d054134c3fbaf0ce40b2643f9b3bf2d2d9ade710f3683a374ddeb9c536b0f17ddd0b83bc417da00976ebb6dde833711756de5403
+  languageName: node
+  linkType: hard
+
+"temporal-spec@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "temporal-spec@npm:0.2.0"
+  checksum: 10c0/3d6dc796983a614a320bbec3b4697ba6e451f7f26f7890f65da68e807c32d02cf2c171d9be513cfb96a18b75f816f0ae40b6c2ef38b4593f4967c7a6c1afe602
+  languageName: node
+  linkType: hard
+
 "tempy@npm:^0.6.0":
   version: 0.6.0
   resolution: "tempy@npm:0.6.0"
@@ -19472,7 +19471,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.4.1, tslib@npm:^2.6.2":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.6.2":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 10c0/e03a8a4271152c8b26604ed45535954c0a45296e32445b4b87f8a5abdb2421f40b59b4ca437c4346af0f28179780d604094eb64546bee2019d903d01c6c19bdb

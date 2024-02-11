@@ -1,5 +1,3 @@
-import { Temporal } from "@js-temporal/polyfill";
-
 import { getUserLanguage } from "./utils";
 
 export const CURRENT_TIMEZONE =

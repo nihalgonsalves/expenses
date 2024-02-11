@@ -1,4 +1,3 @@
-import { Temporal } from "@js-temporal/polyfill";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {
   ActivityLogIcon,

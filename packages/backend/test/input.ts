@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { Temporal } from "@js-temporal/polyfill";
 
 import type {
   CreatePersonalSheetTransactionInput,

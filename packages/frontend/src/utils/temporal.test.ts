@@ -1,6 +1,5 @@
 // @vitest-environment happy-dom
 
-import { Temporal } from "@js-temporal/polyfill";
 import { describe, it, expect } from "vitest";
 
 import {
