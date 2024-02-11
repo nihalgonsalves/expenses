@@ -1,28 +1,9 @@
-import Dexie, { type Table } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 import { z } from "zod";
 
 import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
 
-import { PREFERENCES_DEXIE_TABLE } from "../config";
-
-type KeyValueItem = {
-  key: string;
-  value: unknown;
-};
-
-class PreferencesDexie extends Dexie {
-  preferences!: Table<KeyValueItem>;
-
-  constructor() {
-    super(PREFERENCES_DEXIE_TABLE);
-    this.version(1).stores({
-      preferences: "key",
-    });
-  }
-}
-
-export const prefsDexie = new PreferencesDexie();
+import { prefsDexie } from "./prefsDexie";
 
 const createUsePreference = <T>(key: string, parse: (value: unknown) => T) => {
   const getPreference = async () => {

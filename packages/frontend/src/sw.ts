@@ -12,7 +12,7 @@ import {
   type NotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import { prefsDexie } from "./state/preferences";
+import { prefsDexie } from "./state/prefsDexie";
 import { formatCurrency } from "./utils/money";
 import { getTransactionDescription } from "./utils/utils";
 

@@ -1,5 +1,4 @@
 import { dinero, convert, transformScale, toUnits } from "dinero.js";
-import { useMemo } from "react";
 
 import {
   type Money,
@@ -60,12 +59,6 @@ export const toMoneyValues = (rawAmount: number, currencyCode: string) => {
 
   return [dineroValue, moneySnapshot] as const;
 };
-
-export const useMoneyValues = (rawAmount: number, currencyCode: string) =>
-  useMemo(
-    () => toMoneyValues(rawAmount, currencyCode),
-    [rawAmount, currencyCode],
-  );
 
 export const moneyToString = ({ currencyCode, amount, scale }: Money) => {
   const unsigned = toUnits(

@@ -41,12 +41,12 @@ import {
   formatCurrency,
   formatDecimalCurrency,
   toDinero,
-  useMoneyValues,
 } from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
 } from "../../utils/temporal";
+import { useMoneyValues } from "../../utils/useMoneyValues";
 import { Avatar } from "../Avatar";
 import { CurrencySpan } from "../CurrencySpan";
 import { CategorySelect, OTHER_CATEGORY } from "../form/CategorySelect";

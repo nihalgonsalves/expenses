@@ -11,11 +11,11 @@ import {
 import { useCurrencyConversion } from "../../api/currencyConversion";
 import { trpc } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
-import { useMoneyValues } from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   isoToTemporalZonedDateTime,
 } from "../../utils/temporal";
+import { useMoneyValues } from "../../utils/useMoneyValues";
 import { CurrencySpan } from "../CurrencySpan";
 import { CategorySelect } from "../form/CategorySelect";
 import { CurrencySelect } from "../form/CurrencySelect";
