@@ -11,7 +11,7 @@
     "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@argos-ci/playwright": "^1.9.1",
+    "@argos-ci/playwright": "^1.9.2",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
     "@playwright/test": "^1.41.2",
