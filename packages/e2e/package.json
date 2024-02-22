@@ -2,7 +2,6 @@
   "name": "@nihalgonsalves/expenses-e2e",
   "description": "",
   "version": "0.0.1",
-  "type": "module",
   "scripts": {
     "test": "playwright test",
     "ui": "playwright test --ui",
@@ -11,12 +10,12 @@
     "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@argos-ci/playwright": "^1.9.2",
+    "@chromatic-com/playwright": "^0.6.0",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
     "@playwright/test": "^1.41.2",
     "@trpc/client": "11.0.0-next-beta.193",
-    "nanoid": "^5.0.6",
+    "chromatic": "^11.0.0",
     "zod": "^3.22.4"
   }
 }

@@ -61,6 +61,7 @@ export const DataTableToolbar = <TData,>({
             id="date"
             $variant="outline"
             className="bg-card h-8 justify-start text-left font-normal"
+            data-chromatic="ignore"
           >
             <CalendarIcon className="mr-2 size-4" />
             {dateRange?.from && dateRange.to ? (

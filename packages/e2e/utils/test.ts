@@ -1,13 +1,14 @@
+import { randomUUID } from "crypto";
 import fs from "fs/promises";
-import { fileURLToPath } from "url";
+import path from "path";
 
-import { test as base } from "@playwright/test";
+import { test as base } from "@chromatic-com/playwright";
+export { expect, takeSnapshot } from "@chromatic-com/playwright";
 import {
   type CreateTRPCProxyClient,
   createTRPCProxyClient,
   httpBatchLink,
 } from "@trpc/client";
-import { nanoid } from "nanoid";
 
 import type { AppRouter } from "@nihalgonsalves/expenses-backend";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
@@ -21,8 +22,7 @@ type Fixtures = {
   signIn: () => Promise<User & { password: string }>;
 };
 
-const relativePath = (path: string) =>
-  fileURLToPath(new URL(path, import.meta.url).toString());
+const relativePath = (subpath: string) => path.join(__dirname, subpath);
 
 declare global {
   /* eslint-disable no-var, @typescript-eslint/naming-convention */
@@ -48,7 +48,9 @@ export const test = base.extend<Fixtures>({
       async (coverageJSON: string) => {
         if (coverageJSON)
           await fs.writeFile(
-            relativePath(`../coverage/playwright_coverage_${nanoid()}.json`),
+            relativePath(
+              `../coverage/playwright_coverage_${randomUUID()}.json`,
+            ),
             coverageJSON,
           );
       },
@@ -132,5 +134,3 @@ export const test = base.extend<Fixtures>({
     });
   },
 });
-
-export { expect } from "@playwright/test";
