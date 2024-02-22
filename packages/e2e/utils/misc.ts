@@ -1,11 +1,12 @@
-import { nanoid } from "nanoid";
+import { randomUUID } from "crypto";
+
 import { z } from "zod";
 
 export const getUserData = () => {
-  const userId = nanoid(8);
+  const userId = randomUUID();
   const name = `E2E User`;
   const email = `${userId}@example.com`;
-  const password = nanoid(8);
+  const password = randomUUID();
 
   return { userId, name, email, password };
 };

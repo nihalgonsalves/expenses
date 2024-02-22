@@ -59,7 +59,7 @@ jobs:
 
       - id: chromatic
         name: Publish to Chromatic
-        uses: chromaui/action@v10
+        uses: chromaui/action@v11
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           storybookBuildDir: ./packages/frontend/build/storybook/
@@ -125,6 +125,9 @@ jobs:
         image: axllent/mailpit
     steps:
       - uses: actions/checkout@v4
+        with:
+          # https://www.chromatic.com/docs/github-actions/
+          fetch-depth: 0
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
       - run: chown -R $(id -u):$(id -g) $PWD
       # waiting on: https://github.com/actions/setup-node/issues/531
@@ -141,8 +144,16 @@ jobs:
         run: yarn prepare:e2e && yarn prisma migrate deploy
       - working-directory: ./packages/e2e/
         run: yarn test
-        env:
-          ARGOS_TOKEN: ${{ secrets.ARGOS_TOKEN }}
+
+      - id: chromatic
+        name: Publish to Chromatic
+        uses: chromaui/action@v11
+        with:
+          playwright: true
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN_E2E }}
+          autoAcceptChanges: main
+          exitOnceUploaded: true
+          workingDir: ./packages/e2e/
 
       - uses: actions/upload-artifact@v4
         with:

@@ -1,33 +1,24 @@
+import path from "path";
+
 import { defineConfig, devices } from "@playwright/test";
-import { fileURLToPath } from "url";
+import { ChromaticConfig } from "@chromatic-com/playwright";
 
 /** https://playwright.dev/docs/test-configuration. */
-export default defineConfig({
+export default defineConfig<ChromaticConfig>({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [
-    [process.env.CI ? "github" : "html"],
-    ["line"],
-    [
-      "@argos-ci/playwright/reporter",
-      {
-        uploadToArgos: !!process.env.CI,
-        token: process.env.ARGOS_TOKEN,
-      },
-    ],
-  ],
+  reporter: [[process.env.CI ? "github" : "html"], ["line"]],
   use: {
     baseURL: "http://localhost:5173",
-    trace: "on",
-    screenshot: "on",
+    disableAutoSnapshot: true,
   },
   webServer: {
     reuseExistingServer: true,
     command: "yarn start:e2e",
-    cwd: fileURLToPath(new URL("../../", import.meta.url).toString()),
+    cwd: path.join(__dirname, "../../"),
     port: 5173,
     env: {
       VITE_COVERAGE: "1",
