@@ -71,14 +71,10 @@ const meta: Meta<typeof Form> = {
   component: Form,
   render: () => <FormExample />,
   play: async ({ canvasElement }) => {
-    // https://github.com/storybookjs/storybook/issues/25258
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await userEvent.type(
       within(canvasElement).getByLabelText("Username"),
       "shadcn",
     );
-    // https://github.com/storybookjs/storybook/issues/25258
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await userEvent.click(
       within(canvasElement).getByRole("button", { name: /submit/i }),
     );

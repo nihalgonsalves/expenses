@@ -142,8 +142,6 @@ const meta: Meta<typeof NavigationMenu> = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // https://github.com/storybookjs/storybook/issues/25258
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await userEvent.click(
       canvas.getByRole("button", { name: "Getting started" }),
     );

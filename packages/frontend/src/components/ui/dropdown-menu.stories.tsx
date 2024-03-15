@@ -109,15 +109,13 @@ const meta: Meta<typeof DropdownMenu> = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // https://github.com/storybookjs/storybook/issues/25258
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await userEvent.click(canvas.getByRole("button"));
 
     const menu = screen.getByRole("menu");
 
     await waitFor(async () => {
       await expect(within(menu).getByText("My Account", {})).toBeVisible();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
       await userEvent.hover(within(menu).getByText("Invite users"));
       await expect(screen.getByText("Email", {})).toBeVisible();
     });

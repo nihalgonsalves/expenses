@@ -25,8 +25,6 @@ const meta: Meta<typeof Tooltip> = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // https://github.com/storybookjs/storybook/issues/25258
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await userEvent.hover(canvas.getByRole("button"));
 
     await waitFor(async () => {

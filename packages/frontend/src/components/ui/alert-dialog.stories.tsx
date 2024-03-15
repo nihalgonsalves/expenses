@@ -43,8 +43,6 @@ const meta: Meta<typeof AlertDialog> = {
   render: (props) => render(props, "default"),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    // https://github.com/storybookjs/storybook/issues/25258
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await userEvent.click(canvas.getByRole("button"));
 
     await waitFor(async () => {
