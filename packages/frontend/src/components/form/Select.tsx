@@ -16,7 +16,7 @@ export type SelectOption<T extends z.Schema<string | undefined>> = {
   disabled?: boolean;
 };
 
-const UNSET = "unset" as const;
+const UNSET = "unset";
 
 type SelectProps<T extends z.Schema<string | undefined>> = {
   id?: string | undefined;

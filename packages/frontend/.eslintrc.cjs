@@ -1,5 +1,3 @@
-const path = require("path");
-
 module.exports = {
   extends: [
     "../../node_modules/@nihalgonsalves/esconfig/.eslintrc.react",
@@ -26,6 +24,10 @@ module.exports = {
           attributes: false,
         },
       },
+    ],
+    "@typescript-eslint/restrict-template-expressions": [
+      "error",
+      { allowNumber: true },
     ],
     "react/prop-types": "off",
   },

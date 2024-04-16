@@ -19,7 +19,7 @@ import {
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "../ui/utils";
 
-export const OTHER_CATEGORY = "other" as const;
+export const OTHER_CATEGORY = "other";
 
 type CategorySelectProps = {
   id?: string;
