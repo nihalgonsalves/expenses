@@ -66,8 +66,8 @@
   },
   "resolutions": {
     "@bull-board/ui": "5.11.0",
-    "@prisma/client": "5.10.2",
-    "prisma": "5.10.2",
+    "@prisma/client": "5.12.1",
+    "prisma": "5.12.1",
     "bcrypt": "5.1.1"
   }
 }
