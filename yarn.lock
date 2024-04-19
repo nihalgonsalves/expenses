@@ -2107,10 +2107,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "@hono/node-server@npm:1.10.0"
-  checksum: 10c0/6cb6aca7a694eef9fdff5014d9d361fbd37f437ddfd80e790d0b6685544339b34879db33f924afc3a00ec59393a93bc0d502a4b224ee1c113f6e2add285a152b
+"@hono/node-server@npm:^1.10.1":
+  version: 1.11.0
+  resolution: "@hono/node-server@npm:1.11.0"
+  checksum: 10c0/3f888b5a1ddcb8b2f6568c49e62794b34994d367bbfcfccfa3ef00a8431fad0d3a2a5e2bd8ca3fc8540170e5d0fb9c8b2a61ced0e07e4e505119ce967a81d4cf
   languageName: node
   linkType: hard
 
@@ -2849,7 +2849,7 @@ __metadata:
     "@bull-board/api": "npm:^5.15.5"
     "@bull-board/hono": "npm:^5.15.5"
     "@faker-js/faker": "npm:^8.4.1"
-    "@hono/node-server": "npm:^1.10.0"
+    "@hono/node-server": "npm:^1.10.1"
     "@hono/trpc-server": "npm:^0.1.1"
     "@nihalgonsalves/expenses-shared": "npm:*"
     "@prisma/client": "npm:*"
