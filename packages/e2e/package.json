@@ -16,6 +16,6 @@
     "@playwright/test": "^1.43.1",
     "@trpc/client": "11.0.0-next-beta.193",
     "chromatic": "^11.3.0",
-    "zod": "^3.22.4"
+    "zod": "^3.23.0"
   }
 }
