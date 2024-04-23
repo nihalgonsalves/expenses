@@ -2871,7 +2871,7 @@ __metadata:
     bullmq: "npm:^5.7.1"
     cookie: "npm:^0.6.0"
     esbuild: "npm:^0.20.2"
-    hono: "npm:^4.2.4"
+    hono: "npm:^4.2.7"
     ioredis: "npm:^5.3.2"
     jose: "npm:^5.2.4"
     nanoid: "npm:^5.0.7"
@@ -12546,10 +12546,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.2.4":
-  version: 4.2.4
-  resolution: "hono@npm:4.2.4"
-  checksum: 10c0/f6e7d21ebd152beb6e91d5d36d0bef66f9126873dc2b652745ab1fb2429ba8dff09c1b07982d0e29c3ca2b6ff2038fd947cb948e8bf27a7f2a9f429a1728c8fe
+"hono@npm:^4.2.7":
+  version: 4.2.7
+  resolution: "hono@npm:4.2.7"
+  checksum: 10c0/186d79ecedd4d9091eae4f2f32462f7e44530d1ea545de2cba594fd3f1e733f6f1d4367f12a6c85d188610ce1913bedadd1a83724b533700c0b12f5dcbb24f97
   languageName: node
   linkType: hard
 
