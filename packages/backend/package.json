@@ -19,20 +19,20 @@
     "prepare:local": "node bin/prepare-local-env.mjs"
   },
   "dependencies": {
-    "@bull-board/api": "^5.15.5",
-    "@bull-board/hono": "^5.15.5",
+    "@bull-board/api": "^5.16.0",
+    "@bull-board/hono": "^5.16.0",
     "@hono/node-server": "^1.10.1",
     "@hono/trpc-server": "^0.1.1",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
-    "@sentry/node": "^7.110.1",
-    "@sentry/profiling-node": "^7.110.1",
+    "@sentry/node": "^7.112.1",
+    "@sentry/profiling-node": "^7.112.1",
     "@trpc/server": "11.0.0-next-beta.193",
     "bcrypt": "*",
-    "bullmq": "^5.7.1",
+    "bullmq": "^5.7.5",
     "cookie": "^0.6.0",
     "hono": "^4.2.7",
-    "ioredis": "^5.3.2",
+    "ioredis": "^5.4.1",
     "jose": "^5.2.4",
     "nanoid": "^5.0.7",
     "nodemailer": "^6.9.13",
@@ -40,7 +40,7 @@
     "temporal-polyfill": "^0.2.4",
     "ua-parser-js": "^1.0.37",
     "web-push": "^3.6.7",
-    "zod": "^3.22.4"
+    "zod": "^3.23.4"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
@@ -66,8 +66,8 @@
   },
   "resolutions": {
     "@bull-board/ui": "5.11.0",
-    "@prisma/client": "5.10.2",
-    "prisma": "5.10.2",
+    "@prisma/client": "5.13.0",
+    "prisma": "5.13.0",
     "bcrypt": "5.1.1"
   }
 }
