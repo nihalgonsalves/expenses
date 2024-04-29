@@ -8,7 +8,6 @@ import {
   SymbolIcon,
 } from "@radix-ui/react-icons";
 import type { TRPCClientErrorLike } from "@trpc/client";
-import type { TRPCInferrable } from "@trpc/core";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -240,7 +239,8 @@ const ROOT_TOAST = "root-toast";
 
 export const RootLoader = <
   TData,
-  TError extends TRPCClientErrorLike<TRPCInferrable>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TError extends TRPCClientErrorLike<any>,
 >({
   result,
   render,
