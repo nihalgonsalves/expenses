@@ -19,19 +19,19 @@
     "prepare:local": "node bin/prepare-local-env.mjs"
   },
   "dependencies": {
-    "@bull-board/api": "^5.17.1",
-    "@bull-board/hono": "^5.17.1",
+    "@bull-board/api": "^5.18.3",
+    "@bull-board/hono": "^5.18.3",
     "@hono/node-server": "^1.11.1",
     "@hono/trpc-server": "^0.3.1",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
-    "@sentry/node": "^7.112.2",
-    "@sentry/profiling-node": "^7.112.2",
+    "@sentry/node": "^8.5.0",
+    "@sentry/profiling-node": "^8.5.0",
     "@trpc/server": "^11.0.0-rc.374",
     "bcrypt": "*",
-    "bullmq": "^5.7.10",
+    "bullmq": "^5.7.12",
     "cookie": "^0.6.0",
-    "hono": "^4.3.9",
+    "hono": "^4.4.0",
     "ioredis": "^5.4.1",
     "jose": "^5.3.0",
     "nanoid": "^5.0.7",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
-    "@sentry/esbuild-plugin": "^2.16.1",
+    "@sentry/esbuild-plugin": "^2.17.0",
     "@testcontainers/postgresql": "^10.9.0",
     "@testcontainers/redis": "^10.9.0",
     "@total-typescript/ts-reset": "^0.5.1",
@@ -55,7 +55,7 @@
     "@types/ua-parser-js": "^0.7.39",
     "@types/web-push": "^3.6.3",
     "@vitest/coverage-v8": "^1.6.0",
-    "esbuild": "^0.21.3",
+    "esbuild": "^0.21.4",
     "npm-run-all2": "^6.2.0",
     "pem": "^1.14.8",
     "prisma": "*",
@@ -66,8 +66,8 @@
   },
   "resolutions": {
     "@bull-board/ui": "5.11.0",
-    "@prisma/client": "5.13.0",
-    "prisma": "5.13.0",
+    "@prisma/client": "5.14.0",
+    "prisma": "5.14.0",
     "bcrypt": "5.1.1"
   }
 }
