@@ -1,8 +1,4 @@
-import {
-  SheetType,
-  type PrismaClient,
-  SheetParticipantRole,
-} from "@prisma/client";
+import { SheetType, SheetParticipantRole } from "@prisma/client";
 import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
@@ -18,6 +14,7 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { PrismaClientType } from "../../app";
 import { generateId } from "../../utils/nanoid";
 import { getTRPCError } from "../../utils/trpcUtils";
 import type { TransactionService } from "../transaction/TransactionService";
@@ -49,7 +46,7 @@ const participantConnectOrCreate = (email: string) => ({
 
 export class SheetService {
   constructor(
-    private prismaClient: Pick<PrismaClient, "sheet" | "sheetMemberships">,
+    private prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">,
     private transactionService: TransactionService,
   ) {}
 

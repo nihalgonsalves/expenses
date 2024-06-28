@@ -1,13 +1,12 @@
-import type { PrismaClient } from "@prisma/client";
-
 import type { NotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { PrismaClientType } from "../../app";
 import { generateId } from "../../utils/nanoid";
 
 export class NotificationService {
   constructor(
-    private prismaClient: Pick<PrismaClient, "notificationSubscription">,
+    private prismaClient: Pick<PrismaClientType, "notificationSubscription">,
   ) {}
 
   async getSubscriptions(user: User) {

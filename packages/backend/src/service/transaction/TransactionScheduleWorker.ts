@@ -1,8 +1,9 @@
-import type { PrismaClient, Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { Queue } from "bullmq";
 import { Worker } from "bullmq";
 import type IORedis from "ioredis";
 
+import type { PrismaClientType } from "../../app";
 import { TRANSACTION_SCHEDULE_BULLMQ_QUEUE } from "../../config";
 import type { IWorker } from "../../startWorkers";
 import { generateId } from "../../utils/nanoid";
@@ -28,7 +29,7 @@ export class TransactionScheduleWorker
   worker: Worker<{ now: string | undefined }, TransactionScheduleWorkerResult>;
 
   constructor(
-    private prisma: PrismaClient,
+    private prisma: PrismaClientType,
     redis: IORedis,
   ) {
     this.queue = new Queue(TRANSACTION_SCHEDULE_BULLMQ_QUEUE, {

@@ -1,4 +1,3 @@
-import type { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import type { JWTPayload } from "jose";
 import { z } from "zod";
@@ -15,6 +14,7 @@ import type {
   UpdateUserInput,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { PrismaClientType } from "../../app";
 import { config } from "../../config";
 import { generateId } from "../../utils/nanoid";
 import type { IEmailWorker } from "../email/EmailWorker";
@@ -40,7 +40,7 @@ const ZVerifyEmailJWTPayload = z.object({
 export class UserService {
   constructor(
     private prismaClient: Pick<
-      PrismaClient,
+      PrismaClientType,
       "$transaction" | "user" | "sheet" | "category"
     >,
     private emailWorker: IEmailWorker,
@@ -81,7 +81,7 @@ export class UserService {
   async authorize(
     input: AuthorizeUserInput,
   ): Promise<{ user: User; token: JWTToken }> {
-    const user = await this.findByEmail(input.email);
+    const user = await this.findByEmailIncludingSecureData(input.email);
 
     if (!user?.passwordHash) {
       throw new UserServiceError({
@@ -400,6 +400,20 @@ export class UserService {
     }
   }
 
+  private async findByEmailIncludingSecureData(email: string) {
+    try {
+      return await this.prismaClient.user.findUnique({
+        where: { email },
+        omit: { passwordHash: false, passwordResetToken: false },
+      });
+    } catch (error) {
+      throw new UserServiceError({
+        code: "INTERNAL_SERVER_ERROR",
+        cause: error,
+      });
+    }
+  }
+
   private async verifyPassword(
     userId: string,
     email: string | undefined,
@@ -407,6 +421,7 @@ export class UserService {
   ) {
     const user = await this.prismaClient.user.findUnique({
       where: email ? { id: userId, email } : { id: userId },
+      omit: { passwordHash: false },
     });
 
     if (!user) {

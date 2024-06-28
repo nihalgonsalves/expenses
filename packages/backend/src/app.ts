@@ -18,7 +18,16 @@ import { makeCreateContext } from "./context";
 import { makePWARouter } from "./pwaRouter";
 import { startWorkers } from "./startWorkers";
 
-export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
+export const createPrisma = () =>
+  new PrismaClient({
+    omit: {
+      user: { passwordHash: true, passwordResetToken: true },
+    },
+  });
+
+export type PrismaClientType = ReturnType<typeof createPrisma>;
+
+export const createApp = async (prisma: PrismaClientType, redis: IORedis) => {
   const app = new Hono();
   const workers = await startWorkers(prisma, redis);
 
@@ -69,7 +78,12 @@ void (async () => {
     profilesSampleRate: 1.0,
   });
 
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient({
+    omit: {
+      user: { passwordHash: true, passwordResetToken: true },
+    },
+  });
+
   const redis = new IORedis(config.REDIS_URL, { maxRetriesPerRequest: null });
 
   try {

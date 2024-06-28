@@ -1,4 +1,3 @@
-import type { PrismaClient } from "@prisma/client";
 import { Queue, Worker } from "bullmq";
 import type IORedis from "ioredis";
 import webPush, {
@@ -12,6 +11,7 @@ import {
   ZNotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
+import type { PrismaClientType } from "../../app";
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
 import type { IWorker } from "../../startWorkers";
 
@@ -43,7 +43,7 @@ export class NotificationDispatchWorker
   worker: Worker<WebPushQueueItem, NotificationDispatchResult>;
 
   constructor(
-    private prismaClient: PrismaClient,
+    private prismaClient: PrismaClientType,
     redis: IORedis,
     private vapidDetails: NonNullable<RequestOptions["vapidDetails"]>,
   ) {

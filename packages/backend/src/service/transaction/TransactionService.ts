@@ -1,5 +1,4 @@
 import {
-  type PrismaClient,
   type Prisma,
   TransactionType,
   type TransactionEntry,
@@ -34,6 +33,7 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { PrismaClientType } from "../../app";
 import { generateId } from "../../utils/nanoid";
 import type { INotificationDispatchWorker } from "../notification/NotificationDispatchWorker";
 
@@ -65,7 +65,7 @@ const sumTransactions = (
 export const calculateBalances = (
   groupSheet: Sheet,
   type: TransactionType,
-  transactions: (TransactionEntry & { user: PrismaUser })[],
+  transactions: (TransactionEntry & { user: Pick<PrismaUser, "name"> })[],
 ): GroupSheetParticipantItem[] => {
   const participants = new Map(
     transactions.map(({ userId, user: { name } }) => [
@@ -153,7 +153,7 @@ const verifyAmountIsAbsolute = (money: Money) => {
 export class TransactionService {
   constructor(
     private prismaClient: Pick<
-      PrismaClient,
+      PrismaClientType,
       | "$transaction"
       | "transaction"
       | "transactionSchedule"

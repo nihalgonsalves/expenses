@@ -1,4 +1,3 @@
-import type { PrismaClient } from "@prisma/client";
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import cookie from "cookie";
 import { UAParser } from "ua-parser-js";
@@ -8,6 +7,7 @@ import {
   ZJWTToken,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { PrismaClientType } from "./app";
 import { config } from "./config";
 import { FrankfurterService } from "./service/frankfurter/FrankfurterService";
 import { NotificationService } from "./service/notification/NotificationService";
@@ -52,7 +52,10 @@ export const getMaybeUser = async (
   }
 };
 
-export const makeCreateContext = (prisma: PrismaClient, workers: Workers) => {
+export const makeCreateContext = (
+  prisma: PrismaClientType,
+  workers: Workers,
+) => {
   const userService = new UserService(prisma, workers.emailWorker);
 
   const notificationSubscriptionService = new NotificationService(prisma);

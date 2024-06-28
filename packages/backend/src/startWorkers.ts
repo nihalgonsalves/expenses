@@ -1,7 +1,7 @@
-import type { PrismaClient } from "@prisma/client";
 import type { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
+import type { PrismaClientType } from "./app";
 import { config } from "./config";
 import { EmailWorker } from "./service/email/EmailWorker";
 import { NotificationDispatchWorker } from "./service/notification/NotificationDispatchWorker";
@@ -36,7 +36,7 @@ export const closeWorker = async ({ worker, queue }: IWorker<any, any>) => {
   }
 };
 
-export const startWorkers = async (prisma: PrismaClient, redis: Redis) => {
+export const startWorkers = async (prisma: PrismaClientType, redis: Redis) => {
   const workers = {
     notificationDispatchService: new NotificationDispatchWorker(prisma, redis, {
       publicKey: config.VAPID_PUBLIC_KEY,
