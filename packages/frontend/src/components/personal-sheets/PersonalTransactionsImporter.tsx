@@ -134,8 +134,8 @@ const parseAmount = (value: string, amountFormat: AmountFormat) => {
     throw new Error(`Unable to parse amount ${value}`);
   }
 
-  // unsure if this could actuall be a non-string
-  // eslint-disable-next-line @typescript-eslint/no-useless-template-literals
+  // unsure if this could actually be a non-string
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-template-expression
   const scale = Math.min(`${value}`.split(".")[1]?.length ?? 0, MAX_PRECISION);
 
   const amount = Math.round(valueInt * Math.pow(10, scale));

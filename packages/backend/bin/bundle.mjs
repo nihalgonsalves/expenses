@@ -10,7 +10,8 @@ import { sentryEsbuildPlugin } from "@sentry/esbuild-plugin";
 import { context } from "esbuild";
 import { z } from "zod";
 
-import packageJson from "../package.json" assert { type: "json" };
+import rootPackageJson from "../../../package.json" with { type: "json" };
+import packageJson from "../package.json" with { type: "json" };
 
 /**
  * @param {string} path
@@ -26,7 +27,8 @@ const nodeEnv = z
 
 const ctx = await context({
   platform: "node",
-  target: "node20",
+  // NODE_VERSION
+  target: "node22",
   bundle: true,
   treeShaking: true,
   minify: nodeEnv === "production",
@@ -57,6 +59,7 @@ const newPackage = {
   name: `${packageJson.name}_bundle`,
   version: packageJson.version,
   dependencies: packageJson.resolutions,
+  packageManager: rootPackageJson.packageManager,
 };
 
 if (process.argv.includes("--watch")) {

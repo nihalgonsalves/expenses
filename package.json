@@ -9,9 +9,9 @@
   "workspaces": [
     "packages/*"
   ],
-  "packageManager": "yarn@4.1.1+sha256.f3cc0eda8e5560e529c7147565b30faa43b4e472d90e8634d7134a37c7f59781",
+  "packageManager": "yarn@4.3.1+sha512.af78262d7d125afbfeed740602ace8c5e4405cd7f4735c08feb327286b2fdb2390fbca01589bfd1f50b1240548b74806767f5a063c94b67e431aabd0d86f7774",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "run-p --print-label 'dev:*'",
@@ -39,29 +39,29 @@
     "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.9.11",
+    "@nihalgonsalves/esconfig": "^0.9.17",
     "@types/node": "20",
     "@vitest/ui": "^1.6.0",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsx-a11y": "^6.8.0",
-    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-jsx-a11y": "^6.9.0",
+    "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-unused-imports": "^3.2.0",
-    "knip": "^5.16.0",
-    "lefthook": "^1.6.12",
+    "knip": "^5.23.1",
+    "lefthook": "^1.6.18",
     "npm-run-all2": "^6.2.0",
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.2",
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-sql": "^0.18.0",
-    "prettier-plugin-tailwindcss": "^0.5.14",
-    "sherif": "^0.8.4",
-    "type-fest": "^4.18.2",
-    "typescript": "^5.4.5",
+    "prettier-plugin-tailwindcss": "^0.6.5",
+    "sherif": "^0.9.0",
+    "type-fest": "^4.20.1",
+    "typescript": "^5.5.2",
     "vitest": "^1.6.0"
   }
 }

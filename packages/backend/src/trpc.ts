@@ -20,8 +20,7 @@ export const t = initTRPC.context<ContextFn>().create({
 });
 
 const sentryMiddleware = t.middleware(
-  // @ts-expect-error rawInput changed in trpc v11; but it isn't accessed when attachRpcInput: false
-  Sentry.Handlers.trpcMiddleware({
+  Sentry.trpcMiddleware({
     attachRpcInput: false,
   }),
 );

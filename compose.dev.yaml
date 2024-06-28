@@ -1,5 +1,4 @@
 # base file, extended either for local or devcontainer usage
-version: "3.8"
 services:
   postgres:
     image: "postgres:15.3-alpine"

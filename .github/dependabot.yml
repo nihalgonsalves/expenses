@@ -13,8 +13,20 @@ updates:
       - dependency-name: "@types/node"
         update-types:
           - "version-update:semver-major"
+      - dependency-name: "eslint"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "eslint-plugin-unused-imports"
+        update-types:
+          - "version-update:semver-major"
       # until v11 is out of beta
       - dependency-name: "@trpc/*"
+      - dependency-name: "cmdk"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "dexie"
+        update-types:
+          - "version-update:semver-major"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:

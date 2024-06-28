@@ -8,7 +8,6 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
 import { PrismaClient } from "@prisma/client";
 import * as Sentry from "@sentry/node";
-import { ProfilingIntegration } from "@sentry/profiling-node";
 import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
 import IORedis from "ioredis";
@@ -46,7 +45,6 @@ export const createApp = async (prisma: PrismaClient, redis: IORedis) => {
     });
 
     serverAdapter.setBasePath("/admin/queue");
-    // @ts-expect-error Hono Adapter needs to be updated to allow v4
     app.route("/admin/queue", serverAdapter.registerPlugin());
   }
 
@@ -65,7 +63,8 @@ void (async () => {
   Sentry.init({
     ...(config.SENTRY_DSN ? { dsn: config.SENTRY_DSN } : {}),
     release: config.GIT_COMMIT_SHA,
-    integrations: [new ProfilingIntegration()],
+    // TODO: Sentry does not have precompiled binaries for macOS ARM64
+    // integrations: [nodeProfilingIntegration()],
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
   });

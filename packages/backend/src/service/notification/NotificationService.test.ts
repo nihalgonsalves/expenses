@@ -28,7 +28,6 @@ beforeAll(() => {
 
 afterAll(async () => {
   await closeWorker(notificationDispatchService);
-  // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
   delete process.env["NODE_TLS_REJECT_UNAUTHORIZED"];
 });
 
