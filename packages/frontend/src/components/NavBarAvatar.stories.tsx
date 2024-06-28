@@ -8,7 +8,7 @@ import {
 
 const meta: Meta<typeof NavBarAvatar> = {
   component: NavBarAvatar,
-  decorators: [(story) => <div className="bg-primary p-5 ">{story()}</div>],
+  decorators: [(story) => <div className="bg-primary p-5">{story()}</div>],
 };
 
 type Story = StoryObj<typeof NavBarAvatar>;
