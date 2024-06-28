@@ -10,7 +10,7 @@ import { sentryEsbuildPlugin } from "@sentry/esbuild-plugin";
 import { context } from "esbuild";
 import { z } from "zod";
 
-import packageJson from "../package.json" assert { type: "json" };
+import packageJson from "../package.json" with { type: "json" };
 
 /**
  * @param {string} path

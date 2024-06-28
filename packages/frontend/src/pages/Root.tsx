@@ -113,7 +113,7 @@ export const Root = ({
             </Button>
           )}
 
-          <div className="text-primary-foreground ms-2 flex place-items-center font-semibold normal-case ">
+          <div className="text-primary-foreground ms-2 flex place-items-center font-semibold normal-case">
             {title}
             {additionalTitleItems}
           </div>

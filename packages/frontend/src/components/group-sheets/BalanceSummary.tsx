@@ -130,7 +130,7 @@ const BalanceText = ({ balance }: { balance: Money }) => {
     return (
       <Badge
         variant="outline"
-        className="border-red-200  text-red-600 shadow-none"
+        className="border-red-200 text-red-600 shadow-none"
       >
         {amount}
       </Badge>
@@ -139,7 +139,7 @@ const BalanceText = ({ balance }: { balance: Money }) => {
     return (
       <Badge
         variant="outline"
-        className="border-green-200  text-green-600 shadow-none"
+        className="border-green-200 text-green-600 shadow-none"
       >
         {amount}
       </Badge>

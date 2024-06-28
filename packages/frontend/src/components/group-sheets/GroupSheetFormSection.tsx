@@ -63,7 +63,7 @@ export const GroupSheetFormSection = ({
           )}
         />
 
-        <Button type="submit" className=" w-full">
+        <Button type="submit" className="w-full">
           Save
         </Button>
       </form>

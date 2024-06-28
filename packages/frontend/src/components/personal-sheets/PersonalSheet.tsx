@@ -164,7 +164,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
           </CardHeader>
           <CardContent>
             <ScrollArea viewportClassName="max-h-96">
-              <div role="list" className="flex  flex-col gap-2 md:gap-4">
+              <div role="list" className="flex flex-col gap-2 md:gap-4">
                 {getPersonalSheetTransactionSchedulesResponse?.map(
                   (schedule) => {
                     const nextOccurrenceAt = Temporal.ZonedDateTime.from(

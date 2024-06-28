@@ -131,7 +131,7 @@ export const SettlementForm = ({
         />
 
         <Button
-          className=" w-full"
+          className="w-full"
           type="submit"
           disabled={disabled}
           isLoading={isPending}
