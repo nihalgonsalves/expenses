@@ -90,8 +90,19 @@ const formSchema = ZCreatePersonalSheetTransactionInput.merge(
     recurrenceRule: ZRecurrenceRule.partial().optional(),
     currencyCode: z.string().min(1),
     amount: z.number().positive({ message: "Amount is required" }),
-    dateTime: z.string().min(1),
+    dateTime: z.string().min(1, { message: "Date & Time is required" }),
   });
+
+// we need a PlainDate for useCurrencyConversion but if a user hits backspace on
+// the input[type=date], it becomes an empty string and throws an error.
+// fallback to the current date in that case
+const safeParseDateString = (dateString: string) => {
+  try {
+    return Temporal.PlainDate.from(dateString);
+  } catch {
+    return Temporal.PlainDate.from(nowForDateTimeInput());
+  }
+};
 
 const CreatePersonalTransactionForm = ({
   personalSheet,
@@ -133,7 +144,7 @@ const CreatePersonalTransactionForm = ({
 
   const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
     useCurrencyConversion(
-      Temporal.PlainDate.from(dateTime),
+      safeParseDateString(dateTime),
       currencyCode,
       personalSheet.currencyCode,
       moneySnapshot,
