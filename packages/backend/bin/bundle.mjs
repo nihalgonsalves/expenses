@@ -29,11 +29,13 @@ const ctx = await context({
   platform: "node",
   // NODE_VERSION
   target: "node22",
+  format: "cjs",
   bundle: true,
   treeShaking: true,
   minify: nodeEnv === "production",
   sourcemap: true,
   outdir: relativePath("../dist/"),
+  packages: "bundle",
   // some packages don't work well bundled, so we exclude them and install only
   // these specific packages later in the Dockerfile (see newPackage below)
   external: Object.keys(packageJson.resolutions),
@@ -58,6 +60,7 @@ const ctx = await context({
 const newPackage = {
   name: `${packageJson.name}_bundle`,
   version: packageJson.version,
+  type: "commonjs",
   dependencies: packageJson.resolutions,
   packageManager: rootPackageJson.packageManager,
 };

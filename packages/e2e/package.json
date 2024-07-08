@@ -10,7 +10,7 @@
     "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@chromatic-com/playwright": "0.6.14",
+    "@chromatic-com/playwright": "0.6.15",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
     "@playwright/test": "^1.45.0",
