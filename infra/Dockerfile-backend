@@ -1,5 +1,5 @@
 # NODE_VERSION
-FROM node:22-slim as builder
+FROM node:22-slim AS builder
 
 # don't attempt to build Prisma (therefore requiring the schema files) until the
 # actual final build stage
