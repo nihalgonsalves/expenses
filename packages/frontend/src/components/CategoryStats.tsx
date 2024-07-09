@@ -1,4 +1,3 @@
-import { CalendarIcon } from "@radix-ui/react-icons";
 import { useMemo } from "react";
 import type { DateRange } from "react-day-picker";
 import { Link } from "react-router-dom";
@@ -13,13 +12,11 @@ import type {
   AllConvertedUserTransactions,
   ConvertedTransactionWithSheet,
 } from "../api/useAllUserTransactions";
-import { shortDateFormatter } from "../utils/temporal";
 
 import { CategoryIcon } from "./CategoryAvatar";
 import { CurrencySpan } from "./CurrencySpan";
 import { Button } from "./ui/button";
-import { Calendar } from "./ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { DateRangePicker } from "./ui/date-range-picker";
 import { cn } from "./ui/utils";
 
 const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
@@ -91,33 +88,13 @@ export const CategoryStats = ({
   return (
     <>
       <div className="bg-muted mb-4 rounded-md p-1 text-center">
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              id="date"
-              $variant="outline"
-              className="justify-start text-left font-normal"
-            >
-              <CalendarIcon className="mr-2 size-4" />
-              {dateRange?.from && dateRange.to ? (
-                <>
-                  {shortDateFormatter.format(dateRange.from)} -{" "}
-                  {shortDateFormatter.format(dateRange.to)}
-                </>
-              ) : (
-                <span>Pick a date</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              initialFocus
-              mode="range"
-              selected={dateRange}
-              onSelect={setDateRange}
-            />
-          </PopoverContent>
-        </Popover>
+        <DateRangePicker
+          initialDateFrom={dateRange?.from}
+          initialDateTo={dateRange?.to}
+          onUpdate={({ range }) => {
+            setDateRange(range);
+          }}
+        />
       </div>
       <div
         className={cn(

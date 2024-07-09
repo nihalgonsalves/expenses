@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  CalendarIcon,
-  Cross2Icon,
-  MixerHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { Cross2Icon, MixerHorizontalIcon } from "@radix-ui/react-icons";
 import type { Table } from "@tanstack/react-table";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
@@ -12,18 +8,16 @@ import { z } from "zod";
 
 import { trpc } from "../../api/trpc";
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
-import { shortDateFormatter } from "../../utils/temporal";
 import { CategoryIcon } from "../CategoryAvatar";
 import { Button } from "../ui/button";
-import { Calendar } from "../ui/calendar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import { DataTableViewOptions } from "../ui/data-table-view-options";
+import { DateRangePicker } from "../ui/date-range-picker";
 import { Input } from "../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
@@ -55,37 +49,15 @@ export const DataTableToolbar = <TData,>({
 
   return (
     <div className="flex flex-col gap-2 lg:flex-row">
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            $variant="outline"
-            className="bg-card h-8 justify-start text-left font-normal"
-            data-chromatic="ignore"
-          >
-            <CalendarIcon className="mr-2 size-4" />
-            {dateRange?.from && dateRange.to ? (
-              <>
-                {shortDateFormatter.format(dateRange.from)} -{" "}
-                {shortDateFormatter.format(dateRange.to)}
-              </>
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-auto p-0"
-          align={breakpointMd ? "start" : "center"}
-        >
-          <Calendar
-            initialFocus
-            mode="range"
-            selected={dateRange}
-            onSelect={setDateRange}
-          />
-        </PopoverContent>
-      </Popover>
+      <DateRangePicker
+        align="center"
+        initialDateFrom={dateRange?.from}
+        initialDateTo={dateRange?.to}
+        onUpdate={({ range }) => {
+          setDateRange(range);
+        }}
+      />
+
       <Collapsible
         className="flex flex-col gap-2 lg:flex-row"
         open={breakpointMd || open}
