@@ -39,9 +39,9 @@
     "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.9.17",
+    "@nihalgonsalves/esconfig": "^0.9.19",
     "@types/node": "20",
-    "@vitest/ui": "^1.6.0",
+    "@vitest/ui": "^2.0.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -52,16 +52,16 @@
     "eslint-plugin-react-refresh": "^0.4.7",
     "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-unused-imports": "^3.2.0",
-    "knip": "^5.23.3",
-    "lefthook": "^1.6.18",
-    "npm-run-all2": "^6.2.0",
+    "knip": "^5.25.1",
+    "lefthook": "^1.7.1",
+    "npm-run-all2": "^6.2.2",
     "prettier": "^3.3.2",
     "prettier-plugin-prisma": "^5.0.0",
-    "prettier-plugin-sql": "^0.18.0",
+    "prettier-plugin-sql": "^0.18.1",
     "prettier-plugin-tailwindcss": "^0.6.5",
-    "sherif": "^0.9.0",
-    "type-fest": "^4.20.1",
+    "sherif": "^0.10.0",
+    "type-fest": "^4.21.0",
     "typescript": "^5.5.3",
-    "vitest": "^1.6.0"
+    "vitest": "^2.0.1"
   }
 }
