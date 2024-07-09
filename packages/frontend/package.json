@@ -54,7 +54,7 @@
     "@trpc/react-query": "^11.0.0-rc.432",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "cmdk": "^0.2.1",
+    "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "dexie": "^3.2.7",
     "dexie-react-hooks": "^1.1.7",

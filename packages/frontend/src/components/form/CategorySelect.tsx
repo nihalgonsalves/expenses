@@ -93,20 +93,6 @@ export const CategorySelect = forwardRef<
                     <CommandSeparator />
                   </>
                 )}
-                {searchValue.length > 2 &&
-                  !categories?.some((c) => c.id === searchValue) && (
-                    <CommandItem
-                      value={searchValue}
-                      onSelect={() => {
-                        onChange(searchValue);
-                        setOpen(false);
-                        onBlur();
-                      }}
-                    >
-                      <PlusIcon className="mr-2 size-4" />
-                      Create {`'${searchValue}'`}
-                    </CommandItem>
-                  )}
 
                 {categories?.map((category) => (
                   <CommandItem
@@ -123,6 +109,21 @@ export const CategorySelect = forwardRef<
                     {category.id}
                   </CommandItem>
                 ))}
+
+                {searchValue.length > 0 &&
+                  !categories?.some((c) => c.id === searchValue) && (
+                    <CommandItem
+                      value={searchValue}
+                      onSelect={() => {
+                        onChange(searchValue);
+                        setOpen(false);
+                        onBlur();
+                      }}
+                    >
+                      <PlusIcon className="mr-2 size-4" />
+                      Create {`'${searchValue}'`}
+                    </CommandItem>
+                  )}
               </CommandGroup>
             </CommandList>
           </Command>

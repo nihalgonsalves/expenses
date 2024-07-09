@@ -21,7 +21,6 @@ updates:
           - "version-update:semver-major"
       # until v11 is out of beta
       - dependency-name: "@trpc/*"
-      - dependency-name: "cmdk"
         update-types:
           - "version-update:semver-major"
       - dependency-name: "dexie"
