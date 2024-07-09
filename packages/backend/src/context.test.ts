@@ -8,7 +8,9 @@ import { UserServiceError } from "./service/user/utils";
 
 describe("getMaybeUser", () => {
   it("exchanges a cookie header token for a user", async () => {
-    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
+    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
+      async () => {},
+    );
 
     const result = await getMaybeUser(
       cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
@@ -38,7 +40,9 @@ describe("getMaybeUser", () => {
   });
 
   it("clears token on auth error", async () => {
-    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
+    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
+      async () => {},
+    );
 
     await expect(
       getMaybeUser(
@@ -59,7 +63,9 @@ describe("getMaybeUser", () => {
   });
 
   it("rethrows without clearing token on generic error", async () => {
-    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
+    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
+      async () => {},
+    );
 
     await expect(
       getMaybeUser(
@@ -75,7 +81,9 @@ describe("getMaybeUser", () => {
   });
 
   it("sets a reissued token", async () => {
-    const setJwtToken = vi.fn<[string | null], Promise<void>>(async () => {});
+    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
+      async () => {},
+    );
 
     await getMaybeUser(
       cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
