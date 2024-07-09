@@ -67,7 +67,7 @@ export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex flex-col">
-        <div className="max-w-[500px] truncate font-medium">
+        <div className="line-clamp-1 max-w-[500px] font-medium">
           <span className="mr-1 sm:hidden">
             <CategoryIcon category={row.original.category} />
           </span>
