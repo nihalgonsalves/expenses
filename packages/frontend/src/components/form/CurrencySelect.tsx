@@ -14,6 +14,7 @@ import {
   CommandList,
 } from "../ui/command";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
+import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "../ui/utils";
 
 type CurrencySelectProps = {
@@ -50,7 +51,7 @@ export const CurrencySelect = forwardRef<
     );
 
     return (
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen} modal>
         <PopoverTrigger asChild>
           <Button
             {...controllerProps}
@@ -75,26 +76,28 @@ export const CurrencySelect = forwardRef<
                 <span className="visible md:hidden">Not found</span>
                 <span className="hidden md:inline">No currency code found</span>
               </CommandEmpty>
-              <CommandGroup className="h-full overflow-y-auto">
-                {optionObjects.map((option) => (
-                  <CommandItem
-                    key={option.value}
-                    value={option.value}
-                    onSelect={() => {
-                      onChange(option.value);
-                      setOpen(false);
-                      onBlur();
-                    }}
-                  >
-                    <CheckIcon
-                      className={cn(
-                        "mr-2 size-4",
-                        value === option.value ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    {option.label}
-                  </CommandItem>
-                ))}
+              <CommandGroup>
+                <ScrollArea viewportClassName="max-h-72">
+                  {optionObjects.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={option.value}
+                      onSelect={() => {
+                        onChange(option.value);
+                        setOpen(false);
+                        onBlur();
+                      }}
+                    >
+                      <CheckIcon
+                        className={cn(
+                          "mr-2 size-4",
+                          value === option.value ? "opacity-100" : "opacity-0",
+                        )}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </ScrollArea>
               </CommandGroup>
             </CommandList>
           </Command>

@@ -6,7 +6,6 @@ import { Command as CommandPrimitive } from "cmdk";
 import * as React from "react";
 
 import { Dialog, DialogContent } from "./dialog";
-import { ScrollArea } from "./scroll-area";
 import { cn, twx } from "./utils";
 
 const Command = twx(
@@ -52,14 +51,8 @@ CommandInput.displayName = CommandPrimitive.Input.displayName;
 const CommandList = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, children, ...props }, ref) => (
-  <CommandPrimitive.List
-    ref={ref}
-    className={cn("overflow-x-hidden", className)}
-    {...props}
-  >
-    <ScrollArea viewportClassName="max-h-72">{children}</ScrollArea>
-  </CommandPrimitive.List>
+>(({ className, ...props }, ref) => (
+  <CommandPrimitive.List ref={ref} className={cn(className)} {...props} />
 ));
 
 CommandList.displayName = CommandPrimitive.List.displayName;

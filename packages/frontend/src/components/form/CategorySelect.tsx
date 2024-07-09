@@ -17,6 +17,7 @@ import {
   CommandSeparator,
 } from "../ui/command";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
+import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "../ui/utils";
 
 export const OTHER_CATEGORY = "other";
@@ -51,7 +52,7 @@ export const CategorySelect = forwardRef<
     const { data: categories } = trpc.transaction.getCategories.useQuery();
 
     return (
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover open={open} onOpenChange={setOpen} modal>
         <PopoverTrigger asChild>
           <Button
             {...controllerProps}
@@ -76,55 +77,58 @@ export const CategorySelect = forwardRef<
             <CommandList>
               {/* Only displayed when allowCreate=false, as otherwise there's always a CommandItem */}
               <CommandEmpty>No category found</CommandEmpty>
-              <CommandGroup>
-                {value && (
-                  <>
-                    <CommandItem
-                      className="opacity-80"
-                      value="unset"
-                      onSelect={() => {
-                        onChange(undefined);
-                        setOpen(false);
-                        onBlur();
-                      }}
-                    >
-                      Clear Selection
-                    </CommandItem>
-                    <CommandSeparator />
-                  </>
-                )}
 
-                {categories?.map((category) => (
-                  <CommandItem
-                    key={category.id}
-                    value={category.id}
-                    onSelect={() => {
-                      onChange(category.id);
-                      setOpen(false);
-                    }}
-                  >
-                    <div className="mr-2">
-                      <CategoryIcon category={category.id} />
-                    </div>
-                    {category.id}
-                  </CommandItem>
-                ))}
-
-                {searchValue.length > 0 &&
-                  !categories?.some((c) => c.id === searchValue) && (
-                    <CommandItem
-                      value={searchValue}
-                      onSelect={() => {
-                        onChange(searchValue);
-                        setOpen(false);
-                        onBlur();
-                      }}
-                    >
-                      <PlusIcon className="mr-2 size-4" />
-                      Create {`'${searchValue}'`}
-                    </CommandItem>
+              <ScrollArea viewportClassName="max-h-64">
+                <CommandGroup className="h-full overflow-y-auto">
+                  {value && (
+                    <>
+                      <CommandItem
+                        className="opacity-80"
+                        value="unset"
+                        onSelect={() => {
+                          onChange(undefined);
+                          setOpen(false);
+                          onBlur();
+                        }}
+                      >
+                        Clear Selection
+                      </CommandItem>
+                      <CommandSeparator />
+                    </>
                   )}
-              </CommandGroup>
+
+                  {categories?.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      value={category.id}
+                      onSelect={() => {
+                        onChange(category.id);
+                        setOpen(false);
+                      }}
+                    >
+                      <div className="mr-2">
+                        <CategoryIcon category={category.id} />
+                      </div>
+                      {category.id}
+                    </CommandItem>
+                  ))}
+
+                  {searchValue.length > 0 &&
+                    !categories?.some((c) => c.id === searchValue) && (
+                      <CommandItem
+                        value={searchValue}
+                        onSelect={() => {
+                          onChange(searchValue);
+                          setOpen(false);
+                          onBlur();
+                        }}
+                      >
+                        <PlusIcon className="mr-2 size-4" />
+                        Create {`'${searchValue}'`}
+                      </CommandItem>
+                    )}
+                </CommandGroup>
+              </ScrollArea>
             </CommandList>
           </Command>
         </PopoverContent>
