@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => ({
     sourcemap: true,
   },
   server: {
+    host: true,
     proxy: {
       "/api": {
         target: "http://localhost:5174",
