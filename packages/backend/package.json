@@ -25,8 +25,8 @@
     "@hono/trpc-server": "^0.3.2",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
-    "@sentry/node": "^8.15.0",
-    "@trpc/server": "^11.0.0-rc.432",
+    "@sentry/node": "^8.16.0",
+    "@trpc/server": "^11.0.0-rc.452",
     "bcrypt": "*",
     "bullmq": "^5.8.4",
     "cookie": "^0.6.0",
@@ -44,8 +44,8 @@
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "@sentry/esbuild-plugin": "^2.20.1",
-    "@testcontainers/postgresql": "^10.10.2",
-    "@testcontainers/redis": "^10.10.2",
+    "@testcontainers/postgresql": "^10.10.3",
+    "@testcontainers/redis": "^10.10.3",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie": "^0.6.0",
@@ -58,14 +58,14 @@
     "npm-run-all2": "^6.2.2",
     "pem": "^1.14.8",
     "prisma": "*",
-    "testcontainers": "^10.10.2",
+    "testcontainers": "^10.10.3",
     "vitest": "^2.0.1",
     "wait-on": "^7.2.0"
   },
   "resolutions": {
     "@bull-board/ui": "5.11.0",
-    "@prisma/client": "5.16.1",
-    "prisma": "5.16.1",
+    "@prisma/client": "5.16.2",
+    "prisma": "5.16.2",
     "bcrypt": "5.1.1"
   }
 }
