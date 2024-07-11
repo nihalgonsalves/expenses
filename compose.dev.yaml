@@ -1,7 +1,8 @@
 # base file, extended either for local or devcontainer usage
+name: expenses-dev
 services:
   postgres:
-    image: "postgres:15.3-alpine"
+    image: "postgres:16-alpine"
     environment:
       # server
       POSTGRES_PASSWORD: postgres

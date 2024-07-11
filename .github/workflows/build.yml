@@ -109,7 +109,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.45.0-jammy
     services:
       postgres:
-        image: postgres:15.3-alpine
+        image: postgres:16-alpine
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
