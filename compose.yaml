@@ -37,8 +37,6 @@ services:
       REDIS_URL: redis://redis:6379/
     expose:
       - 5174
-    ports:
-      - 5174:5174
     labels:
       traefik.enable: true
 
