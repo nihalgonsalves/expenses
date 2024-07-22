@@ -88,8 +88,8 @@ const categoryMatchers: [CategoryId, RegExp][] = [
 
 const findCategory = (value: string | undefined) =>
   value
-    ? categoryMatchers.find(([, matcher]) => matcher.test(value))?.[0] ??
-      CategoryId.Other
+    ? (categoryMatchers.find(([, matcher]) => matcher.test(value))?.[0] ??
+      CategoryId.Other)
     : CategoryId.Other;
 
 const ZAmountFormat = z.enum([

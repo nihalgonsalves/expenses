@@ -313,7 +313,7 @@ export const RootLoader = <
 
   return (
     <Root
-      title={result.data != null ? getTitle?.(result.data) ?? title : title}
+      title={result.data != null ? (getTitle?.(result.data) ?? title) : title}
       additionalTitleItems={
         <>
           {result.isLoading && <LoadingSpinner className="ml-4 size-4" />}
