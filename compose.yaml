@@ -4,7 +4,7 @@ services:
       - backend
       - frontend
     restart: unless-stopped
-    image: "traefik:v2.10"
+    image: "traefik:v3.1"
     command:
       - --log.level=DEBUG
       - --accesslog=true
