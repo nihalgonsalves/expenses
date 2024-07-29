@@ -25,12 +25,12 @@
     "@hono/trpc-server": "^0.3.2",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
-    "@sentry/node": "^8.19.0",
+    "@sentry/node": "^8.20.0",
     "@trpc/server": "^11.0.0-rc.467",
     "bcrypt": "*",
-    "bullmq": "^5.10.3",
+    "bullmq": "^5.11.0",
     "cookie": "^0.6.0",
-    "hono": "^4.5.1",
+    "hono": "^4.5.3",
     "ioredis": "^5.4.1",
     "jose": "^5.6.3",
     "nanoid": "^5.0.7",
@@ -44,8 +44,8 @@
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
     "@sentry/esbuild-plugin": "^2.21.1",
-    "@testcontainers/postgresql": "^10.10.4",
-    "@testcontainers/redis": "^10.10.4",
+    "@testcontainers/postgresql": "^10.11.0",
+    "@testcontainers/redis": "^10.11.0",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie": "^0.6.0",
@@ -58,14 +58,14 @@
     "npm-run-all2": "^6.2.2",
     "pem": "^1.14.8",
     "prisma": "*",
-    "testcontainers": "^10.10.4",
+    "testcontainers": "^10.11.0",
     "vitest": "^2.0.4",
     "wait-on": "^7.2.0"
   },
   "resolutions": {
     "@bull-board/ui": "5.11.0",
-    "@prisma/client": "5.16.2",
-    "prisma": "5.16.2",
+    "@prisma/client": "5.17.0",
+    "prisma": "5.17.0",
     "bcrypt": "5.1.1"
   }
 }
