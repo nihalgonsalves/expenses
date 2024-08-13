@@ -132,6 +132,7 @@ const meta: Meta<typeof NavigationMenu> = {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink className={navigationMenuTriggerStyle()} asChild>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a href="#" target="_blank">
               Documentation
             </a>

@@ -1,16 +1,16 @@
 import path from "path";
 
+import type { ChromaticConfig } from "@chromatic-com/playwright";
 import { defineConfig, devices } from "@playwright/test";
-import { ChromaticConfig } from "@chromatic-com/playwright";
 
 /** https://playwright.dev/docs/test-configuration. */
 export default defineConfig<ChromaticConfig>({
   testDir: "./tests",
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: [[process.env.CI ? "github" : "html"], ["line"]],
+  forbidOnly: !!process.env["CI"],
+  retries: process.env["CI"] ? 2 : 0,
+  ...(process.env["CI"] ? { workers: 1 } : {}),
+  reporter: [[process.env["CI"] ? "github" : "html"], ["line"]],
   use: {
     baseURL: "http://localhost:5173",
     disableAutoSnapshot: true,

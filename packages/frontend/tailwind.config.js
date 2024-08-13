@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 // @ts-check
 
 import animate from "tailwindcss-animate";

@@ -1,10 +1,11 @@
-import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "url";
-import { defineConfig } from "vite";
-import { VitePWA } from "vite-plugin-pwa";
-import IstanbulPlugin from "vite-plugin-istanbul";
+
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig, type Plugin } from "vite";
+import IstanbulPlugin from "vite-plugin-istanbul";
+import { VitePWA } from "vite-plugin-pwa";
 
 const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
@@ -25,7 +26,9 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [
-    process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
+    process.env["ENABLE_BUNDLE_VISUALIZER"] &&
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      (visualizer({ open: true }) as unknown as Plugin),
     react(),
     VitePWA({
       srcDir: "src",
@@ -44,20 +47,22 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
     }),
-    ...(process.env["VITE_COVERAGE"]
-      ? [
-          IstanbulPlugin({
-            include: "src/*",
-            exclude: ["node_modules", "test/"],
-            extension: [".js", ".ts", ".tsx"],
-          }),
-        ]
-      : []),
-    sentryVitePlugin({
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      release: { name: process.env.VITE_GIT_COMMIT_SHA },
-    }),
-  ],
+    process.env["VITE_COVERAGE"] &&
+      IstanbulPlugin({
+        include: "src/*",
+        exclude: ["node_modules", "test/"],
+        extension: [".js", ".ts", ".tsx"],
+      }),
+    process.env["SENTRY_AUTH_TOKEN"] &&
+      process.env["SENTRY_ORG"] &&
+      process.env["SENTRY_PROJECT"] &&
+      process.env["VITE_GIT_COMMIT_SHA"] &&
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      (sentryVitePlugin({
+        authToken: process.env["SENTRY_AUTH_TOKEN"],
+        org: process.env["SENTRY_ORG"],
+        project: process.env["SENTRY_PROJECT"],
+        release: { name: process.env["VITE_GIT_COMMIT_SHA"] },
+      }) as Plugin),
+  ].filter(Boolean),
 }));

@@ -3,17 +3,9 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "WebWorker"],
-    "rootDir": "./",
-    "outDir": "./build/tsc/",
-    "allowJs": true
+    "outDir": "./build/tsc/"
   },
-  "include": [
-    "./tailwind.config.js",
-    "./src/",
-    "./bin/",
-    "./test/",
-    "./.storybook/*"
-  ],
+  "include": ["./*.config.*", "./src/", "./bin/", "./test/", "./.storybook/*"],
   "references": [
     {
       "path": "../backend"

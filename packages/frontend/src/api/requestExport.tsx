@@ -4,12 +4,12 @@ import toast from "react-hot-toast";
 
 import { Button } from "../components/ui/button";
 
-export const requestExport = async <TData, TOutput>(
+export const requestExport = async <TData,>(
   sheetId: string,
   sheetName: string,
   type: "json" | "csv",
   fetch: () => Promise<TData[]>,
-  mapItem: (data: TData) => TOutput,
+  mapItem: (data: TData) => Record<string, unknown>,
 ) => {
   const toastId = `${sheetId}-${type}`;
 
