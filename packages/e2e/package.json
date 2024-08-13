@@ -2,6 +2,7 @@
   "name": "@nihalgonsalves/expenses-e2e",
   "description": "",
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "test": "playwright test",
     "ui": "playwright test --ui",

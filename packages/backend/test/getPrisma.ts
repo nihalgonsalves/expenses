@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-import path from "path";
 import { promisify } from "util";
 
 import { PrismaClient } from "@prisma/client";
@@ -13,7 +12,7 @@ export const getPrisma = async () => {
     .start();
 
   await promisify(exec)(`yarn prisma db push --skip-generate`, {
-    cwd: path.join(__dirname, "../"),
+    cwd: new URL("../", import.meta.url),
     env: {
       ...process.env,
       DATABASE_URL: container.getConnectionUri(),

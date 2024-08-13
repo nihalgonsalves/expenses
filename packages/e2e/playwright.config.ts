@@ -1,4 +1,4 @@
-import path from "path";
+import { fileURLToPath } from "url";
 
 import type { ChromaticConfig } from "@chromatic-com/playwright";
 import { defineConfig, devices } from "@playwright/test";
@@ -18,7 +18,7 @@ export default defineConfig<ChromaticConfig>({
   webServer: {
     reuseExistingServer: true,
     command: "yarn start:e2e",
-    cwd: path.join(__dirname, "../../"),
+    cwd: fileURLToPath(new URL("../../", import.meta.url)),
     port: 5173,
     env: {
       VITE_COVERAGE: "1",

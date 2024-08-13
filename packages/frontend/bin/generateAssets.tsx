@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import { fileURLToPath } from "url";
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { format } from "prettier";
@@ -67,16 +66,13 @@ const icon = async (
   return formattedString;
 };
 
-const relativePath = (path: string) =>
-  fileURLToPath(new URL(path, import.meta.url).toString());
-
 await Promise.all(
   Object.entries(themeColors).flatMap(([theme, colors]) => [
     ...types.flatMap(async (type) => {
       const svgIcon = await icon(colors, type);
 
       await fs.writeFile(
-        relativePath(`../public/assets/icon-${type}-${theme}.svg`),
+        new URL(`../public/assets/icon-${type}-${theme}.svg`, import.meta.url),
         svgIcon,
       );
     }),
@@ -88,7 +84,7 @@ await Promise.all(
         .toBuffer()
         .then(async (image) =>
           fs.writeFile(
-            relativePath(`../public/assets/icon-${theme}.png`),
+            new URL(`../public/assets/icon-${theme}.png`, import.meta.url),
             image,
           ),
         ),

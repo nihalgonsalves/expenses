@@ -1,6 +1,5 @@
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
-import path from "path";
 
 import { test as base } from "@chromatic-com/playwright";
 export { expect, takeSnapshot } from "@chromatic-com/playwright";
@@ -22,8 +21,6 @@ type Fixtures = {
   signIn: () => Promise<User & { password: string }>;
 };
 
-const relativePath = (subpath: string) => path.join(__dirname, subpath);
-
 declare global {
   /* eslint-disable no-var, @typescript-eslint/naming-convention */
   var collectIstanbulCoverage: (coverageJSON: string) => void;
@@ -41,15 +38,18 @@ export const test = base.extend<Fixtures>({
       });
     });
 
-    await fs.mkdir(relativePath("../coverage/"), { recursive: true });
+    await fs.mkdir(new URL("../coverage/", import.meta.url), {
+      recursive: true,
+    });
 
     await context.exposeFunction(
       "collectIstanbulCoverage",
       async (coverageJSON: string) => {
         if (coverageJSON)
           await fs.writeFile(
-            relativePath(
+            new URL(
               `../coverage/playwright_coverage_${randomUUID()}.json`,
+              import.meta.url,
             ),
             coverageJSON,
           );
