@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-// @ts-check
 /* eslint-env node */
 /* eslint-disable import/no-extraneous-dependencies */
 import { writeFile } from "fs/promises";

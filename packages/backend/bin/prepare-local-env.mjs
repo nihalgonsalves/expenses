@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// @ts-check
 
 import { writeFile } from "fs/promises";
 

@@ -1,5 +1,3 @@
-// @ts-check
-
 import type { Preview } from "@storybook/react";
 import "../src/tailwind.css";
 import { MemoryRouter } from "react-router-dom";
