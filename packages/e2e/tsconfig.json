@@ -1,10 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "rootDir": "./",
-    "outDir": "./build/tsc/"
-  },
-  "include": ["./src/", "./tests", "./utils/"],
+  "include": ["./src/", "./tests", "./utils/", "*.config.*"],
   "references": [
     {
       "path": "../backend"

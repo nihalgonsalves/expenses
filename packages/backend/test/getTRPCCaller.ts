@@ -15,6 +15,7 @@ import { SheetService } from "../src/service/sheet/SheetService";
 import { TransactionService } from "../src/service/transaction/TransactionService";
 import { UserService } from "../src/service/user/UserService";
 import { t } from "../src/trpc";
+import { noopAsync } from "../src/utils/noop";
 
 import { FakeEmailWorker } from "./FakeEmailWorker";
 import { getPrisma } from "./getPrisma";
@@ -69,11 +70,9 @@ export const getTRPCCaller = async () => {
   return {
     prisma,
     emailWorker,
-    usePublicCaller: (setJwtToken = async (_token: JWTToken | null) => {}) =>
+    usePublicCaller: (setJwtToken = noopAsync) =>
       useCaller(undefined, setJwtToken),
-    useProtectedCaller: (
-      user: User,
-      setJwtToken = async (_token: JWTToken | null) => {},
-    ) => useCaller(user, setJwtToken),
+    useProtectedCaller: (user: User, setJwtToken = noopAsync) =>
+      useCaller(user, setJwtToken),
   };
 };

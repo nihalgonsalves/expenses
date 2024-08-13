@@ -237,11 +237,7 @@ export const Root = ({
 
 const ROOT_TOAST = "root-toast";
 
-export const RootLoader = <
-  TData,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TError extends TRPCClientErrorLike<any>,
->({
+export const RootLoader = <TData,>({
   result,
   render,
   title,
@@ -251,7 +247,8 @@ export const RootLoader = <
   render: (data: TData) => React.ReactNode;
   result: {
     data: TData | undefined;
-    error: TError | null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    error: TRPCClientErrorLike<any> | null;
     isLoading: boolean;
     refetch: () => Promise<unknown>;
     dataUpdatedAt: number;

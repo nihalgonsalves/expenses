@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { noop } from "../utils/utils";
+
 import {
   NavBarAvatar,
   LoggedInNavBarAvatar,
@@ -14,7 +16,7 @@ const meta: Meta<typeof NavBarAvatar> = {
 type Story = StoryObj<typeof NavBarAvatar>;
 
 export const LoggedIn: Story = {
-  render: () => <LoggedInNavBarAvatar handleSignOut={() => {}} />,
+  render: () => <LoggedInNavBarAvatar handleSignOut={noop} />,
 };
 
 export const LoggedOut: Story = {

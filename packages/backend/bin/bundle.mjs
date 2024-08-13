@@ -23,7 +23,7 @@ export const relativePath = (path) =>
 const nodeEnv = z
   .union([z.literal("test"), z.literal("development"), z.literal("production")])
   .default("development")
-  .parse(process.env.NODE_ENV);
+  .parse(process.env["NODE_ENV"]);
 
 const ctx = await context({
   platform: "node",
@@ -49,12 +49,15 @@ const ctx = await context({
     ".node": "copy",
   },
   plugins: [
-    sentryEsbuildPlugin({
-      org: process.env.SENTRY_ORG,
-      project: process.env.SENTRY_PROJECT,
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-    }),
-  ],
+    process.env["SENTRY_ORG"] &&
+      process.env["SENTRY_PROJECT"] &&
+      process.env["SENTRY_AUTH_TOKEN"] &&
+      sentryEsbuildPlugin({
+        org: process.env["SENTRY_ORG"],
+        project: process.env["SENTRY_PROJECT"],
+        authToken: process.env["SENTRY_AUTH_TOKEN"],
+      }),
+  ].filter(Boolean),
 });
 
 const newPackage = {

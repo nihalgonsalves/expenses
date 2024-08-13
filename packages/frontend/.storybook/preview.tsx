@@ -18,5 +18,4 @@ const preview: Preview = {
   ],
 };
 
-// eslint-disable-next-line import/no-default-export
 export default preview;

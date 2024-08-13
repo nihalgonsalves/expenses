@@ -5,12 +5,12 @@ import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { AUTH_COOKIE_NAME, getMaybeUser } from "./context";
 import { UserServiceError } from "./service/user/utils";
+import { noopAsync } from "./utils/noop";
 
 describe("getMaybeUser", () => {
   it("exchanges a cookie header token for a user", async () => {
-    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
-      async () => {},
-    );
+    const setJwtToken =
+      vi.fn<(value: string | null) => Promise<void>>(noopAsync);
 
     const result = await getMaybeUser(
       cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
@@ -40,9 +40,8 @@ describe("getMaybeUser", () => {
   });
 
   it("clears token on auth error", async () => {
-    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
-      async () => {},
-    );
+    const setJwtToken =
+      vi.fn<(value: string | null) => Promise<void>>(noopAsync);
 
     await expect(
       getMaybeUser(
@@ -63,9 +62,8 @@ describe("getMaybeUser", () => {
   });
 
   it("rethrows without clearing token on generic error", async () => {
-    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
-      async () => {},
-    );
+    const setJwtToken =
+      vi.fn<(value: string | null) => Promise<void>>(noopAsync);
 
     await expect(
       getMaybeUser(
@@ -81,9 +79,8 @@ describe("getMaybeUser", () => {
   });
 
   it("sets a reissued token", async () => {
-    const setJwtToken = vi.fn<(value: string | null) => Promise<void>>(
-      async () => {},
-    );
+    const setJwtToken =
+      vi.fn<(value: string | null) => Promise<void>>(noopAsync);
 
     await getMaybeUser(
       cookie.serialize(AUTH_COOKIE_NAME, "<jwt-token>"),
