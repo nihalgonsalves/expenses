@@ -1533,35 +1533,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:5.21.3, @bull-board/api@npm:^5.21.3":
-  version: 5.21.3
-  resolution: "@bull-board/api@npm:5.21.3"
+"@bull-board/api@npm:5.21.4, @bull-board/api@npm:^5.21.4":
+  version: 5.21.4
+  resolution: "@bull-board/api@npm:5.21.4"
   dependencies:
     redis-info: "npm:^3.0.8"
   peerDependencies:
-    "@bull-board/ui": 5.21.3
-  checksum: 10c0/b7a950664f93a2ead9c2ce86e0180c0ac7db64b3f84091c1a9a935acaa616c249f7dacf46669c4a0ac91482a4fd0937549b9480c37a084ee1238a4bdb4fa060f
+    "@bull-board/ui": 5.21.4
+  checksum: 10c0/f51b1632862fddce51558fd329fc9cf47fcf8e12cedbffd0ec8941cf628cddf69f2e27943d79f46a257135644eb70700553bf078098d292cebe4c838cfecd4f9
   languageName: node
   linkType: hard
 
-"@bull-board/hono@npm:^5.21.3":
-  version: 5.21.3
-  resolution: "@bull-board/hono@npm:5.21.3"
+"@bull-board/hono@npm:^5.21.4":
+  version: 5.21.4
+  resolution: "@bull-board/hono@npm:5.21.4"
   dependencies:
-    "@bull-board/api": "npm:5.21.3"
-    "@bull-board/ui": "npm:5.21.3"
+    "@bull-board/api": "npm:5.21.4"
+    "@bull-board/ui": "npm:5.21.4"
     ejs: "npm:^3.1.10"
     hono: "npm:^4.4.7"
-  checksum: 10c0/79cf68dc17c729d67d7ab70593a040ff651cce01ed7dcfc899e9431e658ddcf2ba2db8ca3db12c2ec4651fccf5d2501501eafbaee7b3be94a167e9021db479d6
+  checksum: 10c0/ce1447830eadaeb23d50eb0434e865b9ada519167ecb5b161d8caa3ea1cc9e6fd9e4b361b11a6b21becd82dd1dc75c3bb4a923cda4d89e22a467f8efdbbcd700
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:5.21.3":
-  version: 5.21.3
-  resolution: "@bull-board/ui@npm:5.21.3"
+"@bull-board/ui@npm:5.21.4":
+  version: 5.21.4
+  resolution: "@bull-board/ui@npm:5.21.4"
   dependencies:
-    "@bull-board/api": "npm:5.21.3"
-  checksum: 10c0/d1aa218e97d638f0ca2701b22ecfc36de84a0b252691a0762649d275e195c76038152063a23b91678d51f40d8939ba4b38f8a1c46b10e53842a8124333d43357
+    "@bull-board/api": "npm:5.21.4"
+  checksum: 10c0/525839724b3438ebff79189726494a607eecb26acba1301aaa5f9d095d8a00481764aa23a25389fcd38861b058907b4ca0fbda489e6d1d9462e0363d41a8816e
   languageName: node
   linkType: hard
 
@@ -2988,8 +2988,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nihalgonsalves/expenses-backend@workspace:packages/backend"
   dependencies:
-    "@bull-board/api": "npm:^5.21.3"
-    "@bull-board/hono": "npm:^5.21.3"
+    "@bull-board/api": "npm:^5.21.4"
+    "@bull-board/hono": "npm:^5.21.4"
     "@faker-js/faker": "npm:^8.4.1"
     "@hono/node-server": "npm:^1.12.0"
     "@hono/trpc-server": "npm:^0.3.2"

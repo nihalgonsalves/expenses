@@ -19,8 +19,8 @@
     "prepare:local": "node bin/prepare-local-env.mjs"
   },
   "dependencies": {
-    "@bull-board/api": "^5.21.3",
-    "@bull-board/hono": "^5.21.3",
+    "@bull-board/api": "^5.21.4",
+    "@bull-board/hono": "^5.21.4",
     "@hono/node-server": "^1.12.0",
     "@hono/trpc-server": "^0.3.2",
     "@nihalgonsalves/expenses-shared": "*",
