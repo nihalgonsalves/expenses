@@ -135,11 +135,11 @@ const EditPersonalTransactionForm = ({
                     />
                   </FormControl>
 
-                  {convertedMoneySnapshot && (
+                  {convertedMoneySnapshot ? (
                     <FormDescription>
                       <CurrencySpan money={convertedMoneySnapshot} />
                     </FormDescription>
-                  )}
+                  ) : null}
 
                   <FormMessage />
                 </FormItem>
@@ -243,7 +243,7 @@ export const EditPersonalTransactionDialog = ({
 
   return (
     <ResponsiveDialog title="Edit Transaction" trigger={trigger}>
-      {data && <EditPersonalTransactionForm data={data} />}
+      {data ? <EditPersonalTransactionForm data={data} /> : null}
     </ResponsiveDialog>
   );
 };

@@ -120,9 +120,9 @@ export const DataTableFacetedFilter = <TData, TValue>({
                     >
                       <CheckIcon className={cn("size-4")} />
                     </div>
-                    {option.icon && (
+                    {option.icon ? (
                       <option.icon className="text-muted-foreground mr-2 size-4" />
-                    )}
+                    ) : null}
                     <span>{option.label}</span>
                     {facets?.get(option.value) != null && (
                       <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">

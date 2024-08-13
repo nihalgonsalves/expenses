@@ -40,18 +40,18 @@ export const GroupSheet = ({
         <CardHeader>
           <CardTitleWithButton>
             People
-            {actorInfo?.isAdmin && (
+            {actorInfo?.isAdmin ? (
               <AddMemberButton groupSheetId={groupSheet.id} />
-            )}
+            ) : null}
           </CardTitleWithButton>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          {actorInfo && (
+          {actorInfo ? (
             <BalanceSummary
               groupSheetId={groupSheet.id}
               actorInfo={actorInfo}
             />
-          )}
+          ) : null}
         </CardContent>
       </Card>
 
@@ -70,14 +70,14 @@ export const GroupSheet = ({
             <GroupSheetExportSection groupSheet={groupSheet} />
           </div>
 
-          {actorInfo?.isAdmin && (
+          {actorInfo?.isAdmin ? (
             <>
               <Separator />
               <div className="grid grid-cols-2 gap-2">
                 <GroupSheetAdminSection groupSheet={groupSheet} />
               </div>
             </>
-          )}
+          ) : null}
         </CardContent>
       </Card>
     </div>

@@ -145,13 +145,13 @@ export const NotificationPreferenceForm = () => {
               you&rsquo;re accessing this page over https.
               {IS_IOS_AND_NOT_STANDALONE === false &&
                 " On iOS 16.4 and above, click the share icon and Add to Home Screen for notification support."}
-              {import.meta.env.DEV && (
+              {import.meta.env.DEV ? (
                 <b>
                   <br />
                   This is a development environment, you need ENABLE_DEV_PWA=1
                   for service worker support.
                 </b>
-              )}
+              ) : null}
             </AlertDescription>
           </Alert>
         )}
@@ -185,7 +185,7 @@ export const NotificationPreferenceForm = () => {
           </form>
         </Form>
 
-        {subscriptions && subscriptions.length > 0 && (
+        {subscriptions && subscriptions.length > 0 ? (
           <ul className="grid gap-4">
             {subscriptions.map((subscription) => (
               <li key={subscription.id} className="flex items-center text-sm">
@@ -211,7 +211,7 @@ export const NotificationPreferenceForm = () => {
               </li>
             ))}
           </ul>
-        )}
+        ) : null}
       </CardContent>
     </Card>
   );

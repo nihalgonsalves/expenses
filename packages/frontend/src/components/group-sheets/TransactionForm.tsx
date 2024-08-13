@@ -517,15 +517,15 @@ const SplitsFormSection = ({
                         {splitValid ? (
                           <>
                             {formatCurrency(share)}
-                            {groupSheet.currencyCode !== currencyCode &&
-                              rate &&
-                              ` (${formatCurrency(
-                                convertCurrency(
-                                  share,
-                                  groupSheet.currencyCode,
-                                  rate,
-                                ),
-                              )})`}
+                            {groupSheet.currencyCode !== currencyCode && rate
+                              ? ` (${formatCurrency(
+                                  convertCurrency(
+                                    share,
+                                    groupSheet.currencyCode,
+                                    rate,
+                                  ),
+                                )})`
+                              : null}
                           </>
                         ) : (
                           <>&hellip;</>
@@ -553,7 +553,7 @@ const SplitsFormSection = ({
                       </Button>
                     )}
 
-                    {splitConfig.hasInput && (
+                    {splitConfig.hasInput ? (
                       <div className="flex items-center gap-4">
                         <FormControl>
                           <Input
@@ -583,7 +583,7 @@ const SplitsFormSection = ({
                             : splitConfig.unit[1]}
                         </div>
                       </div>
-                    )}
+                    ) : null}
                     {splitType === GroupTransactionSplitType.Amounts && (
                       <div>
                         <FormControl>
@@ -762,11 +762,11 @@ export const TransactionForm = ({
                     />
                   </FormControl>
 
-                  {convertedMoneySnapshot && (
+                  {convertedMoneySnapshot ? (
                     <FormDescription>
                       <CurrencySpan money={convertedMoneySnapshot} />
                     </FormDescription>
-                  )}
+                  ) : null}
 
                   <FormMessage />
                 </FormItem>

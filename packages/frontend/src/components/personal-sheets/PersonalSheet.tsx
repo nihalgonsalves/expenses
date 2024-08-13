@@ -204,7 +204,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                                 </TooltipContent>
                               </Tooltip>
 
-                              {isPast && (
+                              {isPast ? (
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <Badge variant="outline">
@@ -217,7 +217,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                                     <p>Pending processing</p>
                                   </TooltipContent>
                                 </Tooltip>
-                              )}
+                              ) : null}
                             </TooltipProvider>
                           </div>
                         }

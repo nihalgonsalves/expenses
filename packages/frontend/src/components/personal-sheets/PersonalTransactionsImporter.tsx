@@ -456,12 +456,12 @@ export const PersonalTransactionsImporter = ({
       {activeStep === ImportStep.UPLOAD_FILE && (
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold">Upload File</h2>
-          {csvError && (
+          {csvError ? (
             <Alert $variant="destructive">
               <AlertTitle>CSV Error</AlertTitle>
               <AlertDescription>{csvError}</AlertDescription>
             </Alert>
-          )}
+          ) : null}
           <Label htmlFor={fileId}>
             Select a CSV file to import transactions from
           </Label>
@@ -565,7 +565,7 @@ export const PersonalTransactionsImporter = ({
 
             <span />
           </div>
-          {data && (
+          {data ? (
             <DataPreview
               data={data}
               amountField={amountField}
@@ -576,7 +576,7 @@ export const PersonalTransactionsImporter = ({
               descriptionField={descriptionField}
               currencyCode={personalSheet.currencyCode}
             />
-          )}
+          ) : null}
           <div className="flex gap-4">
             <Button
               className="grow"

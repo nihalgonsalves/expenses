@@ -146,7 +146,7 @@ const ResponsiveDialogInner = ({
         </DrawerHeader>
         <ScrollArea className="overflow-y-auto px-4">{children}</ScrollArea>
         <DrawerFooter>
-          {props.alert && (
+          {props.alert ? (
             <Button
               $variant={props.variant}
               isLoading={props.isLoading}
@@ -157,7 +157,7 @@ const ResponsiveDialogInner = ({
             >
               {props.confirmLabel}
             </Button>
-          )}
+          ) : null}
           <DrawerClose asChild>
             <Button $variant="outline">Cancel</Button>
           </DrawerClose>
