@@ -80,7 +80,7 @@ export const CategorySelect = forwardRef<
 
               <ScrollArea viewportClassName="max-h-64">
                 <CommandGroup className="h-full overflow-y-auto">
-                  {value && (
+                  {value ? (
                     <>
                       <CommandItem
                         className="opacity-80"
@@ -95,7 +95,7 @@ export const CategorySelect = forwardRef<
                       </CommandItem>
                       <CommandSeparator />
                     </>
-                  )}
+                  ) : null}
 
                   {categories?.map((category) => (
                     <CommandItem

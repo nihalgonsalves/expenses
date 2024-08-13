@@ -9,7 +9,7 @@ const SheetImportPage = () => {
 
   return (
     <Root title="Import Transactions" showBackButton>
-      {data && <PersonalTransactionsImporter personalSheet={data} />}
+      {data ? <PersonalTransactionsImporter personalSheet={data} /> : null}
     </Root>
   );
 };

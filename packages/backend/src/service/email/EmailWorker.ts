@@ -34,7 +34,7 @@ export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
 
     this.worker = new Worker(
       EMAIL_BULLMQ_QUEUE,
-      async (job) => this.process(job.data),
+      async (job) => EmailWorker.process(job.data),
       {
         connection: redis,
       },
@@ -45,7 +45,7 @@ export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
     await this.queue.add("email", email);
   }
 
-  private async process(payload: EmailPayload): Promise<void> {
+  private static async process(payload: EmailPayload): Promise<void> {
     await nodemailerTransport.sendMail({
       ...payload,
       from: `${config.APP_NAME} <${config.EMAIL_FROM}>`,

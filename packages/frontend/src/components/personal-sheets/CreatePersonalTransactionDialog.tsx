@@ -242,11 +242,11 @@ const CreatePersonalTransactionForm = ({
                     />
                   </FormControl>
 
-                  {convertedMoneySnapshot && (
+                  {convertedMoneySnapshot ? (
                     <FormDescription>
                       <CurrencySpan money={convertedMoneySnapshot} />
                     </FormDescription>
-                  )}
+                  ) : null}
 
                   <FormMessage />
                 </FormItem>
@@ -367,9 +367,9 @@ export const CreatePersonalTransactionDialog = ({
 
   return (
     <ResponsiveDialog trigger={trigger} title="Add Transaction">
-      {personalSheet && (
+      {personalSheet ? (
         <CreatePersonalTransactionForm personalSheet={personalSheet} />
-      )}
+      ) : null}
     </ResponsiveDialog>
   );
 };

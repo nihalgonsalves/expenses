@@ -94,14 +94,14 @@ export const Root = ({
         <title>{data ? `${data.name} - ${title}` : title}</title>
       </Helmet>
       <div className="m-auto flex h-dvh flex-col">
-        {(!navigatorOnLine || bannerText) && (
+        {!navigatorOnLine || bannerText ? (
           <header className="bg-muted text-muted-foreground flex justify-center gap-1 p-1 text-center text-xs tracking-tighter">
-            {bannerText && <span>{bannerText}</span>}
+            {bannerText ? <span>{bannerText}</span> : null}
             {!navigatorOnLine && <span>You are offline</span>}
           </header>
-        )}
+        ) : null}
         <header className="bg-primary flex place-items-center justify-center p-4 px-5 align-middle text-lg md:text-2xl">
-          {showBackButton && (
+          {showBackButton ? (
             <Button
               $variant="ghost"
               className="text-primary-foreground md:hidden"
@@ -111,7 +111,7 @@ export const Root = ({
             >
               <ArrowLeftIcon />
             </Button>
-          )}
+          ) : null}
 
           <div className="text-primary-foreground ms-2 flex place-items-center font-semibold normal-case">
             {title}
@@ -316,8 +316,8 @@ export const RootLoader = <
       title={result.data != null ? (getTitle?.(result.data) ?? title) : title}
       additionalTitleItems={
         <>
-          {result.isLoading && <LoadingSpinner className="ml-4 size-4" />}
-          {!mobileStandalone && !result.isLoading && onLine && (
+          {result.isLoading ? <LoadingSpinner className="ml-4 size-4" /> : null}
+          {!mobileStandalone && !result.isLoading && onLine ? (
             <Button
               $variant="ghost"
               $size="icon"
@@ -328,7 +328,7 @@ export const RootLoader = <
                 <SymbolIcon />
               </AccessibleIcon>
             </Button>
-          )}
+          ) : null}
         </>
       }
       bannerText={

@@ -83,6 +83,33 @@ const PRESETS: Preset[] = [
   { name: "lastMonth", label: "Last Month" },
 ];
 
+const PresetButton = ({
+  preset,
+  label,
+  isSelected,
+  setPreset,
+}: {
+  preset: string;
+  label: string;
+  isSelected: boolean;
+  setPreset: (preset: string) => void;
+}): JSX.Element => (
+  <Button
+    className={cn(isSelected && "pointer-events-none")}
+    $variant="ghost"
+    onClick={() => {
+      setPreset(preset);
+    }}
+  >
+    <>
+      <span className={cn("pr-2 opacity-0", isSelected && "opacity-70")}>
+        <CheckIcon width={18} height={18} />
+      </span>
+      {label}
+    </>
+  </Button>
+);
+
 /** The DateRangePicker component allows a user to select a range of dates */
 export const DateRangePicker: FC<DateRangePickerProps> = ({
   initialDateFrom = new Date(new Date().setHours(0, 0, 0, 0)),
@@ -221,31 +248,6 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
     checkPreset();
   }, [checkPreset]);
 
-  const PresetButton = ({
-    preset,
-    label,
-    isSelected,
-  }: {
-    preset: string;
-    label: string;
-    isSelected: boolean;
-  }): JSX.Element => (
-    <Button
-      className={cn(isSelected && "pointer-events-none")}
-      $variant="ghost"
-      onClick={() => {
-        setPreset(preset);
-      }}
-    >
-      <>
-        <span className={cn("pr-2 opacity-0", isSelected && "opacity-70")}>
-          <CheckIcon width={18} height={18} />
-        </span>
-        {label}
-      </>
-    </Button>
-  );
-
   return (
     <Popover
       modal
@@ -300,7 +302,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
                   </div>
                 </div>
               </div>
-              {isSmallScreen && (
+              {isSmallScreen ? (
                 <Select
                   defaultValue={selectedPreset || ""}
                   onValueChange={(value) => {
@@ -318,7 +320,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
                     ))}
                   </SelectContent>
                 </Select>
-              )}
+              ) : null}
               <div>
                 <Calendar
                   mode="range"
@@ -348,6 +350,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
                   preset={preset.name}
                   label={preset.label}
                   isSelected={selectedPreset === preset.name}
+                  setPreset={setPreset}
                 />
               ))}
             </div>

@@ -33,7 +33,7 @@ export const DataTableToolbar = <TData,>({
   setDateRange,
 }: DataTableToolbarProps<TData>) => {
   const breakpointMd = useBreakpoint("md");
-  const [open, setIsOpen] = useState(breakpointMd);
+  const [isOpen, setIsOpen] = useState(breakpointMd);
 
   const { data: sheets } = trpc.sheet.mySheets.useQuery({
     includeArchived: false,
@@ -60,7 +60,7 @@ export const DataTableToolbar = <TData,>({
 
       <Collapsible
         className="flex flex-col gap-2 lg:flex-row"
-        open={breakpointMd || open}
+        open={breakpointMd || isOpen}
       >
         {!breakpointMd && (
           <CollapsibleTrigger asChild>
@@ -90,7 +90,7 @@ export const DataTableToolbar = <TData,>({
             }
             className="h-8 lg:w-[150px] xl:w-[250px]"
           />
-          {typeColumn && (
+          {typeColumn ? (
             <DataTableFacetedFilter
               column={typeColumn}
               title="Type"
@@ -100,8 +100,8 @@ export const DataTableToolbar = <TData,>({
                 { label: "Transfer", value: "TRANSFER" },
               ]}
             />
-          )}
-          {sheetColumn && (
+          ) : null}
+          {sheetColumn ? (
             <DataTableFacetedFilter
               column={sheetColumn}
               title="Sheet"
@@ -112,8 +112,8 @@ export const DataTableToolbar = <TData,>({
                 })) ?? []
               }
             />
-          )}
-          {categoryColumn && (
+          ) : null}
+          {categoryColumn ? (
             <DataTableFacetedFilter
               column={categoryColumn}
               title="Category"
@@ -129,8 +129,8 @@ export const DataTableToolbar = <TData,>({
                 })) ?? []
               }
             />
-          )}
-          {isFiltered && (
+          ) : null}
+          {isFiltered ? (
             <Button
               $variant="ghost"
               onClick={() => {
@@ -141,7 +141,7 @@ export const DataTableToolbar = <TData,>({
               Reset
               <Cross2Icon className="ml-2 size-4" />
             </Button>
-          )}
+          ) : null}
           <div className="grow" />
           <DataTableViewOptions
             table={table}

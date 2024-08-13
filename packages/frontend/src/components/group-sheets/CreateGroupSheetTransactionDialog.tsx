@@ -86,9 +86,9 @@ export const CreateGroupSheetTransactionDialog = ({
 
   return (
     <ResponsiveDialog trigger={trigger} title="Add Transaction">
-      {groupSheet && me && (
+      {groupSheet && me ? (
         <CreateGroupSheetTransactionForm groupSheet={groupSheet} me={me} />
-      )}
+      ) : null}
     </ResponsiveDialog>
   );
 };
