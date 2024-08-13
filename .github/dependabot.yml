@@ -19,11 +19,18 @@ updates:
       - dependency-name: "eslint-plugin-unused-imports"
         update-types:
           - "version-update:semver-major"
+      - dependency-name: "@nihalgonsalves/esconfig"
+        update-types:
+          - "version-update:semver-major"
       # until v11 is out of beta
       - dependency-name: "@trpc/*"
         update-types:
           - "version-update:semver-major"
       - dependency-name: "dexie"
+        update-types:
+          - "version-update:semver-major"
+      # 2024-08: https://github.com/shadcn-ui/ui/issues/4366
+      - dependency-name: "react-day-picker"
         update-types:
           - "version-update:semver-major"
   - package-ecosystem: github-actions

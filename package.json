@@ -9,7 +9,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "packageManager": "yarn@4.3.1+sha512.af78262d7d125afbfeed740602ace8c5e4405cd7f4735c08feb327286b2fdb2390fbca01589bfd1f50b1240548b74806767f5a063c94b67e431aabd0d86f7774",
+  "packageManager": "yarn@4.4.0+sha512.91d93b445d9284e7ed52931369bc89a663414e5582d00eea45c67ddc459a2582919eece27c412d6ffd1bd0793ff35399381cb229326b961798ce4f4cc60ddfdb",
   "engines": {
     "node": ">=22"
   },
@@ -39,9 +39,9 @@
     "validate": "run-p build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "^0.9.20",
+    "@nihalgonsalves/esconfig": "~0.9.20",
     "@types/node": "20",
-    "@vitest/ui": "^2.0.4",
+    "@vitest/ui": "^2.0.5",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-import-resolver-typescript": "^3.6.1",
@@ -52,16 +52,16 @@
     "eslint-plugin-react-refresh": "^0.4.9",
     "eslint-plugin-storybook": "^0.8.0",
     "eslint-plugin-unused-imports": "^3.2.0",
-    "knip": "^5.26.0",
-    "lefthook": "^1.7.5",
+    "knip": "^5.27.2",
+    "lefthook": "^1.7.12",
     "npm-run-all2": "^6.2.2",
     "prettier": "^3.3.3",
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-sql": "^0.18.1",
-    "prettier-plugin-tailwindcss": "^0.6.5",
-    "sherif": "^0.10.0",
-    "type-fest": "^4.23.0",
-    "typescript": "^5.5.3",
-    "vitest": "^2.0.4"
+    "prettier-plugin-tailwindcss": "^0.6.6",
+    "sherif": "^0.11.0",
+    "type-fest": "^4.24.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   }
 }

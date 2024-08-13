@@ -27,7 +27,12 @@ const RetryErrorButton = ({ reset }: { reset: () => void }) => {
 
 export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => (
   <Sentry.ErrorBoundary
-    fallback={({ error, componentStack, resetError }) => {
+    fallback={({
+      error,
+      componentStack,
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      resetError,
+    }) => {
       const errorMessage =
         error instanceof Error
           ? error.message
