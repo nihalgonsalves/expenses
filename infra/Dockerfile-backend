@@ -53,7 +53,7 @@ WORKDIR /opt/app
 
 COPY --from=builder /opt/app/packages/backend/prisma ./prisma
 
-# install the built package.json from bundle.mjs
+# install the built package.json from bundle.js
 COPY ./.yarnrc.yml ./
 RUN corepack enable
 # hadolint ignore=DL3060

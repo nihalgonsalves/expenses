@@ -1,4 +1,4 @@
 export declare global {
-  // must match `bin/bundle.mjs` and `vitest.config.ts`
+  // must match `bin/bundle.js` and `vitest.config.ts`
   const IS_PROD: boolean;
 }

@@ -17,8 +17,8 @@ export default tseslint.config(
 
       // Not part of any tsc project and tseslint's new project service does not support multiple tsconfigs for a directory, e.g. a root tsconfig.tools.json
       "vitest.workspace.ts",
-      "eslint.config.mjs",
-      ".prettierrc.mjs",
+      "eslint.config.js",
+      ".prettierrc.js",
     ],
   },
   ...sharedConfig,

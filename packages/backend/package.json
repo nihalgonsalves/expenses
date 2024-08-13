@@ -9,14 +9,14 @@
     "postinstall": "test -n \"$SKIP_POSTINSTALL_GENERATE\" || yarn db:generate",
     "dev": "run-p 'build --watch' 'start' 'db:generate --watch'",
     "start": "mkdir -p ./dist/ && touch ./dist/app.js && touch .env && NODE_ENV=production node --enable-source-maps --env-file=.env --watch ./dist/app.js",
-    "build": "node bin/bundle.mjs",
+    "build": "node bin/bundle.js",
     "test": "vitest",
     "db:migrate": "prisma migrate dev --name",
     "db:sql-lint": "yarn dlx squawk-cli",
     "db:push": "prisma db push --skip-generate",
     "db:generate": "prisma generate",
-    "prepare:e2e": "node bin/prepare-ci-e2e.mjs",
-    "prepare:local": "node bin/prepare-local-env.mjs"
+    "prepare:e2e": "node bin/prepare-ci-e2e.js",
+    "prepare:local": "node bin/prepare-local-env.js"
   },
   "dependencies": {
     "@bull-board/api": "^5.21.4",

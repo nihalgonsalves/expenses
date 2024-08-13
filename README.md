@@ -5,7 +5,7 @@
 1. Configure local environment variables
 
    ```sh
-   yarn be node ./bin/prepare-local-env.mjs
+   yarn be prepare:local
    ```
 
 2. Start dev services
