@@ -20,8 +20,6 @@ updates:
         update-types:
           - "version-update:semver-major"
       - dependency-name: "@nihalgonsalves/esconfig"
-        update-types:
-          - "version-update:semver-major"
       # until v11 is out of beta
       - dependency-name: "@trpc/*"
         update-types:
