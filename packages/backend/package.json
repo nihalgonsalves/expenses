@@ -30,7 +30,7 @@
     "bcrypt": "*",
     "bullmq": "^5.12.9",
     "cookie": "^0.6.0",
-    "hono": "^4.5.6",
+    "hono": "^4.5.7",
     "ioredis": "^5.4.1",
     "jose": "^5.7.0",
     "nanoid": "^5.0.7",
@@ -60,7 +60,7 @@
     "prisma": "*",
     "testcontainers": "^10.11.0",
     "vitest": "^2.0.5",
-    "wait-on": "^7.2.0"
+    "wait-on": "^8.0.0"
   },
   "resolutions": {
     "@bull-board/ui": "5.11.0",
