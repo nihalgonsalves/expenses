@@ -3,6 +3,7 @@
 // https://github.com/johnpolacek/date-range-picker-for-shadcn/blob/2ee5787f5b2a2034f9133c484847ec4df9d296df/src/date-range-picker.tsx
 
 import { CheckIcon, CalendarIcon } from "@radix-ui/react-icons";
+import { formatDateRange } from "little-date";
 import { type FC, useState, useEffect, useCallback } from "react";
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
@@ -263,9 +264,11 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
         <Button $variant="outline" className="h-8">
           <CalendarIcon className="mr-2 size-4" />
 
-          <div>{`${shortDateFormatter.format(range.from)}${
-            range.to != null ? " - " + shortDateFormatter.format(range.to) : ""
-          }`}</div>
+          <div>
+            {range.to
+              ? formatDateRange(range.from, range.to)
+              : `${shortDateFormatter.format(range.from)} - `}
+          </div>
         </Button>
       </PopoverTrigger>
       <PopoverContent align={align} className="w-auto">
