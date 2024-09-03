@@ -4,7 +4,13 @@
 
 import { CheckIcon, CalendarIcon } from "@radix-ui/react-icons";
 import { formatDateRange } from "little-date";
-import { type FC, useState, useEffect, useCallback } from "react";
+import {
+  type FC,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactElement,
+} from "react";
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import { shortDateFormatter } from "../../utils/temporal";
@@ -94,7 +100,7 @@ const PresetButton = ({
   label: string;
   isSelected: boolean;
   setPreset: (preset: string) => void;
-}): JSX.Element => (
+}): ReactElement => (
   <Button
     className={cn(isSelected && "pointer-events-none")}
     $variant="ghost"
@@ -117,7 +123,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
   initialDateTo,
   onUpdate,
   align = "end",
-}): JSX.Element => {
+}): ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [range, setRange] = useState<DateRange>({
