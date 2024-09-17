@@ -2969,7 +2969,7 @@ __metadata:
     "@chromatic-com/playwright": "npm:0.7.0"
     "@nihalgonsalves/expenses-backend": "npm:*"
     "@nihalgonsalves/expenses-shared": "npm:*"
-    "@playwright/test": "npm:^1.47.1"
+    "@playwright/test": "npm:1.46.1"
     "@trpc/client": "npm:^11.0.0-rc.502"
     chromatic: "npm:^11.10.2"
     zod: "npm:^3.23.8"
@@ -3597,14 +3597,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.47.1":
-  version: 1.47.1
-  resolution: "@playwright/test@npm:1.47.1"
+"@playwright/test@npm:1.46.1":
+  version: 1.46.1
+  resolution: "@playwright/test@npm:1.46.1"
   dependencies:
-    playwright: "npm:1.47.1"
+    playwright: "npm:1.46.1"
   bin:
     playwright: cli.js
-  checksum: 10c0/aad45a586d832779ec0d47b740f1b5a96a48c06cb3e844151956e692c1037ed2140b7b90563584a5fe6efc55ca460682e0f55c647a54808c2157269baa5ae1da
+  checksum: 10c0/b2d33f33bedfa5a5c72cfc5ee212dfbf531d9c46320b0af901e71ab61b96845e43cc636181b33b3faae27f2f87ce2d44017ac65235bf9c95209f476477b16f93
   languageName: node
   linkType: hard
 
@@ -16135,6 +16135,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"playwright-core@npm:1.46.1":
+  version: 1.46.1
+  resolution: "playwright-core@npm:1.46.1"
+  bin:
+    playwright-core: cli.js
+  checksum: 10c0/98e48e271caccaa6c54b3c591cbddbef36a679eef011b38e2af11fbaba0aab1f997b45f9207c4099468a0c79047a1e879bbd9e81bd880ae24501a0ee3c7a33c7
+  languageName: node
+  linkType: hard
+
 "playwright-core@npm:1.47.1, playwright-core@npm:>=1.2.0":
   version: 1.47.1
   resolution: "playwright-core@npm:1.47.1"
@@ -16144,7 +16153,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.47.1, playwright@npm:^1.14.0":
+"playwright@npm:1.46.1":
+  version: 1.46.1
+  resolution: "playwright@npm:1.46.1"
+  dependencies:
+    fsevents: "npm:2.3.2"
+    playwright-core: "npm:1.46.1"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 10c0/2a328a2073313136192d74b48b981d9aeb1d4cc54926ed235f638c875f9de59c41370bb20bb2d8cf30126c52c6e25cc02db21ffafeb487c92c84c52c84846912
+  languageName: node
+  linkType: hard
+
+"playwright@npm:^1.14.0":
   version: 1.47.1
   resolution: "playwright@npm:1.47.1"
   dependencies:
