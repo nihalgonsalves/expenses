@@ -1395,6 +1395,7 @@ describe("getParticipantSummaries", () => {
       groupSheet.id,
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     expect(summary).toMatchObject<DeepPartial<typeof summary>>([
       {
         balance: { amount: -62_00, scale: 2 },
