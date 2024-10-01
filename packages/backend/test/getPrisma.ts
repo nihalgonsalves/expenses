@@ -6,7 +6,7 @@ import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { afterAll, beforeEach } from "vitest";
 
 export const getPrisma = async () => {
-  const container = await new PostgreSqlContainer("postgres:16-alpine")
+  const container = await new PostgreSqlContainer("postgres:17-alpine")
     .withName(`vitest-backend-${process.env["VITEST_WORKER_ID"]}`)
     .withReuse()
     .start();
