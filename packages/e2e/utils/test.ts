@@ -4,8 +4,8 @@ import fs from "fs/promises";
 import { test as base } from "@chromatic-com/playwright";
 export { expect, takeSnapshot } from "@chromatic-com/playwright";
 import {
-  type CreateTRPCProxyClient,
-  createTRPCProxyClient,
+  type CreateTRPCClient,
+  createTRPCClient,
   httpBatchLink,
 } from "@trpc/client";
 
@@ -16,7 +16,7 @@ import { getUserData } from "./misc";
 
 type Fixtures = {
   setup: () => void;
-  serverTRPCClient: CreateTRPCProxyClient<AppRouter>;
+  serverTRPCClient: CreateTRPCClient<AppRouter>;
   createUser: () => Promise<User & { password: string }>;
   signIn: () => Promise<User & { password: string }>;
 };
@@ -80,7 +80,7 @@ export const test = base.extend<Fixtures>({
   ],
 
   serverTRPCClient: async ({ request, baseURL }, use) => {
-    const client = createTRPCProxyClient<AppRouter>({
+    const client = createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
           url: new URL("/api/trpc", baseURL),
