@@ -17,11 +17,11 @@ pre-commit:
   commands:
     eslint:
       glob: "*.{js,ts,jsx,tsx,mjs,mts,cjs,cts}"
-      run: node_modules/.bin/eslint --fix {staged_files}
+      run: yarn eslint --fix {staged_files}
       stage_fixed: true
     prettier:
       glob: "*.{js,ts,jsx,tsx,mjs,mts,cjs,cts,html,css,json,md,yml,yaml,sql}"
-      run: node_modules/.bin/prettier --write {staged_files}
+      run: yarn prettier --write {staged_files}
       stage_fixed: true
     hadolint:
       glob: "**/Dockerfile*"
