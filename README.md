@@ -26,6 +26,12 @@
    yarn dev
    ```
 
+5. Optional: Generate demo data
+
+   ```sh
+   yarn be prepare:demo
+   ```
+
 ## Additional deployment setup
 
 Docker build args:

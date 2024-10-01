@@ -16,7 +16,8 @@
     "db:push": "prisma db push --skip-generate",
     "db:generate": "prisma generate",
     "prepare:e2e": "node bin/prepare-ci-e2e.js",
-    "prepare:local": "node bin/prepare-local-env.js"
+    "prepare:local": "node bin/prepare-local-env.js",
+    "prepare:demo": "tsx bin/demo.ts"
   },
   "dependencies": {
     "@bull-board/api": "^6.0.0",
@@ -47,6 +48,7 @@
     "@testcontainers/postgresql": "^10.13.1",
     "@testcontainers/redis": "^10.13.1",
     "@total-typescript/ts-reset": "^0.6.1",
+    "@trpc/client": "^11.0.0-rc.553",
     "@types/bcrypt": "^5.0.2",
     "@types/cookie": "^0.6.0",
     "@types/nodemailer": "^6",
@@ -55,10 +57,12 @@
     "@types/web-push": "^3.6.3",
     "@vitest/coverage-v8": "^2.1.1",
     "esbuild": "^0.24.0",
+    "fetch-cookie": "^3.0.1",
     "npm-run-all2": "^6.2.3",
     "pem": "^1.14.8",
     "prisma": "*",
     "testcontainers": "^10.13.1",
+    "tsx": "^4.19.1",
     "vitest": "^2.1.1",
     "wait-on": "^8.0.1"
   },

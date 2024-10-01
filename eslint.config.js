@@ -72,7 +72,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["packages/frontend/bin/**/*"],
+    files: ["packages/*/bin/**/*"],
     rules: {
       "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
     },
