@@ -301,7 +301,7 @@ export const RootLoader = <TData,>({
           intervalGreaterThan(
             Temporal.Now.instant(),
             dataUpdatedAt,
-            Temporal.Duration.from({ minutes: 1 }),
+            Temporal.Duration.from({ minutes: 5 }),
           ),
       );
     },
