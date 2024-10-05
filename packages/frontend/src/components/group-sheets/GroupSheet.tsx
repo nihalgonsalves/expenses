@@ -35,7 +35,7 @@ export const GroupSheet = ({
         </Link>
       </Button>
     </div>
-    <div className="gap-2 md:grid md:grid-cols-2 md:gap-4">
+    <div className="grid gap-2 md:grid-cols-2 md:gap-4">
       <Card>
         <CardHeader>
           <CardTitleWithButton>
