@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 /* eslint-env node */
-/* eslint-disable import/no-extraneous-dependencies */
 import { writeFile } from "fs/promises";
 import { fileURLToPath } from "url";
 
