@@ -52,7 +52,7 @@ export default tseslint.config(
     plugins: {
       storybook,
     },
-    files: ["**/*.stories.@(ts|tsx|js|jsx|mjs|cjs)"],
+    files: ["**/*.stories.@(ts|tsx|js|jsx|mjs|cjs)", "**/.storybook/**/*"],
     rules: {
       "import/no-default-export": "off",
     },
@@ -78,7 +78,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["packages/frontend/src/pages/**/*"],
+    files: ["packages/frontend/src/pages/**/*", "**/*.config.*"],
     rules: {
       "import/no-default-export": "off",
     },
