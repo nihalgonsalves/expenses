@@ -2,6 +2,8 @@
 
 ## Initial dev setup
 
+If using GitHub Codespaces or a Dev Container, skip to step 5.
+
 1. Configure local environment variables
 
    ```sh

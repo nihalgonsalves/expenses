@@ -10,12 +10,18 @@
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "zixuanchen.vitest-explorer",
-        "bradlc.vscode-tailwindcss"
+        "bradlc.vscode-tailwindcss",
+        "Prisma.prisma",
+        "ms-playwright.playwright",
+        "ReneSaarsoo.sql-formatter-vsc"
       ]
     }
   },
   "onCreateCommand": "yarn install",
-  "postCreateCommand": "yarn be prisma migrate dev && yarn be prepare:local",
+  "postCreateCommand": {
+    "migrate": "yarn be prisma migrate dev",
+    "prepare": "yarn be prepare:local"
+  },
   "postAttachCommand": "yarn dev",
   "forwardPorts": [5173, 5174],
   "portsAttributes": {
@@ -24,6 +30,9 @@
     },
     "5174": {
       "label": "Backend"
+    },
+    "6006": {
+      "label": "Storybook"
     }
   },
   "remoteUser": "node"

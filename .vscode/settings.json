@@ -12,7 +12,7 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "[sql]": {
-    "editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+    "editor.defaultFormatter": "renesaarsoo.sql-formatter-vsc"
   },
   "files.associations": {
     "*.css": "tailwindcss"
