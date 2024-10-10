@@ -3,7 +3,8 @@ import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { TRPCClientError, httpBatchLink } from "@trpc/client";
-import React, { useMemo } from "react";
+import type React from "react";
+import { useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 

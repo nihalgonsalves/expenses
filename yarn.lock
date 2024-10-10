@@ -1451,35 +1451,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bull-board/api@npm:6.0.0, @bull-board/api@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@bull-board/api@npm:6.0.0"
+"@bull-board/api@npm:6.0.2, @bull-board/api@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@bull-board/api@npm:6.0.2"
   dependencies:
     redis-info: "npm:^3.0.8"
   peerDependencies:
-    "@bull-board/ui": 6.0.0
-  checksum: 10c0/9f4216cdab7e66270ef3f050a79ff02f6dbbc01db7a4040b9b76d86e231370bb46f194aefa1c80b835d639a90fa527871f09f50c053d423ce4072fe97a70ea7c
+    "@bull-board/ui": 6.0.2
+  checksum: 10c0/16d27fcf475f43bf4d59269a3c67c3e5ffc2b24a7974d2b2f844fc294ee79546a562040219384da535598ebefb43da4ab71c276b3c0e6dc97c41e362dbb75709
   languageName: node
   linkType: hard
 
-"@bull-board/hono@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@bull-board/hono@npm:6.0.0"
+"@bull-board/hono@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@bull-board/hono@npm:6.0.2"
   dependencies:
-    "@bull-board/api": "npm:6.0.0"
-    "@bull-board/ui": "npm:6.0.0"
+    "@bull-board/api": "npm:6.0.2"
+    "@bull-board/ui": "npm:6.0.2"
     ejs: "npm:^3.1.10"
     hono: "npm:^4.4.7"
-  checksum: 10c0/7f5c02f002ead141ee0a4e7af36409f31e93e8da264cfd0ffbe5acbb422075ad5948c20497c3a78c59c23e8b567ab8d3fe760af4d7323d15c8bb249c14ec4fd5
+  checksum: 10c0/e00ced7e88fd3365b335af1afa164533b118f397503dc11d43bbffb14027e2e9236c8941624d6536cba853ffed826e0c2ac7045139377b6c16321626565be5b2
   languageName: node
   linkType: hard
 
-"@bull-board/ui@npm:6.0.0":
-  version: 6.0.0
-  resolution: "@bull-board/ui@npm:6.0.0"
+"@bull-board/ui@npm:6.0.2":
+  version: 6.0.2
+  resolution: "@bull-board/ui@npm:6.0.2"
   dependencies:
-    "@bull-board/api": "npm:6.0.0"
-  checksum: 10c0/ccf9a677274c29e4930d4798aef6bc720727263251af31732b22ab7fe3512a28e795c1479b6e39a1f251e62ca39525ef2fa041044b348cd98fef14661810f290
+    "@bull-board/api": "npm:6.0.2"
+  checksum: 10c0/feecbcf04c0544c106ecc8d80cc0b99406635de4c4953b7fc935e5bb92bf370bba8789c8e0dd92a66f7cebb425c9f4c2dd02b9c0e10d5f77e5639e0b47f1f6aa
   languageName: node
   linkType: hard
 
@@ -2298,7 +2298,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.12.0, @eslint/js@npm:^9.11.1":
+"@eslint/js@npm:9.12.0, @eslint/js@npm:^9.12.0":
   version: 9.12.0
   resolution: "@eslint/js@npm:9.12.0"
   checksum: 10c0/325650a59a1ce3d97c69441501ebaf415607248bacbe8c8ca35adc7cb73b524f592f266a75772f496b06f3239e3ee1996722a242148085f0ee5fb3dd7065897c
@@ -2396,12 +2396,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hono/node-server@npm:^1.13.1":
-  version: 1.13.1
-  resolution: "@hono/node-server@npm:1.13.1"
+"@hono/node-server@npm:^1.13.2":
+  version: 1.13.2
+  resolution: "@hono/node-server@npm:1.13.2"
   peerDependencies:
     hono: ^4
-  checksum: 10c0/165f915c1755fcc8585359e1b25c5ca5389e8f899f34fd8cdcbabfbe13c53b0132bd09540598b391372d83cf5ae0763256a4f92e249b583ce6fc605620b39a74
+  checksum: 10c0/75840850faa5c4ac0a94fe788244ae689461dd43f6f6148a66964362db1765c982b5d5d10929d70634922f620474900b2923be5d4dcc414eb276293a7705e7ce
   languageName: node
   linkType: hard
 
@@ -3095,22 +3095,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nihalgonsalves/esconfig@npm:~0.10.10":
-  version: 0.10.10
-  resolution: "@nihalgonsalves/esconfig@npm:0.10.10"
+"@nihalgonsalves/esconfig@npm:~0.10.11":
+  version: 0.10.11
+  resolution: "@nihalgonsalves/esconfig@npm:0.10.11"
   dependencies:
-    "@eslint/js": "npm:^9.11.1"
+    "@eslint/js": "npm:^9.12.0"
     eslint-config-prettier: "npm:^9.1.0"
-    eslint-plugin-import: "npm:^2.30.0"
+    eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-jsx-a11y: "npm:^6.10.0"
-    eslint-plugin-react: "npm:^7.37.0"
+    eslint-plugin-react: "npm:^7.37.1"
     eslint-plugin-react-hooks: "npm:^4.6.2"
-    typescript-eslint: "npm:^8.7.0"
+    typescript-eslint: "npm:^8.8.0"
   peerDependencies:
-    eslint: ^9.11.1
+    eslint: ^9.12.0
     typescript: ^5.5.4
     typescript-eslint: ^8.4.0
-  checksum: 10c0/908552a019e67b47bca8fc490aeb8e408a99fca8f000e6d8b8f3d2b740575ee11efa4582f18a3e051ffeb6f5ac0f37cae308c1679185eb0492597da786b89797
+  checksum: 10c0/df1295aa5141fb02417f1686474181bc24628fd374c96a00de73463b5bec1d48a422d7183fa7dd634e58cf1d0042d6a1c3aeee096f30ad21ef9d49ca3adf0eb6
   languageName: node
   linkType: hard
 
@@ -3118,30 +3118,29 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nihalgonsalves/expenses-backend@workspace:packages/backend"
   dependencies:
-    "@bull-board/api": "npm:^6.0.0"
-    "@bull-board/hono": "npm:^6.0.0"
+    "@bull-board/api": "npm:^6.0.2"
+    "@bull-board/hono": "npm:^6.0.2"
     "@faker-js/faker": "npm:^9.0.3"
-    "@hono/node-server": "npm:^1.13.1"
+    "@hono/node-server": "npm:^1.13.2"
     "@hono/trpc-server": "npm:^0.3.2"
     "@nihalgonsalves/expenses-shared": "npm:*"
     "@prisma/client": "npm:*"
     "@sentry/esbuild-plugin": "npm:^2.22.5"
-    "@sentry/node": "npm:^8.33.1"
+    "@sentry/node": "npm:^8.34.0"
     "@testcontainers/postgresql": "npm:^10.13.2"
     "@testcontainers/redis": "npm:^10.13.2"
     "@total-typescript/ts-reset": "npm:^0.6.1"
     "@trpc/client": "npm:^11.0.0-rc.563"
     "@trpc/server": "npm:^11.0.0-rc.563"
     "@types/bcrypt": "npm:^5.0.2"
-    "@types/cookie": "npm:^0.6.0"
     "@types/nodemailer": "npm:^6"
     "@types/pem": "npm:^1.14.4"
     "@types/ua-parser-js": "npm:^0.7.39"
     "@types/web-push": "npm:^3.6.3"
     "@vitest/coverage-v8": "npm:^2.1.2"
     bcrypt: "npm:*"
-    bullmq: "npm:^5.17.1"
-    cookie: "npm:^0.7.2"
+    bullmq: "npm:^5.18.0"
+    cookie: "npm:^1.0.0"
     esbuild: "npm:^0.24.0"
     fetch-cookie: "npm:^3.0.1"
     hono: "npm:^4.6.3"
@@ -3173,7 +3172,7 @@ __metadata:
     "@nihalgonsalves/expenses-shared": "npm:*"
     "@playwright/test": "npm:1.46.1"
     "@trpc/client": "npm:^11.0.0-rc.563"
-    chromatic: "npm:^11.12.0"
+    chromatic: "npm:^11.12.5"
     zod: "npm:^3.23.8"
   languageName: unknown
   linkType: soft
@@ -3207,7 +3206,7 @@ __metadata:
     "@radix-ui/react-toggle": "npm:^1.1.0"
     "@radix-ui/react-toggle-group": "npm:^1.1.0"
     "@radix-ui/react-tooltip": "npm:^1.1.3"
-    "@sentry/react": "npm:^8.33.1"
+    "@sentry/react": "npm:^8.34.0"
     "@sentry/vite-plugin": "npm:^2.22.5"
     "@storybook/addon-coverage": "npm:^1.0.4"
     "@storybook/addon-essentials": "npm:^8.3.5"
@@ -3217,10 +3216,10 @@ __metadata:
     "@storybook/react-vite": "npm:^8.3.5"
     "@storybook/test": "npm:^8.3.5"
     "@storybook/test-runner": "npm:^0.19.1"
-    "@tanstack/query-async-storage-persister": "npm:^5.59.0"
-    "@tanstack/react-query": "npm:^5.59.0"
-    "@tanstack/react-query-devtools": "npm:^5.59.0"
-    "@tanstack/react-query-persist-client": "npm:^5.59.0"
+    "@tanstack/query-async-storage-persister": "npm:^5.59.9"
+    "@tanstack/react-query": "npm:^5.59.9"
+    "@tanstack/react-query-devtools": "npm:^5.59.9"
+    "@tanstack/react-query-persist-client": "npm:^5.59.9"
     "@tanstack/react-table": "npm:^8.20.5"
     "@trpc/client": "npm:^11.0.0-rc.563"
     "@trpc/react-query": "npm:^11.0.0-rc.563"
@@ -3232,7 +3231,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.3.2"
     "@vitest/coverage-v8": "npm:^2.1.2"
     autoprefixer: "npm:^10.4.20"
-    chromatic: "npm:^11.12.0"
+    chromatic: "npm:^11.12.5"
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.0.0"
@@ -3241,7 +3240,7 @@ __metadata:
     dexie-react-hooks: "npm:^1.1.7"
     dinero.js: "npm:^2.0.0-alpha.14"
     emoji-mart: "npm:^5.6.0"
-    framer-motion: "npm:^11.11.1"
+    framer-motion: "npm:^11.11.7"
     happy-dom: "npm:^15.7.4"
     jotai: "npm:^2.10.0"
     little-date: "npm:^1.0.0"
@@ -3295,7 +3294,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nihalgonsalves/expenses@workspace:."
   dependencies:
-    "@nihalgonsalves/esconfig": "npm:~0.10.10"
+    "@nihalgonsalves/esconfig": "npm:~0.10.11"
     "@types/node": "npm:22"
     "@vitest/ui": "npm:^2.1.2"
     eslint: "npm:^9.12.0"
@@ -3308,7 +3307,7 @@ __metadata:
     eslint-plugin-react-refresh: "npm:^0.4.12"
     eslint-plugin-storybook: "npm:^0.9.0"
     eslint-plugin-unused-imports: "npm:^4.1.4"
-    knip: "npm:^5.33.1"
+    knip: "npm:^5.33.3"
     lefthook: "npm:^1.7.18"
     npm-run-all2: "npm:^6.2.3"
     prettier: "npm:^3.3.3"
@@ -3317,7 +3316,7 @@ __metadata:
     prettier-plugin-tailwindcss: "npm:^0.6.8"
     sherif: "npm:^1.0.0"
     type-fest: "npm:^4.26.1"
-    typescript: "npm:^5.6.2"
+    typescript: "npm:^5.6.3"
     typescript-eslint: "npm:^8.8.1"
     vitest: "npm:^2.1.2"
   languageName: unknown
@@ -5412,49 +5411,49 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry-internal/browser-utils@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry-internal/browser-utils@npm:8.33.1"
+"@sentry-internal/browser-utils@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry-internal/browser-utils@npm:8.34.0"
   dependencies:
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
-  checksum: 10c0/6e9820bc89af30ebf8a1674a8cb650e7e02a7bcfc3ab2601ba23857d0db9f6bf6341797a022f1c2ebefdc78a75169c5f1009ace40db8123bc31fe4a689fa8dc1
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
+  checksum: 10c0/fb764f52a989307bb6369a2ae24bb83ef9880c108d2cc2aba94106c846dae743ba379291c84539306d26c3f35f16b6cd2341fa32e85cb942057f2905a33e82bf
   languageName: node
   linkType: hard
 
-"@sentry-internal/feedback@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry-internal/feedback@npm:8.33.1"
+"@sentry-internal/feedback@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry-internal/feedback@npm:8.34.0"
   dependencies:
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
-  checksum: 10c0/d2f8a6822aba9e900955416f903c1e62aea79b6050edd941fffaec5a64ae0a025a02398dfedf0c0e6b5dcfabd6ca3e220ecd2ca8205d64ff3ad08bfb81f80eca
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
+  checksum: 10c0/7137a6b589cb56b541df52abd75a73280d3f8fd09f1983f298e29647c5dd941d5fc404d32599d4c1fe2bdcb7693d0e7886f2c08c10ad1eb7c8e17cad650e4cb3
   languageName: node
   linkType: hard
 
-"@sentry-internal/replay-canvas@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry-internal/replay-canvas@npm:8.33.1"
+"@sentry-internal/replay-canvas@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry-internal/replay-canvas@npm:8.34.0"
   dependencies:
-    "@sentry-internal/replay": "npm:8.33.1"
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
-  checksum: 10c0/959726c2204b5c4d4a502c3c568106aedd4d97624eb04ce9774d94f0401fdd9a7099b251eaa6e03fce4f9fdc559ae0fd4de9e59ce3b049d8b74d20d97c6efa4a
+    "@sentry-internal/replay": "npm:8.34.0"
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
+  checksum: 10c0/55c53be37e0c06706e099a96d1485636b8d3f11b72078c279fda6e7992205d217d27dae9e609db2c0466db0755bd038087e76cfe746eaff9ce39bbfd1f1571a5
   languageName: node
   linkType: hard
 
-"@sentry-internal/replay@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry-internal/replay@npm:8.33.1"
+"@sentry-internal/replay@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry-internal/replay@npm:8.34.0"
   dependencies:
-    "@sentry-internal/browser-utils": "npm:8.33.1"
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
-  checksum: 10c0/fa068b7b7345e953e76d0053696b0f74e8b2a8e9891f8905938e95c542d1c28e5b9436fee8473a8b482bb36de661906aff92dee9fdb81d42c1a2b0a5730a8a38
+    "@sentry-internal/browser-utils": "npm:8.34.0"
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
+  checksum: 10c0/8a4b6f1f169584ddd62c372760168ea2d63ca0d6ebd6433e45d760fcbb2610418a2bf6546bbda49ecd619deddf39b4ac268b87a15adbb56efc0b86edf4c40dd9
   languageName: node
   linkType: hard
 
@@ -5465,18 +5464,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/browser@npm:8.33.1"
+"@sentry/browser@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry/browser@npm:8.34.0"
   dependencies:
-    "@sentry-internal/browser-utils": "npm:8.33.1"
-    "@sentry-internal/feedback": "npm:8.33.1"
-    "@sentry-internal/replay": "npm:8.33.1"
-    "@sentry-internal/replay-canvas": "npm:8.33.1"
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
-  checksum: 10c0/861c3754e75abbe54225d517bee1a91da7670eabe6e720e793e246291bf67afa50b55896036bc857cd71f64247e8ecdd19abeed68997649521022a43250c0d45
+    "@sentry-internal/browser-utils": "npm:8.34.0"
+    "@sentry-internal/feedback": "npm:8.34.0"
+    "@sentry-internal/replay": "npm:8.34.0"
+    "@sentry-internal/replay-canvas": "npm:8.34.0"
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
+  checksum: 10c0/8a08033fce2908018cc3fc81cf1110a93a338c0d370628a2e9aaa9f43703041824462474037e59b2b166141835b7e94b437325bd6a46bb8371e37b659b216d10
   languageName: node
   linkType: hard
 
@@ -5582,13 +5581,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/core@npm:8.33.1"
+"@sentry/core@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry/core@npm:8.34.0"
   dependencies:
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
-  checksum: 10c0/7c03ef35ef4089be01f02bc425009b39e3b5519052da8faac44333fa022b91ae17d6ef60463f67f980e2120957e317b58684b226214ec0a511cfad9203e85f87
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
+  checksum: 10c0/0ab7e11bd382cb47ade38f3c9615e6fb876bad43eba4b376a51e44b1c57e00efe2e74f3cc0790a8da6c0be16093086bc65d89cf5387453f93ae96e10a41a0d60
   languageName: node
   linkType: hard
 
@@ -5603,9 +5602,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/node@npm:^8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/node@npm:8.33.1"
+"@sentry/node@npm:^8.34.0":
+  version: 8.34.0
+  resolution: "@sentry/node@npm:8.34.0"
   dependencies:
     "@opentelemetry/api": "npm:^1.9.0"
     "@opentelemetry/context-async-hooks": "npm:^1.25.1"
@@ -5637,60 +5636,60 @@ __metadata:
     "@opentelemetry/sdk-trace-base": "npm:^1.26.0"
     "@opentelemetry/semantic-conventions": "npm:^1.27.0"
     "@prisma/instrumentation": "npm:5.19.1"
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/opentelemetry": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/opentelemetry": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
     import-in-the-middle: "npm:^1.11.0"
-  checksum: 10c0/6ff513df075375d90db51cc86c1055149ddf9a16640fa1e0b725bfdee696ed9164044be56c1d391336e5171555b361626e7d71d7627275104e19f92dd5779599
+  checksum: 10c0/c1db482ce3fd207d16bf119fe9c2004a5019572d7f9bdb90279f5a0cdcdce6694263b8ca8b72e3e253dde610e40f4e245d835acfd0b92d047c4998b46d28603e
   languageName: node
   linkType: hard
 
-"@sentry/opentelemetry@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/opentelemetry@npm:8.33.1"
+"@sentry/opentelemetry@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry/opentelemetry@npm:8.34.0"
   dependencies:
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
   peerDependencies:
     "@opentelemetry/api": ^1.9.0
     "@opentelemetry/core": ^1.25.1
     "@opentelemetry/instrumentation": ^0.53.0
     "@opentelemetry/sdk-trace-base": ^1.26.0
     "@opentelemetry/semantic-conventions": ^1.27.0
-  checksum: 10c0/12c04ca57bfd97fa925ef32b79a58f1ad4fe1f8b8ae613953634c677ae1c6562e326b3cec4552ed3c822ddb1ff68251ae6accbcacee5b546a06b536e37c2dae8
+  checksum: 10c0/9440c316b634b60ced9cff390798b1bcde78d76a53df4843c465a8365d1d0f120e41ea903e2c34dec382aa5199d18c97de2351ec1a5d4074431c4c9a1bdd1dd2
   languageName: node
   linkType: hard
 
-"@sentry/react@npm:^8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/react@npm:8.33.1"
+"@sentry/react@npm:^8.34.0":
+  version: 8.34.0
+  resolution: "@sentry/react@npm:8.34.0"
   dependencies:
-    "@sentry/browser": "npm:8.33.1"
-    "@sentry/core": "npm:8.33.1"
-    "@sentry/types": "npm:8.33.1"
-    "@sentry/utils": "npm:8.33.1"
+    "@sentry/browser": "npm:8.34.0"
+    "@sentry/core": "npm:8.34.0"
+    "@sentry/types": "npm:8.34.0"
+    "@sentry/utils": "npm:8.34.0"
     hoist-non-react-statics: "npm:^3.3.2"
   peerDependencies:
     react: ^16.14.0 || 17.x || 18.x || 19.x
-  checksum: 10c0/1be498f8ce27dae1d609c7eb38d7ce81e5ec115eb9208bb99dcd74fae79628499b92c5abc627dd0ac2c6f33796078a9f79be87f734c1962bd608af56c9997bbb
+  checksum: 10c0/7936904ac9e1e1b9e139b263fcd12592e702b498a4f5f4cf8e36ec8170d02a2341656d5c769b7bdd798b5d7f971f94f8881a3c0f22db27e64064b471b12370b1
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/types@npm:8.33.1"
-  checksum: 10c0/0c43bd8736a41e5ee6813aba8f77910b26fb726f59d134a3d28ceb55a53fcb7600ec2f65eed536e9fc47fc01785ef757588f989a5f303cf989abd17a5c81a69b
+"@sentry/types@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry/types@npm:8.34.0"
+  checksum: 10c0/d35bf72129f621af2f7916b0805c6948d210791757bee690fc6b68f2412bbe80c8ec704a0f8eb8ee45eb78deeadbd3c69830469b62fba4827506ea30c235f4e8
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:8.33.1":
-  version: 8.33.1
-  resolution: "@sentry/utils@npm:8.33.1"
+"@sentry/utils@npm:8.34.0":
+  version: 8.34.0
+  resolution: "@sentry/utils@npm:8.34.0"
   dependencies:
-    "@sentry/types": "npm:8.33.1"
-  checksum: 10c0/315d153a5ae7e1742b2f3fd08d2f2732dd738acc2000477a31c462606697a0a928eb4b6f279722dfecfc06b03d9a6106ba9757f0e6dc2aca912b386fd2c38784
+    "@sentry/types": "npm:8.34.0"
+  checksum: 10c0/60612dba8320c736f9559ba2fb4efe2927fd9d4a1f29bff36f116ad30c9ce210f6677013052a69cb7e16c5d28f1d8d7465d9278e72f7384b84e924cf3ed2790c
   languageName: node
   linkType: hard
 
@@ -6818,19 +6817,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-async-storage-persister@npm:^5.59.0":
-  version: 5.59.0
-  resolution: "@tanstack/query-async-storage-persister@npm:5.59.0"
+"@tanstack/query-async-storage-persister@npm:^5.59.9":
+  version: 5.59.9
+  resolution: "@tanstack/query-async-storage-persister@npm:5.59.9"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.59.0"
-  checksum: 10c0/bc0a4bdc5c08bae1604dc220b92f4c7ee26abc7c78b7f1ee2870ba59985f2a74cd2ab7edd04014d5f7cdc547f6cb718e0ff099f97d87bab6e871fe34ca1853f1
+    "@tanstack/query-persist-client-core": "npm:5.59.9"
+  checksum: 10c0/f730191af9d0fe257a35ad43462da11b645495a72e7a0b7d227e1135b5668bf92d39409359b9a8d8536179e3021b5861ffa26cd16855867ef2d17bd5ccf6d98a
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.59.0":
-  version: 5.59.0
-  resolution: "@tanstack/query-core@npm:5.59.0"
-  checksum: 10c0/c6b5c935670ea0b4ba1e3936d9f319cae5ba098d82863115546d43d45e9e171b9fce990aecd56cd7ef9a8b1de64cb4f74f6c8f83cc1e61cd62ee99d2c34fbefc
+"@tanstack/query-core@npm:5.59.9":
+  version: 5.59.9
+  resolution: "@tanstack/query-core@npm:5.59.9"
+  checksum: 10c0/a422c7a1b097541c76d7c64321114dae21628feece147fda2362482304c2064db8d327a5192ad286885f4066e515cadc7267aa3ea39063c0f31da65d13d0d0d4
   languageName: node
   linkType: hard
 
@@ -6841,47 +6840,47 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-persist-client-core@npm:5.59.0":
-  version: 5.59.0
-  resolution: "@tanstack/query-persist-client-core@npm:5.59.0"
+"@tanstack/query-persist-client-core@npm:5.59.9":
+  version: 5.59.9
+  resolution: "@tanstack/query-persist-client-core@npm:5.59.9"
   dependencies:
-    "@tanstack/query-core": "npm:5.59.0"
-  checksum: 10c0/359d55ae26b34a004e5bddd37687e0b325655bbf101a8e4f6e16b641a3c6224034f073eb4be6799814b1208686e53c95442bbceae3479e532de25bae33f9416a
+    "@tanstack/query-core": "npm:5.59.9"
+  checksum: 10c0/0f66aed706b2581b7e03168596c6ea7da4472ea165be7f76645bc6c96bfaaf21ca3640a2349164f97b8dcdd2acd1404a5b9c6cd4f1723e75168abcd352b59775
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-devtools@npm:^5.59.0":
-  version: 5.59.0
-  resolution: "@tanstack/react-query-devtools@npm:5.59.0"
+"@tanstack/react-query-devtools@npm:^5.59.9":
+  version: 5.59.9
+  resolution: "@tanstack/react-query-devtools@npm:5.59.9"
   dependencies:
     "@tanstack/query-devtools": "npm:5.58.0"
   peerDependencies:
-    "@tanstack/react-query": ^5.59.0
+    "@tanstack/react-query": ^5.59.9
     react: ^18 || ^19
-  checksum: 10c0/19e186faa6cf33e656985be5279317af211a038177862f90dce38564d9f406e92b2ba276f750cea779983b95e3ef70f924928362e8987b0c4419c17b19d3669f
+  checksum: 10c0/447b01c0349840708dd27403e1195e83d4a0ee2ff4dfe4e75b89f7f1e57e416b73619b7318137c2948f6959d118deb8157a0f1fb086dbf4d0b17360427107c1c
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-persist-client@npm:^5.59.0":
-  version: 5.59.0
-  resolution: "@tanstack/react-query-persist-client@npm:5.59.0"
+"@tanstack/react-query-persist-client@npm:^5.59.9":
+  version: 5.59.9
+  resolution: "@tanstack/react-query-persist-client@npm:5.59.9"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.59.0"
+    "@tanstack/query-persist-client-core": "npm:5.59.9"
   peerDependencies:
-    "@tanstack/react-query": ^5.59.0
+    "@tanstack/react-query": ^5.59.9
     react: ^18 || ^19
-  checksum: 10c0/77c589fd3365e73a076d6c776483a4e7f4ea9bd0ca6cd1c462fa98a560d17ac2afd8bf87538b087b04ebc6a6aa1ddb3da769fea0c03e28f342a21cf356d704fc
+  checksum: 10c0/c2124722981084833ab6b76aceae82db7ebd41e657fb1d95b1cdb61c50cbc5ca07ca051dda0fd447101b06e6668141c6d2e82274f1969e991692ff81a80e4241
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.59.0":
-  version: 5.59.0
-  resolution: "@tanstack/react-query@npm:5.59.0"
+"@tanstack/react-query@npm:^5.59.9":
+  version: 5.59.9
+  resolution: "@tanstack/react-query@npm:5.59.9"
   dependencies:
-    "@tanstack/query-core": "npm:5.59.0"
+    "@tanstack/query-core": "npm:5.59.9"
   peerDependencies:
     react: ^18 || ^19
-  checksum: 10c0/035f1039a84cdfa90332c63780894c7b01f3024d17e82a7eb0c148912c6e4913bd5c56897698f3ac7cc5057710895932d45085c447a9d3dda88cf05f8ea7d226
+  checksum: 10c0/17fca365b478514c11f5f4de9e6f193e1cd94bed12bf0be71e4554d871dbcbc297ec558e053a01015114d9fce201f4d15040a37275b61d4b27ae9901d5dc8c01
   languageName: node
   linkType: hard
 
@@ -7080,13 +7079,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10c0/0dd8fcf576e178e69cbc00d47be69d3198dca4d86734a00fc55de0df147982e0a5f34592117571c5979e92ce8f3e0596e31aa454496db8a43ab90c5ab1068f40
-  languageName: node
-  linkType: hard
-
-"@types/cookie@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@types/cookie@npm:0.6.0"
-  checksum: 10c0/5b326bd0188120fb32c0be086b141b1481fec9941b76ad537f9110e10d61ee2636beac145463319c71e4be67a17e85b81ca9e13ceb6e3bb63b93d16824d6c149
   languageName: node
   linkType: hard
 
@@ -9291,9 +9283,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bullmq@npm:^5.17.1":
-  version: 5.17.1
-  resolution: "bullmq@npm:5.17.1"
+"bullmq@npm:^5.18.0":
+  version: 5.18.0
+  resolution: "bullmq@npm:5.18.0"
   dependencies:
     cron-parser: "npm:^4.6.0"
     ioredis: "npm:^5.4.1"
@@ -9302,7 +9294,7 @@ __metadata:
     semver: "npm:^7.5.4"
     tslib: "npm:^2.0.0"
     uuid: "npm:^9.0.0"
-  checksum: 10c0/66caaf81d14e575fdc05d825006418981960e809d7adfbaaddfb8220c287bb096c78d99e94d9809fd0d6125d17214deb8365db06ce30251a6c355b67853dfee6
+  checksum: 10c0/bb49aeb89c9dabd2d3d5af9ac32685ceb50f6c37ed8d9a286cb42f5208ad6e5c8383c4da42dc0fe18b5483f1416eca14dd4fe946b9dac85a8865d2c1c474cb60
   languageName: node
   linkType: hard
 
@@ -9566,9 +9558,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromatic@npm:^11.12.0":
-  version: 11.12.0
-  resolution: "chromatic@npm:11.12.0"
+"chromatic@npm:^11.12.5":
+  version: 11.12.5
+  resolution: "chromatic@npm:11.12.5"
   peerDependencies:
     "@chromatic-com/cypress": ^0.*.* || ^1.0.0
     "@chromatic-com/playwright": ^0.*.* || ^1.0.0
@@ -9581,7 +9573,7 @@ __metadata:
     chroma: dist/bin.js
     chromatic: dist/bin.js
     chromatic-cli: dist/bin.js
-  checksum: 10c0/78c2985d260617701ccf1dc7a91959621c9e26636adf4a21dcef3380fd35b7fc8b5442620326d20d8e7f008e228e59b48b2cc8f9205af38287979ea5a0007caa
+  checksum: 10c0/4a083e4b12ebd0e1f04f944fef66c8345d0895e4c42e253cc4726328b13207553d860fbd5955804fbea806ae06a58d88f8ef845e6c90ce8ce2bc62f5660a3c8e
   languageName: node
   linkType: hard
 
@@ -9981,10 +9973,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "cookie@npm:0.7.2"
-  checksum: 10c0/9596e8ccdbf1a3a88ae02cf5ee80c1c50959423e1022e4e60b91dd87c622af1da309253d8abdb258fb5e3eacb4f08e579dc58b4897b8087574eee0fd35dfa5d2
+"cookie@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "cookie@npm:1.0.0"
+  checksum: 10c0/44b1af44e8d18d02dedda4e2c75340e2f038a16ee9502a42cc6363198cbca256db0c72ced2dac920d93ba985cf78f909aa6d18460580624e9029deb3d38a1781
   languageName: node
   linkType: hard
 
@@ -11615,7 +11607,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.30.0, eslint-plugin-import@npm:^2.31.0":
+"eslint-plugin-import@npm:^2.31.0":
   version: 2.31.0
   resolution: "eslint-plugin-import@npm:2.31.0"
   dependencies:
@@ -11688,7 +11680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.37.0, eslint-plugin-react@npm:^7.37.1":
+"eslint-plugin-react@npm:^7.37.1":
   version: 7.37.1
   resolution: "eslint-plugin-react@npm:7.37.1"
   dependencies:
@@ -12385,9 +12377,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^11.11.1":
-  version: 11.11.1
-  resolution: "framer-motion@npm:11.11.1"
+"framer-motion@npm:^11.11.7":
+  version: 11.11.7
+  resolution: "framer-motion@npm:11.11.7"
   dependencies:
     tslib: "npm:^2.4.0"
   peerDependencies:
@@ -12401,7 +12393,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 10c0/ef02a4194fcc791c31c1dc00db7eeeebd5c39aa594fd999b91dcc4036e08870d512c9a743132f2914e36ea39839ee1ea723850b920acedb3b545b1b50194b28a
+  checksum: 10c0/3ea38038c4ff7e421c22811109ebe0aced595afcf8a204b2548c137b5d73cea983bc78d8fd2fb43406636f848bd53414eb41afb9fe182bb23afcddb2dccd98bb
   languageName: node
   linkType: hard
 
@@ -14769,9 +14761,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:^5.33.1":
-  version: 5.33.1
-  resolution: "knip@npm:5.33.1"
+"knip@npm:^5.33.3":
+  version: 5.33.3
+  resolution: "knip@npm:5.33.3"
   dependencies:
     "@nodelib/fs.walk": "npm:1.2.8"
     "@snyk/github-codeowners": "npm:1.1.0"
@@ -14795,7 +14787,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/7438d51aa1f68c996f4ebe2395ec15dde01258f2d77abd7062479a0baf86595518d6cd706c3436feb16baf040178a80908346d5103d8fd5f55d239f457df143d
+  checksum: 10c0/4d47d990014606dd7690e18e1aa52745409977cf03cb6d85a1effb23bcf1e14d8b4dd9679f766efc59365eed01c8d7784fe8ff7781828af6f7b29556b392f458
   languageName: node
   linkType: hard
 
@@ -20006,7 +19998,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.7.0, typescript-eslint@npm:^8.8.1":
+"typescript-eslint@npm:^8.8.0, typescript-eslint@npm:^8.8.1":
   version: 8.8.1
   resolution: "typescript-eslint@npm:8.8.1"
   dependencies:
@@ -20020,23 +20012,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.6.2":
-  version: 5.6.2
-  resolution: "typescript@npm:5.6.2"
+"typescript@npm:^5.6.3":
+  version: 5.6.3
+  resolution: "typescript@npm:5.6.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/3ed8297a8c7c56b7fec282532503d1ac795239d06e7c4966b42d4330c6cf433a170b53bcf93a130a7f14ccc5235de5560df4f1045eb7f3550b46ebed16d3c5e5
+  checksum: 10c0/44f61d3fb15c35359bc60399cb8127c30bae554cd555b8e2b46d68fa79d680354b83320ad419ff1b81a0bdf324197b29affe6cc28988cd6a74d4ac60c94f9799
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.6.2#optional!builtin<compat/typescript>":
-  version: 5.6.2
-  resolution: "typescript@patch:typescript@npm%3A5.6.2#optional!builtin<compat/typescript>::version=5.6.2&hash=8c6c40"
+"typescript@patch:typescript@npm%3A^5.6.3#optional!builtin<compat/typescript>":
+  version: 5.6.3
+  resolution: "typescript@patch:typescript@npm%3A5.6.3#optional!builtin<compat/typescript>::version=5.6.3&hash=8c6c40"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/94eb47e130d3edd964b76da85975601dcb3604b0c848a36f63ac448d0104e93819d94c8bdf6b07c00120f2ce9c05256b8b6092d23cf5cf1c6fa911159e4d572f
+  checksum: 10c0/7c9d2e07c81226d60435939618c91ec2ff0b75fbfa106eec3430f0fcf93a584bc6c73176676f532d78c3594fe28a54b36eb40b3d75593071a7ec91301533ace7
   languageName: node
   linkType: hard
 

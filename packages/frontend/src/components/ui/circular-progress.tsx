@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type * as React from "react";
 
 import type { CssVariableName } from "@nihalgonsalves/expenses-shared/types/theme";
 
