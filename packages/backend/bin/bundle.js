@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /* eslint-env node */
-import { writeFile } from "fs/promises";
+import { mkdir, writeFile } from "fs/promises";
 import { fileURLToPath } from "url";
 
 import { sentryEsbuildPlugin } from "@sentry/esbuild-plugin";
@@ -66,6 +66,7 @@ const newPackage = {
   packageManager: rootPackageJson.packageManager,
 };
 
+await mkdir(relativePath("../dist"), { recursive: true });
 await writeFile(
   relativePath("../dist/package.json"),
   JSON.stringify(newPackage, null, 2),
