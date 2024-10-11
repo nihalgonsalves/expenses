@@ -17,7 +17,7 @@ import type {
 import type { PrismaClientType } from "../../app";
 import { config } from "../../config";
 import { generateId } from "../../utils/nanoid";
-import type { IEmailWorker } from "../email/EmailWorker";
+import { EmailWorkerError, type IEmailWorker } from "../email/EmailWorker";
 
 import {
   UserServiceError,
@@ -310,17 +310,35 @@ export class UserService {
       data: { passwordResetToken },
     });
 
-    await this.emailWorker.sendEmail({
-      to: `${user.name} <${user.email}>`,
-      subject: `Your reset password link for ${config.APP_NAME}`,
-      text: [
-        "Click here to reset your password:",
-        link.toString(),
-        "",
-        "---",
-        "If you did not request this reset, please ignore this email.",
-      ].join("\n"),
-    });
+    try {
+      await this.emailWorker.sendEmail({
+        to: {
+          name: user.name,
+          address: user.email,
+        },
+        subject: `Your reset password link for ${config.APP_NAME}`,
+        text: [
+          "Click here to reset your password:",
+          link.toString(),
+          "",
+          "---",
+          "If you did not request this reset, please ignore this email.",
+        ].join("\n"),
+      });
+    } catch (error) {
+      if (
+        error instanceof EmailWorkerError &&
+        error.code === "TOO_MANY_REQUESTS"
+      ) {
+        console.warn(
+          "Skipping password reset email due to rate-limiting",
+          user.id,
+        );
+        return;
+      }
+
+      throw error;
+    }
   }
 
   async verifyEmail(token: JWTToken) {
@@ -375,7 +393,10 @@ export class UserService {
     link.searchParams.set("token", token);
 
     await this.emailWorker.sendEmail({
-      to: `${user.name} <${user.email}>`,
+      to: {
+        name: user.name,
+        address: user.email,
+      },
       subject: `Your verification link for ${config.APP_NAME}`,
       text: [
         "Click here to verify your email:",
