@@ -3,8 +3,13 @@ import { getUserLanguage } from "./utils";
 export const CURRENT_TIMEZONE =
   Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-export const durationMilliseconds = (duration: Temporal.DurationLike) =>
-  Temporal.Duration.from(duration).total("milliseconds");
+type NaiveDurationLike = Omit<
+  Temporal.DurationLike,
+  "years" | "months" | "weeks"
+>;
+
+export const durationMilliseconds = (duration: NaiveDurationLike) =>
+  Temporal.Duration.from(duration).round("milliseconds").total("milliseconds");
 
 export const dateTimeLocalToZonedISOString = (val: string) =>
   Temporal.PlainDateTime.from(val).toZonedDateTime(CURRENT_TIMEZONE).toString();

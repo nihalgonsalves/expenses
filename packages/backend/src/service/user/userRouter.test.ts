@@ -387,7 +387,10 @@ describe("requestPasswordReset", () => {
 
     expect(emailWorker.messages).toHaveLength(1);
 
-    expect(emailWorker.messages[0]?.to).toMatch(user.email);
+    expect(emailWorker.messages[0]?.to).toMatchObject({
+      name: user.name,
+      address: user.email,
+    });
     expect(emailWorker.messages[0]?.subject).toMatch(
       /your reset password link/i,
     );
