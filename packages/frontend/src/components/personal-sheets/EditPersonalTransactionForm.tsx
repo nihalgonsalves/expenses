@@ -92,7 +92,7 @@ const EditPersonalTransactionForm = ({
 
     await updatePersonalSheetTransaction({
       id: transaction.id,
-      // this should not be required, but the returned type has an extraneous 'TRANFER' value
+      // this should not be required, but the returned type has an extraneous 'TRANSFER' value
       type: z.enum(["EXPENSE", "INCOME"]).parse(transaction.type),
       personalSheetId: personalSheet.id,
       money,

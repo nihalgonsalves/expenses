@@ -4,7 +4,7 @@ import { MAILPIT_URL } from "../utils/env";
 import { ZEmail, getUserData } from "../utils/misc";
 import { test, expect } from "../utils/test";
 
-test("signs up succesfully", async ({ page }) => {
+test("signs up successfully", async ({ page }) => {
   const { name, email, password } = getUserData();
   await page.goto("/auth/sign-up");
 
@@ -24,7 +24,7 @@ const signInForm = async (page: Page, email: string, password: string) => {
   await page.getByRole("button", { name: /sign in/i }).click();
 };
 
-test("signs in and out succesfully", async ({ page, createUser }) => {
+test("signs in and out successfully", async ({ page, createUser }) => {
   const { email, password } = await createUser();
 
   await page.goto("/auth/sign-in");

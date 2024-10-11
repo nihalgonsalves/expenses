@@ -29,6 +29,7 @@ jobs:
       - uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ./infra/Dockerfile-frontend
+      - uses: crate-ci/typos@master
 
   test-storybook:
     timeout-minutes: 5
