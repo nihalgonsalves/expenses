@@ -72,14 +72,15 @@ export const usePullToRefresh = (
       touchDiffYRef.current = 0;
     };
 
-    window.addEventListener("touchstart", onTouchStart);
-    window.addEventListener("touchmove", onTouchMove);
-    window.addEventListener("touchend", onTouchEnd);
+    const abortController = new AbortController();
+    const options = { signal: abortController.signal };
+
+    window.addEventListener("touchstart", onTouchStart, options);
+    window.addEventListener("touchmove", onTouchMove, options);
+    window.addEventListener("touchend", onTouchEnd, options);
 
     return () => {
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
+      abortController.abort();
     };
   }, [toastId, onRefetch, isStandalone, dialog.isOpen]);
 };
