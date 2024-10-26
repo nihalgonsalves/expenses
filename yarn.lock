@@ -3198,7 +3198,7 @@ __metadata:
     "@radix-ui/react-label": "npm:^2.1.0"
     "@radix-ui/react-navigation-menu": "npm:^1.2.1"
     "@radix-ui/react-popover": "npm:^1.1.2"
-    "@radix-ui/react-scroll-area": "npm:^1.2.0"
+    "@radix-ui/react-scroll-area": "npm:~1.2.0"
     "@radix-ui/react-select": "npm:^2.1.2"
     "@radix-ui/react-separator": "npm:^1.1.0"
     "@radix-ui/react-slot": "npm:^1.1.0"
@@ -4708,7 +4708,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-scroll-area@npm:^1.2.0":
+"@radix-ui/react-scroll-area@npm:~1.2.0":
   version: 1.2.0
   resolution: "@radix-ui/react-scroll-area@npm:1.2.0"
   dependencies:
