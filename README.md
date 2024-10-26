@@ -59,7 +59,7 @@ If using GitHub Codespaces or a Dev Container, skip to step 5.
 2. Start dev services
 
    ```sh
-   docker compose -f compose.local.yaml up
+   docker compose -f compose.local.yml up
    ```
 
 3. Migrate databases

@@ -1,23 +1,23 @@
-# compose.dev.yaml but with ports exposed for local development without a devcontainer
+# compose.dev.yml but with ports exposed for local development without a devcontainer
 name: expenses-dev
 services:
   postgres:
     extends:
-      file: compose.dev.yaml
+      file: compose.dev.yml
       service: postgres
     ports:
       - "5432:5432"
 
   redis:
     extends:
-      file: compose.dev.yaml
+      file: compose.dev.yml
       service: redis
     ports:
       - "6379:6379"
 
   frankfurter:
     extends:
-      file: compose.dev.yaml
+      file: compose.dev.yml
       service: frankfurter
     depends_on:
       postgres:
@@ -27,7 +27,7 @@ services:
 
   mailpit:
     extends:
-      file: compose.dev.yaml
+      file: compose.dev.yml
       service: mailpit
     ports:
       - "8025:8025" # web

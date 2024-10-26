@@ -92,7 +92,7 @@ jobs:
 
       - run: yarn install --immutable
         # pull so that testcontainers doesn't have to, timing out tests.
-      - run: docker compose -f compose.dev.yaml pull postgres redis
+      - run: docker compose -f compose.dev.yml pull postgres redis
 
       - run: yarn test --coverage
 

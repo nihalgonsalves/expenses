@@ -1,6 +1,6 @@
 {
   "name": "Node.js",
-  "dockerComposeFile": ["../compose.dev.yaml", "./compose.extend.yaml"],
+  "dockerComposeFile": ["../compose.dev.yml", "./compose.extend.yml"],
   "service": "workspace",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
