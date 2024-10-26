@@ -49,6 +49,13 @@ export default tseslint.config(
     },
   },
   {
+    files: ["packages/e2e/**/*"],
+    rules: {
+      // false positive with Playwright's `use`
+      "react-hooks/rules-of-hooks": "off",
+    },
+  },
+  {
     plugins: {
       storybook,
     },
