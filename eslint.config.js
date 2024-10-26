@@ -1,7 +1,7 @@
 import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
 import storybook from "eslint-plugin-storybook";
-
+import reactCompiler from "eslint-plugin-react-compiler";
 import sharedConfig from "@nihalgonsalves/esconfig/eslint.config.react-shared.js";
 
 export default tseslint.config(
@@ -25,6 +25,7 @@ export default tseslint.config(
   {
     plugins: {
       "unused-imports": unusedImports,
+      "react-compiler": reactCompiler,
     },
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
@@ -68,6 +69,7 @@ export default tseslint.config(
   {
     files: ["packages/frontend/**/*"],
     rules: {
+      "react-compiler/react-compiler": "error",
       "@typescript-eslint/no-misused-promises": [
         "error",
         {
