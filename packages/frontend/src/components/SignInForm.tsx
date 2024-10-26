@@ -31,7 +31,7 @@ import { twx } from "./ui/utils";
 // collapse into underlying layer on narrow screens
 export const SingleScreenCard = twx(
   Card,
-)`border-0 rounded-none bg-inherit sm:bg-card sm:border sm:rounded-md`;
+)`w-full border-0 rounded-none bg-inherit sm:bg-card sm:border sm:rounded-md`;
 
 export const SignInForm = () => {
   const { mutateAsync: authorizeUser, isPending } =

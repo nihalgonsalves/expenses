@@ -178,12 +178,14 @@ export const Root = ({
           <NavBarAvatar className="ml-4" />
         </header>
 
-        <ScrollArea
-          viewportClassName={cn("p-3 md:p-5", className)}
-          rootClassName="flex grow flex-col"
-        >
-          <main>{children}</main>
-        </ScrollArea>
+        <main className="contents">
+          <ScrollArea
+            viewportClassName={cn("p-3 md:p-5", className)}
+            rootClassName="flex grow flex-col"
+          >
+            {children}
+          </ScrollArea>
+        </main>
 
         {additionalChildren}
 

@@ -19,11 +19,10 @@ const AuthenticationPage = () => {
   }
 
   return (
-    <Root
-      title={isSignUp ? "Sign up" : "Sign in"}
-      className="m-auto p-0 sm:grid sm:max-w-xl sm:place-items-center sm:p-5"
-    >
-      {isSignUp ? <SignUpForm /> : <SignInForm />}
+    <Root title={isSignUp ? "Sign up" : "Sign in"} className="p-0 sm:p-5">
+      <div className="m-auto size-full sm:grid sm:max-w-xl sm:place-items-center">
+        {isSignUp ? <SignUpForm /> : <SignInForm />}
+      </div>
     </Root>
   );
 };
