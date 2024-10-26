@@ -11,7 +11,7 @@ import {
   TooltipContent,
 } from "./ui/tooltip";
 
-const MotionButton = motion(Button);
+const MotionButton = motion.create(Button);
 
 type FloatingActionButtonProps = {
   label: string;
