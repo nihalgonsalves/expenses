@@ -11,11 +11,15 @@ services:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --entrypoints.web.address=:8080
+      - --entrypoints.websecure-public.http.middlewares=default-headers@file
+      - --providers.file.directory=/config
+      - --providers.file.watch=true
     ports:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - ".env.htpasswd:/etc/traefik/.htpasswd"
+      - ./infra/traefik:/config
 
   backend:
     restart: unless-stopped

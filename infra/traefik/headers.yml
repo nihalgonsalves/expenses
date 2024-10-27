@@ -1,0 +1,11 @@
+http:
+  middlewares:
+    default-headers:
+      headers:
+        frameDeny: true
+        contentTypeNosniff: true
+        stsSeconds: 31536000 # 1 year
+        stsIncludeSubdomains: false
+        contentSecurityPolicy: >
+          default-src 'self' 'unsafe-inline';
+        
