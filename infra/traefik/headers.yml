@@ -7,5 +7,7 @@ http:
         stsSeconds: 31536000 # 1 year
         stsIncludeSubdomains: false
         contentSecurityPolicy: >
-          default-src 'self' 'unsafe-inline';
-        
+          default-src 'self';
+          worker-src 'self' blob:;
+          child-src 'self' blob:;
+          style-src 'self' 'unsafe-inline';
