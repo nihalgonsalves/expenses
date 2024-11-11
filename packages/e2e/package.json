@@ -15,8 +15,8 @@
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
     "@playwright/test": "1.48.2",
-    "@trpc/client": "^11.0.0-rc.599",
-    "chromatic": "^11.16.1",
+    "@trpc/client": "^11.0.0-rc.630",
+    "chromatic": "^11.18.0",
     "zod": "^3.23.8"
   }
 }
