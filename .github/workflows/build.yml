@@ -5,6 +5,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
+env:
+  LANG: en_US.UTF-8
+
 jobs:
   build:
     timeout-minutes: 5
@@ -35,7 +38,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.48.0
+      image: mcr.microsoft.com/playwright:v1.49.0
     steps:
       - uses: actions/checkout@v4
         with:
@@ -107,7 +110,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.48.0
+      image: mcr.microsoft.com/playwright:v1.49.0
     services:
       postgres:
         image: postgres:17-alpine
