@@ -14,9 +14,9 @@
     "@chromatic-com/playwright": "0.10.0",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
-    "@playwright/test": "1.48.2",
-    "@trpc/client": "^11.0.0-rc.599",
-    "chromatic": "^11.18.1",
+    "@playwright/test": "1.49.0",
+    "@trpc/client": "^11.0.0-rc.645",
+    "chromatic": "^11.19.0",
     "zod": "^3.23.8"
   }
 }
