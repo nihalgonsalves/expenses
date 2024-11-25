@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThickArrowDownIcon, ThickArrowUpIcon } from "@radix-ui/react-icons";
 import { useForm, useWatch } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { z } from "zod";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -180,7 +180,7 @@ const CreatePersonalTransactionForm = ({
           freq: values.recurrenceRule.freq,
         },
       });
-      navigate(`/sheets/${personalSheet.id}`, { replace: true });
+      await navigate(`/sheets/${personalSheet.id}`, { replace: true });
     } else {
       await createPersonalSheetTransaction({
         ...commonValues,

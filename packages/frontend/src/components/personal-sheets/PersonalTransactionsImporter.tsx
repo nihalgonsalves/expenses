@@ -6,7 +6,7 @@ import {
 import { parse as dateFnsParse } from "date-fns";
 import Papa from "papaparse";
 import { useCallback, useId, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { z } from "zod";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -391,7 +391,7 @@ export const PersonalTransactionsImporter = ({
       personalSheetId: personalSheet.id,
     });
 
-    navigate(`/sheets/${personalSheet.id}`);
+    await navigate(`/sheets/${personalSheet.id}`);
   };
 
   const fieldOptions = useMemo(

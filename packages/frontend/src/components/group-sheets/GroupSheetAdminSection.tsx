@@ -1,6 +1,6 @@
 import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -27,7 +27,7 @@ export const GroupSheetAdminSection = ({
     void utils.sheet.groupSheetById.invalidate(groupSheet.id);
     void utils.sheet.mySheets.invalidate();
 
-    navigate("/sheets");
+    await navigate("/sheets");
   }, [deleteGroupSheet, groupSheet.id, navigate, utils]);
 
   const handleArchive = useCallback(async () => {

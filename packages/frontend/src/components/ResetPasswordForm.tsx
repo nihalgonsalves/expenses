@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import type { z } from "zod";
 
 import { ZResetPasswordInput } from "@nihalgonsalves/expenses-shared/types/user";
@@ -38,7 +38,7 @@ export const ResetPasswordForm = ({ token }: { token: string }) => {
   const onSubmit = async (values: z.infer<typeof ZResetPasswordInput>) => {
     await resetPassword(values);
 
-    navigate("/auth/sign-in");
+    await navigate("/auth/sign-in");
   };
 
   return (

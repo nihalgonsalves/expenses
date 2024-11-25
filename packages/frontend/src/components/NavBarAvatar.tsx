@@ -1,6 +1,6 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { AvatarIcon } from "@radix-ui/react-icons";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import { trpc } from "../api/trpc";
 import { useResetCache } from "../api/useCacheReset";

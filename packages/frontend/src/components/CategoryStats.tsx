@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { DateRange } from "react-day-picker";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import {
   addMoney,

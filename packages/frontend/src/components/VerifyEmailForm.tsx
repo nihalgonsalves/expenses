@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import { trpc } from "../api/trpc";
 
@@ -18,7 +18,7 @@ export const VerifyEmailForm = ({ token }: { token: string }) => {
     await verifyEmail(token);
     await utils.user.me.invalidate();
 
-    navigate("/settings");
+    await navigate("/settings");
   };
 
   return (

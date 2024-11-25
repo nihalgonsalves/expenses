@@ -7,7 +7,7 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons";
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
 import type {
@@ -73,7 +73,7 @@ const PersonMenu = ({
       ]);
 
       if (actorInfo.id === id) {
-        navigate("/groups");
+        await navigate("/groups");
       }
     } catch {
       setIsInvalidating(false);

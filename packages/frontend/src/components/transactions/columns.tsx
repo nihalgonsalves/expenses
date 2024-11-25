@@ -1,7 +1,7 @@
 "use client";
 
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
 import { useCurrentUser } from "../../api/useCurrentUser";

@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 
 import { VerifyEmailForm } from "../components/VerifyEmailForm";
 import { Alert, AlertTitle } from "../components/ui/alert";
