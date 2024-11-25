@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { PersonIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useFieldArray, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import type { z } from "zod";
 
 import { ZCreateGroupSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -64,7 +64,7 @@ export const CreateGroupForm = ({
     const { id } = await createGroupSheet(values);
 
     dialog.dismiss();
-    navigate(`/groups/${id}`, { replace: true });
+    await navigate(`/groups/${id}`, { replace: true });
 
     await utils.sheet.mySheets.invalidate();
   };

@@ -1,6 +1,6 @@
 import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -22,9 +22,11 @@ export const PersonalSheetAdminSection = ({
 
   const handleDelete = useCallback(async () => {
     await deleteSheet(personalSheet.id);
-    void utils.sheet.personalSheetById.invalidate(personalSheet.id);
-    void utils.sheet.mySheets.invalidate();
-    navigate("/sheets");
+    await Promise.all([
+      utils.sheet.personalSheetById.invalidate(personalSheet.id),
+      utils.sheet.mySheets.invalidate(),
+    ]);
+    await navigate("/sheets");
   }, [deleteSheet, personalSheet.id, navigate, utils]);
 
   const handleArchive = useCallback(async () => {

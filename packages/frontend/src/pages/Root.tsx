@@ -12,7 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useState } from "react";
 import { Helmet } from "react-helmet";
 import { toast } from "react-hot-toast";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router";
 import { useInterval } from "react-use";
 
 import { trpc } from "../api/trpc";
@@ -106,7 +106,7 @@ export const Root = ({
               $variant="ghost"
               className="text-primary-foreground md:hidden"
               onClick={() => {
-                navigate(-1);
+                void navigate(-1);
               }}
             >
               <ArrowLeftIcon />

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import type { z } from "zod";
 
 import { ZCreatePersonalSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -50,7 +50,7 @@ export const CreateSheetForm = ({
     const { id } = await createSheet(values);
 
     dialog.dismiss();
-    navigate(`/sheets/${id}`, { replace: true });
+    await navigate(`/sheets/${id}`, { replace: true });
 
     await utils.sheet.mySheets.invalidate();
   };

@@ -12,7 +12,7 @@ import {
   matchRoutes,
   useLocation,
   useNavigationType,
-} from "react-router-dom";
+} from "react-router";
 
 import { TrpcProvider } from "./api/TrpcProvider";
 import { useOffLineToaster } from "./api/useOffLineToaster";

@@ -5,7 +5,7 @@ import {
   useLocation,
   Outlet,
   type RouteObject,
-} from "react-router-dom";
+} from "react-router";
 import { z, type ZodRawShape } from "zod";
 
 import {
@@ -174,4 +174,4 @@ export const useParams = <T extends ZodRawShape>(schema: Zod.ZodObject<T>) => {
 
 export const SheetParams = z.object({ sheetId: z.string() });
 
-export { RouterProvider } from "react-router-dom";
+export { RouterProvider } from "react-router/dom";

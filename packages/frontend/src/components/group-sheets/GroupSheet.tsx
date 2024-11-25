@@ -1,5 +1,5 @@
 import { ActivityLogIcon } from "@radix-ui/react-icons";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 

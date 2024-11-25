@@ -7,7 +7,7 @@ import {
   TrashIcon,
   UploadIcon,
 } from "@radix-ui/react-icons";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";

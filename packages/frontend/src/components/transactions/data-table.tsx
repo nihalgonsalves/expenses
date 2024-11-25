@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { z } from "zod";
 
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
