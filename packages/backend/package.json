@@ -66,9 +66,9 @@
     "wait-on": "^8.0.1"
   },
   "resolutions": {
-    "@bull-board/ui": "5.11.0",
-    "@prisma/client": "5.21.1",
-    "prisma": "5.21.1",
+    "@bull-board/ui": "6.5.3",
+    "@prisma/client": "5.22.0",
+    "prisma": "5.22.0",
     "bcrypt": "5.1.1"
   }
 }
