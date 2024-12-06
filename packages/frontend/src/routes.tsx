@@ -42,7 +42,13 @@ const TransactionsIndexPage = loadable(
   async () => import("./pages/transactions/TransactionsIndexPage"),
 );
 
-const AuthenticatedRoute = ({ children }: { children: React.ReactNode }) => {
+const AuthenticatedRoute = ({
+  children,
+}: {
+  children: React.ReactNode;
+  // react 19 children can be promises, but we don't want an async component
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+}) => {
   const location = useLocation();
 
   const { error } = useCurrentUser();
