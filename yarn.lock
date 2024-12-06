@@ -3243,8 +3243,8 @@ __metadata:
     "@testcontainers/postgresql": "npm:^10.16.0"
     "@testcontainers/redis": "npm:^10.16.0"
     "@total-typescript/ts-reset": "npm:^0.6.1"
-    "@trpc/client": "npm:^11.0.0-rc.599"
-    "@trpc/server": "npm:^11.0.0-rc.599"
+    "@trpc/client": "npm:^11.0.0-rc.657"
+    "@trpc/server": "npm:^11.0.0-rc.657"
     "@types/bcrypt": "npm:^5.0.2"
     "@types/nodemailer": "npm:^6"
     "@types/pem": "npm:^1.14.4"
@@ -3261,7 +3261,7 @@ __metadata:
     nanoid: "npm:^5.0.9"
     nodemailer: "npm:^6.9.16"
     npm-run-all2: "npm:^7.0.1"
-    pem: "npm:^1.14.8"
+    pem: "npm:^1.15.1"
     prisma: "npm:*"
     rate-limiter-flexible: "npm:^5.0.4"
     rrule: "npm:^2.8.1"
@@ -3284,7 +3284,7 @@ __metadata:
     "@nihalgonsalves/expenses-backend": "npm:*"
     "@nihalgonsalves/expenses-shared": "npm:*"
     "@playwright/test": "npm:1.48.2"
-    "@trpc/client": "npm:^11.0.0-rc.599"
+    "@trpc/client": "npm:^11.0.0-rc.657"
     chromatic: "npm:^11.20.0"
     zod: "npm:^3.23.8"
   languageName: unknown
@@ -3334,12 +3334,12 @@ __metadata:
     "@tanstack/react-query-devtools": "npm:^5.62.2"
     "@tanstack/react-query-persist-client": "npm:^5.62.2"
     "@tanstack/react-table": "npm:^8.20.5"
-    "@trpc/client": "npm:^11.0.0-rc.599"
-    "@trpc/react-query": "npm:^11.0.0-rc.599"
+    "@trpc/client": "npm:^11.0.0-rc.657"
+    "@trpc/react-query": "npm:^11.0.0-rc.657"
     "@types/loadable__component": "npm:^5"
     "@types/papaparse": "npm:^5.3.15"
-    "@types/react": "npm:^18.3.12"
-    "@types/react-dom": "npm:^18.3.1"
+    "@types/react": "npm:^18.3.14"
+    "@types/react-dom": "npm:^18.3.2"
     "@types/react-helmet": "npm:^6"
     "@vitejs/plugin-react": "npm:^4.3.4"
     "@vitest/coverage-v8": "npm:^2.1.8"
@@ -6916,32 +6916,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/client@npm:^11.0.0-rc.599":
-  version: 11.0.0-rc.599
-  resolution: "@trpc/client@npm:11.0.0-rc.599"
+"@trpc/client@npm:^11.0.0-rc.657":
+  version: 11.0.0-rc.657
+  resolution: "@trpc/client@npm:11.0.0-rc.657"
   peerDependencies:
-    "@trpc/server": 11.0.0-rc.599+e16cd8d7c
-  checksum: 10c0/7aa981dfe85782532e35264b7440a723ecbccda7b658718da40137256f2f8588b750263c2fdc93ea3aa64c0339440673bd96a9d9b703c5b32753c4b8a59acd30
+    "@trpc/server": 11.0.0-rc.657+7a369faa3
+    typescript: ">=5.6.2"
+  checksum: 10c0/69f2a9fe17d78cadd66e3b42269302cb68c39bdf2c1357764d001a539e99fc60b993b30f4217c262560e897a29679469a6bfbb9451f775723e09e61929aa7b2e
   languageName: node
   linkType: hard
 
-"@trpc/react-query@npm:^11.0.0-rc.599":
-  version: 11.0.0-rc.599
-  resolution: "@trpc/react-query@npm:11.0.0-rc.599"
+"@trpc/react-query@npm:^11.0.0-rc.657":
+  version: 11.0.0-rc.657
+  resolution: "@trpc/react-query@npm:11.0.0-rc.657"
   peerDependencies:
     "@tanstack/react-query": ^5.59.15
-    "@trpc/client": 11.0.0-rc.599+e16cd8d7c
-    "@trpc/server": 11.0.0-rc.599+e16cd8d7c
+    "@trpc/client": 11.0.0-rc.657+7a369faa3
+    "@trpc/server": 11.0.0-rc.657+7a369faa3
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
-  checksum: 10c0/5721aa0c3c0567397b2482bddc17a2d526ab1ea7151762f816b99060a4ffb9203faf560fcd64503164349dc16bcd147aaf4d56ee10d3ecd0daa69ca33432a9e0
+    typescript: ">=5.6.2"
+  checksum: 10c0/c8bb6ba746b6e0607c121a77452f7a56fc3ced5f4b0d66ec0fe06dc0db1dc997a3bc19b330f97ab7933acbc6107ba929f2cf3a6500ca751b9c3bd693edc48500
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^11.0.0-rc.599":
-  version: 11.0.0-rc.599
-  resolution: "@trpc/server@npm:11.0.0-rc.599"
-  checksum: 10c0/00b268a3934a03ddb859092817b573fd2a67c45f077ddea1a0dea2df863aca8ee2ab7902c8413ea21c420f20d1abf3dd46f431b8195b151c98c871fd3e3c50ba
+"@trpc/server@npm:^11.0.0-rc.657":
+  version: 11.0.0-rc.657
+  resolution: "@trpc/server@npm:11.0.0-rc.657"
+  peerDependencies:
+    typescript: ">=5.6.2"
+  checksum: 10c0/51c5dc1d5d2bc1abb74d59537ee11ca3f47b5c15b0cfc2f9876c7bd127c978ab568315fe3d3d059ac41edbd026966f342b00d2674274705720ccd583278c0458
   languageName: node
   linkType: hard
 
@@ -7392,12 +7396,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.3.1":
-  version: 18.3.1
-  resolution: "@types/react-dom@npm:18.3.1"
+"@types/react-dom@npm:^18.3.2":
+  version: 18.3.2
+  resolution: "@types/react-dom@npm:18.3.2"
   dependencies:
-    "@types/react": "npm:*"
-  checksum: 10c0/8b416551c60bb6bd8ec10e198c957910cfb271bc3922463040b0d57cf4739cdcd24b13224f8d68f10318926e1ec3cd69af0af79f0291b599a992f8c80d47f1eb
+    "@types/react": "npm:^18"
+  checksum: 10c0/22510231af67044a9542633b5b52ec16a8d71fa1da177f82428b8120d36619fd874c3b975b2eda6895baa53667f9fe8cba3acea1232a0244dffe8b11f6b32284
   languageName: node
   linkType: hard
 
@@ -7410,13 +7414,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^16.8.0 || ^17.0.0 || ^18.0.0, @types/react@npm:^18.3.12":
+"@types/react@npm:*, @types/react@npm:^16.8.0 || ^17.0.0 || ^18.0.0":
   version: 18.3.12
   resolution: "@types/react@npm:18.3.12"
   dependencies:
     "@types/prop-types": "npm:*"
     csstype: "npm:^3.0.2"
   checksum: 10c0/8bae8d9a41619804561574792e29112b413044eb0d53746dde2b9720c1f9a59f71c895bbd7987cd8ce9500b00786e53bc032dced38cddf42910458e145675290
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18, @types/react@npm:^18.3.14":
+  version: 18.3.14
+  resolution: "@types/react@npm:18.3.14"
+  dependencies:
+    "@types/prop-types": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: 10c0/d925fbfcf084238b93d1a0b5406d4cf9aeb37c4a1191559aa4ee107c2e55cc15327989140f03eddda4d471f5b935d4673fd74a86f451860edea18eae48ca44f8
   languageName: node
   linkType: hard
 
@@ -16327,15 +16341,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pem@npm:^1.14.8":
-  version: 1.14.8
-  resolution: "pem@npm:1.14.8"
+"pem@npm:^1.15.1":
+  version: 1.15.1
+  resolution: "pem@npm:1.15.1"
   dependencies:
     es6-promisify: "npm:^7.0.0"
     md5: "npm:^2.3.0"
     os-tmpdir: "npm:^1.0.2"
     which: "npm:^2.0.2"
-  checksum: 10c0/c57cb469ba607ac8a71b63be3ae37749909581a8fe1453424e084f3421feefeba78b0e6615feffe77fe9680a04f27ad92342352fc11a4c619086498633506eb3
+  checksum: 10c0/704b17425b0bc4f1415ce97da70293247d6e8fb7e5c4d0966b805b5ec45ae7be1ffc5ca68072795bf6137a159a25d7930bcb3fc23b1b95f223d8ab3a048c17e7
   languageName: node
   linkType: hard
 
