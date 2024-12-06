@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 import type { z } from "zod";
 
@@ -26,22 +25,21 @@ type SelectProps<T extends z.Schema<string | undefined>> = {
   onChange: (newValue: z.infer<T>) => void;
   schema: T;
   className?: string | undefined;
-} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
+} & Pick<React.ComponentProps<typeof SelectTrigger>, "ref"> &
+  Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
-const SelectInner = <T extends z.Schema<string | undefined>>(
-  {
-    id,
-    placeholder,
-    options,
-    value,
-    onChange: setValue,
-    schema,
-    className,
-    onBlur,
-    ...controllerProps
-  }: SelectProps<T>,
-  ref: React.ForwardedRef<HTMLButtonElement>,
-) => (
+export const Select = <T extends z.Schema<string | undefined>>({
+  ref,
+  id,
+  placeholder,
+  options,
+  value,
+  onChange: setValue,
+  schema,
+  className,
+  onBlur,
+  ...controllerProps
+}: SelectProps<T>) => (
   <UISelect
     value={
       value ??
@@ -74,11 +72,3 @@ const SelectInner = <T extends z.Schema<string | undefined>>(
     </SelectContent>
   </UISelect>
 );
-
-// https://fettblog.eu/typescript-react-generic-forward-refs/
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-export const Select = forwardRef(SelectInner) as <
-  T extends z.Schema<string | undefined>,
->(
-  props: SelectProps<T> & { ref?: React.ForwardedRef<HTMLButtonElement> },
-) => ReturnType<typeof SelectInner>;
