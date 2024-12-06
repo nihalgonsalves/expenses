@@ -54,6 +54,7 @@ export const createApp = async (prisma: PrismaClientType, redis: IORedis) => {
     });
 
     serverAdapter.setBasePath("/admin/queue");
+    // @ts-expect-error TS2589: Type instantiation is excessively deep and possibly infinite
     app.route("/admin/queue", serverAdapter.registerPlugin());
   }
 
