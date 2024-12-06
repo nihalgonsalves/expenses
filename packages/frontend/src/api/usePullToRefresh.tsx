@@ -1,4 +1,4 @@
-import { easeIn } from "framer-motion";
+import { easeIn } from "motion/react";
 import { useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 

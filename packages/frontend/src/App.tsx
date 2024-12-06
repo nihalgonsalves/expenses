@@ -3,7 +3,7 @@ import "temporal-polyfill/global";
 import emojiMartData from "@emoji-mart/data";
 import * as Sentry from "@sentry/react";
 import { init as initEmojiMart } from "emoji-mart";
-import { MotionConfig } from "framer-motion";
+import { MotionConfig } from "motion/react";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import {

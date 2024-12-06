@@ -1,5 +1,5 @@
 import { Slot } from "@radix-ui/react-slot";
-import { motion, type HTMLMotionProps } from "framer-motion";
+import { motion, type HTMLMotionProps } from "motion/react";
 import * as React from "react";
 import {
   Controller,
@@ -10,7 +10,7 @@ import {
   useFormContext,
 } from "react-hook-form";
 
-import { fadeInOut } from "../../utils/framer";
+import { fadeInOut } from "../../utils/motion";
 
 import { Label } from "./label";
 import { cn } from "./utils";

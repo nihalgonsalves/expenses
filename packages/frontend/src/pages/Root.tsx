@@ -8,7 +8,7 @@ import {
   SymbolIcon,
 } from "@radix-ui/react-icons";
 import type { TRPCClientErrorLike } from "@trpc/client";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useState } from "react";
 import { Helmet } from "react-helmet";
 import { toast } from "react-hot-toast";

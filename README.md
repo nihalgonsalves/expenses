@@ -40,7 +40,7 @@ descriptions, in my experience.
 
 ## Built with
 
-- React, Vite, Tailwind CSS, Radix/shadcn, Framer Motion
+- React, Vite, Tailwind CSS, Radix/shadcn, Motion
 - tRPC, React Query
 - Hono, BullMQ, Prisma, Postgres, Redis
 - Playwright, Vitest

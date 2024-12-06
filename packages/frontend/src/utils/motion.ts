@@ -1,4 +1,4 @@
-import type { MotionProps } from "framer-motion";
+import type { MotionProps } from "motion/react";
 
 export const collapse = {
   initial: { height: 0, opacity: 0 },

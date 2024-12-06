@@ -3353,10 +3353,10 @@ __metadata:
     dexie-react-hooks: "npm:^1.1.7"
     dinero.js: "npm:^2.0.0-alpha.14"
     emoji-mart: "npm:^5.6.0"
-    framer-motion: "npm:^11.13.1"
     happy-dom: "npm:^15.11.7"
     jotai: "npm:^2.10.3"
     little-date: "npm:^1.0.0"
+    motion: "npm:^11.13.1"
     npm-run-all2: "npm:^7.0.1"
     papaparse: "npm:^5.4.1"
     react: "npm:^18.3.1"
@@ -15516,6 +15516,27 @@ __metadata:
   version: 11.13.0
   resolution: "motion-utils@npm:11.13.0"
   checksum: 10c0/db65509cf7abc7819ec40aae4c50a29f5c07619ee0ff4df04ea3950e85ba5ec68d00cf0f2ef3072bd41787306335eab364de9d199c145631fafd9de39df1eef9
+  languageName: node
+  linkType: hard
+
+"motion@npm:^11.13.1":
+  version: 11.13.1
+  resolution: "motion@npm:11.13.1"
+  dependencies:
+    framer-motion: "npm:^11.13.1"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    "@emotion/is-prop-valid": "*"
+    react: ^18.0.0
+    react-dom: ^18.0.0
+  peerDependenciesMeta:
+    "@emotion/is-prop-valid":
+      optional: true
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 10c0/2b3b8f247a1a135d9460c94b80d85d5cf257d5a045c065abbbe4633997127243a16d3ac19c54fa014d1fc14ae8002c3a0ca73841df09a56a7814ce0465386aae
   languageName: node
   linkType: hard
 
