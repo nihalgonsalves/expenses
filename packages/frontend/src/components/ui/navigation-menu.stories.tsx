@@ -53,7 +53,7 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
+  React.ComponentRef<"a">,
   React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => (
   <li>

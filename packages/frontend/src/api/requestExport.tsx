@@ -17,7 +17,7 @@ export const requestExport = async <TData,>(
     fetch(),
     {
       loading: "Preparing download...",
-      success: (data) => {
+      success: (data: TData[]) => {
         const mapped = data.map((item) => mapItem(item));
 
         const blob =
