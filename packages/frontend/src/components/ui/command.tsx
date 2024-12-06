@@ -3,7 +3,7 @@
 import type { DialogProps } from "@radix-ui/react-dialog";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Command as CommandPrimitive } from "cmdk";
-import * as React from "react";
+import type * as React from "react";
 
 import { Dialog, DialogContent } from "./dialog";
 import { cn, twx } from "./utils";
@@ -25,10 +25,11 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => (
   </Dialog>
 );
 
-const CommandInput = React.forwardRef<
-  React.ComponentRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
+const CommandInput = ({
+  ref,
+  className,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.Input>) => (
   <div
     className="flex items-center border-b px-3"
     // eslint-disable-next-line react/no-unknown-property
@@ -44,18 +45,15 @@ const CommandInput = React.forwardRef<
       {...props}
     />
   </div>
-));
+);
 
-CommandInput.displayName = CommandPrimitive.Input.displayName;
-
-const CommandList = React.forwardRef<
-  React.ComponentRef<typeof CommandPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>
->(({ className, ...props }, ref) => (
+const CommandList = ({
+  ref,
+  className,
+  ...props
+}: React.ComponentProps<typeof CommandPrimitive.List>) => (
   <CommandPrimitive.List ref={ref} className={cn(className)} {...props} />
-));
-
-CommandList.displayName = CommandPrimitive.List.displayName;
+);
 
 const CommandEmpty = twx(CommandPrimitive.Empty)`py-6 text-center text-sm`;
 CommandEmpty.displayName = CommandPrimitive.Empty.displayName;

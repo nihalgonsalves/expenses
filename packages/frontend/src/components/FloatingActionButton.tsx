@@ -1,6 +1,6 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { motion } from "motion/react";
-import React from "react";
+import type React from "react";
 import { Link } from "react-router";
 
 import { Button } from "./ui/button";
@@ -14,6 +14,7 @@ import {
 const MotionButton = motion.create(Button);
 
 type FloatingActionButtonProps = {
+  ref?: React.Ref<HTMLDivElement>;
   label: string;
   icon: React.ReactNode;
 } & (
@@ -31,10 +32,13 @@ type FloatingActionButtonProps = {
     }
 );
 
-export const FloatingActionButton = React.forwardRef<
-  HTMLDivElement,
-  FloatingActionButtonProps
->(({ to, onClick, label, icon }, ref) => (
+export const FloatingActionButton = ({
+  ref,
+  to,
+  onClick,
+  label,
+  icon,
+}: FloatingActionButtonProps) => (
   <div ref={ref} className="sticky bottom-0 w-full">
     <TooltipProvider delayDuration={100}>
       <Tooltip>
@@ -71,5 +75,4 @@ export const FloatingActionButton = React.forwardRef<
       </Tooltip>
     </TooltipProvider>
   </div>
-));
-FloatingActionButton.displayName = "FloatingActionButton";
+);
