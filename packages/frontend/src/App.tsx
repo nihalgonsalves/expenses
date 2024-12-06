@@ -44,7 +44,7 @@ Sentry.init({
 });
 
 const sentryCreateBrowserRouter =
-  Sentry.wrapCreateBrowserRouter(createBrowserRouter);
+  Sentry.wrapCreateBrowserRouterV7(createBrowserRouter);
 
 const router = sentryCreateBrowserRouter(routes);
 
