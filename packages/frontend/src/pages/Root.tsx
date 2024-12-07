@@ -10,7 +10,6 @@ import {
 import type { TRPCClientErrorLike } from "@trpc/client";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useState } from "react";
-import { Helmet } from "react-helmet";
 import { toast } from "react-hot-toast";
 import { NavLink, useNavigate } from "react-router";
 import { useInterval } from "react-use";
@@ -90,9 +89,7 @@ export const Root = ({
 
   return (
     <>
-      <Helmet>
-        <title>{data ? `${data.name} - ${title}` : title}</title>
-      </Helmet>
+      <title>{data ? `${data.name} - ${title}` : title}</title>
       <div className="m-auto flex h-dvh flex-col">
         {!navigatorOnLine || bannerText ? (
           <header className="bg-muted text-muted-foreground flex justify-center gap-1 p-1 text-center text-xs tracking-tighter">
