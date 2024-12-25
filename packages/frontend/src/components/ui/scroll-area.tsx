@@ -1,14 +1,16 @@
 "use client";
 
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import * as React from "react";
+import type * as React from "react";
 
 import { cn } from "./utils";
 
-const ScrollBar = React.forwardRef<
-  React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
->(({ className, orientation = "vertical", ...props }, ref) => (
+const ScrollBar = ({
+  ref,
+  className,
+  orientation = "vertical",
+  ...props
+}: React.ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>) => (
   <ScrollAreaPrimitive.ScrollAreaScrollbar
     ref={ref}
     orientation={orientation}
@@ -24,40 +26,33 @@ const ScrollBar = React.forwardRef<
   >
     <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>
-));
-ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
+);
 
 type ScrollAreaProps = {
   viewportClassName?: string | undefined;
   rootClassName?: string | undefined;
-} & Omit<
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>,
-  "className"
->;
+} & Omit<React.ComponentProps<typeof ScrollAreaPrimitive.Root>, "className">;
 
-const ScrollArea = React.forwardRef<
-  React.ElementRef<typeof ScrollAreaPrimitive.Root>,
-  ScrollAreaProps
->(
-  (
-    { viewportClassName: className, rootClassName, children, ...props },
-    ref,
-  ) => (
-    <ScrollAreaPrimitive.Root
-      ref={ref}
-      className={cn("relative overflow-hidden", rootClassName)}
-      {...props}
+const ScrollArea = ({
+  ref,
+  viewportClassName: className,
+  rootClassName,
+  children,
+  ...props
+}: ScrollAreaProps) => (
+  <ScrollAreaPrimitive.Root
+    ref={ref}
+    className={cn("relative overflow-hidden", rootClassName)}
+    {...props}
+  >
+    <ScrollAreaPrimitive.Viewport
+      className={cn("h-full w-full rounded-[inherit]", className)}
     >
-      <ScrollAreaPrimitive.Viewport
-        className={cn("h-full w-full rounded-[inherit]", className)}
-      >
-        {children}
-      </ScrollAreaPrimitive.Viewport>
-      <ScrollBar />
-      <ScrollAreaPrimitive.Corner />
-    </ScrollAreaPrimitive.Root>
-  ),
+      {children}
+    </ScrollAreaPrimitive.Viewport>
+    <ScrollBar />
+    <ScrollAreaPrimitive.Corner />
+  </ScrollAreaPrimitive.Root>
 );
-ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
 export { ScrollArea, ScrollBar };
