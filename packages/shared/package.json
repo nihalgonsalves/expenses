@@ -20,7 +20,7 @@
     "@dinero.js/currencies": "^2.0.0-alpha.14",
     "dinero.js": "^2.0.0-alpha.14",
     "fastpriorityqueue": "^0.7.5",
-    "zod": "^3.23.8"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "vitest": "^2.1.8"
