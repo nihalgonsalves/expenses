@@ -22,6 +22,7 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
     page.getByRole("heading", { name: "Add Transaction" }),
   ).toBeVisible();
 
+  await expect(page.getByLabel(/amount/i)).toBeFocused();
   await page.getByLabel(/amount/i).pressSequentially("10000");
   await page.getByLabel(/category/i).click();
 
@@ -84,6 +85,7 @@ test(`creates a shared sheet transaction successfully`, async ({
     page.getByRole("heading", { name: "Add Transaction" }),
   ).toBeVisible();
 
+  await expect(page.getByLabel(/how much/i)).toBeFocused();
   await page.getByLabel(/how much/i).pressSequentially("10000");
   await page.getByLabel(/category/i).click();
 
