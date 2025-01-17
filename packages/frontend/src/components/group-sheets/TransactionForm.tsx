@@ -415,7 +415,7 @@ const SplitsFormSection = ({
       const newType = z.nativeEnum(GroupTransactionSplitType).parse(value);
 
       const isCurrentlyDirty = form.formState.dirtyFields.ratios?.some(
-        ({ ratio }) => ratio,
+        ({ ratio }) => ratio === true,
       );
 
       switch (newType) {

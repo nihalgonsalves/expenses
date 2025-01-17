@@ -426,16 +426,24 @@ export const PersonalTransactionsImporter = ({
           }
 
           setAmountField(
-            meta.fields?.find((field) => fieldMatchers.amount.exec(field)),
+            meta.fields?.find(
+              (field) => fieldMatchers.amount.exec(field) != null,
+            ),
           );
           setDateField(
-            meta.fields?.find((field) => fieldMatchers.date.exec(field)),
+            meta.fields?.find(
+              (field) => fieldMatchers.date.exec(field) != null,
+            ),
           );
           setCategoryField(
-            meta.fields?.find((field) => fieldMatchers.category.exec(field)),
+            meta.fields?.find(
+              (field) => fieldMatchers.category.exec(field) != null,
+            ),
           );
           setDescriptionField(
-            meta.fields?.find((field) => fieldMatchers.description.exec(field)),
+            meta.fields?.find(
+              (field) => fieldMatchers.description.exec(field) != null,
+            ),
           );
 
           setHeaders(meta.fields);
