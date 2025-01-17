@@ -1,7 +1,7 @@
 import { StarFilledIcon } from "@radix-ui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react";
 import { userEvent, within, screen, waitFor, expect } from "@storybook/test";
-import React from "react";
+import type React from "react";
 
 import {
   NavigationMenu,
@@ -52,10 +52,13 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
-const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a">
->(({ className, title, children, ...props }, ref) => (
+const ListItem = ({
+  ref,
+  className,
+  title,
+  children,
+  ...props
+}: React.ComponentProps<"a">) => (
   <li>
     <NavigationMenuLink asChild>
       <a
@@ -73,7 +76,7 @@ const ListItem = React.forwardRef<
       </a>
     </NavigationMenuLink>
   </li>
-));
+);
 ListItem.displayName = "ListItem";
 
 const meta: Meta<typeof NavigationMenu> = {

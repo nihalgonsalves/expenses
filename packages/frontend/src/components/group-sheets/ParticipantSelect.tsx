@@ -1,4 +1,3 @@
-import { forwardRef } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 import { z } from "zod";
 
@@ -11,12 +10,17 @@ type ParticipantSelectProps = {
   groupSheet: GroupSheetByIdResponse;
   value: string | undefined;
   onChange: (val: string) => void;
-} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
+} & Pick<React.ComponentProps<typeof Select>, "ref"> &
+  Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
-export const ParticipantSelect = forwardRef<
-  HTMLButtonElement,
-  ParticipantSelectProps
->(({ id, groupSheet, value, onChange, ...controllerProps }, ref) => {
+export const ParticipantSelect = ({
+  ref,
+  id,
+  groupSheet,
+  value,
+  onChange,
+  ...controllerProps
+}: ParticipantSelectProps) => {
   const options = Object.values(groupSheet.participants);
 
   return (
@@ -37,5 +41,4 @@ export const ParticipantSelect = forwardRef<
       ]}
     />
   );
-});
-ParticipantSelect.displayName = "ParticipantSelect";
+};

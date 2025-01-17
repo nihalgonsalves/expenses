@@ -1,11 +1,12 @@
-import * as React from "react";
+import type * as React from "react";
 
 import { cn, twx } from "./utils";
 
-const Table = React.forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
+const Table = ({
+  ref,
+  className,
+  ...props
+}: React.HTMLProps<HTMLTableElement>) => (
   <div className="relative w-full overflow-auto">
     <table
       ref={ref}
@@ -13,8 +14,7 @@ const Table = React.forwardRef<
       {...props}
     />
   </div>
-));
-Table.displayName = "Table";
+);
 
 const TableHeader = twx.thead`[&_tr]:border-b`;
 TableHeader.displayName = "TableHeader";

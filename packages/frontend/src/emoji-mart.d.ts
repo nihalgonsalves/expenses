@@ -1,7 +1,8 @@
-declare global {
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+
+declare module "react" {
   namespace JSX {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-    interface IntrinsicElements {
+    interface IntrinsicElements extends React.JSX.IntrinsicElements {
       "em-emoji": (
         | { id: string; shortcodes?: undefined }
         | { id?: undefined; shortcodes: string }

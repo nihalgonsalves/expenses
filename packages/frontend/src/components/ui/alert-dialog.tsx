@@ -2,7 +2,7 @@
 
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import type { VariantProps } from "class-variance-authority";
-import * as React from "react";
+import type * as React from "react";
 import type { TwcComponentProps } from "react-twc";
 
 import { buttonVariants } from "../ui/button";
@@ -20,10 +20,11 @@ const AlertDialogOverlay = twx(
 )`fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0`;
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 
-const AlertDialogContent = React.forwardRef<
-  React.ElementRef<typeof AlertDialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+const AlertDialogContent = ({
+  ref,
+  className,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Content>) => (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
@@ -35,8 +36,7 @@ const AlertDialogContent = React.forwardRef<
       {...props}
     />
   </AlertDialogPortal>
-));
-AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
+);
 
 const AlertDialogHeader = twx.div`flex flex-col space-y-2 text-center sm:text-left`;
 AlertDialogHeader.displayName = "AlertDialogHeader";
