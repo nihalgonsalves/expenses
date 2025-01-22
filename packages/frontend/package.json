@@ -107,7 +107,7 @@
     "sharp": "^0.33.5",
     "storybook": "^8.5.0",
     "tsx": "^4.19.2",
-    "vite": "^6.0.7",
+    "vite": "^6.0.9",
     "vite-plugin-istanbul": "^6.0.2",
     "vite-plugin-pwa": "^0.21.1",
     "vitest": "^3.0.1",
