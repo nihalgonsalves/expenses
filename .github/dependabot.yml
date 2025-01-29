@@ -21,6 +21,8 @@ updates:
       - dependency-name: "tailwindcss"
         update-types:
           - "version-update:semver-major"
+      # can't be updated without also updating the Docker image in build.yml
+      - dependency-name: "@playwright/test"
 
   - package-ecosystem: github-actions
     directory: "/"
