@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@4/schema.json",
+  "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": [
     "packages/backend/src/app.ts!",
     "packages/frontend/src/main.tsx!",
@@ -15,6 +15,8 @@
   "ignore": [
     // knip isn't `working-directory` aware
     ".github/workflows/build.yml",
+    "packages/frontend/postcss.config.js",
   ],
-  "ignoreBinaries": ["touch"],
+  "ignoreDependencies": ["autoprefixer", "chromatic", "wait-on"],
+  "ignoreBinaries": [],
 }
