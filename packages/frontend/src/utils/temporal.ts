@@ -1,7 +1,7 @@
 import { getUserLanguage } from "./utils";
 
 export const CURRENT_TIMEZONE =
-  Intl.DateTimeFormat().resolvedOptions().timeZone;
+  Intl.DateTimeFormat(getUserLanguage()).resolvedOptions().timeZone;
 
 type NaiveDurationLike = Omit<
   Temporal.DurationLike,
