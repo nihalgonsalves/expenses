@@ -14,6 +14,7 @@ import {
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import { shortDateFormatter } from "../../utils/temporal";
+import { getUserLanguage } from "../../utils/utils";
 
 import { Button } from "./button";
 import { Calendar } from "./calendar";
@@ -272,7 +273,9 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
 
           <div>
             {range.to
-              ? formatDateRange(range.from, range.to)
+              ? formatDateRange(range.from, range.to, {
+                  locale: getUserLanguage(),
+                })
               : `${shortDateFormatter.format(range.from)} - `}
           </div>
         </Button>

@@ -5,7 +5,21 @@ import type {
 
 import { formatCurrency } from "./money";
 
-export const getUserLanguage = () => globalThis.navigator.languages[0];
+const DEFAULT_LOCALE = "en-US";
+
+export const getUserLanguage = () => {
+  const locale =
+    globalThis.navigator.languages[0] || navigator.language || DEFAULT_LOCALE;
+
+  try {
+    // https://github.com/microsoft/playwright/issues/34046
+    // https://github.com/adobe/react-spectrum/issues/7457
+    Intl.DateTimeFormat.supportedLocalesOf(locale);
+    return locale;
+  } catch {
+    return DEFAULT_LOCALE;
+  }
+};
 
 export const getInitials = (name: string): string => {
   const [first, last] = name.split(" ");
