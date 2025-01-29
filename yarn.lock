@@ -2982,8 +2982,8 @@ __metadata:
     "@testcontainers/postgresql": "npm:^10.17.2"
     "@testcontainers/redis": "npm:^10.17.2"
     "@total-typescript/ts-reset": "npm:^0.6.1"
-    "@trpc/client": "npm:^11.0.0-rc.700"
-    "@trpc/server": "npm:^11.0.0-rc.700"
+    "@trpc/client": "npm:^11.0.0-rc.730"
+    "@trpc/server": "npm:^11.0.0-rc.730"
     "@types/bcrypt": "npm:^5.0.2"
     "@types/nodemailer": "npm:^6"
     "@types/pem": "npm:^1.14.4"
@@ -3022,7 +3022,7 @@ __metadata:
     "@nihalgonsalves/expenses-backend": "npm:*"
     "@nihalgonsalves/expenses-shared": "npm:*"
     "@playwright/test": "npm:1.50.0"
-    "@trpc/client": "npm:^11.0.0-rc.700"
+    "@trpc/client": "npm:^11.0.0-rc.730"
     chromatic: "npm:^11.25.1"
     zod: "npm:^3.24.1"
   languageName: unknown
@@ -3073,8 +3073,8 @@ __metadata:
     "@tanstack/react-query-persist-client": "npm:^5.65.0"
     "@tanstack/react-table": "npm:^8.20.6"
     "@total-typescript/ts-reset": "npm:^0.6.1"
-    "@trpc/client": "npm:^11.0.0-rc.700"
-    "@trpc/react-query": "npm:^11.0.0-rc.700"
+    "@trpc/client": "npm:^11.0.0-rc.730"
+    "@trpc/react-query": "npm:^11.0.0-rc.730"
     "@types/loadable__component": "npm:^5"
     "@types/papaparse": "npm:^5.3.15"
     "@types/react": "npm:^19.0.8"
@@ -3148,7 +3148,7 @@ __metadata:
     "@types/node": "npm:22"
     "@vitest/ui": "npm:^3.0.4"
     eslint: "npm:^9.19.0"
-    eslint-plugin-react-compiler: "npm:19.0.0-beta-e552027-20250112"
+    eslint-plugin-react-compiler: "npm:19.0.0-beta-27714ef-20250124"
     eslint-plugin-storybook: "npm:^0.11.2"
     eslint-plugin-unused-imports: "npm:^4.1.4"
     knip: "npm:^5.43.6"
@@ -6441,36 +6441,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/client@npm:^11.0.0-rc.700":
-  version: 11.0.0-rc.700
-  resolution: "@trpc/client@npm:11.0.0-rc.700"
+"@trpc/client@npm:^11.0.0-rc.730":
+  version: 11.0.0-rc.730
+  resolution: "@trpc/client@npm:11.0.0-rc.730"
   peerDependencies:
-    "@trpc/server": 11.0.0-rc.700+e5c0c1a82
+    "@trpc/server": 11.0.0-rc.730+776d07336
     typescript: ">=5.7.2"
-  checksum: 10c0/4603e869c5acc7255fc2ccdca8310621a0e7f75d43cb1a92bb407ef73a9acde52e8cbeb5d3f27d734128c4e9a9f1928116d1663a13673ac3aba3c79e83a5b220
+  checksum: 10c0/1700833d57d0413b972daa0704c54ba6f14cd11f31ddedd0f257f6cb26ffa7ab98a37bfbf666ecf4fae6fbb74f90d1aecc2d688ea829a5960c264eda5ad1261b
   languageName: node
   linkType: hard
 
-"@trpc/react-query@npm:^11.0.0-rc.700":
-  version: 11.0.0-rc.700
-  resolution: "@trpc/react-query@npm:11.0.0-rc.700"
+"@trpc/react-query@npm:^11.0.0-rc.730":
+  version: 11.0.0-rc.730
+  resolution: "@trpc/react-query@npm:11.0.0-rc.730"
   peerDependencies:
     "@tanstack/react-query": ^5.62.8
-    "@trpc/client": 11.0.0-rc.700+e5c0c1a82
-    "@trpc/server": 11.0.0-rc.700+e5c0c1a82
+    "@trpc/client": 11.0.0-rc.730+776d07336
+    "@trpc/server": 11.0.0-rc.730+776d07336
     react: ">=18.2.0"
     react-dom: ">=18.2.0"
     typescript: ">=5.7.2"
-  checksum: 10c0/e19fc39af3aeb5aba969699634ffb0aa0f4d1602357e94d431dd56461884d247dd41e0851898b0b052f5ca7e377b64769143640480159a5c959ea478419f89f7
+  checksum: 10c0/f388383b64b6a49d82c7181d795c14902e4a8c981ef0dce42f895e94bbe404a886a53fb03f75c5ee16dea6815eea5c5a118fc3d1ec83bb115027598efb8525fc
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^11.0.0-rc.700":
-  version: 11.0.0-rc.700
-  resolution: "@trpc/server@npm:11.0.0-rc.700"
+"@trpc/server@npm:^11.0.0-rc.730":
+  version: 11.0.0-rc.730
+  resolution: "@trpc/server@npm:11.0.0-rc.730"
   peerDependencies:
     typescript: ">=5.7.2"
-  checksum: 10c0/05e14feb9dc5586d799f0ca71a37685c1dc90a615270c31717400990845e46522d93774eccb2d0d8e65bb78a756149f82654def0a19e2de05f5cff06485149ed
+  checksum: 10c0/c730f73bb9db63f2fd388bc62032286f12a8abbe09c0c4ce711d429430d58859ff8ba0ec86535637c0c037f425ded68fefd19d6dcdea8c83baff1fc39de8787e
   languageName: node
   linkType: hard
 
@@ -10796,9 +10796,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-compiler@npm:19.0.0-beta-e552027-20250112":
-  version: 19.0.0-beta-e552027-20250112
-  resolution: "eslint-plugin-react-compiler@npm:19.0.0-beta-e552027-20250112"
+"eslint-plugin-react-compiler@npm:19.0.0-beta-27714ef-20250124":
+  version: 19.0.0-beta-27714ef-20250124
+  resolution: "eslint-plugin-react-compiler@npm:19.0.0-beta-27714ef-20250124"
   dependencies:
     "@babel/core": "npm:^7.24.4"
     "@babel/parser": "npm:^7.24.4"
@@ -10808,7 +10808,7 @@ __metadata:
     zod-validation-error: "npm:^3.0.3"
   peerDependencies:
     eslint: ">=7"
-  checksum: 10c0/d54bb2def851f79d88376ef108d5f682c07de820c9561a09051a8a5f3a4dbff0c22c8d014ad5e88db5f4db27947a371f497a8b07ddc561575f1601e47e0df6e4
+  checksum: 10c0/af539176e186da49372f759601f1fdf18e68c294a3ab1f9c387bd0bad4725b068b03ee06f5b93f4580b50d3a6d0d332d896d38055024119078cee9754080e35e
   languageName: node
   linkType: hard
 
