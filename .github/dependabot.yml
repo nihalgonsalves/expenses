@@ -13,17 +13,15 @@ updates:
       - dependency-name: "@types/node"
         update-types:
           - "version-update:semver-major"
-      # until v11 is out of rc
-      - dependency-name: "@trpc/*"
-        update-types:
-          - "version-update:semver-major"
-      - dependency-name: "dexie"
-        update-types:
-          - "version-update:semver-major"
       # 2024-08: https://github.com/shadcn-ui/ui/issues/4366
       - dependency-name: "react-day-picker"
         update-types:
           - "version-update:semver-major"
+      # shadcn
+      - dependency-name: "tailwindcss"
+        update-types:
+          - "version-update:semver-major"
+
   - package-ecosystem: github-actions
     directory: "/"
     schedule:

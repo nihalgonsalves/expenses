@@ -8,7 +8,7 @@ type CacheItem = {
 };
 
 class CacheDexie extends Dexie {
-  queryCache!: Table<CacheItem>;
+  queryCache!: Table<CacheItem, string>;
 
   constructor() {
     super(REACT_QUERY_CACHE_DEXIE_TABLE);

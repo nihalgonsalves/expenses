@@ -8,7 +8,7 @@ export type KeyValueItem = {
 };
 
 class PreferencesDexie extends Dexie {
-  preferences!: Table<KeyValueItem>;
+  preferences!: Table<KeyValueItem, string>;
 
   constructor() {
     super(PREFERENCES_DEXIE_TABLE);
