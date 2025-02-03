@@ -40,11 +40,11 @@
     "validate": "run-p --continue-on-error build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "~0.10.19",
+    "@nihalgonsalves/esconfig": "~0.10.20",
     "@types/node": "22",
-    "@vitest/ui": "^3.0.4",
+    "@vitest/ui": "^3.0.5",
     "eslint": "^9.19.0",
-    "eslint-plugin-react-compiler": "19.0.0-beta-27714ef-20250124",
+    "eslint-plugin-react-compiler": "19.0.0-beta-714736e-20250131",
     "eslint-plugin-storybook": "^0.11.2",
     "eslint-plugin-unused-imports": "^4.1.4",
     "knip": "^5.43.6",
@@ -57,7 +57,7 @@
     "sherif": "^1.2.0",
     "type-fest": "^4.33.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.22.0",
-    "vitest": "^3.0.4"
+    "typescript-eslint": "^8.23.0",
+    "vitest": "^3.0.5"
   }
 }
