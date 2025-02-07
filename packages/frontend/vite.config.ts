@@ -29,7 +29,11 @@ export default defineConfig(({ mode }) => ({
     process.env["ENABLE_BUNDLE_VISUALIZER"] &&
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       (visualizer({ open: true }) as unknown as Plugin),
-    react(),
+    react({
+      babel: {
+        plugins: [["babel-plugin-react-compiler", { target: "19" }]],
+      },
+    }),
     VitePWA({
       srcDir: "src",
       filename: "sw.ts",
