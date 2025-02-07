@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
 
-import { test as base } from "@chromatic-com/playwright";
-export { expect, takeSnapshot } from "@chromatic-com/playwright";
+import { test as base } from "@playwright/test";
+export { expect } from "@playwright/test";
 import {
   type CreateTRPCClient,
   createTRPCClient,

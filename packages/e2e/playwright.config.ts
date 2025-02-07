@@ -1,10 +1,9 @@
 import { fileURLToPath } from "url";
 
-import type { ChromaticConfig } from "@chromatic-com/playwright";
 import { defineConfig, devices } from "@playwright/test";
 
 /** https://playwright.dev/docs/test-configuration. */
-export default defineConfig<ChromaticConfig>({
+export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env["CI"],
@@ -13,7 +12,6 @@ export default defineConfig<ChromaticConfig>({
   reporter: [[process.env["CI"] ? "github" : "html"], ["line"]],
   use: {
     baseURL: "http://localhost:5173",
-    disableAutoSnapshot: true,
   },
   webServer: {
     reuseExistingServer: true,

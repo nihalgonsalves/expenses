@@ -1,10 +1,10 @@
-import { expect, takeSnapshot, test } from "../utils/test";
+import { expect, test } from "../utils/test";
 
 test(`creates and edits a personal sheet transaction successfully`, async ({
   page,
   serverTRPCClient,
   signIn,
-}, testInfo) => {
+}) => {
   await signIn();
   await page.goto("/");
 
@@ -31,7 +31,6 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
 
   await page.getByLabel(/description/i).fill("test transaction");
 
-  await takeSnapshot(page, testInfo);
   await page.getByRole("button", { name: /add/i }).click();
 
   // list on sheet page
@@ -40,8 +39,6 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
     .getByRole("button", { name: /test transaction/ })
     .filter({ hasText: "-€100.00" });
   await expect(row).toBeVisible();
-
-  await takeSnapshot(page, testInfo);
 
   // edit
 
@@ -66,7 +63,7 @@ test(`creates a shared sheet transaction successfully`, async ({
   page,
   serverTRPCClient,
   signIn,
-}, testInfo) => {
+}) => {
   await signIn();
   await page.goto("/");
 
@@ -94,7 +91,6 @@ test(`creates a shared sheet transaction successfully`, async ({
 
   await page.getByLabel(/description/i).fill("test transaction");
 
-  await takeSnapshot(page, testInfo);
   await page.getByRole("button", { name: /add/i }).click();
 
   // list
@@ -104,5 +100,4 @@ test(`creates a shared sheet transaction successfully`, async ({
     .filter({ hasText: "-€100.00" });
 
   await expect(row).toBeVisible();
-  await takeSnapshot(page, testInfo);
 });

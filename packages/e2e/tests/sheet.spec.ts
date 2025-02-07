@@ -1,10 +1,7 @@
-import { expect, takeSnapshot, test } from "../utils/test";
+import { expect, test } from "../utils/test";
 
 ["personal", "group"].forEach((type) => {
-  test(`creates a ${type} sheet successfully`, async ({
-    page,
-    signIn,
-  }, testInfo) => {
+  test(`creates a ${type} sheet successfully`, async ({ page, signIn }) => {
     await signIn();
     await page.goto("/");
 
@@ -13,13 +10,11 @@ import { expect, takeSnapshot, test } from "../utils/test";
     await page.getByRole("button", { name: `New ${type} sheet` }).click();
 
     await page.getByLabel(/sheet name/i).fill("Test Sheet");
-    await takeSnapshot(page, testInfo);
 
     await page.getByRole("button", { name: /create/i }).click();
 
     await expect(page).toHaveTitle(/test sheet/i);
     await expect(page.getByText("Test Sheet")).toBeVisible();
-    await takeSnapshot(page, testInfo);
   });
 
   test(`updates a ${type} sheet  successfully`, async ({
