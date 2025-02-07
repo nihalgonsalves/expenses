@@ -11,10 +11,10 @@
     "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@chromatic-com/playwright": "0.10.2",
+    "@chromatic-com/playwright": "0.11.0",
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
-    "@playwright/test": "1.50.0",
+    "@playwright/test": "1.50.1",
     "@trpc/client": "^11.0.0-rc.730",
     "chromatic": "^11.25.2",
     "zod": "^3.24.1"
