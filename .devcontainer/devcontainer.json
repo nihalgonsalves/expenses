@@ -9,11 +9,11 @@
       "extensions": [
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
-        "zixuanchen.vitest-explorer",
+        "vitest.explorer",
         "bradlc.vscode-tailwindcss",
-        "Prisma.prisma",
+        "prisma.prisma",
         "ms-playwright.playwright",
-        "ReneSaarsoo.sql-formatter-vsc",
+        "renesaarsoo.sql-formatter-vsc",
         "tekumara.typos-vscode"
       ]
     }
