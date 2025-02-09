@@ -36,9 +36,9 @@ const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
 };
 
 const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
-  <div className="bg-card flex place-items-center content-between justify-between rounded-lg border p-6 shadow">
+  <div className="bg-card flex place-items-center content-between justify-between rounded-lg border p-6 shadow-sm">
     <div>
-      <div className="text-sm capitalize text-neutral-500 md:text-lg">
+      <div className="text-sm text-neutral-500 capitalize md:text-lg">
         <Button $variant="link" className="h-auto p-0" asChild>
           <Link to={`/?${new URLSearchParams({ category }).toString()}`}>
             {category}

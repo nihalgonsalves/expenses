@@ -181,7 +181,7 @@ const TransferItem = ({
 
   return (
     <div
-      className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm shadow-sm"
+      className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm shadow-xs"
       key={`${t.from.id}_${t.to.id}`}
     >
       <span>

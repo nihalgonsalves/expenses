@@ -513,7 +513,7 @@ const SplitsFormSection = ({
                         {participantNameById[participantId]}
                       </FormLabel>
                       <br />
-                      <span className="tabular-nums text-gray-500">
+                      <span className="text-gray-500 tabular-nums">
                         {splitValid ? (
                           <>
                             {formatCurrency(share)}

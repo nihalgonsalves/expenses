@@ -2,8 +2,8 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import type { VariantProps } from "class-variance-authority";
 import { atom, useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
-import { useMedia } from "react-use";
 
+import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -73,7 +73,7 @@ const ResponsiveDialogInner = ({
   children,
   ...props
 }: ResponsiveDialogProps) => {
-  const isDesktop = useMedia("(min-width: 768px)");
+  const isDesktop = useBreakpoint("md");
 
   const [open, setOpen] = useState(false);
   const [globalOpen, setGlobalOpen] = useAtom(responsiveDialogOpen);

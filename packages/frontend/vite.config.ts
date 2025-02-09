@@ -1,6 +1,7 @@
 import { fileURLToPath } from "url";
 
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, type Plugin } from "vite";
@@ -15,7 +16,9 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2022",
     sourcemap: true,
+    cssMinify: "lightningcss",
   },
+  css: { transformer: "lightningcss" },
   server: {
     host: true,
     proxy: {
@@ -30,6 +33,7 @@ export default defineConfig(({ mode }) => ({
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       (visualizer({ open: true }) as unknown as Plugin),
     react(),
+    tailwindcss(),
     VitePWA({
       srcDir: "src",
       filename: "sw.ts",

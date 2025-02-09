@@ -17,6 +17,11 @@
     ".github/workflows/build.yml",
     "packages/frontend/postcss.config.js",
   ],
-  "ignoreDependencies": ["autoprefixer", "chromatic", "wait-on"],
+  "ignoreDependencies": [
+    "chromatic",
+    "tailwindcss",
+    "tailwindcss-animate",
+    "wait-on",
+  ],
   "ignoreBinaries": [],
 }

@@ -20,8 +20,8 @@ export const useOffLineToaster = () => {
       toast(() => "Network disconnected", {
         id: TOAST_ID,
         style: {
-          backgroundColor: "hsl(var(--muted))",
-          color: "hsl(var(--muted-foreground))",
+          backgroundColor: "var(--muted)",
+          color: "var(--muted-foreground)",
         },
       });
     }

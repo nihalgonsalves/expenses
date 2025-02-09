@@ -162,7 +162,7 @@ export const NotificationPreferenceForm = () => {
               control={form.control}
               name="notificationsEnabled"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-xs">
                   <div className="space-y-0.5">
                     <FormLabel>Notifications on this device</FormLabel>
                     <FormDescription>

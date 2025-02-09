@@ -22,7 +22,7 @@ TableHeader.displayName = "TableHeader";
 const TableBody = twx.tbody`[&_tr:last-child]:border-0`;
 TableBody.displayName = "TableBody";
 
-const TableFooter = twx.tfoot`border-t bg-muted/50 font-medium [&>tr]:last:border-b-0`;
+const TableFooter = twx.tfoot`border-t bg-muted/50 font-medium last:[&>tr]:border-b-0`;
 TableFooter.displayName = "TableFooter";
 
 const TableRow = twx.tr`border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted`;
