@@ -151,8 +151,18 @@ const verifyAmountIsAbsolute = (money: Money) => {
 };
 
 export class TransactionService {
+  private prismaClient: Pick<
+    PrismaClientType,
+    | "$transaction"
+    | "transaction"
+    | "transactionSchedule"
+    | "transactionEntry"
+    | "sheetMemberships"
+  >;
+  private notificationDispatchWorker: INotificationDispatchWorker;
+
   constructor(
-    private prismaClient: Pick<
+    prismaClient: Pick<
       PrismaClientType,
       | "$transaction"
       | "transaction"
@@ -160,8 +170,11 @@ export class TransactionService {
       | "transactionEntry"
       | "sheetMemberships"
     >,
-    private notificationDispatchWorker: INotificationDispatchWorker,
-  ) {}
+    notificationDispatchWorker: INotificationDispatchWorker,
+  ) {
+    this.prismaClient = prismaClient;
+    this.notificationDispatchWorker = notificationDispatchWorker;
+  }
 
   async getAllUserTransactions(
     user: User,

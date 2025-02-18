@@ -3,6 +3,7 @@
   "compilerOptions": {
     "composite": true,
     "module": "Preserve",
+    "erasableSyntaxOnly": true,
     "skipLibCheck": true,
     "checkJs": true,
     "rootDir": "${configDir}/",

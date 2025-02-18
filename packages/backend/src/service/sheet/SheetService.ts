@@ -45,10 +45,16 @@ const participantConnectOrCreate = (email: string) => ({
 });
 
 export class SheetService {
+  private prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">;
+  private transactionService: TransactionService;
+
   constructor(
-    private prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">,
-    private transactionService: TransactionService,
-  ) {}
+    prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">,
+    transactionService: TransactionService,
+  ) {
+    this.prismaClient = prismaClient;
+    this.transactionService = transactionService;
+  }
 
   async createPersonalSheet(input: CreatePersonalSheetInput, owner: User) {
     try {

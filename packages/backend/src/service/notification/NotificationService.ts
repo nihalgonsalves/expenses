@@ -5,9 +5,13 @@ import type { PrismaClientType } from "../../app";
 import { generateId } from "../../utils/nanoid";
 
 export class NotificationService {
+  private prismaClient: Pick<PrismaClientType, "notificationSubscription">;
+
   constructor(
-    private prismaClient: Pick<PrismaClientType, "notificationSubscription">,
-  ) {}
+    prismaClient: Pick<PrismaClientType, "notificationSubscription">,
+  ) {
+    this.prismaClient = prismaClient;
+  }
 
   async getSubscriptions(user: User) {
     return this.prismaClient.notificationSubscription.findMany({

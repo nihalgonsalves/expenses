@@ -7,7 +7,7 @@
   "typescript.preferences.autoImportFileExcludePatterns": [
     "@types/node/test.d.ts"
   ],
-  "vitest.commandLine": "yarn test",
+  "typescript.tsdk": "node_modules/typescript/lib",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },

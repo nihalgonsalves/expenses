@@ -42,11 +42,17 @@ export class NotificationDispatchWorker
 
   worker: Worker<WebPushQueueItem, NotificationDispatchResult>;
 
+  private prismaClient: PrismaClientType;
+  private vapidDetails: NonNullable<RequestOptions["vapidDetails"]>;
+
   constructor(
-    private prismaClient: PrismaClientType,
+    prismaClient: PrismaClientType,
     redis: IORedis,
-    private vapidDetails: NonNullable<RequestOptions["vapidDetails"]>,
+    vapidDetails: NonNullable<RequestOptions["vapidDetails"]>,
   ) {
+    this.prismaClient = prismaClient;
+    this.vapidDetails = vapidDetails;
+
     this.queue = new Queue(NOTIFICATION_BULLMQ_QUEUE, {
       connection: redis,
     });

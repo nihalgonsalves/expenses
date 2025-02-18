@@ -83,13 +83,16 @@ type GroupTransactionShare = {
   share: Money;
 };
 
-enum GroupTransactionSplitType {
-  Evenly = "evenly",
-  Selected = "selected",
-  Shares = "shares",
-  Percentage = "percentage",
-  Amounts = "amounts",
-}
+const GroupTransactionSplitType = {
+  Evenly: "evenly",
+  Selected: "selected",
+  Shares: "shares",
+  Percentage: "percentage",
+  Amounts: "amounts",
+} as const;
+
+type GroupTransactionSplitType =
+  (typeof GroupTransactionSplitType)[keyof typeof GroupTransactionSplitType];
 
 const calcSplits = (
   participants: { id: string }[],

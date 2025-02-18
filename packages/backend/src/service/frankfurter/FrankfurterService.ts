@@ -39,7 +39,11 @@ const ZRateSchema = z.object({
 });
 
 export class FrankfurterService {
-  constructor(private baseUrl: string) {}
+  private baseUrl: string;
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
 
   async getCurrencies() {
     const url = new URL("/currencies", this.baseUrl);

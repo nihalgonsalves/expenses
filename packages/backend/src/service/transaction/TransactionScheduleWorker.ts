@@ -28,10 +28,10 @@ export class TransactionScheduleWorker
 
   worker: Worker<{ now: string | undefined }, TransactionScheduleWorkerResult>;
 
-  constructor(
-    private prisma: PrismaClientType,
-    redis: IORedis,
-  ) {
+  private prisma: PrismaClientType;
+
+  constructor(prisma: PrismaClientType, redis: IORedis) {
+    this.prisma = prisma;
     this.queue = new Queue(TRANSACTION_SCHEDULE_BULLMQ_QUEUE, {
       connection: redis,
     });

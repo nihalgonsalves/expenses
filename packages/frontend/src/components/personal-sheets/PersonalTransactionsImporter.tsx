@@ -36,10 +36,12 @@ import {
   TooltipContent,
 } from "../ui/tooltip";
 
-enum ImportStep {
-  UPLOAD_FILE,
-  CHOOSE_COLUMNS,
-}
+const ImportStep = {
+  UPLOAD_FILE: "UPLOAD_FILE",
+  CHOOSE_COLUMNS: "CHOOSE_COLUMNS",
+} as const;
+
+type ImportStep = (typeof ImportStep)[keyof typeof ImportStep];
 
 const fieldMatchers = {
   amount: /(amount|price|cost|money)/i,
@@ -48,23 +50,25 @@ const fieldMatchers = {
   description: /(description|note)/i,
 };
 
-enum CategoryId {
-  Groceries = "groceries",
-  Restaurants = "restaurants",
-  Bars = "bars",
-  Entertainment = "entertainment",
-  Cinema = "cinema",
-  Shopping = "shopping",
-  Travel = "travel",
-  Transportation = "transportation",
-  Hobbies = "hobbies",
-  Home = "home",
-  Rent = "rent",
-  Utilities = "utilities",
-  Other = "other",
-  Transfer = "transfer",
-  Income = "income",
-}
+const CategoryId = {
+  Groceries: "groceries",
+  Restaurants: "restaurants",
+  Bars: "bars",
+  Entertainment: "entertainment",
+  Cinema: "cinema",
+  Shopping: "shopping",
+  Travel: "travel",
+  Transportation: "transportation",
+  Hobbies: "hobbies",
+  Home: "home",
+  Rent: "rent",
+  Utilities: "utilities",
+  Other: "other",
+  Transfer: "transfer",
+  Income: "income",
+} as const;
+
+type CategoryId = (typeof CategoryId)[keyof typeof CategoryId];
 
 const categoryMatchers: [CategoryId, RegExp][] = [
   [CategoryId.Groceries, /(groceries)/i],
@@ -323,7 +327,9 @@ export const PersonalTransactionsImporter = ({
   const [categoryField, setCategoryField] = useState<string>();
   const [descriptionField, setDescriptionField] = useState<string>();
 
-  const [activeStep, setActiveStep] = useState(ImportStep.UPLOAD_FILE);
+  const [activeStep, setActiveStep] = useState<ImportStep>(
+    ImportStep.UPLOAD_FILE,
+  );
 
   const fileId = useId();
 

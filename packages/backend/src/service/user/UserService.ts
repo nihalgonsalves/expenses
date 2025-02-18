@@ -38,13 +38,22 @@ const ZVerifyEmailJWTPayload = z.object({
 });
 
 export class UserService {
+  private prismaClient: Pick<
+    PrismaClientType,
+    "$transaction" | "user" | "sheet" | "category"
+  >;
+  private emailWorker: IEmailWorker;
+
   constructor(
-    private prismaClient: Pick<
+    prismaClient: Pick<
       PrismaClientType,
       "$transaction" | "user" | "sheet" | "category"
     >,
-    private emailWorker: IEmailWorker,
-  ) {}
+    emailWorker: IEmailWorker,
+  ) {
+    this.prismaClient = prismaClient;
+    this.emailWorker = emailWorker;
+  }
 
   async exchangeToken(token: JWTToken): Promise<{
     user: User;
