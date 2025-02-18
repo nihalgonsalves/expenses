@@ -17,7 +17,7 @@
     "db:generate": "prisma generate",
     "prepare:e2e": "node bin/prepare-ci-e2e.js",
     "prepare:local": "node bin/prepare-local-env.js",
-    "prepare:demo": "tsx bin/demo.ts"
+    "prepare:demo": "node --experimental-strip-types bin/demo.ts"
   },
   "dependencies": {
     "@bull-board/api": "^6.7.7",
@@ -60,7 +60,6 @@
     "npm-run-all2": "^7.0.2",
     "pem": "^1.15.1",
     "prisma": "*",
-    "tsx": "^4.19.2",
     "vitest": "^3.0.5",
     "wait-on": "^8.0.2"
   },
