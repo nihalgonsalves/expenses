@@ -1,10 +1,11 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { Popover } from "@radix-ui/react-popover";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { CategoryIcon } from "../CategoryAvatar";
 import { Button } from "../ui/button";
 import {
@@ -44,7 +45,10 @@ export const CategorySelect = ({
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
-  const { data: categories } = trpc.transaction.getCategories.useQuery();
+  const { trpc } = useTRPC();
+  const { data: categories } = useQuery(
+    trpc.transaction.getCategories.queryOptions(),
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal>

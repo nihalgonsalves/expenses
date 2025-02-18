@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import type { z } from "zod";
 
 import { ZCreatePersonalSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { CurrencySelect } from "../form/CurrencySelect";
 import { useDialog } from "../form/ResponsiveDialog";
@@ -31,9 +32,10 @@ export const CreateSheetForm = ({
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
-  const utils = trpc.useUtils();
-  const { mutateAsync: createSheet, isPending } =
-    trpc.sheet.createPersonalSheet.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: createSheet, isPending } = useMutation(
+    trpc.sheet.createPersonalSheet.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZCreatePersonalSheetInput>>({
     resolver: zodResolver(ZCreatePersonalSheetInput),
@@ -52,7 +54,7 @@ export const CreateSheetForm = ({
     dialog.dismiss();
     await navigate(`/sheets/${id}`, { replace: true });
 
-    await utils.sheet.mySheets.invalidate();
+    await invalidate(trpc.sheet.mySheets.queryKey());
   };
 
   const disabled = !onLine;

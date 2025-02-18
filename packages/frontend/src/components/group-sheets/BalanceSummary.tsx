@@ -6,6 +6,7 @@ import {
   ExitIcon,
   TrashIcon,
 } from "@radix-ui/react-icons";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -15,7 +16,7 @@ import type {
   TransactionSummaryResponse,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { Avatar } from "../Avatar";
 import { CurrencySpan } from "../CurrencySpan";
@@ -53,9 +54,11 @@ const PersonMenu = ({
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
-  const utils = trpc.useUtils();
-  const { mutateAsync: deleteGroupSheetMember } =
-    trpc.sheet.deleteGroupSheetMember.useMutation();
+  const { trpc, invalidate } = useTRPC();
+
+  const { mutateAsync: deleteGroupSheetMember } = useMutation(
+    trpc.sheet.deleteGroupSheetMember.mutationOptions(),
+  );
 
   const handleDelete = async () => {
     setIsInvalidating(true);
@@ -66,11 +69,11 @@ const PersonMenu = ({
         participantId: id,
       });
 
-      await Promise.all([
-        utils.sheet.groupSheetById.invalidate(groupSheetId),
-        utils.transaction.getParticipantSummaries.invalidate(groupSheetId),
-        utils.transaction.getSimplifiedBalances.invalidate(groupSheetId),
-      ]);
+      await invalidate(
+        trpc.sheet.groupSheetById.queryKey(groupSheetId),
+        trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
+        trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
+      );
 
       if (actorInfo.id === id) {
         await navigate("/groups");
@@ -156,10 +159,11 @@ const TransferItem = ({
   transfer: BalanceSimplificationResponse[number];
   summary: TransactionSummaryResponse[number];
 }) => {
-  const utils = trpc.useUtils();
+  const { trpc, invalidate } = useTRPC();
 
-  const { mutateAsync: createGroupSheetSettlement, isPending } =
-    trpc.transaction.createGroupSheetSettlement.useMutation();
+  const { mutateAsync: createGroupSheetSettlement, isPending } = useMutation(
+    trpc.transaction.createGroupSheetSettlement.mutationOptions(),
+  );
 
   const handleSettleUp = useCallback(async () => {
     await createGroupSheetSettlement({
@@ -169,15 +173,15 @@ const TransferItem = ({
       money: t.money,
     });
 
-    await Promise.all([
-      utils.transaction.getAllUserTransactions.invalidate(),
-      utils.transaction.getGroupSheetTransactions.invalidate({
+    await invalidate(
+      trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId,
       }),
-      utils.transaction.getParticipantSummaries.invalidate(groupSheetId),
-      utils.transaction.getSimplifiedBalances.invalidate(groupSheetId),
-    ]);
-  }, [createGroupSheetSettlement, groupSheetId, t, utils]);
+      trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
+      trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
+    );
+  }, [createGroupSheetSettlement, groupSheetId, t, trpc, invalidate]);
 
   return (
     <div
@@ -291,11 +295,15 @@ export const BalanceSummary = ({
   groupSheetId: string;
   actorInfo: ActorInfo;
 }) => {
-  const { data: summaries } =
-    trpc.transaction.getParticipantSummaries.useQuery(groupSheetId);
+  const { trpc } = useTRPC();
 
-  const { data: transfers } =
-    trpc.transaction.getSimplifiedBalances.useQuery(groupSheetId);
+  const { data: summaries } = useQuery(
+    trpc.transaction.getParticipantSummaries.queryOptions(groupSheetId),
+  );
+
+  const { data: transfers } = useQuery(
+    trpc.transaction.getSimplifiedBalances.queryOptions(groupSheetId),
+  );
 
   return (
     <div className="flex flex-col gap-4">

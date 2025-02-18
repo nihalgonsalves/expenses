@@ -2,17 +2,19 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { TRPCClientError, httpBatchLink } from "@trpc/client";
+import { TRPCClientError, createTRPCClient, httpBatchLink } from "@trpc/client";
 import type React from "react";
 import { useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 
+import type { AppRouter } from "@nihalgonsalves/expenses-backend/build";
+
 import { config } from "../config";
 import { queryCache } from "../state/queryCache";
 import { durationMilliseconds } from "../utils/temporal";
 
-import { trpc } from "./trpc";
+import { TRPCProvider } from "./trpc";
 
 const ZData = z.object({
   httpStatus: z.number().optional(),
@@ -88,7 +90,7 @@ const queryClient = new QueryClient({
 export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
   const trpcClient = useMemo(
     () =>
-      trpc.createClient({
+      createTRPCClient<AppRouter>({
         links: [
           httpBatchLink({
             url: config.VITE_API_BASE_URL,
@@ -99,7 +101,7 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+    <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
       <PersistQueryClientProvider
         client={queryClient}
         persistOptions={{
@@ -113,6 +115,6 @@ export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
           buttonPosition="bottom-left"
         />
       </PersistQueryClientProvider>
-    </trpc.Provider>
+    </TRPCProvider>
   );
 };

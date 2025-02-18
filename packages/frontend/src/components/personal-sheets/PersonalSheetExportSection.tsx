@@ -1,10 +1,11 @@
 import { DownloadIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { requestExport } from "../../api/requestExport";
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { moneyToString } from "../../utils/money";
 import { Button } from "../ui/button";
 
@@ -13,11 +14,14 @@ export const PersonalSheetExportSection = ({
 }: {
   personalSheet: Sheet;
 }) => {
-  const { refetch } = trpc.transaction.getPersonalSheetTransactions.useQuery(
-    {
-      personalSheetId: personalSheet.id,
-    },
-    { enabled: false },
+  const { trpc } = useTRPC();
+  const { refetch } = useQuery(
+    trpc.transaction.getPersonalSheetTransactions.queryOptions(
+      {
+        personalSheetId: personalSheet.id,
+      },
+      { enabled: false },
+    ),
   );
 
   const exportGroupSheet = useCallback(

@@ -1,11 +1,15 @@
-import { trpc } from "../../api/trpc";
+import { useQuery } from "@tanstack/react-query";
+
+import { useTRPC } from "../../api/trpc";
 import { PersonalSheet } from "../../components/personal-sheets/PersonalSheet";
 import { useParams, SheetParams } from "../../routes";
 import { RootLoader } from "../Root";
 
 const SheetDetailPage = () => {
+  const { trpc } = useTRPC();
+
   const { sheetId } = useParams(SheetParams);
-  const result = trpc.sheet.personalSheetById.useQuery(sheetId);
+  const result = useQuery(trpc.sheet.personalSheetById.queryOptions(sheetId));
 
   return (
     <RootLoader

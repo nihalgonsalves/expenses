@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import { ZAddGroupSheetMemberInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { ResponsiveDialog, useDialog } from "../form/ResponsiveDialog";
 import { Button } from "../ui/button";
@@ -24,9 +25,11 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const dialog = useDialog();
   const onLine = useNavigatorOnLine();
 
-  const { mutateAsync: addGroupSheetMember, isPending } =
-    trpc.sheet.addGroupSheetMember.useMutation();
-  const utils = trpc.useUtils();
+  const { trpc, invalidate } = useTRPC();
+
+  const { mutateAsync: addGroupSheetMember, isPending } = useMutation(
+    trpc.sheet.addGroupSheetMember.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZAddGroupSheetMemberInput>>({
     resolver: zodResolver(ZAddGroupSheetMemberInput),
@@ -42,11 +45,11 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   ) => {
     await addGroupSheetMember(values);
 
-    await Promise.all([
-      utils.sheet.groupSheetById.invalidate(groupSheetId),
-      utils.transaction.getParticipantSummaries.invalidate(groupSheetId),
-      utils.transaction.getSimplifiedBalances.invalidate(groupSheetId),
-    ]);
+    await invalidate(
+      trpc.sheet.groupSheetById.queryKey(groupSheetId),
+      trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
+      trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
+    );
 
     dialog.dismiss();
   };

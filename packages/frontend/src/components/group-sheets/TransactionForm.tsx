@@ -8,6 +8,7 @@ import {
   SwitchIcon,
   TokensIcon,
 } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { type Dinero, allocate } from "dinero.js";
 import { useCallback, useMemo, useState } from "react";
 import {
@@ -32,7 +33,7 @@ import {
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { useCurrencyConversion } from "../../api/currencyConversion";
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { allocateByCount } from "../../utils/math";
 import {
@@ -650,9 +651,10 @@ export const TransactionForm = ({
 }) => {
   const dialog = useDialog();
 
-  const utils = trpc.useUtils();
-  const { mutateAsync: createGroupSheetTransaction, isPending } =
-    trpc.transaction.createGroupSheetTransaction.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: createGroupSheetTransaction, isPending } = useMutation(
+    trpc.transaction.createGroupSheetTransaction.mutationOptions(),
+  );
 
   const onLine = useNavigatorOnLine();
 
@@ -731,14 +733,14 @@ export const TransactionForm = ({
 
     dialog.dismiss();
 
-    await Promise.all([
-      utils.transaction.getAllUserTransactions.invalidate(),
-      utils.transaction.getGroupSheetTransactions.invalidate({
+    await invalidate(
+      trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId: groupSheet.id,
       }),
-      utils.transaction.getParticipantSummaries.invalidate(groupSheet.id),
-      utils.transaction.getSimplifiedBalances.invalidate(groupSheet.id),
-    ]);
+      trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
+      trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
+    );
   };
 
   return (

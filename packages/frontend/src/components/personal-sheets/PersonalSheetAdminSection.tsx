@@ -1,10 +1,11 @@
 import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { ConfirmDialog } from "../form/ConfirmDialog";
 import { Button } from "../ui/button";
 
@@ -15,28 +16,35 @@ export const PersonalSheetAdminSection = ({
 }) => {
   const navigate = useNavigate();
 
-  const utils = trpc.useUtils();
-
-  const { mutateAsync: deleteSheet } = trpc.sheet.deleteSheet.useMutation();
-  const { mutateAsync: archiveSheet } = trpc.sheet.archiveSheet.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: deleteSheet } = useMutation(
+    trpc.sheet.deleteSheet.mutationOptions(),
+  );
+  const { mutateAsync: archiveSheet } = useMutation(
+    trpc.sheet.archiveSheet.mutationOptions(),
+  );
 
   const handleDelete = useCallback(async () => {
     await deleteSheet(personalSheet.id);
-    await Promise.all([
-      utils.sheet.personalSheetById.invalidate(personalSheet.id),
-      utils.sheet.mySheets.invalidate(),
-    ]);
+
+    await invalidate(
+      trpc.sheet.personalSheetById.queryKey(personalSheet.id),
+      trpc.sheet.mySheets.queryKey(),
+    );
     await navigate("/sheets");
-  }, [deleteSheet, personalSheet.id, navigate, utils]);
+  }, [deleteSheet, personalSheet.id, navigate, trpc, invalidate]);
 
   const handleArchive = useCallback(async () => {
     await archiveSheet({
       sheetId: personalSheet.id,
       isArchived: !personalSheet.isArchived,
     });
-    void utils.sheet.personalSheetById.invalidate(personalSheet.id);
-    void utils.sheet.mySheets.invalidate();
-  }, [archiveSheet, personalSheet, utils]);
+
+    await invalidate(
+      trpc.sheet.personalSheetById.queryKey(personalSheet.id),
+      trpc.sheet.mySheets.queryKey(),
+    );
+  }, [archiveSheet, personalSheet, trpc, invalidate]);
 
   return (
     <>

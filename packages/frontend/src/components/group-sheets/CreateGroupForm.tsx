@@ -1,13 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { PersonIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import type { z } from "zod";
 
 import { ZCreateGroupSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { CurrencySelect } from "../form/CurrencySelect";
 import { useDialog } from "../form/ResponsiveDialog";
@@ -33,9 +34,10 @@ export const CreateGroupForm = ({
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
 
-  const utils = trpc.useUtils();
-  const { mutateAsync: createGroupSheet, isPending } =
-    trpc.sheet.createGroupSheet.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: createGroupSheet, isPending } = useMutation(
+    trpc.sheet.createGroupSheet.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZCreateGroupSheetInput>>({
     resolver: zodResolver(ZCreateGroupSheetInput),
@@ -66,7 +68,7 @@ export const CreateGroupForm = ({
     dialog.dismiss();
     await navigate(`/groups/${id}`, { replace: true });
 
-    await utils.sheet.mySheets.invalidate();
+    await invalidate(trpc.sheet.mySheets.queryKey());
   };
 
   const disabled = !onLine;

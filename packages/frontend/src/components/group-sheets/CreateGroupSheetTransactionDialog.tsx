@@ -3,13 +3,14 @@ import {
   ThickArrowDownIcon,
   ThickArrowUpIcon,
 } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionType } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useCurrentUser } from "../../api/useCurrentUser";
 import { ResponsiveDialog } from "../form/ResponsiveDialog";
 import { ToggleButtonGroup } from "../form/ToggleButtonGroup";
@@ -80,7 +81,10 @@ export const CreateGroupSheetTransactionDialog = ({
   sheetId: string;
   trigger: React.ReactNode;
 }) => {
-  const { data: groupSheet } = trpc.sheet.groupSheetById.useQuery(sheetId);
+  const { trpc } = useTRPC();
+  const { data: groupSheet } = useQuery(
+    trpc.sheet.groupSheetById.queryOptions(sheetId),
+  );
 
   const { data: me } = useCurrentUser();
 

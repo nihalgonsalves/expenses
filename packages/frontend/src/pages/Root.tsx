@@ -7,6 +7,7 @@ import {
   PieChartIcon,
   SymbolIcon,
 } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 import type { TRPCClientErrorLike } from "@trpc/client";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useState } from "react";
@@ -14,7 +15,7 @@ import { toast } from "react-hot-toast";
 import { NavLink, useNavigate } from "react-router";
 import { useInterval } from "react-use";
 
-import { trpc } from "../api/trpc";
+import { useTRPC } from "../api/trpc";
 import { usePullToRefresh } from "../api/usePullToRefresh";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { NavBarAvatar } from "../components/NavBarAvatar";
@@ -81,7 +82,8 @@ export const Root = ({
   className,
   bannerText,
 }: RootProps) => {
-  const { data } = trpc.config.useQuery();
+  const { trpc } = useTRPC();
+  const { data } = useQuery(trpc.config.queryOptions());
 
   const navigate = useNavigate();
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline

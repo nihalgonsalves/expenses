@@ -1,3 +1,4 @@
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
@@ -6,27 +7,33 @@ import { usePreferredCurrencyCode } from "../state/preferences";
 import { convertCurrency } from "../utils/money";
 import { durationMilliseconds } from "../utils/temporal";
 
-import { trpc } from "./trpc";
+import { useTRPC } from "./trpc";
 
-export const useSupportedCurrencies = () =>
-  trpc.currencyConversion.getSupportedCurrencies.useQuery(undefined, {
-    staleTime: durationMilliseconds({ hours: 1 }),
-  });
+export const useSupportedCurrencies = () => {
+  const { trpc } = useTRPC();
+
+  return useQuery(
+    trpc.currencyConversion.getSupportedCurrencies.queryOptions(undefined, {
+      staleTime: durationMilliseconds({ hours: 1 }),
+    }),
+  );
+};
 
 export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
+  const { trpc } = useTRPC();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
   const { data: supportedCurrencies = [] } = useSupportedCurrencies();
 
-  const rates = trpc.useQueries((t) =>
-    [
+  const rates = useQueries({
+    queries: [
       ...new Set(
         sourceCodes.filter(
           (s) => s !== preferredCurrencyCode && supportedCurrencies.includes(s),
         ),
       ),
     ].map((sourceCode) =>
-      t.currencyConversion.getConversionRate(
+      trpc.currencyConversion.getConversionRate.queryOptions(
         {
           date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
           from: sourceCode,
@@ -36,7 +43,7 @@ export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
         { staleTime: durationMilliseconds({ minutes: 5 }) },
       ),
     ),
-  );
+  });
 
   // Record<SourceCurrency, Rate SourceCurrency->TargetCurrency>>
   const sourceRateMap = useMemo(
@@ -78,17 +85,20 @@ export const useCurrencyConversion = (
 ) => {
   const { data: supportedCurrencies = [] } = useSupportedCurrencies();
 
-  const { data: rate } = trpc.currencyConversion.getConversionRate.useQuery(
-    {
-      date: date.toString(),
-      from: sourceCode,
-      to: targetCode,
-    },
-    {
-      enabled: sourceCode !== targetCode,
-      // theoretically could be Infinity for anything over 3 days ago (to account for weekend rates not updating)
-      staleTime: durationMilliseconds({ minutes: 5 }),
-    },
+  const { trpc } = useTRPC();
+  const { data: rate } = useQuery(
+    trpc.currencyConversion.getConversionRate.queryOptions(
+      {
+        date: date.toString(),
+        from: sourceCode,
+        to: targetCode,
+      },
+      {
+        enabled: sourceCode !== targetCode,
+        // theoretically could be Infinity for anything over 3 days ago (to account for weekend rates not updating)
+        staleTime: durationMilliseconds({ minutes: 5 }),
+      },
+    ),
   );
 
   const targetSnapshot = useMemo(

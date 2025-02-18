@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import type { z } from "zod";
 
 import { ZResetPasswordInput } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from "../api/trpc";
+import { useTRPC } from "../api/trpc";
 
 import { SingleScreenCard } from "./SignInForm";
 import { Button } from "./ui/button";
@@ -23,8 +24,10 @@ import { Input } from "./ui/input";
 export const ResetPasswordForm = ({ token }: { token: string }) => {
   const navigate = useNavigate();
 
-  const { mutateAsync: resetPassword, isPending } =
-    trpc.user.resetPassword.useMutation();
+  const { trpc } = useTRPC();
+  const { mutateAsync: resetPassword, isPending } = useMutation(
+    trpc.user.resetPassword.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZResetPasswordInput>>({
     resolver: zodResolver(ZResetPasswordInput),

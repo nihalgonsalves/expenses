@@ -1,6 +1,7 @@
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 
-import { trpc } from "../api/trpc";
+import { useTRPC } from "../api/trpc";
 
 import { SingleScreenCard } from "./SignInForm";
 import { Button } from "./ui/button";
@@ -9,14 +10,15 @@ import { CardContent, CardHeader, CardTitle } from "./ui/card";
 export const VerifyEmailForm = ({ token }: { token: string }) => {
   const navigate = useNavigate();
 
-  const utils = trpc.useUtils();
+  const { trpc, queryClient } = useTRPC();
 
-  const { mutateAsync: verifyEmail, isPending } =
-    trpc.user.verifyEmail.useMutation();
+  const { mutateAsync: verifyEmail, isPending } = useMutation(
+    trpc.user.verifyEmail.mutationOptions(),
+  );
 
   const onSubmit = async () => {
     await verifyEmail(token);
-    await utils.user.me.invalidate();
+    await queryClient.invalidateQueries();
 
     await navigate("/settings");
   };

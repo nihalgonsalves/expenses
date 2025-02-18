@@ -1,6 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useCurrentUser } from "../../api/useCurrentUser";
 import type { ActorInfo } from "../../components/group-sheets/BalanceSummary";
 import { GroupSheet } from "../../components/group-sheets/GroupSheet";
@@ -8,9 +9,10 @@ import { SheetParams, useParams } from "../../routes";
 import { RootLoader } from "../Root";
 
 const GroupDetailPage = () => {
+  const { trpc } = useTRPC();
   const { sheetId } = useParams(SheetParams);
 
-  const result = trpc.sheet.groupSheetById.useQuery(sheetId);
+  const result = useQuery(trpc.sheet.groupSheetById.queryOptions(sheetId));
   const { data: me } = useCurrentUser();
 
   const actorInfo: ActorInfo | undefined = useMemo(

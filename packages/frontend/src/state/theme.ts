@@ -1,3 +1,4 @@
+import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import { useMedia } from "react-use";
 import { z } from "zod";
@@ -8,7 +9,7 @@ import {
   ZTheme,
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
-import { trpc } from "../api/trpc";
+import { useTRPC } from "../api/trpc";
 import { useCurrentUser } from "../api/useCurrentUser";
 import { useDialog } from "../components/form/ResponsiveDialog";
 
@@ -29,10 +30,12 @@ export const [useThemePreference] = createPreferenceWithDefault(
 );
 
 export const useTheme = () => {
-  const utils = trpc.useUtils();
+  const { trpc, invalidate } = useTRPC();
 
   const { data } = useCurrentUser();
-  const { mutateAsync: updateTheme } = trpc.user.updateTheme.useMutation();
+  const { mutateAsync: updateTheme } = useMutation(
+    trpc.user.updateTheme.mutationOptions(),
+  );
 
   const parsedTheme = ZTheme.safeParse(
     data?.theme ?? localStorage.getItem("theme"),
@@ -48,9 +51,9 @@ export const useTheme = () => {
   const setTheme = useCallback(
     async (theme: Theme) => {
       await updateTheme(theme);
-      await utils.user.me.invalidate();
+      await invalidate(trpc.user.me.queryKey());
     },
-    [updateTheme, utils.user.me],
+    [updateTheme, invalidate, trpc],
   );
 
   if (parsedTheme.success) {

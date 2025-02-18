@@ -1,6 +1,7 @@
 import { PlusIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { FloatingActionButton } from "../FloatingActionButton";
 import { ResponsiveDialog } from "../form/ResponsiveDialog";
 import { CreateGroupSheetTransactionDialog } from "../group-sheets/CreateGroupSheetTransactionDialog";
@@ -8,9 +9,10 @@ import { CreatePersonalTransactionDialog } from "../personal-sheets/CreatePerson
 import { Button } from "../ui/button";
 
 export const QuickCreateTransactionFAB = () => {
-  const { data: sheets } = trpc.sheet.mySheets.useQuery({
-    includeArchived: false,
-  });
+  const { trpc } = useTRPC();
+  const { data: sheets } = useQuery(
+    trpc.sheet.mySheets.queryOptions({ includeArchived: false }),
+  );
 
   return (
     <ResponsiveDialog

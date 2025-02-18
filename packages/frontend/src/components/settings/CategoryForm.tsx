@@ -1,9 +1,10 @@
 import Picker from "@emoji-mart/react";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { z } from "zod";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
@@ -22,11 +23,14 @@ const ZEmojiData = z.object({
 });
 
 export const CategoryForm = () => {
-  const { data: categories } = trpc.transaction.getCategories.useQuery();
+  const { trpc, invalidate } = useTRPC();
+  const { data: categories } = useQuery(
+    trpc.transaction.getCategories.queryOptions(),
+  );
 
-  const { mutateAsync: setCategoryEmojiShortCode } =
-    trpc.transaction.setCategoryEmojiShortCode.useMutation();
-  const utils = trpc.useUtils();
+  const { mutateAsync: setCategoryEmojiShortCode } = useMutation(
+    trpc.transaction.setCategoryEmojiShortCode.mutationOptions(),
+  );
 
   const handleEmojiSelect = async (id: string, data: unknown) => {
     const emoji = ZEmojiData.safeParse(data);
@@ -43,7 +47,7 @@ export const CategoryForm = () => {
       emojiShortCode: emoji.data.shortcodes,
     });
 
-    await utils.transaction.getCategories.invalidate();
+    await invalidate(trpc.transaction.getCategories.queryKey());
   };
 
   return (

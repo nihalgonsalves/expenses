@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import type { z } from "zod";
@@ -7,7 +8,7 @@ import type { z } from "zod";
 import { ZUpdateUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -24,11 +25,13 @@ import { Input } from "../ui/input";
 
 export const ProfileForm = ({ me }: { me: User }) => {
   const onLine = useNavigatorOnLine();
-  const utils = trpc.useUtils();
-  const { mutateAsync: updateUser, isPending } =
-    trpc.user.updateUser.useMutation();
-  const { mutateAsync: requestEmailVerification } =
-    trpc.user.requestEmailVerification.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: updateUser, isPending } = useMutation(
+    trpc.user.updateUser.mutationOptions(),
+  );
+  const { mutateAsync: requestEmailVerification } = useMutation(
+    trpc.user.requestEmailVerification.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZUpdateUserInput>>({
     resolver: zodResolver(ZUpdateUserInput),
@@ -53,7 +56,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
     toast.success("Saved!");
 
-    await utils.user.me.invalidate();
+    await invalidate(trpc.user.me.queryKey());
 
     form.reset({
       name: newName,

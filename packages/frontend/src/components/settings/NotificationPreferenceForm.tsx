@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { ZPushSubscription } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useSubscriptionEndpoint } from "../../state/preferences";
 import { useNotificationPermission } from "../../utils/hooks/useNotificationPermission";
 import { useServiceWorkerRegistration } from "../../utils/hooks/useServiceWorkerRegistration";
@@ -37,15 +38,20 @@ export const NotificationPreferenceForm = () => {
   const serviceWorkerRegistration = useServiceWorkerRegistration();
   const [endpoint, setEndpoint] = useSubscriptionEndpoint();
 
-  const utils = trpc.useUtils();
-  const { data: applicationServerKey } =
-    trpc.notification.getPublicKey.useQuery();
-  const { data: subscriptions } = trpc.notification.getSubscriptions.useQuery();
+  const { trpc, invalidate } = useTRPC();
+  const { data: applicationServerKey } = useQuery(
+    trpc.notification.getPublicKey.queryOptions(),
+  );
+  const { data: subscriptions } = useQuery(
+    trpc.notification.getSubscriptions.queryOptions(),
+  );
 
-  const { mutateAsync: upsertSubscription } =
-    trpc.notification.upsertSubscription.useMutation();
-  const { mutateAsync: deleteSubscription } =
-    trpc.notification.deleteSubscription.useMutation();
+  const { mutateAsync: upsertSubscription } = useMutation(
+    trpc.notification.upsertSubscription.mutationOptions(),
+  );
+  const { mutateAsync: deleteSubscription } = useMutation(
+    trpc.notification.deleteSubscription.mutationOptions(),
+  );
 
   const thisDeviceSubscription = subscriptions?.find(
     (s) => s.endpoint === endpoint,
@@ -66,7 +72,7 @@ export const NotificationPreferenceForm = () => {
 
       await deleteSubscription(thisDeviceSubscription.id);
       await setEndpoint(undefined);
-      await utils.notification.getSubscriptions.invalidate();
+      await invalidate(trpc.notification.getSubscriptions.queryKey());
       return;
     }
 
@@ -102,12 +108,12 @@ export const NotificationPreferenceForm = () => {
 
     await setEndpoint(parsedSubscription.endpoint);
 
-    await utils.notification.getSubscriptions.invalidate();
+    await invalidate(trpc.notification.getSubscriptions.queryKey());
   };
 
   const handleDeleteSubscription = async (id: string) => {
     await deleteSubscription(id);
-    await utils.notification.getSubscriptions.invalidate();
+    await invalidate(trpc.notification.getSubscriptions.queryKey());
   };
 
   const disabled =

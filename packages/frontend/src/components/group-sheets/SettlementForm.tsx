@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -6,7 +7,7 @@ import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/typ
 import { ZCreateGroupSheetSettlementInput } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { toMoneyValues } from "../../utils/money";
 import { MoneyField } from "../form/MoneyField";
@@ -51,9 +52,10 @@ export const SettlementForm = ({
     },
   });
 
-  const utils = trpc.useUtils();
-  const { mutateAsync: createGroupSheetSettlement, isPending } =
-    trpc.transaction.createGroupSheetSettlement.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: createGroupSheetSettlement, isPending } = useMutation(
+    trpc.transaction.createGroupSheetSettlement.mutationOptions(),
+  );
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const [, moneySnapshot] = toMoneyValues(
@@ -66,14 +68,14 @@ export const SettlementForm = ({
       money: moneySnapshot,
     });
 
-    await Promise.all([
-      utils.transaction.getAllUserTransactions.invalidate(),
-      utils.transaction.getGroupSheetTransactions.invalidate({
+    await invalidate(
+      trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId: groupSheet.id,
       }),
-      utils.transaction.getParticipantSummaries.invalidate(groupSheet.id),
-      utils.transaction.getSimplifiedBalances.invalidate(groupSheet.id),
-    ]);
+      trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
+      trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
+    );
 
     dialog.dismiss();
   };

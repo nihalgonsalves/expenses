@@ -1,10 +1,11 @@
 import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { ConfirmDialog } from "../../components/form/ConfirmDialog";
 import { Button } from "../ui/button";
 
@@ -15,20 +16,25 @@ export const GroupSheetAdminSection = ({
 }) => {
   const navigate = useNavigate();
 
-  const utils = trpc.useUtils();
+  const { trpc, invalidate } = useTRPC();
 
-  const { mutateAsync: deleteGroupSheet } =
-    trpc.sheet.deleteSheet.useMutation();
-  const { mutateAsync: archiveSheet } = trpc.sheet.archiveSheet.useMutation();
+  const { mutateAsync: deleteGroupSheet } = useMutation(
+    trpc.sheet.deleteSheet.mutationOptions(),
+  );
+  const { mutateAsync: archiveSheet } = useMutation(
+    trpc.sheet.archiveSheet.mutationOptions(),
+  );
 
   const handleDelete = useCallback(async () => {
     await deleteGroupSheet(groupSheet.id);
 
-    void utils.sheet.groupSheetById.invalidate(groupSheet.id);
-    void utils.sheet.mySheets.invalidate();
+    void invalidate(
+      trpc.sheet.groupSheetById.queryKey(groupSheet.id),
+      trpc.sheet.mySheets.queryKey(),
+    );
 
     await navigate("/sheets");
-  }, [deleteGroupSheet, groupSheet.id, navigate, utils]);
+  }, [deleteGroupSheet, groupSheet.id, navigate, trpc, invalidate]);
 
   const handleArchive = useCallback(async () => {
     await archiveSheet({
@@ -36,9 +42,11 @@ export const GroupSheetAdminSection = ({
       isArchived: !groupSheet.isArchived,
     });
 
-    void utils.sheet.groupSheetById.invalidate(groupSheet.id);
-    void utils.sheet.mySheets.invalidate();
-  }, [archiveSheet, groupSheet, utils]);
+    void invalidate(
+      trpc.sheet.groupSheetById.queryKey(groupSheet.id),
+      trpc.sheet.mySheets.queryKey(),
+    );
+  }, [archiveSheet, groupSheet, trpc, invalidate]);
 
   return (
     <>

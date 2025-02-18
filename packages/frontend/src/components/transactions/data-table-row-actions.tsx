@@ -6,9 +6,10 @@ import {
   Pencil1Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import type { Row } from "@tanstack/react-table";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
 import { ConfirmDialog } from "../form/ConfirmDialog";
 import { EditPersonalTransactionDialog } from "../personal-sheets/EditPersonalTransactionForm";
@@ -27,9 +28,10 @@ type DataTableRowActionsProps = {
 const PersonalTransactionDropdownContent = ({
   row,
 }: DataTableRowActionsProps) => {
-  const utils = trpc.useUtils();
-  const { mutateAsync: deleteTransaction } =
-    trpc.transaction.deleteTransaction.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: deleteTransaction } = useMutation(
+    trpc.transaction.deleteTransaction.mutationOptions(),
+  );
 
   const sheetId = row.original.sheet.id;
   const transactionId = row.original.id;
@@ -40,12 +42,12 @@ const PersonalTransactionDropdownContent = ({
       transactionId,
     });
 
-    await Promise.all([
-      utils.transaction.getAllUserTransactions.invalidate(),
-      utils.transaction.getPersonalSheetTransactions.invalidate({
+    await invalidate(
+      trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: sheetId,
       }),
-    ]);
+    );
   };
 
   return (
@@ -83,9 +85,10 @@ const PersonalTransactionDropdownContent = ({
 };
 
 const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
-  const utils = trpc.useUtils();
-  const { mutateAsync: deleteTransaction } =
-    trpc.transaction.deleteTransaction.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: deleteTransaction } = useMutation(
+    trpc.transaction.deleteTransaction.mutationOptions(),
+  );
 
   const sheetId = row.original.sheet.id;
   const transactionId = row.original.id;
@@ -96,14 +99,14 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
       transactionId,
     });
 
-    await Promise.all([
-      utils.transaction.getAllUserTransactions.invalidate(),
-      utils.transaction.getGroupSheetTransactions.invalidate({
+    await invalidate(
+      trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId: sheetId,
       }),
-      utils.transaction.getParticipantSummaries.invalidate(sheetId),
-      utils.transaction.getSimplifiedBalances.invalidate(sheetId),
-    ]);
+      trpc.transaction.getParticipantSummaries.queryKey(sheetId),
+      trpc.transaction.getSimplifiedBalances.queryKey(sheetId),
+    );
   };
 
   return (

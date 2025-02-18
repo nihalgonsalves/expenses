@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ThickArrowDownIcon, ThickArrowUpIcon } from "@radix-ui/react-icons";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { z } from "zod";
@@ -13,7 +14,7 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { useCurrencyConversion } from "../../api/currencyConversion";
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import {
   dateTimeLocalToZonedISOString,
@@ -150,16 +151,20 @@ const CreatePersonalTransactionForm = ({
       moneySnapshot,
     );
 
-  const utils = trpc.useUtils();
+  const { trpc, invalidate } = useTRPC();
   const {
     mutateAsync: createPersonalSheetTransaction,
     isPending: noScheduleMutationIsPending,
-  } = trpc.transaction.createPersonalSheetTransaction.useMutation();
+  } = useMutation(
+    trpc.transaction.createPersonalSheetTransaction.mutationOptions(),
+  );
 
   const {
     mutateAsync: createPersonalSheetTransactionSchedule,
     isPending: scheduleMutationIsPending,
-  } = trpc.transaction.createPersonalSheetTransactionSchedule.useMutation();
+  } = useMutation(
+    trpc.transaction.createPersonalSheetTransactionSchedule.mutationOptions(),
+  );
 
   const isPending = noScheduleMutationIsPending || scheduleMutationIsPending;
 
@@ -190,12 +195,12 @@ const CreatePersonalTransactionForm = ({
 
     dialog.dismiss();
 
-    await Promise.all([
-      utils.transaction.getAllUserTransactions.invalidate(),
-      utils.transaction.getPersonalSheetTransactions.invalidate({
+    await invalidate(
+      trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),
-    ]);
+    );
   };
 
   const disabled = !onLine;
@@ -362,8 +367,10 @@ export const CreatePersonalTransactionDialog = ({
   trigger: React.ReactNode;
   sheetId: string;
 }) => {
-  const { data: personalSheet } =
-    trpc.sheet.personalSheetById.useQuery(sheetId);
+  const { trpc } = useTRPC();
+  const { data: personalSheet } = useQuery(
+    trpc.sheet.personalSheetById.queryOptions(sheetId),
+  );
 
   return (
     <ResponsiveDialog trigger={trigger} title="Add Transaction">

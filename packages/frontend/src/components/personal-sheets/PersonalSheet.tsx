@@ -7,12 +7,13 @@ import {
   TrashIcon,
   UploadIcon,
 } from "@radix-ui/react-icons";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import {
   formatDateTimeRelative,
   shortDateTimeFormatter,
@@ -81,13 +82,16 @@ const TransactionScheduleDropdownMenu = ({
   sheetId: string;
   transactionScheduleId: string;
 }) => {
-  const utils = trpc.useUtils();
-  const { mutateAsync: deleteTransactionSchedule } =
-    trpc.transaction.deleteTransactionSchedule.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: deleteTransactionSchedule } = useMutation(
+    trpc.transaction.deleteTransactionSchedule.mutationOptions(),
+  );
 
   const handleDelete = async () => {
     await deleteTransactionSchedule({ sheetId, transactionScheduleId });
-    await utils.transaction.getPersonalSheetTransactionSchedules.invalidate();
+    await invalidate(
+      trpc.transaction.getPersonalSheetTransactionSchedules.queryKey(),
+    );
   };
 
   return (
@@ -124,10 +128,12 @@ const CardTitleWithButton = twx(
 )`flex place-items-center justify-between`;
 
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
-  const { data: getPersonalSheetTransactionSchedulesResponse } =
-    trpc.transaction.getPersonalSheetTransactionSchedules.useQuery({
+  const { trpc } = useTRPC();
+  const { data: getPersonalSheetTransactionSchedulesResponse } = useQuery(
+    trpc.transaction.getPersonalSheetTransactionSchedules.queryOptions({
       personalSheetId: personalSheet.id,
-    });
+    }),
+  );
 
   const addButton = (
     <CreatePersonalTransactionDialog

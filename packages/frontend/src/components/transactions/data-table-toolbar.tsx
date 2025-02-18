@@ -1,12 +1,13 @@
 "use client";
 
 import { Cross2Icon, MixerHorizontalIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
 import type { Table } from "@tanstack/react-table";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { z } from "zod";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import { CategoryIcon } from "../CategoryAvatar";
 import { Button } from "../ui/button";
@@ -35,11 +36,14 @@ export const DataTableToolbar = <TData,>({
   const breakpointMd = useBreakpoint("md");
   const [isOpen, setIsOpen] = useState(breakpointMd);
 
-  const { data: sheets } = trpc.sheet.mySheets.useQuery({
-    includeArchived: false,
-  });
+  const { trpc } = useTRPC();
+  const { data: sheets } = useQuery(
+    trpc.sheet.mySheets.queryOptions({ includeArchived: false }),
+  );
 
-  const { data: categories } = trpc.transaction.getCategories.useQuery();
+  const { data: categories } = useQuery(
+    trpc.transaction.getCategories.queryOptions(),
+  );
 
   const isFiltered = table.getState().columnFilters.length > 0;
 

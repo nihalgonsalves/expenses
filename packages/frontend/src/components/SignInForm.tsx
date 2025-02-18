@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -6,7 +7,7 @@ import type { z } from "zod";
 
 import { ZAuthorizeUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from "../api/trpc";
+import { useTRPC } from "../api/trpc";
 import { useResetCache } from "../api/useCacheReset";
 
 import { Button } from "./ui/button";
@@ -34,11 +35,15 @@ export const SingleScreenCard = twx(
 )`w-full border-0 rounded-none bg-inherit sm:bg-card sm:border sm:rounded-md`;
 
 export const SignInForm = () => {
-  const { mutateAsync: authorizeUser, isPending } =
-    trpc.user.authorizeUser.useMutation();
+  const { trpc } = useTRPC();
 
-  const { mutateAsync: requestPasswordReset } =
-    trpc.user.requestPasswordReset.useMutation();
+  const { mutateAsync: authorizeUser, isPending } = useMutation(
+    trpc.user.authorizeUser.mutationOptions(),
+  );
+
+  const { mutateAsync: requestPasswordReset } = useMutation(
+    trpc.user.requestPasswordReset.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
     resolver: zodResolver(ZAuthorizeUserInput),

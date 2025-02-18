@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
 import { ZCreateUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from "../api/trpc";
+import { useTRPC } from "../api/trpc";
 import { useResetCache } from "../api/useCacheReset";
 
 import { SingleScreenCard } from "./SignInForm";
@@ -21,8 +22,10 @@ import {
 import { Input } from "./ui/input";
 
 export const SignUpForm = () => {
-  const { mutateAsync: createUser, isPending } =
-    trpc.user.createUser.useMutation();
+  const { trpc } = useTRPC();
+  const { mutateAsync: createUser, isPending } = useMutation(
+    trpc.user.createUser.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZCreateUserInput>>({
     resolver: zodResolver(ZCreateUserInput),

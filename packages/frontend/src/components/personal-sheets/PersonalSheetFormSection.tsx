@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import type { z } from "zod";
@@ -6,7 +7,7 @@ import type { z } from "zod";
 import { ZUpdateSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -23,8 +24,10 @@ export const PersonalSheetFormSection = ({
 }: {
   personalSheet: Sheet;
 }) => {
-  const utils = trpc.useUtils();
-  const { mutateAsync: updateSheet } = trpc.sheet.updateSheet.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: updateSheet } = useMutation(
+    trpc.sheet.updateSheet.mutationOptions(),
+  );
 
   const form = useForm<z.infer<typeof ZUpdateSheetInput>>({
     resolver: zodResolver(ZUpdateSheetInput),
@@ -38,10 +41,10 @@ export const PersonalSheetFormSection = ({
   const onSubmit = async (values: z.infer<typeof ZUpdateSheetInput>) => {
     await updateSheet(values);
 
-    await Promise.all([
-      utils.sheet.mySheets.invalidate(),
-      utils.sheet.personalSheetById.invalidate(personalSheet.id),
-    ]);
+    await invalidate(
+      trpc.sheet.mySheets.queryKey(),
+      trpc.sheet.personalSheetById.queryKey(personalSheet.id),
+    );
 
     toast.success("Sheet updated successfully");
   };

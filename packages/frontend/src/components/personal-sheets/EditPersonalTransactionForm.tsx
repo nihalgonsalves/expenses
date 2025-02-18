@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -8,7 +9,7 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { useCurrencyConversion } from "../../api/currencyConversion";
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import {
   dateTimeLocalToZonedISOString,
@@ -83,9 +84,11 @@ const EditPersonalTransactionForm = ({
       moneySnapshot,
     );
 
-  const utils = trpc.useUtils();
+  const { trpc, invalidate } = useTRPC();
   const { mutateAsync: updatePersonalSheetTransaction, isPending } =
-    trpc.transaction.updatePersonalSheetTransaction.useMutation();
+    useMutation(
+      trpc.transaction.updatePersonalSheetTransaction.mutationOptions(),
+    );
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const money = convertedMoneySnapshot ?? moneySnapshot;
@@ -102,15 +105,16 @@ const EditPersonalTransactionForm = ({
     });
     dialog.dismiss();
 
-    await Promise.all([
-      utils.transaction.getAllUserTransactions.invalidate(),
-      utils.transaction.getPersonalSheetTransactions.invalidate({
+    await invalidate(
+      trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),
-      utils.transaction.getTransaction.invalidate({
+      trpc.transaction.getTransaction.queryKey({
+        sheetId: personalSheet.id,
         transactionId: transaction.id,
       }),
-    ]);
+    );
   };
 
   const disabled = !onLine;
@@ -236,10 +240,13 @@ export const EditPersonalTransactionDialog = ({
   transactionId: string;
   trigger: React.ReactNode;
 }) => {
-  const { data } = trpc.transaction.getTransaction.useQuery({
-    sheetId,
-    transactionId,
-  });
+  const { trpc } = useTRPC();
+  const { data } = useQuery(
+    trpc.transaction.getTransaction.queryOptions({
+      sheetId,
+      transactionId,
+    }),
+  );
 
   return (
     <ResponsiveDialog title="Edit Transaction" trigger={trigger}>

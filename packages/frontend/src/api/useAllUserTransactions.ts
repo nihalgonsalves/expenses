@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { UndefinedOnPartialDeep } from "type-fest";
 
@@ -9,7 +10,7 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { useConvertToPreferredCurrency } from "./currencyConversion";
-import { trpc } from "./trpc";
+import { useTRPC } from "./trpc";
 
 export type ConvertedTransactionWithSheet = TransactionWithSheet & {
   convertedMoney: Money | undefined;
@@ -18,16 +19,10 @@ export type ConvertedTransactionWithSheet = TransactionWithSheet & {
 
 export type AllConvertedUserTransactions = ConvertedTransactionWithSheet[];
 
-type AllConvertedUserTransactionsQueryResult = Pick<
-  ReturnType<typeof trpc.transaction.getAllUserTransactions.useQuery>,
-  "error" | "isLoading" | "refetch" | "dataUpdatedAt"
-> & {
-  data: AllConvertedUserTransactions | undefined;
-};
-
 export const useAllUserTransactions = (
   input: UndefinedOnPartialDeep<Partial<GetAllUserTransactionsInput>>,
-): AllConvertedUserTransactionsQueryResult => {
+) => {
+  const { trpc } = useTRPC();
   const enabled = input.fromTimestamp != null && input.toTimestamp != null;
 
   const {
@@ -36,13 +31,15 @@ export const useAllUserTransactions = (
     error,
     refetch,
     dataUpdatedAt,
-  } = trpc.transaction.getAllUserTransactions.useQuery(
-    {
-      ...input,
-      fromTimestamp: input.fromTimestamp ?? "",
-      toTimestamp: input.toTimestamp ?? "",
-    },
-    { enabled },
+  } = useQuery(
+    trpc.transaction.getAllUserTransactions.queryOptions(
+      {
+        ...input,
+        fromTimestamp: input.fromTimestamp ?? "",
+        toTimestamp: input.toTimestamp ?? "",
+      },
+      { enabled },
+    ),
   );
 
   const [convertCurrency] = useConvertToPreferredCurrency(

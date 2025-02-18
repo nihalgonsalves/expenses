@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
@@ -6,7 +7,7 @@ import type { z } from "zod";
 
 import { ZAuthorizeUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useResetCache } from "../../api/useCacheReset";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { Button } from "../ui/button";
@@ -33,8 +34,10 @@ export const PrivacyForm = () => {
   });
 
   const resetCache = useResetCache();
-  const { mutateAsync: anonymizeUser, isPending } =
-    trpc.user.anonymizeUser.useMutation();
+  const { trpc } = useTRPC();
+  const { mutateAsync: anonymizeUser, isPending } = useMutation(
+    trpc.user.anonymizeUser.mutationOptions(),
+  );
 
   const onSubmit = async (values: z.infer<typeof ZAuthorizeUserInput>) => {
     if (!isReconfirming) {

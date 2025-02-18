@@ -3,6 +3,7 @@ import {
   ArrowRightIcon,
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
+import { useMutation } from "@tanstack/react-query";
 import { parse as dateFnsParse } from "date-fns";
 import Papa from "papaparse";
 import { useCallback, useId, useMemo, useState } from "react";
@@ -12,7 +13,7 @@ import { z } from "zod";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { CreateSheetTransactionInput } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { formatCurrency } from "../../utils/money";
 import { dateToISOString } from "../../utils/temporal";
 import { noop } from "../../utils/utils";
@@ -302,9 +303,10 @@ export const PersonalTransactionsImporter = ({
 }) => {
   const navigate = useNavigate();
 
-  const utils = trpc.useUtils();
-  const { mutateAsync: batchCreatePersonalSheetTransactions } =
-    trpc.transaction.batchCreatePersonalSheetTransactions.useMutation();
+  const { trpc, invalidate } = useTRPC();
+  const { mutateAsync: batchCreatePersonalSheetTransactions } = useMutation(
+    trpc.transaction.batchCreatePersonalSheetTransactions.mutationOptions(),
+  );
 
   const [headers, setHeaders] = useState<string[]>();
   const [data, setData] = useState<Record<string, string>[]>();
@@ -393,9 +395,11 @@ export const PersonalTransactionsImporter = ({
       transactions: validRows,
     });
 
-    await utils.transaction.getPersonalSheetTransactions.invalidate({
-      personalSheetId: personalSheet.id,
-    });
+    await invalidate(
+      trpc.transaction.getPersonalSheetTransactions.queryKey({
+        personalSheetId: personalSheet.id,
+      }),
+    );
 
     await navigate(`/sheets/${personalSheet.id}`);
   };

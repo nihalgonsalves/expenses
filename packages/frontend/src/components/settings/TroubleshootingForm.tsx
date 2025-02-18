@@ -1,6 +1,7 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { trpc } from "../../api/trpc";
+import { useTRPC } from "../../api/trpc";
 import { useResetCache } from "../../api/useCacheReset";
 import { config } from "../../config";
 import { useServiceWorkerRegistration } from "../../utils/hooks/useServiceWorkerRegistration";
@@ -19,7 +20,10 @@ export const TroubleshootingForm = () => {
   const resetCache = useResetCache();
   const serviceWorker = useServiceWorkerRegistration();
 
-  const { mutateAsync: signOut } = trpc.user.signOut.useMutation();
+  const { trpc } = useTRPC();
+  const { mutateAsync: signOut } = useMutation(
+    trpc.user.signOut.mutationOptions(),
+  );
 
   const handleReset = async () => {
     setState("loading");
