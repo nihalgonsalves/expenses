@@ -1,6 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import type { DateRange } from "react-day-picker";
-import { Link } from "react-router";
 
 import {
   addMoney,
@@ -40,7 +40,7 @@ const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
     <div>
       <div className="text-sm text-neutral-500 capitalize md:text-lg">
         <Button $variant="link" className="h-auto p-0" asChild>
-          <Link to={`/?${new URLSearchParams({ category }).toString()}`}>
+          <Link to="/" search={{ category: [category] }}>
             {category}
           </Link>
         </Button>

@@ -4,10 +4,10 @@ import {
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { parse as dateFnsParse } from "date-fns";
 import Papa from "papaparse";
 import { useCallback, useId, useMemo, useState } from "react";
-import { useNavigate } from "react-router";
 import { z } from "zod";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -401,7 +401,10 @@ export const PersonalTransactionsImporter = ({
       }),
     );
 
-    await navigate(`/sheets/${personalSheet.id}`);
+    await navigate({
+      to: "/sheets/$sheetId",
+      params: { sheetId: personalSheet.id },
+    });
   };
 
   const fieldOptions = useMemo(

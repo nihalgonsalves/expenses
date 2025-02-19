@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import spotlightSidecar from "@spotlightjs/sidecar/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, type Plugin } from "vite";
@@ -33,6 +34,7 @@ export default defineConfig(({ mode }) => ({
     process.env["ENABLE_BUNDLE_VISUALIZER"] &&
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       (visualizer({ open: true }) as unknown as Plugin),
+    TanStackRouterVite({ autoCodeSplitting: true }),
     react(),
     tailwindcss(),
     VitePWA({

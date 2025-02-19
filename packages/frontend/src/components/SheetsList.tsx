@@ -1,7 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Link } from "react-router";
 
 import type { SheetsResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 

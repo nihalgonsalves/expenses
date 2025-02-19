@@ -7,8 +7,8 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
 import type {
@@ -76,7 +76,7 @@ const PersonMenu = ({
       );
 
       if (actorInfo.id === id) {
-        await navigate("/groups");
+        await navigate({ to: "/groups" });
       }
     } catch {
       setIsInvalidating(false);

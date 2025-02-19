@@ -1,5 +1,6 @@
 "use client";
 
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -16,7 +17,6 @@ import {
 } from "@tanstack/react-table";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
-import { useSearchParams } from "react-router";
 import { z } from "zod";
 
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
@@ -41,26 +41,18 @@ type DataTableProps = {
   setDateRange: (dateRange: DateRange | undefined) => void;
 };
 
-const ZFilters = z.object({
+export const ZTransactionFilters = z.object({
   sheetId: z.array(z.string()).optional(),
   category: z.array(z.string()).optional(),
 });
 
-const loadFilters = (searchParams: URLSearchParams): ColumnFiltersState => {
-  const filters: z.infer<typeof ZFilters> = {
-    ...(searchParams.has("sheetId")
-      ? { sheetId: searchParams.getAll("sheetId") }
-      : {}),
-    ...(searchParams.has("category")
-      ? { category: searchParams.getAll("category") }
-      : {}),
-  };
-
-  return Object.entries(filters).map(([id, value]) => ({
+const loadFilters = (
+  search: z.infer<typeof ZTransactionFilters>,
+): ColumnFiltersState =>
+  Object.entries(search).map(([id, value]) => ({
     id,
     value,
   }));
-};
 
 export const DataTable = ({
   columns,
@@ -68,7 +60,10 @@ export const DataTable = ({
   dateRange,
   setDateRange,
 }: DataTableProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParams = useSearch({
+    from: "/_auth/",
+  });
+  const navigate = useNavigate({ from: "/" });
 
   const [rowSelection, setRowSelection] = useState({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
@@ -94,25 +89,17 @@ export const DataTable = ({
 
       setColumnFilters(next);
 
-      setSearchParams((prev) => {
-        const valueByKey = ZFilters.parse(
-          Object.fromEntries(next.map((filter) => [filter.id, filter.value])),
-        );
+      void navigate({
+        search: (prev) => {
+          const valueByKey = ZTransactionFilters.parse(
+            Object.fromEntries(next.map((filter) => [filter.id, filter.value])),
+          );
 
-        prev.delete("sheetId");
-        valueByKey.sheetId?.map((id) => {
-          prev.append("sheetId", id);
-        });
-
-        prev.delete("category");
-        valueByKey.category?.map((id) => {
-          prev.append("category", id);
-        });
-
-        return prev;
+          return { ...prev, valueByKey };
+        },
       });
     },
-    [columnFilters, setSearchParams],
+    [columnFilters, navigate],
   );
 
   const table = useReactTable({

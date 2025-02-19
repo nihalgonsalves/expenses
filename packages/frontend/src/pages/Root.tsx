@@ -8,11 +8,11 @@ import {
   SymbolIcon,
 } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
+import { Link, useRouter } from "@tanstack/react-router";
 import type { TRPCClientErrorLike } from "@trpc/client";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useState } from "react";
 import { toast } from "react-hot-toast";
-import { NavLink, useNavigate } from "react-router";
 import { useInterval } from "react-use";
 
 import { useTRPC } from "../api/trpc";
@@ -85,7 +85,7 @@ export const Root = ({
   const { trpc } = useTRPC();
   const { data } = useQuery(trpc.config.queryOptions());
 
-  const navigate = useNavigate();
+  const router = useRouter();
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
   const navigatorOnLine = useNavigatorOnLine();
 
@@ -105,7 +105,7 @@ export const Root = ({
               $variant="ghost"
               className="text-primary-foreground md:hidden"
               onClick={() => {
-                void navigate(-1);
+                router.history.back();
               }}
             >
               <ArrowLeftIcon />
@@ -125,7 +125,7 @@ export const Root = ({
             <NavigationMenuList>
               {navItems.map(({ to, text }) => (
                 <NavigationMenuItem key={to}>
-                  <NavLink to={to} aria-label={text} title={text}>
+                  <Link to={to} aria-label={text} title={text}>
                     {({ isActive }) => (
                       <div
                         className={navigationMenuTriggerStyle({
@@ -168,7 +168,7 @@ export const Root = ({
                         </motion.span>
                       </div>
                     )}
-                  </NavLink>
+                  </Link>
                 </NavigationMenuItem>
               ))}
             </NavigationMenuList>
@@ -193,7 +193,7 @@ export const Root = ({
           style={{}}
         >
           {navItems.map(({ to, text, icon }) => (
-            <NavLink
+            <Link
               key={to}
               to={to}
               aria-label={text}
@@ -228,7 +228,7 @@ export const Root = ({
                   </motion.span>
                 </>
               )}
-            </NavLink>
+            </Link>
           ))}
         </nav>
       </div>

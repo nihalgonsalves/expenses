@@ -1,6 +1,6 @@
-import { Root } from "./Root";
+import { Root } from "../pages/Root";
 
-const NotFoundPage = () => (
+export const NotFoundPage = () => (
   <Root
     title="Not Found"
     className="bg-muted text-muted-foreground grid place-items-center text-center"
@@ -8,5 +8,3 @@ const NotFoundPage = () => (
     Not Found
   </Root>
 );
-
-export default NotFoundPage;

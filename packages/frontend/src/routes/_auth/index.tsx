@@ -1,12 +1,18 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 
 import { useAllUserTransactions } from "../../api/useAllUserTransactions";
-import { CategoryStats } from "../../components/CategoryStats";
-import { RootLoader } from "../Root";
+import { QuickCreateTransactionFAB } from "../../components/expenses/QuickCreateTransactionFAB";
+import { columns } from "../../components/transactions/columns";
+import {
+  DataTable,
+  ZTransactionFilters,
+} from "../../components/transactions/data-table";
+import { RootLoader } from "../../pages/Root";
 
-const StatsIndexPage = () => {
+const TransactionsIndexPage = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
@@ -20,9 +26,11 @@ const StatsIndexPage = () => {
   return (
     <RootLoader
       result={result}
-      title="Stats"
+      title="Transactions"
+      additionalChildren={<QuickCreateTransactionFAB />}
       render={(data) => (
-        <CategoryStats
+        <DataTable
+          columns={columns}
           data={data}
           dateRange={dateRange}
           setDateRange={setDateRange}
@@ -32,4 +40,7 @@ const StatsIndexPage = () => {
   );
 };
 
-export default StatsIndexPage;
+export const Route = createFileRoute("/_auth/")({
+  component: TransactionsIndexPage,
+  validateSearch: ZTransactionFilters,
+});

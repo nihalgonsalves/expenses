@@ -1,7 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { AvatarIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 
 import { useTRPC } from "../api/trpc";
 import { useResetCache } from "../api/useCacheReset";
@@ -64,6 +64,9 @@ export const LoggedInNavBarAvatar = ({
 );
 
 export const NavBarAvatar = ({ className }: { className?: string }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const { trpc } = useTRPC();
   const resetCache = useResetCache();
 
@@ -72,6 +75,12 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
 
   const handleSignOut = async () => {
     await signOut.mutateAsync();
+
+    await navigate({
+      to: "/auth/sign-in",
+      params: { redirect: location.pathname },
+    });
+
     await resetCache();
   };
 

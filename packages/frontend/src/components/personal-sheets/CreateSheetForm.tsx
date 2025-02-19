@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import type { z } from "zod";
 
 import { ZCreatePersonalSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -52,7 +52,11 @@ export const CreateSheetForm = ({
     const { id } = await createSheet(values);
 
     dialog.dismiss();
-    await navigate(`/sheets/${id}`, { replace: true });
+    await navigate({
+      to: `/sheets/$sheetId`,
+      params: { sheetId: id },
+      replace: true,
+    });
 
     await invalidate(trpc.sheet.mySheets.queryKey());
   };

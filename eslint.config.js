@@ -81,13 +81,19 @@ export default tseslint.config(
     },
   },
   {
+    files: ["packages/frontend/src/routes/**/*"],
+    rules: {
+      "@typescript-eslint/no-use-before-define": "off",
+    },
+  },
+  {
     files: ["packages/*/bin/**/*"],
     rules: {
       "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
     },
   },
   {
-    files: ["packages/frontend/src/pages/**/*", "**/*.config.*"],
+    files: ["**/*.config.*"],
     rules: {
       "import/no-default-export": "off",
     },

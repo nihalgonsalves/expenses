@@ -1,3 +1,5 @@
+import { createFileRoute } from "@tanstack/react-router";
+
 import { useCurrentUser } from "../api/useCurrentUser";
 import { AppearanceForm } from "../components/settings/AppearanceForm";
 import { CategoryForm } from "../components/settings/CategoryForm";
@@ -5,8 +7,7 @@ import { NotificationPreferenceForm } from "../components/settings/NotificationP
 import { PrivacyForm } from "../components/settings/PrivacyForm";
 import { ProfileForm } from "../components/settings/ProfileForm";
 import { TroubleshootingForm } from "../components/settings/TroubleshootingForm";
-
-import { Root } from "./Root";
+import { Root } from "../pages/Root";
 
 const SettingsPage = () => {
   const { data, status } = useCurrentUser();
@@ -29,4 +30,6 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export const Route = createFileRoute("/settings")({
+  component: SettingsPage,
+});

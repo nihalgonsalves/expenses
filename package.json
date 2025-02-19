@@ -41,6 +41,8 @@
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "0.10.22",
+    "@tanstack/router-devtools": "^1.106.0",
+    "@tanstack/router-plugin": "^1.106.0",
     "@types/node": "22",
     "@vitest/ui": "^3.0.7",
     "eslint": "^9.21.0",

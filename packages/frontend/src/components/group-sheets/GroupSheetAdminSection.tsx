@@ -1,7 +1,7 @@
 import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { useNavigate } from "react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -33,7 +33,7 @@ export const GroupSheetAdminSection = ({
       trpc.sheet.mySheets.queryKey(),
     );
 
-    await navigate("/sheets");
+    await navigate({ to: "/sheets" });
   }, [deleteGroupSheet, groupSheet.id, navigate, trpc, invalidate]);
 
   const handleArchive = useCallback(async () => {

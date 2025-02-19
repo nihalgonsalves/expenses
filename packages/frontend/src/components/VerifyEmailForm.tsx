@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 import { useTRPC } from "../api/trpc";
 
@@ -20,7 +20,7 @@ export const VerifyEmailForm = ({ token }: { token: string }) => {
     await verifyEmail(token);
     await queryClient.invalidateQueries();
 
-    await navigate("/settings");
+    await navigate({ to: "/settings" });
   };
 
   return (

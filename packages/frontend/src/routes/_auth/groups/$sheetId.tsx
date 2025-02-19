@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
 
-import { useTRPC } from "../../api/trpc";
-import { useCurrentUser } from "../../api/useCurrentUser";
-import type { ActorInfo } from "../../components/group-sheets/BalanceSummary";
-import { GroupSheet } from "../../components/group-sheets/GroupSheet";
-import { SheetParams, useParams } from "../../routes";
-import { RootLoader } from "../Root";
+import { useTRPC } from "../../../api/trpc";
+import { useCurrentUser } from "../../../api/useCurrentUser";
+import type { ActorInfo } from "../../../components/group-sheets/BalanceSummary";
+import { GroupSheet } from "../../../components/group-sheets/GroupSheet";
+import { RootLoader } from "../../../pages/Root";
 
 const GroupDetailPage = () => {
   const { trpc } = useTRPC();
-  const { sheetId } = useParams(SheetParams);
+  const { sheetId } = Route.useParams();
 
   const result = useQuery(trpc.sheet.groupSheetById.queryOptions(sheetId));
   const { data: me } = useCurrentUser();
@@ -41,4 +41,6 @@ const GroupDetailPage = () => {
   );
 };
 
-export default GroupDetailPage;
+export const Route = createFileRoute("/_auth/groups/$sheetId")({
+  component: GroupDetailPage,
+});
