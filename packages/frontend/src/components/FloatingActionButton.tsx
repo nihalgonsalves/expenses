@@ -1,7 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import type React from "react";
-import { Link } from "react-router";
 
 import { Button } from "./ui/button";
 import {

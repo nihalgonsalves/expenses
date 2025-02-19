@@ -1,7 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { AvatarIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "react-router";
+import { Link } from "@tanstack/react-router";
 
 import { useTRPC } from "../api/trpc";
 import { useResetCache } from "../api/useCacheReset";

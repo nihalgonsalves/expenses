@@ -8,7 +8,7 @@ import {
   UploadIcon,
 } from "@radix-ui/react-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link } from "react-router";
+import { Link } from "@tanstack/react-router";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
@@ -152,9 +152,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     <div className="flex flex-col gap-2">
       <div className="p-2">
         <Button $variant="outline" className="w-full" asChild>
-          <Link
-            to={`/?${new URLSearchParams({ sheetId: personalSheet.id }).toString()}`}
-          >
+          <Link to="/" search={{ sheetId: [personalSheet.id] }}>
             <ActivityLogIcon className="mr-2" /> Transactions
           </Link>
         </Button>
@@ -254,7 +252,10 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             <Separator />
 
             <Button $variant="outline" asChild>
-              <Link to={`/sheets/${personalSheet.id}/import`}>
+              <Link
+                to="/sheets/$sheetId/import"
+                params={{ sheetId: personalSheet.id }}
+              >
                 <UploadIcon className="mr-2" />
                 Import .csv
               </Link>

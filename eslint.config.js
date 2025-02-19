@@ -87,7 +87,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["packages/frontend/src/pages/**/*", "**/*.config.*"],
+    files: ["**/*.config.*"],
     rules: {
       "import/no-default-export": "off",
     },

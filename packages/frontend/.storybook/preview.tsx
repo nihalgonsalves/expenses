@@ -1,6 +1,19 @@
 import type { Preview } from "@storybook/react";
 import "../src/tailwind.css";
-import { MemoryRouter } from "react-router";
+import {
+  createMemoryHistory,
+  createRoute,
+  createRouter,
+  createRootRoute,
+  RouterProvider,
+} from "@tanstack/react-router";
+
+const rootRoute = createRootRoute();
+const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/" });
+const memoryHistory = createMemoryHistory({ initialEntries: ["/"] });
+const routeTree = rootRoute.addChildren([indexRoute]);
+
+const router = createRouter({ routeTree, history: memoryHistory });
 
 const preview: Preview = {
   parameters: {
@@ -12,7 +25,10 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (story) => <MemoryRouter initialEntries={["/"]}>{story()}</MemoryRouter>,
+    (story) => (
+      // @ts-expect-error does not match the main app's router types
+      <RouterProvider router={router} defaultComponent={story} />
+    ),
   ],
 };
 

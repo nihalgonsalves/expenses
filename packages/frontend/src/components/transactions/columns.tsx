@@ -1,7 +1,7 @@
 "use client";
 
+import { Link } from "@tanstack/react-router";
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
-import { Link } from "react-router";
 
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
 import { useCurrentUser } from "../../api/useCurrentUser";
@@ -33,9 +33,12 @@ const SheetLink = ({
     <Link
       to={
         transaction.sheetType === "PERSONAL"
-          ? `/sheets/${transaction.sheet.id}`
-          : `/groups/${transaction.sheet.id}`
+          ? `/sheets/$sheetId`
+          : `/groups/$sheetId`
       }
+      params={{
+        sheetId: transaction.sheet.id,
+      }}
     >
       {transaction.sheet.name}
     </Link>

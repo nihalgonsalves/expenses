@@ -1,14 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 
 import { useTRPC } from "../../api/trpc";
 import { PersonalTransactionsImporter } from "../../components/personal-sheets/PersonalTransactionsImporter";
-import { useParams, SheetParams } from "../../routes";
-import { Root } from "../Root";
+import { Root } from "../../pages/Root";
 
 const SheetImportPage = () => {
   const { trpc } = useTRPC();
 
-  const { sheetId } = useParams(SheetParams);
+  const { sheetId } = useParams({
+    from: "/sheets/$sheetId/import",
+  });
+
   const { data } = useQuery(trpc.sheet.personalSheetById.queryOptions(sheetId));
 
   return (
@@ -18,4 +21,6 @@ const SheetImportPage = () => {
   );
 };
 
-export default SheetImportPage;
+export const Route = createFileRoute("/sheets/$sheetId/import")({
+  component: SheetImportPage,
+});
