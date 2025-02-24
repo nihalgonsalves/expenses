@@ -26,6 +26,10 @@ Sentry.init({
   ...(config.VITE_SENTRY_DSN ? { dsn: config.VITE_SENTRY_DSN } : {}),
   release: config.VITE_GIT_COMMIT_SHA,
   integrations: [
+    Sentry.browserProfilingIntegration(),
+    Sentry.captureConsoleIntegration(),
+    Sentry.httpClientIntegration(),
+    Sentry.reportingObserverIntegration(),
     Sentry.reactRouterV6BrowserTracingIntegration({
       useEffect,
       useLocation,

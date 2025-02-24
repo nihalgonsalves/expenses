@@ -67,6 +67,7 @@ export default defineConfig(({ mode }) => ({
         org: process.env["SENTRY_ORG"],
         project: process.env["SENTRY_PROJECT"],
         release: { name: process.env["VITE_GIT_COMMIT_SHA"] },
+        reactComponentAnnotation: { enabled: true },
       }) as Plugin),
   ].filter(Boolean),
 }));

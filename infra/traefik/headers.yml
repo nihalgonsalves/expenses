@@ -11,3 +11,5 @@ http:
           worker-src 'self' blob:;
           child-src 'self' blob:;
           style-src 'self' 'unsafe-inline';
+        customResponseHeaders:
+          Document-Policy: js-profiling
