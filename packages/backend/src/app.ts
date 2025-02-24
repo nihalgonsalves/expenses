@@ -8,6 +8,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
 import { PrismaClient } from "@prisma/client";
 import * as Sentry from "@sentry/node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
 import IORedis from "ioredis";
@@ -72,8 +73,7 @@ void (async () => {
   Sentry.init({
     ...(config.SENTRY_DSN ? { dsn: config.SENTRY_DSN } : {}),
     release: config.GIT_COMMIT_SHA,
-    // TODO: Sentry does not have precompiled binaries for macOS ARM64
-    // integrations: [nodeProfilingIntegration()],
+    integrations: [nodeProfilingIntegration(), Sentry.prismaIntegration()],
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
   });
@@ -108,7 +108,7 @@ void (async () => {
 
     process.on("SIGINT", () => {
       console.log(`SIGINT received, shutting web server down`);
-
+      void Sentry.close(1000);
       server.close();
     });
   } catch (e) {

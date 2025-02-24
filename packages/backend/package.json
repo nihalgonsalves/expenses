@@ -26,7 +26,8 @@
     "@hono/trpc-server": "^0.3.4",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "*",
-    "@sentry/node": "^9.1.0",
+    "@sentry/node": "^9.2.0",
+    "@sentry/profiling-node": "^9.2.0",
     "@trpc/server": "^11.0.0-rc.781",
     "bcrypt": "*",
     "bullmq": "^5.41.2",
@@ -45,7 +46,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.5.0",
-    "@sentry/esbuild-plugin": "^3.1.2",
+    "@sentry/esbuild-plugin": "^3.2.1",
     "@testcontainers/postgresql": "^10.18.0",
     "@testcontainers/redis": "^10.18.0",
     "@total-typescript/ts-reset": "^0.6.1",

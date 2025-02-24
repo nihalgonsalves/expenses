@@ -6,8 +6,13 @@ http:
         contentTypeNosniff: true
         stsSeconds: 31536000 # 1 year
         stsIncludeSubdomains: false
+        customResponseHeaders:
+          document-policy: js-profiling
+          # reporting-endpoints: csp-endpoint="https://....ingest.us.sentry.io/api/.../security/?sentry_key=..."
         contentSecurityPolicy: >
           default-src 'self';
-          worker-src 'self' blob:;
-          child-src 'self' blob:;
+          script-src 'self' blob:;
           style-src 'self' 'unsafe-inline';
+          connect-src 'self' https://....ingest.sentry.io;
+        # report-uri https://....ingest.us.sentry.io/api/.../security/?sentry_key=...;
+        # report-to csp-endpoint
