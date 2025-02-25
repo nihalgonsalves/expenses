@@ -1,6 +1,8 @@
 import { fileURLToPath } from "url";
 
 import { sentryVitePlugin } from "@sentry/vite-plugin";
+import spotlightSidecar from "@spotlightjs/sidecar/vite-plugin";
+import spotlight from "@spotlightjs/spotlight/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -51,6 +53,8 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
     }),
+    spotlight(),
+    spotlightSidecar(),
     process.env["VITE_COVERAGE"] &&
       IstanbulPlugin({
         include: "src/*",

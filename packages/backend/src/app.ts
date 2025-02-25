@@ -76,6 +76,7 @@ void (async () => {
     integrations: [nodeProfilingIntegration(), Sentry.prismaIntegration()],
     tracesSampleRate: 1.0,
     profilesSampleRate: 1.0,
+    spotlight: !IS_PROD,
   });
 
   const prisma = new PrismaClient({

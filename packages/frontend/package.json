@@ -83,6 +83,8 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@spotlightjs/sidecar": "^1.11.1",
+    "@spotlightjs/spotlight": "^2.10.3",
     "@storybook/addon-coverage": "^1.0.5",
     "@storybook/addon-essentials": "^8.6.0",
     "@storybook/addon-interactions": "^8.6.0",
