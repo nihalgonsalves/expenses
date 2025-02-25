@@ -3,11 +3,7 @@ import fs from "fs/promises";
 
 import { test as base } from "@playwright/test";
 export { expect } from "@playwright/test";
-import {
-  type CreateTRPCClient,
-  createTRPCClient,
-  httpBatchLink,
-} from "@trpc/client";
+import { type TRPCClient, createTRPCClient, httpBatchLink } from "@trpc/client";
 
 import type { AppRouter } from "@nihalgonsalves/expenses-backend";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
@@ -16,7 +12,7 @@ import { getUserData } from "./misc";
 
 type Fixtures = {
   setup: () => void;
-  serverTRPCClient: CreateTRPCClient<AppRouter>;
+  serverTRPCClient: TRPCClient<AppRouter>;
   createUser: () => Promise<User & { password: string }>;
   signIn: () => Promise<User & { password: string }>;
 };
