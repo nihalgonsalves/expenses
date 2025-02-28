@@ -27,7 +27,9 @@ Sentry.init({
   release: config.VITE_GIT_COMMIT_SHA,
   integrations: [
     Sentry.browserProfilingIntegration(),
-    Sentry.captureConsoleIntegration(),
+    Sentry.captureConsoleIntegration({
+      levels: ["error", "warn"],
+    }),
     Sentry.httpClientIntegration(),
     Sentry.reportingObserverIntegration(),
     Sentry.reactRouterV6BrowserTracingIntegration({
@@ -46,6 +48,15 @@ Sentry.init({
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
 });
+
+if (import.meta.env.DEV) {
+  // eslint-disable-next-line import/no-extraneous-dependencies
+  const { init } = await import("@spotlightjs/spotlight");
+
+  await init({
+    anchor: "centerLeft",
+  });
+}
 
 const sentryCreateBrowserRouter =
   Sentry.wrapCreateBrowserRouterV7(createBrowserRouter);
