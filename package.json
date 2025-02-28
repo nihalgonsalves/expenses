@@ -22,7 +22,7 @@
     "start": "run-p 'start:*'",
     "start:fe": "yarn fe preview:vite",
     "start:be": "yarn be start",
-    "start:e2e": "yarn run-p build:be build:fe && yarn run-p start:be start:fe",
+    "start:e2e": "yarn build:be && yarn run-p start:be 'fe dev:vite'",
     "clean": "git clean -Xdf --exclude='!packages/backend/.env'",
     "test": "vitest",
     "lint": "run-p 'lint:*'",
