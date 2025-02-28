@@ -46,7 +46,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           },
         }}
       />
-      <TanStackRouterDevtools position="bottom-right" />
+      {import.meta.env.DEV ? (
+        <TanStackRouterDevtools position="bottom-right" />
+      ) : null}
     </>
   ),
 });
