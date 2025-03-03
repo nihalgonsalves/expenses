@@ -5,8 +5,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import type { z } from "zod";
 
-import { ZUpdateUserInput } from "@nihalgonsalves/expenses-shared/types/user";
-import type { User } from "@nihalgonsalves/expenses-shared/types/user";
+import {
+  ZUpdateUserInput,
+  type User,
+} from "@nihalgonsalves/expenses-shared/types/user";
 
 import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";

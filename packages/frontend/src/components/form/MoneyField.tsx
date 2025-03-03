@@ -1,5 +1,4 @@
-import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type Ref } from "react";
 
 import {
   dineroToMoney,
@@ -26,7 +25,7 @@ type MoneyFieldProps = Omit<
   onChange: (newAmount: number) => void;
   currencyCode: string;
   mode?: "onChange" | "onBlur";
-  ref?: React.Ref<HTMLDivElement>;
+  ref?: Ref<HTMLDivElement>;
 };
 
 export const MoneyField = ({

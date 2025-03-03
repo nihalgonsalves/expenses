@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useDialog } from "../components/form/ResponsiveDialog";
 import { CircularProgress } from "../components/ui/circular-progress";
 import { useIsStandalone } from "../utils/hooks/useIsStandalone";
+import { noop } from "../utils/utils";
 
 const displayThreshold = () => window.innerHeight * 0.05;
 const reloadThreshold = () => window.innerHeight * 0.4;
@@ -22,7 +23,7 @@ export const usePullToRefresh = (
 
   useEffect(() => {
     if (!isStandalone || dialog.isOpen) {
-      return;
+      return noop;
     }
 
     const onTouchStart = (e: TouchEvent) => {

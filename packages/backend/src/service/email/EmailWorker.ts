@@ -2,8 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { Queue, Worker } from "bullmq";
 import type IORedis from "ioredis";
 import { createTransport } from "nodemailer";
-import type Mail from "nodemailer/lib/mailer";
-import type { Address } from "nodemailer/lib/mailer";
+import type { default as Mail, Address } from "nodemailer/lib/mailer";
 import { RateLimiterRedis, RateLimiterRes } from "rate-limiter-flexible";
 
 import { EMAIL_BULLMQ_QUEUE, config } from "../../config";

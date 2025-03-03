@@ -1,6 +1,5 @@
 import type { Prisma } from "@prisma/client";
-import { Queue } from "bullmq";
-import { Worker } from "bullmq";
+import { Queue, Worker } from "bullmq";
 import type IORedis from "ioredis";
 
 import type { PrismaClientType } from "../../app";
