@@ -4,8 +4,10 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import type { z } from "zod";
 
-import { ZUpdateSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
-import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
+import {
+  ZUpdateSheetInput,
+  type Sheet,
+} from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { useTRPC } from "../../api/trpc";
 import { Button } from "../ui/button";

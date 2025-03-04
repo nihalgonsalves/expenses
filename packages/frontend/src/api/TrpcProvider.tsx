@@ -3,8 +3,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { TRPCClientError, createTRPCClient, httpBatchLink } from "@trpc/client";
-import type React from "react";
-import { useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 
@@ -87,7 +86,7 @@ const queryClient = new QueryClient({
   },
 });
 
-export const TrpcProvider = ({ children }: { children: React.ReactNode }) => {
+export const TrpcProvider = ({ children }: { children: ReactNode }) => {
   const trpcClient = useMemo(
     () =>
       createTRPCClient<AppRouter>({

@@ -221,6 +221,7 @@ export class TransactionService {
             case "INCOME":
               return amount > 0 && userId === user.id;
             case "TRANSFER":
+            default:
               return false;
           }
         }),

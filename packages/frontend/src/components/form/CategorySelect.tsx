@@ -1,5 +1,4 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { CaretSortIcon } from "@radix-ui/react-icons";
+import { PlusIcon, CaretSortIcon } from "@radix-ui/react-icons";
 import { Popover } from "@radix-ui/react-popover";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";

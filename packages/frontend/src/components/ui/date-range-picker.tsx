@@ -79,7 +79,7 @@ type Preset = {
 };
 
 // Define presets
-const PRESETS: Preset[] = [
+const PRESETS = [
   { name: "today", label: "Today" },
   { name: "yesterday", label: "Yesterday" },
   { name: "last7", label: "Last 7 days" },
@@ -89,7 +89,7 @@ const PRESETS: Preset[] = [
   { name: "lastWeek", label: "Last Week" },
   { name: "thisMonth", label: "This Month" },
   { name: "lastMonth", label: "Last Month" },
-];
+] as const satisfies Preset[];
 
 const PresetButton = ({
   preset,
