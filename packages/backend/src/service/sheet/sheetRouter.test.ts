@@ -6,10 +6,10 @@ import {
   groupSheetFactory,
   personalSheetFactory,
   userFactory,
-} from "../../../test/factories";
-import { getTRPCCaller } from "../../../test/getTRPCCaller";
-import { createGroupSheetTransactionInput } from "../../../test/input";
-import { generateId } from "../../utils/nanoid";
+} from "../../../test/factories.ts";
+import { getTRPCCaller } from "../../../test/getTRPCCaller.ts";
+import { createGroupSheetTransactionInput } from "../../../test/input.ts";
+import { generateId } from "../../utils/nanoid.ts";
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 

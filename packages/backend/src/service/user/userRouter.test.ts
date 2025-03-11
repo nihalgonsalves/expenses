@@ -6,11 +6,11 @@ import {
   type User,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { personalSheetFactory, userFactory } from "../../../test/factories";
-import { getTRPCCaller } from "../../../test/getTRPCCaller";
-import { createPersonalSheetTransactionInput } from "../../../test/input";
+import { personalSheetFactory, userFactory } from "../../../test/factories.ts";
+import { getTRPCCaller } from "../../../test/getTRPCCaller.ts";
+import { createPersonalSheetTransactionInput } from "../../../test/input.ts";
 
-import { comparePassword, hashPassword, signJWT } from "./utils";
+import { comparePassword, hashPassword, signJWT } from "./utils.ts";
 
 const userArgs = {
   name: "Emily",

@@ -10,7 +10,7 @@ import {
   ZJWTToken,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { publicProcedure, protectedProcedure, router } from "../../trpc";
+import { publicProcedure, protectedProcedure, router } from "../../trpc.ts";
 
 export const userRouter = router({
   createUser: publicProcedure

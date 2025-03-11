@@ -25,9 +25,9 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import { ZCategoryEmoji } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { protectedProcedure, router } from "../../trpc";
+import { protectedProcedure, router } from "../../trpc.ts";
 
-import { calculateBalances } from "./TransactionService";
+import { calculateBalances } from "./TransactionService.ts";
 
 const mapTransaction = <
   T extends { amount: number; scale: number; spentAt: Date },

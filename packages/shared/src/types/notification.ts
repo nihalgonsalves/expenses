@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ZMoney } from "./transaction";
+import { ZMoney } from "./transaction.ts";
 
 const ZNotificationTransaction = z.object({
   id: z.string().min(1),

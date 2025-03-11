@@ -1,5 +1,5 @@
 import { RedisContainer } from "@testcontainers/redis";
-import IORedis from "ioredis";
+import { Redis } from "ioredis";
 import { afterAll } from "vitest";
 
 export const getRedis = async () => {
@@ -8,7 +8,7 @@ export const getRedis = async () => {
     .withReuse()
     .start();
 
-  const redis = new IORedis(container.getConnectionUrl(), {
+  const redis = new Redis(container.getConnectionUrl(), {
     maxRetriesPerRequest: null,
   });
 

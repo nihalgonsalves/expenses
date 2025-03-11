@@ -3,9 +3,9 @@ import { vi, describe, it, expect } from "vitest";
 
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { AUTH_COOKIE_NAME, getMaybeUser } from "./context";
-import { UserServiceError } from "./service/user/utils";
-import { noopAsync } from "./utils/noop";
+import { AUTH_COOKIE_NAME, getMaybeUser } from "./context.ts";
+import { UserServiceError } from "./service/user/utils.ts";
+import { noopAsync } from "./utils/noop.ts";
 
 describe("getMaybeUser", () => {
   it("exchanges a cookie header token for a user", async () => {

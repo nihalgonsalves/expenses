@@ -6,20 +6,20 @@ import type {
   JWTToken,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { appRouter } from "../src/appRouter";
-import { config } from "../src/config";
-import type { ContextObj } from "../src/context";
-import { FrankfurterService } from "../src/service/frankfurter/FrankfurterService";
-import { NotificationService } from "../src/service/notification/NotificationService";
-import { SheetService } from "../src/service/sheet/SheetService";
-import { TransactionService } from "../src/service/transaction/TransactionService";
-import { UserService } from "../src/service/user/UserService";
-import { t } from "../src/trpc";
-import { noopAsync } from "../src/utils/noop";
+import { appRouter } from "../src/appRouter.ts";
+import { config } from "../src/config.ts";
+import type { ContextObj } from "../src/context.ts";
+import { FrankfurterService } from "../src/service/frankfurter/FrankfurterService.ts";
+import { NotificationService } from "../src/service/notification/NotificationService.ts";
+import { SheetService } from "../src/service/sheet/SheetService.ts";
+import { TransactionService } from "../src/service/transaction/TransactionService.ts";
+import { UserService } from "../src/service/user/UserService.ts";
+import { t } from "../src/trpc.ts";
+import { noopAsync } from "../src/utils/noop.ts";
 
-import { FakeEmailWorker } from "./FakeEmailWorker";
-import { getPrisma } from "./getPrisma";
-import { FakeNotificationDispatchService } from "./webPushUtils";
+import { FakeEmailWorker } from "./FakeEmailWorker.ts";
+import { getPrisma } from "./getPrisma.ts";
+import { FakeNotificationDispatchService } from "./webPushUtils.ts";
 
 export const getTRPCCaller = async () => {
   const prisma = await getPrisma();

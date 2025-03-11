@@ -1,11 +1,11 @@
 import type { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
-import type { PrismaClientType } from "./app";
-import { config } from "./config";
-import { EmailWorker } from "./service/email/EmailWorker";
-import { NotificationDispatchWorker } from "./service/notification/NotificationDispatchWorker";
-import { TransactionScheduleWorker } from "./service/transaction/TransactionScheduleWorker";
+import type { PrismaClientType } from "./app.ts";
+import { config } from "./config.ts";
+import { EmailWorker } from "./service/email/EmailWorker.ts";
+import { NotificationDispatchWorker } from "./service/notification/NotificationDispatchWorker.ts";
+import { TransactionScheduleWorker } from "./service/transaction/TransactionScheduleWorker.ts";
 
 export type IWorker<TData, TResult> = {
   worker: Worker<TData, TResult>;

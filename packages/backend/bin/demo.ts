@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import fetchCookie from "fetch-cookie";
 
-import type { AppRouter } from "../src/appRouter";
+import type { AppRouter } from "../src/appRouter.ts";
 
 const DEMO_A_EMAIL = "user@example.com";
 const DEMO_B_EMAIL = "other-user@example.com";

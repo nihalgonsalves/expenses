@@ -6,8 +6,8 @@ import {
   ZNotificationSubscriptionsResponse,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import { config } from "../../config";
-import { protectedProcedure, router } from "../../trpc";
+import { config } from "../../config.ts";
+import { protectedProcedure, router } from "../../trpc.ts";
 
 export const notificationRouter = router({
   getPublicKey: protectedProcedure

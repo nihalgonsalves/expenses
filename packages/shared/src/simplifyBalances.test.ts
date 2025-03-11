@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import type { Money } from "@nihalgonsalves/expenses-shared/money";
-
-import { type Transfer, simplifyBalances } from "./simplifyBalances";
+import type { Money } from "./money.ts";
+import { type Transfer, simplifyBalances } from "./simplifyBalances.ts";
 
 const currencyCode = "EUR";
 const scale = 2;

@@ -20,6 +20,8 @@ jobs:
           cache: yarn
 
       - run: yarn install --immutable
+      - working-directory: ./packages/backend/
+        run: yarn db:generate
       - run: yarn build:tsc
 
       - run: yarn lint
@@ -91,6 +93,9 @@ jobs:
           cache: yarn
 
       - run: yarn install --immutable
+      - working-directory: ./packages/backend/
+        run: yarn db:generate
+
         # pull so that testcontainers doesn't have to, timing out tests.
       - run: docker compose -f compose.dev.yml pull postgres redis
 
@@ -143,7 +148,8 @@ jobs:
           cache: yarn
 
       - run: yarn install --immutable
-
+      - working-directory: ./packages/backend/
+        run: yarn db:generate
       - working-directory: ./packages/backend/
         # TODO: put VAPID keys into GHA and remove this step
         run: yarn prepare:e2e && yarn prisma migrate deploy

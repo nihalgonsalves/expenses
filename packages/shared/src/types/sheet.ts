@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ZCurrencyCode } from "../money";
+import { ZCurrencyCode } from "../money.ts";
 
 export const ZSheetType = z.union([z.literal("PERSONAL"), z.literal("GROUP")]);
 export type SheetType = z.infer<typeof ZSheetType>;

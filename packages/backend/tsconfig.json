@@ -5,5 +5,11 @@
     {
       "path": "../shared"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "rewriteRelativeImportExtensions": true
+  }
 }

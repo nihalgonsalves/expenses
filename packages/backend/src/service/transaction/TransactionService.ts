@@ -33,19 +33,19 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "../../app";
-import { generateId } from "../../utils/nanoid";
-import type { INotificationDispatchWorker } from "../notification/NotificationDispatchWorker";
+import type { PrismaClientType } from "../../app.ts";
+import { generateId } from "../../utils/nanoid.ts";
+import type { INotificationDispatchWorker } from "../notification/NotificationDispatchWorker.ts";
 
 import {
   transactionToNotificationPayload,
   transferToNotificationPayload,
-} from "./notificationMappers";
+} from "./notificationMappers.ts";
 import {
   mapInputToCreatePersonalTransaction,
   mapInputToCreatePersonalTransactionEntry,
   mapInputToCreatePersonalTransactionSchedule,
-} from "./prismaMappers";
+} from "./prismaMappers.ts";
 
 class TransactionServiceError extends TRPCError {}
 

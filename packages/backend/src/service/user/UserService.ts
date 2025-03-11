@@ -14,10 +14,10 @@ import type {
   UpdateUserInput,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "../../app";
-import { config } from "../../config";
-import { generateId } from "../../utils/nanoid";
-import { EmailWorkerError, type IEmailWorker } from "../email/EmailWorker";
+import type { PrismaClientType } from "../../app.ts";
+import { config } from "../../config.ts";
+import { generateId } from "../../utils/nanoid.ts";
+import { EmailWorkerError, type IEmailWorker } from "../email/EmailWorker.ts";
 
 import {
   UserServiceError,
@@ -25,7 +25,7 @@ import {
   hashPassword,
   signJWT,
   verifyJWT,
-} from "./utils";
+} from "./utils.ts";
 
 const ZPasswordResetJWTPayload = z.object({
   purpose: z.literal("PASSWORD_RESET"),

@@ -1,7 +1,7 @@
 import "temporal-polyfill/global";
 
 import { createBullBoard } from "@bull-board/api";
-import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter.js";
 import { HonoAdapter } from "@bull-board/hono";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -11,13 +11,13 @@ import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import { Hono } from "hono";
 import { showRoutes } from "hono/dev";
-import IORedis from "ioredis";
+import { Redis } from "ioredis";
 
-import { appRouter } from "./appRouter";
-import { config } from "./config";
-import { makeCreateContext } from "./context";
-import { makePWARouter } from "./pwaRouter";
-import { startWorkers } from "./startWorkers";
+import { appRouter } from "./appRouter.ts";
+import { config, IS_PROD } from "./config.ts";
+import { makeCreateContext } from "./context.ts";
+import { makePWARouter } from "./pwaRouter.ts";
+import { startWorkers } from "./startWorkers.ts";
 
 export const createPrisma = () =>
   new PrismaClient({
@@ -28,7 +28,7 @@ export const createPrisma = () =>
 
 export type PrismaClientType = ReturnType<typeof createPrisma>;
 
-export const createApp = async (prisma: PrismaClientType, redis: IORedis) => {
+export const createApp = async (prisma: PrismaClientType, redis: Redis) => {
   const app = new Hono();
   const workers = await startWorkers(prisma, redis);
 
@@ -86,7 +86,7 @@ void (async () => {
     },
   });
 
-  const redis = new IORedis(config.REDIS_URL, { maxRetriesPerRequest: null });
+  const redis = new Redis(config.REDIS_URL, { maxRetriesPerRequest: null });
 
   try {
     const app = await createApp(prisma, redis);

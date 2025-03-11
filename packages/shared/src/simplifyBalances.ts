@@ -10,12 +10,7 @@ import {
 } from "dinero.js";
 import FastPriorityQueue from "fastpriorityqueue";
 
-import {
-  type Money,
-  sumMoney,
-  moneyToDinero,
-  dineroToMoney,
-} from "@nihalgonsalves/expenses-shared/money";
+import { type Money, sumMoney, moneyToDinero, dineroToMoney } from "./money.ts";
 
 export type Balance = {
   id: string;

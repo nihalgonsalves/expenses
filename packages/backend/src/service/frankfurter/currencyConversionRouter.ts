@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
 
-import { protectedProcedure, router } from "../../trpc";
+import { protectedProcedure, router } from "../../trpc.ts";
 
 // frankfurter would ideally return integer + scale or strings, but
 // returns JSON floats. this is unideal, but since the rates are only

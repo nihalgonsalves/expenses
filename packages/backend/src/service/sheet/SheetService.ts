@@ -14,10 +14,10 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "../../app";
-import { generateId } from "../../utils/nanoid";
-import { getTRPCError } from "../../utils/trpcUtils";
-import type { TransactionService } from "../transaction/TransactionService";
+import type { PrismaClientType } from "../../app.ts";
+import { generateId } from "../../utils/nanoid.ts";
+import { getTRPCError } from "../../utils/trpcUtils.ts";
+import type { TransactionService } from "../transaction/TransactionService.ts";
 
 class SheetServiceError extends TRPCError {}
 

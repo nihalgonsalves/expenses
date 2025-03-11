@@ -4,15 +4,15 @@ import {
   groupSheetFactory,
   notificationSubscriptionFactory,
   userFactory,
-} from "../../../test/factories";
-import { getPrisma } from "../../../test/getPrisma";
-import { createGroupSheetTransactionInput } from "../../../test/input";
+} from "../../../test/factories.ts";
+import { getPrisma } from "../../../test/getPrisma.ts";
+import { createGroupSheetTransactionInput } from "../../../test/input.ts";
 import {
   FakeNotificationDispatchService,
   type FakeNotificationItem,
-} from "../../../test/webPushUtils";
+} from "../../../test/webPushUtils.ts";
 
-import { TransactionService } from "./TransactionService";
+import { TransactionService } from "./TransactionService.ts";
 
 const prisma = await getPrisma();
 

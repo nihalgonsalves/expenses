@@ -8,9 +8,6 @@ RUN apt-get update -y && \
     ca-certificates openssl \
   && rm -rf /var/lib/apt/lists/*
 
-# don't attempt to build Prisma (therefore requiring the schema files)
-ENV SKIP_POSTINSTALL_GENERATE=1
-
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 

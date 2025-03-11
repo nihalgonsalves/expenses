@@ -1,17 +1,20 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
-import { makeWaitForQueueSuccess } from "../../../test/bullMQUtils";
+import { makeWaitForQueueSuccess } from "../../../test/bullMQUtils.ts";
 import {
   notificationSubscriptionFactory,
   userFactory,
-} from "../../../test/factories";
-import { getPrisma } from "../../../test/getPrisma";
-import { getRedis } from "../../../test/getRedis";
-import { createPushService, getVapidDetails } from "../../../test/webPushUtils";
-import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
-import { closeWorker } from "../../startWorkers";
+} from "../../../test/factories.ts";
+import { getPrisma } from "../../../test/getPrisma.ts";
+import { getRedis } from "../../../test/getRedis.ts";
+import {
+  createPushService,
+  getVapidDetails,
+} from "../../../test/webPushUtils.ts";
+import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
+import { closeWorker } from "../../startWorkers.ts";
 
-import { NotificationDispatchWorker } from "./NotificationDispatchWorker";
+import { NotificationDispatchWorker } from "./NotificationDispatchWorker.ts";
 
 const prisma = await getPrisma();
 const redis = await getRedis();

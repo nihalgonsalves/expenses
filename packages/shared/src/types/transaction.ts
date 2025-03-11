@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-import { ZCurrencyCode } from "../money";
+import { ZCurrencyCode } from "../money.ts";
 
-import { ZParticipant, ZSheet, type SheetType } from "./sheet";
+import { ZParticipant, ZSheet, type SheetType } from "./sheet.ts";
 
 export const ZMoney = z.object({
   amount: z.number().int(),

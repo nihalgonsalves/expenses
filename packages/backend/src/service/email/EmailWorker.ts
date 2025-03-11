@@ -1,16 +1,15 @@
 import { TRPCError } from "@trpc/server";
 import { Queue, Worker } from "bullmq";
-import type IORedis from "ioredis";
-import { createTransport } from "nodemailer";
-import type { default as Mail, Address } from "nodemailer/lib/mailer";
+import type { Redis } from "ioredis";
+import { createTransport, type SendMailOptions } from "nodemailer";
 import { RateLimiterRedis, RateLimiterRes } from "rate-limiter-flexible";
 
-import { EMAIL_BULLMQ_QUEUE, config } from "../../config";
-import type { IWorker } from "../../startWorkers";
-import { durationSeconds } from "../../utils/temporal";
+import { EMAIL_BULLMQ_QUEUE, config } from "../../config.ts";
+import type { IWorker } from "../../startWorkers.ts";
+import { durationSeconds } from "../../utils/temporal.ts";
 
-export type EmailPayload = Pick<Mail.Options, "subject" | "text"> & {
-  to: Address;
+export type EmailPayload = Pick<SendMailOptions, "subject" | "text"> & {
+  to: Extract<SendMailOptions["to"], { address: unknown }>;
 };
 
 export type IEmailWorker = {
@@ -37,7 +36,7 @@ export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
   globalRateLimiter: RateLimiterRedis;
   recipientRateLimiter: RateLimiterRedis;
 
-  constructor(redis: IORedis) {
+  constructor(redis: Redis) {
     this.queue = new Queue(EMAIL_BULLMQ_QUEUE, {
       connection: redis,
     });

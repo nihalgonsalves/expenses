@@ -81,6 +81,12 @@ export default tseslint.config(
     },
   },
   {
+    files: ["packages/backend/**/*", "packages/shared/**/*"],
+    rules: {
+      "import/extensions": "off",
+    },
+  },
+  {
     files: ["packages/frontend/src/routes/**/*"],
     rules: {
       "@typescript-eslint/no-use-before-define": "off",

@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/node";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { ZodError } from "zod";
 
-import type { ContextFn } from "./context";
+import type { ContextFn } from "./context.ts";
 
 export const t = initTRPC.context<ContextFn>().create({
   errorFormatter({ shape, error }) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getRRuleInstancesTzAware } from "./rruleUtils";
+import { getRRuleInstancesTzAware } from "./rruleUtils.ts";
 
 describe("getRRuleInstancesTzAware", () => {
   it("correctly calculates instances across DST boundaries", () => {

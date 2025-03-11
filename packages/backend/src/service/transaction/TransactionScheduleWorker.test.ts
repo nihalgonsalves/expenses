@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { makeWaitForQueueSuccess } from "../../../test/bullMQUtils";
-import { personalSheetFactory, userFactory } from "../../../test/factories";
-import { getPrisma } from "../../../test/getPrisma";
-import { getRedis } from "../../../test/getRedis";
-import { createPersonalSheetTransactionScheduleInput } from "../../../test/input";
-import { closeWorker } from "../../startWorkers";
+import { makeWaitForQueueSuccess } from "../../../test/bullMQUtils.ts";
+import { personalSheetFactory, userFactory } from "../../../test/factories.ts";
+import { getPrisma } from "../../../test/getPrisma.ts";
+import { getRedis } from "../../../test/getRedis.ts";
+import { createPersonalSheetTransactionScheduleInput } from "../../../test/input.ts";
+import { closeWorker } from "../../startWorkers.ts";
 
-import { TransactionScheduleWorker } from "./TransactionScheduleWorker";
-import { mapInputToCreatePersonalTransactionSchedule } from "./prismaMappers";
+import { TransactionScheduleWorker } from "./TransactionScheduleWorker.ts";
+import { mapInputToCreatePersonalTransactionSchedule } from "./prismaMappers.ts";
 
 const prisma = await getPrisma();
 const redis = await getRedis();

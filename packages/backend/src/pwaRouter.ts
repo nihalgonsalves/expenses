@@ -6,8 +6,8 @@ import {
   themeColors,
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
-import { config } from "./config";
-import type { makeCreateContext } from "./context";
+import { config } from "./config.ts";
+import type { makeCreateContext } from "./context.ts";
 
 /**
  * Server-side router that serves a themed manifest for the PWA

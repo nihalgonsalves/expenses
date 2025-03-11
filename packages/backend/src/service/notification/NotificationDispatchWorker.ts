@@ -1,5 +1,5 @@
 import { Queue, Worker } from "bullmq";
-import type IORedis from "ioredis";
+import type { Redis } from "ioredis";
 import webPush, {
   WebPushError,
   type PushSubscription,
@@ -11,9 +11,9 @@ import {
   ZNotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import type { PrismaClientType } from "../../app";
-import { NOTIFICATION_BULLMQ_QUEUE } from "../../config";
-import type { IWorker } from "../../startWorkers";
+import type { PrismaClientType } from "../../app.ts";
+import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
+import type { IWorker } from "../../startWorkers.ts";
 
 type WebPushQueueItem = {
   userId: string;
@@ -47,7 +47,7 @@ export class NotificationDispatchWorker
 
   constructor(
     prismaClient: PrismaClientType,
-    redis: IORedis,
+    redis: Redis,
     vapidDetails: NonNullable<RequestOptions["vapidDetails"]>,
   ) {
     this.prismaClient = prismaClient;

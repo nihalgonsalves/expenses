@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { userFactory } from "../../../test/factories";
-import { getTRPCCaller } from "../../../test/getTRPCCaller";
+import { userFactory } from "../../../test/factories.ts";
+import { getTRPCCaller } from "../../../test/getTRPCCaller.ts";
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();
 

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { signJWT, verifyJWT } from "./utils";
+import { signJWT, verifyJWT } from "./utils.ts";
 
 const date = Temporal.Instant.from("2023-01-01T00:00:00.000Z");
 

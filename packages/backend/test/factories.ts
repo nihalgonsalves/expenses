@@ -9,9 +9,9 @@ import {
 import { CURRENCY_CODES } from "@nihalgonsalves/expenses-shared/money";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { generateId } from "../src/utils/nanoid";
+import { generateId } from "../src/utils/nanoid.ts";
 
-import { getUserKeys } from "./webPushUtils";
+import { getUserKeys } from "./webPushUtils.ts";
 
 const randomItem = <T>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]!;

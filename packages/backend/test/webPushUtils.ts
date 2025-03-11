@@ -10,7 +10,7 @@ import {
   type NotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import type { INotificationDispatchWorker } from "../src/service/notification/NotificationDispatchWorker";
+import type { INotificationDispatchWorker } from "../src/service/notification/NotificationDispatchWorker.ts";
 
 export const getVapidDetails = () => {
   const { publicKey, privateKey } = generateVAPIDKeys();

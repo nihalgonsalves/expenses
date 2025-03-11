@@ -7,7 +7,7 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { generateId } from "../../utils/nanoid";
+import { generateId } from "../../utils/nanoid.ts";
 
 export const mapInputToCreatePersonalTransaction = (
   input: Omit<

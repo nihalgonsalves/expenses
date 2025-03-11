@@ -15,7 +15,7 @@ import {
   ZUpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { protectedProcedure, router } from "../../trpc";
+import { protectedProcedure, router } from "../../trpc.ts";
 
 export const sheetRouter = router({
   mySheets: protectedProcedure

@@ -1,8 +1,8 @@
 import { QueueEvents } from "bullmq";
-import type IORedis from "ioredis";
+import type { Redis } from "ioredis";
 
 export const makeWaitForQueueSuccess =
-  (queueName: string, redis: IORedis) => async (exec: () => Promise<void>) => {
+  (queueName: string, redis: Redis) => async (exec: () => Promise<void>) => {
     const queueEvents = new QueueEvents(queueName, {
       connection: redis,
     });

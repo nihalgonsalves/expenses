@@ -7,15 +7,15 @@ import {
   ZJWTToken,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "./app";
-import { config } from "./config";
-import { FrankfurterService } from "./service/frankfurter/FrankfurterService";
-import { NotificationService } from "./service/notification/NotificationService";
-import { SheetService } from "./service/sheet/SheetService";
-import { TransactionService } from "./service/transaction/TransactionService";
-import { UserService } from "./service/user/UserService";
-import { UserServiceError } from "./service/user/utils";
-import type { Workers } from "./startWorkers";
+import type { PrismaClientType } from "./app.ts";
+import { config } from "./config.ts";
+import { FrankfurterService } from "./service/frankfurter/FrankfurterService.ts";
+import { NotificationService } from "./service/notification/NotificationService.ts";
+import { SheetService } from "./service/sheet/SheetService.ts";
+import { TransactionService } from "./service/transaction/TransactionService.ts";
+import { UserService } from "./service/user/UserService.ts";
+import { UserServiceError } from "./service/user/utils.ts";
+import type { Workers } from "./startWorkers.ts";
 
 export const AUTH_COOKIE_NAME = "auth";
 

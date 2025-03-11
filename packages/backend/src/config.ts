@@ -4,6 +4,8 @@ import { type ZodTypeAny, z } from "zod";
 
 const defaultSecret = "test-secret";
 
+export const IS_PROD = process.env["NODE_ENV"] === "production";
+
 const devOnlyDefault = <T extends ZodTypeAny>(
   type: T,
   defaultValue: T["_type"],

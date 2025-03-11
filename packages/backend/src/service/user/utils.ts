@@ -9,7 +9,7 @@ import {
   type JWTToken,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { config } from "../../config";
+import { config } from "../../config.ts";
 
 const SALT_ROUNDS = 10;
 // https://stackoverflow.com/questions/26739167/jwt-json-web-token-automatic-prolongation-of-expiration
