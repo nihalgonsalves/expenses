@@ -2,10 +2,6 @@
   "extends": "@nihalgonsalves/esconfig/tsconfig.shared.json",
   "compilerOptions": {
     "composite": true,
-    "module": "Preserve",
-    "erasableSyntaxOnly": true,
-    "skipLibCheck": true,
-    "checkJs": true,
     "rootDir": "${configDir}/",
     "outDir": "${configDir}/build/"
   }

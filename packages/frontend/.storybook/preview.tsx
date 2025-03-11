@@ -25,10 +25,7 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (story) => (
-      // @ts-expect-error does not match the main app's router types
-      <RouterProvider router={router} defaultComponent={story} />
-    ),
+    (story) => <RouterProvider router={router} defaultComponent={story} />,
   ],
 };
 
