@@ -62,7 +62,7 @@ describe("TransactionScheduleWorker", () => {
       await worker.processOnce(now);
     });
 
-    expect(returnvalue).toEqual({
+    expect(returnvalue).toStrictEqual({
       now: now.toString(),
       schedulesToProcessIds: [id],
       successfulSchedules: {
@@ -120,7 +120,7 @@ describe("TransactionScheduleWorker", () => {
 
     // should only create one more
 
-    expect(secondReturnvalue).toEqual({
+    expect(secondReturnvalue).toStrictEqual({
       now: now2.toString(),
       schedulesToProcessIds: [id],
       successfulSchedules: {
@@ -146,7 +146,7 @@ describe("TransactionScheduleWorker", () => {
       await worker.processOnce();
     });
 
-    expect(returnvalue).toEqual({
+    expect(returnvalue).toStrictEqual({
       now: expect.any(String),
       schedulesToProcessIds: [],
       successfulSchedules: {},

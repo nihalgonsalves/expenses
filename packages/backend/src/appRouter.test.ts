@@ -9,7 +9,7 @@ describe("router", () => {
     it("should respond with OK", async () => {
       const caller = usePublicCaller();
 
-      expect(await caller.health()).toEqual({
+      await expect(caller.health()).resolves.toStrictEqual({
         status: "ok",
         message: "healthy",
       });

@@ -57,7 +57,7 @@ describe("NotificationService", () => {
 
       const address = await createPushService((req, res) => {
         // don't bother reproducing the entire web push library test suite, just confirm that it was sent
-        expect(req.headers).toEqual({
+        expect(req.headers).toStrictEqual({
           authorization: expect.stringMatching(/^vapid t=.*$/),
           connection: expect.stringMatching(/^(keep-alive|close)$/),
           "content-encoding": "aes128gcm",
@@ -107,7 +107,7 @@ describe("NotificationService", () => {
         await sendTestNotification(user.id);
       });
 
-      expect(returnvalue).toEqual({
+      expect(returnvalue).toStrictEqual({
         id,
         userId: user.id,
         success: false,
@@ -115,9 +115,9 @@ describe("NotificationService", () => {
         statusCode: 410,
       });
 
-      expect(
-        await prisma.notificationSubscription.count({ where: { id } }),
-      ).toBe(0);
+      await expect(
+        prisma.notificationSubscription.count({ where: { id } }),
+      ).resolves.toBe(0);
     });
   });
 });

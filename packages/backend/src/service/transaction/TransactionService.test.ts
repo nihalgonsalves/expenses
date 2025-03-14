@@ -78,7 +78,7 @@ describe("TransactionService", () => {
         groupSheet,
       );
 
-      expect(webPushService.messages).toEqual<FakeNotificationItem[]>([
+      expect(webPushService.messages).toStrictEqual<FakeNotificationItem[]>([
         {
           userId: otherParticipant.id,
           payload: {
@@ -132,7 +132,7 @@ describe("TransactionService", () => {
         groupSheet,
       );
 
-      expect(notificationDispatchService.messages).toEqual<
+      expect(notificationDispatchService.messages).toStrictEqual<
         FakeNotificationItem[]
       >([
         {
@@ -182,7 +182,7 @@ describe("TransactionService", () => {
         groupSheet,
       );
 
-      expect(webPushService.messages).toEqual<FakeNotificationItem[]>([
+      expect(webPushService.messages).toStrictEqual<FakeNotificationItem[]>([
         {
           userId: fromUser.id,
           payload: {

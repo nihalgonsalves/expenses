@@ -37,7 +37,7 @@ describe("verifyJWT", () => {
 
     vi.setSystemTime(new Date(date.add({ hours: 1 }).epochMilliseconds));
 
-    expect(await verifyJWT(result, "<identity>")).toMatchObject({
+    await expect(verifyJWT(result, "<identity>")).resolves.toMatchObject({
       payload: {
         aud: "<identity>",
         exp: 1673136000,

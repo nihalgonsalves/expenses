@@ -30,13 +30,13 @@ describe("getMaybeUser", () => {
       },
     );
 
-    expect(result).toEqual<User>({
+    expect(result).toStrictEqual({
       id: "id",
       name: "name (<jwt-token>)",
       email: "email@example.com",
       emailVerified: false,
       theme: null,
-    });
+    } satisfies User);
   });
 
   it("clears token on auth error", async () => {

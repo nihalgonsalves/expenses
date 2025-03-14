@@ -7,7 +7,14 @@ const Component = () => {
 
   if (currentUser.error?.data?.httpStatus === 401) {
     return (
-      <Navigate to="/auth/sign-in" search={{ redirect: location.pathname }} />
+      <Navigate
+        to="/auth/sign-in"
+        search={{
+          // TODO: using useLocation ends up in a circular redirect param
+          // eslint-disable-next-line no-restricted-globals
+          redirect: location.pathname,
+        }}
+      />
     );
   }
 

@@ -10,7 +10,9 @@ describe("getPublicKey", () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    expect(await caller.notification.getPublicKey()).toEqual("<public-key>");
+    await expect(caller.notification.getPublicKey()).resolves.toBe(
+      "<public-key>",
+    );
   });
 });
 
@@ -36,7 +38,9 @@ describe("getSubscriptions", () => {
     const caller = useProtectedCaller(user);
 
     await caller.notification.upsertSubscription(args);
-    expect(await caller.notification.getSubscriptions()).toEqual([expected]);
+    await expect(caller.notification.getSubscriptions()).resolves.toStrictEqual(
+      [expected],
+    );
   });
 });
 
@@ -45,9 +49,9 @@ describe("upsertSubscription", () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    expect(await caller.notification.upsertSubscription(args)).toEqual(
-      expected,
-    );
+    await expect(
+      caller.notification.upsertSubscription(args),
+    ).resolves.toStrictEqual(expected);
   });
 
   it("updates an existing subscription", async () => {
@@ -55,10 +59,10 @@ describe("upsertSubscription", () => {
     const caller = useProtectedCaller(user);
 
     const firstResult = await caller.notification.upsertSubscription(args);
-    expect(firstResult).toEqual(expected);
+    expect(firstResult).toStrictEqual(expected);
 
     const secondResult = await caller.notification.upsertSubscription(args);
-    expect(secondResult).toEqual(expected);
+    expect(secondResult).toStrictEqual(expected);
 
     expect(firstResult.id).toBe(secondResult.id);
   });
@@ -73,8 +77,8 @@ describe("deleteSubscription", () => {
 
     await caller.notification.deleteSubscription(id);
 
-    expect(
-      await prisma.notificationSubscription.findUnique({ where: { id } }),
-    ).toBe(null);
+    await expect(
+      prisma.notificationSubscription.findUnique({ where: { id } }),
+    ).resolves.toBeNull();
   });
 });

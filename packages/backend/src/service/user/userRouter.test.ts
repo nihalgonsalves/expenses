@@ -34,26 +34,26 @@ describe("createUser", () => {
   it("creates a user", async () => {
     const caller = usePublicCaller();
 
-    expect(await caller.user.createUser(userArgs)).toEqual<User>({
+    await expect(caller.user.createUser(userArgs)).resolves.toStrictEqual({
       id: expect.any(String),
       name: "Emily",
       email: "emily@example.com",
       emailVerified: false,
       theme: null,
-    });
+    } satisfies User);
   });
 
   it("logs in if the user already exists and the password matches", async () => {
     const caller = usePublicCaller();
 
     await caller.user.createUser(userArgs);
-    expect(await caller.user.createUser(userArgs)).toEqual<User>({
+    await expect(caller.user.createUser(userArgs)).resolves.toStrictEqual({
       id: expect.any(String),
       name: "Emily",
       email: "emily@example.com",
       emailVerified: false,
       theme: null,
-    });
+    } satisfies User);
   });
 
   it("returns an error if the user already exists", async () => {
@@ -117,7 +117,7 @@ describe("updateUser", () => {
     });
 
     expect(updatedUser.emailVerified).toBe(false);
-    expect(updatedUser.passwordResetToken).toBe(null);
+    expect(updatedUser.passwordResetToken).toBeNull();
 
     expect(emailWorker.messages[0]?.subject).toMatch(/your verification link/i);
   });
@@ -139,7 +139,7 @@ describe("updateUser", () => {
       where: { id: user.id },
     });
 
-    expect(await comparePassword("new-password", newHash!)).toBe(true);
+    await expect(comparePassword("new-password", newHash!)).resolves.toBe(true);
   });
 
   it("returns 401 if the old password is wrong", async () => {
@@ -197,14 +197,14 @@ describe("authorizeUser", () => {
     expect(setJWTToken.mock.calls).toMatchObject([[expect.any(String)]]);
     setJWTToken.mockReset();
 
-    expect(await caller.user.authorizeUser(userArgs)).toEqual<User>({
+    await expect(caller.user.authorizeUser(userArgs)).resolves.toStrictEqual({
       id: expect.any(String),
       name: "Emily",
       email: "emily@example.com",
       emailVerified: false,
       theme: null,
-    });
-    expect(setJWTToken.mock.calls).toEqual([[expect.any(String)]]);
+    } satisfies User);
+    expect(setJWTToken.mock.calls).toStrictEqual([[expect.any(String)]]);
   });
 
   it("returns an error if the password is wrong", async () => {
@@ -257,7 +257,7 @@ describe("signOut", () => {
     const caller = usePublicCaller(setJWTToken);
 
     await caller.user.signOut();
-    expect(setJWTToken.mock.calls).toEqual([[null]]);
+    expect(setJWTToken.mock.calls).toStrictEqual([[null]]);
   });
 });
 
@@ -302,7 +302,7 @@ describe("anonymizeUser", () => {
       password: "password",
     });
 
-    expect(setJWTToken.mock.calls).toEqual([[null]]);
+    expect(setJWTToken.mock.calls).toStrictEqual([[null]]);
   });
 
   it("deletes personal sheets and transactions", async () => {
@@ -329,15 +329,15 @@ describe("anonymizeUser", () => {
       password: "password",
     });
 
-    expect(
-      await prisma.sheet.findFirst({
+    await expect(
+      prisma.sheet.findFirst({
         where: { id: personalSheet.id },
       }),
-    ).toBeNull();
+    ).resolves.toBeNull();
 
-    expect(
-      await prisma.transaction.findFirst({ where: { id: transaction.id } }),
-    ).toBeNull();
+    await expect(
+      prisma.transaction.findFirst({ where: { id: transaction.id } }),
+    ).resolves.toBeNull();
   });
 
   it("returns 403 if the details don't match the logged-in user", async () => {

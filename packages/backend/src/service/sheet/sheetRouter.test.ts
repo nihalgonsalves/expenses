@@ -23,7 +23,7 @@ describe("createPersonalSheet", () => {
       currencyCode: "EUR",
     });
 
-    expect(personalSheet).toEqual({
+    expect(personalSheet).toStrictEqual({
       id: expect.any(String),
       type: "PERSONAL",
       name: "Personal Expenses",
@@ -46,7 +46,7 @@ describe("createGroupSheet", () => {
       additionalParticipantEmailAddresses: [{ email: otherMember.email }],
     });
 
-    expect(groupSheet).toEqual({
+    expect(groupSheet).toStrictEqual({
       id: expect.any(String),
       type: "GROUP",
       name: "WG Expenses",
@@ -75,9 +75,9 @@ describe("createGroupSheet", () => {
       additionalParticipantEmailAddresses: [{ email: otherEmail }],
     });
 
-    expect(
-      await prisma.user.findUnique({ where: { email: otherEmail } }),
-    ).toMatchObject({
+    await expect(
+      prisma.user.findUnique({ where: { email: otherEmail } }),
+    ).resolves.toMatchObject({
       name: "Hello",
       email: "hello@example.com",
     });
@@ -95,7 +95,7 @@ describe("personalSheetById", () => {
 
     const sheetById = await caller.sheet.personalSheetById(personalSheet.id);
 
-    expect(sheetById).toEqual({
+    expect(sheetById).toStrictEqual({
       id: personalSheet.id,
       type: "PERSONAL",
       name: personalSheet.name,
@@ -147,7 +147,7 @@ describe("groupSheetById", () => {
 
     const groupSheetById = await caller.sheet.groupSheetById(groupSheet.id);
 
-    expect(groupSheetById).toEqual({
+    expect(groupSheetById).toStrictEqual({
       id: groupSheet.id,
       type: "GROUP",
       name: groupSheet.name,
@@ -253,7 +253,7 @@ describe("mySheets", () => {
 
     const mySheets = await caller.sheet.mySheets({ includeArchived: true });
 
-    expect(mySheets.length).toBe(2);
+    expect(mySheets).toHaveLength(2);
 
     expect(mySheets.find(({ id }) => id === ownedGroupSheet.id)).toBeDefined();
     expect(
@@ -279,9 +279,9 @@ describe("updateSheet", () => {
 
       await caller.sheet.updateSheet({ id: sheet.id, name: "Updated sheet" });
 
-      expect(
-        await prisma.sheet.findUnique({ where: { id: sheet.id } }),
-      ).toMatchObject({ name: "Updated sheet" });
+      await expect(
+        prisma.sheet.findUnique({ where: { id: sheet.id } }),
+      ).resolves.toMatchObject({ name: "Updated sheet" });
     });
 
     it("returns a 404 if the participant has no access", async () => {
@@ -324,9 +324,9 @@ describe("deleteSheet", () => {
 
       await caller.sheet.deleteSheet(sheet.id);
 
-      expect(await prisma.sheet.findUnique({ where: { id: sheet.id } })).toBe(
-        null,
-      );
+      await expect(
+        prisma.sheet.findUnique({ where: { id: sheet.id } }),
+      ).resolves.toBeNull();
     });
 
     it.todo(`deletes a ${sheetType} with transactions`);
@@ -372,9 +372,9 @@ describe("archiveSheet", () => {
       for (const isArchived of [true, false]) {
         await caller.sheet.archiveSheet({ sheetId: sheet.id, isArchived });
 
-        expect(
-          await prisma.sheet.findUnique({ where: { id: sheet.id } }),
-        ).toMatchObject({ isArchived });
+        await expect(
+          prisma.sheet.findUnique({ where: { id: sheet.id } }),
+        ).resolves.toMatchObject({ isArchived });
       }
     });
 
@@ -416,12 +416,12 @@ describe("addGroupSheetMember", () => {
     });
     const otherUser = await userFactory(prisma);
 
-    expect(
-      await caller.sheet.addGroupSheetMember({
+    await expect(
+      caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
         email: otherUser.email,
       }),
-    ).toMatchObject({
+    ).resolves.toMatchObject({
       id: otherUser.id,
       name: otherUser.name,
       email: otherUser.email,
@@ -439,12 +439,12 @@ describe("addGroupSheetMember", () => {
 
     const participantEmail = "jessica@example.com";
 
-    expect(
-      await caller.sheet.addGroupSheetMember({
+    await expect(
+      caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
         email: participantEmail,
       }),
-    ).toMatchObject({
+    ).resolves.toMatchObject({
       id: expect.any(String),
       name: "Jessica",
       email: participantEmail,
@@ -517,8 +517,8 @@ describe("deleteParticipant", () => {
       participantId: member.id,
     });
 
-    expect(
-      await prisma.sheetMemberships.findUnique({
+    await expect(
+      prisma.sheetMemberships.findUnique({
         where: {
           sheetMembership: {
             participantId: member.id,
@@ -526,7 +526,7 @@ describe("deleteParticipant", () => {
           },
         },
       }),
-    ).toBe(null);
+    ).resolves.toBeNull();
   });
 
   it("leaves as a participant", async () => {
@@ -542,8 +542,8 @@ describe("deleteParticipant", () => {
       participantId: user.id,
     });
 
-    expect(
-      await prisma.sheetMemberships.findUnique({
+    await expect(
+      prisma.sheetMemberships.findUnique({
         where: {
           sheetMembership: {
             participantId: user.id,
@@ -551,7 +551,7 @@ describe("deleteParticipant", () => {
           },
         },
       }),
-    ).toBe(null);
+    ).resolves.toBeNull();
   });
 
   it("leaves as a participant with settled balance", async () => {
@@ -578,8 +578,8 @@ describe("deleteParticipant", () => {
       participantId: user.id,
     });
 
-    expect(
-      await prisma.sheetMemberships.findUnique({
+    await expect(
+      prisma.sheetMemberships.findUnique({
         where: {
           sheetMembership: {
             participantId: user.id,
@@ -587,7 +587,7 @@ describe("deleteParticipant", () => {
           },
         },
       }),
-    ).toBe(null);
+    ).resolves.toBeNull();
   });
 
   it("returns a 400 if the admin tries to remove themselves", async () => {

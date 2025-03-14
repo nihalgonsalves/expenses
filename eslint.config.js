@@ -1,7 +1,5 @@
 import tseslint from "typescript-eslint";
 import unusedImports from "eslint-plugin-unused-imports";
-import storybook from "eslint-plugin-storybook";
-import reactCompiler from "eslint-plugin-react-compiler";
 import sharedConfig from "@nihalgonsalves/esconfig/eslint.config.react-shared.js";
 
 export default tseslint.config(
@@ -11,7 +9,6 @@ export default tseslint.config(
       "**/coverage",
       "**/dist",
 
-      "!packages/frontend/.storybook",
       "packages/e2e/playwright-report",
       "packages/e2e/test-results",
 
@@ -25,7 +22,6 @@ export default tseslint.config(
   {
     plugins: {
       "unused-imports": unusedImports,
-      "react-compiler": reactCompiler,
     },
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
@@ -56,16 +52,6 @@ export default tseslint.config(
       "react-hooks/rules-of-hooks": "off",
     },
   },
-  {
-    plugins: {
-      storybook,
-    },
-    files: ["**/*.stories.@(ts|tsx|js|jsx|mjs|cjs)", "**/.storybook/**/*"],
-    rules: {
-      "import/no-default-export": "off",
-    },
-  },
-  ...storybook.configs.recommended.overrides,
   {
     files: ["packages/frontend/**/*"],
     rules: {

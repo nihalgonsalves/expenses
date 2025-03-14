@@ -880,9 +880,9 @@ describe("deleteTransaction", () => {
         transactionId: transaction.id,
       });
 
-      expect(
-        await prisma.transaction.findUnique({ where: { id: transaction.id } }),
-      ).toBeNull();
+      await expect(
+        prisma.transaction.findUnique({ where: { id: transaction.id } }),
+      ).resolves.toBeNull();
     });
 
     it("returns 404 if the user is not a member of the sheet", async () => {
@@ -970,11 +970,11 @@ describe("deleteTransactionSchedule", () => {
       transactionScheduleId: transactionSchedule.id,
     });
 
-    expect(
-      await prisma.transaction.findUnique({
+    await expect(
+      prisma.transaction.findUnique({
         where: { id: transactionSchedule.id },
       }),
-    ).toBeNull();
+    ).resolves.toBeNull();
   });
 
   it("returns 404 if the user is not a member of the sheet", async () => {
@@ -1064,12 +1064,12 @@ describe("getTransaction", () => {
       ),
     );
 
-    expect(
-      await caller.transaction.getTransaction({
+    await expect(
+      caller.transaction.getTransaction({
         sheetId: personalSheet.id,
         transactionId: id,
       }),
-    ).toMatchObject({
+    ).resolves.toMatchObject({
       id,
     });
   });
@@ -1454,7 +1454,7 @@ describe("getCategories / setCategoryEmojiShortCode", () => {
       emojiShortCode: ":+1:",
     });
 
-    expect(await caller.transaction.getCategories()).toMatchObject([
+    await expect(caller.transaction.getCategories()).resolves.toMatchObject([
       {
         id: "other",
         emojiShortCode: ":+1:",

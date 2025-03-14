@@ -39,14 +39,12 @@
     "validate": "run-p --continue-on-error build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "0.11.0",
+    "@nihalgonsalves/esconfig": "0.11.1",
     "@tanstack/react-router-devtools": "^1.114.13",
     "@tanstack/router-plugin": "^1.114.13",
     "@types/node": "22",
     "@vitest/ui": "^3.0.8",
     "eslint": "^9.22.0",
-    "eslint-plugin-react-compiler": "19.0.0-beta-bafa41b-20250307",
-    "eslint-plugin-storybook": "^0.11.4",
     "eslint-plugin-unused-imports": "^4.1.4",
     "knip": "^5.45.0",
     "lefthook": "^1.11.3",

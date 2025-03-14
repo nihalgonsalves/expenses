@@ -4,13 +4,13 @@ import { allocateByCount, largestRemainderRound, sumToPrecision } from "./math";
 
 describe("largestRemainderRounder", () => {
   it("rounds numbers to the nearest value with 2 decimals", () => {
-    expect(largestRemainderRound([33.33, 33.33, 33.33], 100)).toEqual([
+    expect(largestRemainderRound([33.33, 33.33, 33.33], 100)).toStrictEqual([
       33.34, 33.33, 33.33,
     ]);
   });
 
   it("rounds numbers to the nearest integer", () => {
-    expect(largestRemainderRound([33.33, 33.33, 33.33], 100, 0)).toEqual([
+    expect(largestRemainderRound([33.33, 33.33, 33.33], 100, 0)).toStrictEqual([
       34, 33, 33,
     ]);
   });
@@ -27,7 +27,7 @@ describe("allocate", () => {
     [9, 100, [11.12, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11]],
     [10, 100, [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]],
   ])("allocates numbers for count %d evenly", (count, total, result) => {
-    expect(allocateByCount(count, total)).toEqual(result);
+    expect(allocateByCount(count, total)).toStrictEqual(result);
 
     // summing to a precision because adding the values of the `9` case results in 99.9999...
     expect(sumToPrecision(result)).toBe(total);
