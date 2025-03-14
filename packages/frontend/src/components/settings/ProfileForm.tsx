@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import type { z } from "zod";
 
@@ -46,7 +46,8 @@ export const ProfileForm = ({ me }: { me: User }) => {
     },
   });
 
-  const disabled = !onLine || !form.formState.isDirty;
+  const formState = useFormState({ control: form.control });
+  const disabled = !onLine || !formState.isDirty;
 
   const onSubmit = async (values: z.infer<typeof ZUpdateUserInput>) => {
     const { name: newName, email: newEmail } = await updateUser({

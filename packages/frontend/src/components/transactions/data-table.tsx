@@ -1,4 +1,8 @@
 "use client";
+"use no memo";
+
+// react-compiler does not work with TanStack table:
+// https://github.com/TanStack/table/issues/5567
 
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import {

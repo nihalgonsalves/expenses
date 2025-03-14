@@ -35,7 +35,16 @@ export default defineConfig(({ mode }) => ({
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       (visualizer({ open: true }) as unknown as Plugin),
     TanStackRouterVite({ autoCodeSplitting: true }),
-    react(),
+    react({
+      babel: {
+        plugins: [
+          [
+            import.meta.resolve("babel-plugin-react-compiler"),
+            { target: "19" },
+          ],
+        ],
+      },
+    }),
     tailwindcss(),
     VitePWA({
       srcDir: "src",

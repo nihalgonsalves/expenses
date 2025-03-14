@@ -1,6 +1,6 @@
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { MotionConfig } from "motion/react";
 import { Toaster } from "react-hot-toast";
 

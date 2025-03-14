@@ -8,6 +8,7 @@ import {
   type FieldValues,
   FormProvider,
   useFormContext,
+  useFormState,
 } from "react-hook-form";
 
 import { fadeInOut } from "../../utils/motion";
@@ -79,7 +80,8 @@ const FormItemContext = React.createContext<FormItemContextValue>(
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
   const itemContext = React.useContext(FormItemContext);
-  const { getFieldState, formState } = useFormContext();
+  const { getFieldState, control } = useFormContext();
+  const formState = useFormState({ control });
 
   const fieldState = getFieldState(fieldContext.name, formState);
 

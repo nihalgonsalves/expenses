@@ -1,3 +1,5 @@
+"use no memo";
+
 import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import type { Column } from "@tanstack/react-table";
 import type * as React from "react";

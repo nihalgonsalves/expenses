@@ -1,4 +1,5 @@
 "use client";
+"use no memo";
 
 import { Cross2Icon, MixerHorizontalIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";

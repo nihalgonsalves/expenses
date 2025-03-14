@@ -1,4 +1,5 @@
 "use client";
+"use no memo";
 
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { EyeOpenIcon } from "@radix-ui/react-icons";

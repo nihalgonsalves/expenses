@@ -1,4 +1,5 @@
 "use client";
+"use no memo";
 
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import {

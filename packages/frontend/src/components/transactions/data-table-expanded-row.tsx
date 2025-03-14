@@ -1,3 +1,5 @@
+"use no memo";
+
 import type { Row } from "@tanstack/react-table";
 
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";

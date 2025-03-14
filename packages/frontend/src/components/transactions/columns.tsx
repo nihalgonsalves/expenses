@@ -1,4 +1,5 @@
 "use client";
+"use no memo";
 
 import { Link } from "@tanstack/react-router";
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
