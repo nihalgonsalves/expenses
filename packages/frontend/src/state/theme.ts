@@ -116,6 +116,12 @@ const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
     ?.setAttribute("href", `/assets/icon-${theme}.png`);
 };
 
+const syncColorScheme = (themePreference: ThemePreference) => {
+  document
+    .querySelector('meta[name="color-scheme"]')
+    ?.setAttribute("content", isDarkMode(themePreference) ? "dark" : "light");
+};
+
 export const useThemeSync = () => {
   const [themePreference] = useThemePreference();
   const [theme] = useTheme();
@@ -126,6 +132,7 @@ export const useThemeSync = () => {
 
   useEffect(() => {
     syncTheme(themePreference, theme);
+    syncColorScheme(themePreference);
     syncMetaThemeColor(dialog.isOpen);
   }, [themePreference, theme, systemDarkMode, dialog.isOpen, navigatorOnLine]);
 };
