@@ -1,6 +1,6 @@
 "use client";
 
-import type * as React from "react";
+import type { ComponentProps } from "react";
 
 import type { CssVariableName } from "@nihalgonsalves/expenses-shared/types/theme";
 
@@ -13,7 +13,7 @@ type CircularProgressProps = {
   value: number;
   size?: number;
   color?: CssVariableName;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & ComponentProps<"div">;
 
 const CircularProgress = ({
   className,

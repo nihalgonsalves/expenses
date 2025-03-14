@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { cva } from "class-variance-authority";
-import type * as React from "react";
+import type { ComponentProps } from "react";
 
 import { cn, twx } from "./utils";
 
@@ -21,7 +21,7 @@ const NavigationMenuTrigger = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Trigger>) => (
+}: ComponentProps<typeof NavigationMenuPrimitive.Trigger>) => (
   <NavigationMenuPrimitive.Trigger
     ref={ref}
     className={cn(navigationMenuTriggerStyle(), "group", className)}
@@ -46,7 +46,7 @@ const NavigationMenuViewport = ({
   ref,
   className,
   ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>) => (
+}: ComponentProps<typeof NavigationMenuPrimitive.Viewport>) => (
   <div className={cn("absolute top-full left-0 flex justify-center")}>
     <NavigationMenuPrimitive.Viewport
       className={cn(
@@ -63,7 +63,7 @@ const NavigationMenuIndicator = ({
   ref,
   className,
   ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Indicator>) => (
+}: ComponentProps<typeof NavigationMenuPrimitive.Indicator>) => (
   <NavigationMenuPrimitive.Indicator
     ref={ref}
     className={cn(
@@ -81,7 +81,7 @@ const NavigationMenu = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Root>) => (
+}: ComponentProps<typeof NavigationMenuPrimitive.Root>) => (
   <NavigationMenuPrimitive.Root
     ref={ref}
     className={cn(

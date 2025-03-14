@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import type { TRPCClientErrorLike } from "@trpc/client";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { toast } from "react-hot-toast";
 import { useInterval } from "react-use";
 
@@ -40,11 +40,11 @@ import {
 
 type RootProps = {
   title: string | undefined;
-  additionalTitleItems?: React.ReactNode;
-  children?: React.ReactNode;
-  rightNavBarItems?: React.ReactNode;
+  additionalTitleItems?: ReactNode;
+  children?: ReactNode;
+  rightNavBarItems?: ReactNode;
   showBackButton?: boolean;
-  additionalChildren?: React.ReactNode;
+  additionalChildren?: ReactNode;
   className?: string;
   bannerText?: string | undefined;
 };
@@ -245,7 +245,7 @@ export const RootLoader = <TData,>({
   getTitle,
   ...rootProps
 }: Omit<RootProps, "children" | "title" | "banner"> & {
-  render: (data: TData) => React.ReactNode;
+  render: (data: TData) => ReactNode;
   result: {
     data: TData | undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

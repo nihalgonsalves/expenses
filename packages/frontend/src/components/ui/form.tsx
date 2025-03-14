@@ -1,6 +1,13 @@
 import { Slot } from "@radix-ui/react-slot";
 import { motion, type HTMLMotionProps } from "motion/react";
-import * as React from "react";
+import {
+  type HTMLProps,
+  type ComponentProps,
+  createContext,
+  useMemo,
+  use,
+  useId,
+} from "react";
 import {
   Controller,
   type ControllerProps,
@@ -45,7 +52,7 @@ type FormFieldContextValue<
   name: TName;
 };
 
-const FormFieldContext = React.createContext<FormFieldContextValue>(
+const FormFieldContext = createContext<FormFieldContextValue>(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   {} as FormFieldContextValue,
 );
@@ -56,10 +63,7 @@ const FormField = <
 >({
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
-  const contextValue = React.useMemo(
-    () => ({ name: props.name }),
-    [props.name],
-  );
+  const contextValue = useMemo(() => ({ name: props.name }), [props.name]);
 
   return (
     <FormFieldContext.Provider value={contextValue}>
@@ -72,14 +76,14 @@ type FormItemContextValue = {
   id: string;
 };
 
-const FormItemContext = React.createContext<FormItemContextValue>(
+const FormItemContext = createContext<FormItemContextValue>(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   {} as FormItemContextValue,
 );
 
 const useFormField = () => {
-  const fieldContext = React.useContext(FormFieldContext);
-  const itemContext = React.useContext(FormItemContext);
+  const fieldContext = use(FormFieldContext);
+  const itemContext = use(FormItemContext);
   const { getFieldState, control } = useFormContext();
   const formState = useFormState({ control });
 
@@ -107,9 +111,9 @@ const FormItem = ({
   className,
   children,
   ...props
-}: React.HTMLProps<HTMLDivElement>) => {
-  const id = React.useId();
-  const contextValue = React.useMemo(() => ({ id }), [id]);
+}: HTMLProps<HTMLDivElement>) => {
+  const id = useId();
+  const contextValue = useMemo(() => ({ id }), [id]);
 
   return (
     <FormItemContext.Provider value={contextValue}>
@@ -124,7 +128,7 @@ const FormLabel = ({
   ref,
   className,
   ...props
-}: React.ComponentProps<typeof Label>) => {
+}: ComponentProps<typeof Label>) => {
   const { error, formItemId } = useFormField();
 
   return (
@@ -137,7 +141,7 @@ const FormLabel = ({
   );
 };
 
-const FormControl = ({ ref, ...props }: React.ComponentProps<typeof Slot>) => {
+const FormControl = ({ ref, ...props }: ComponentProps<typeof Slot>) => {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
 
@@ -178,7 +182,7 @@ const FormMessage = ({
   className,
   children,
   ...props
-}: React.HTMLProps<HTMLParagraphElement>) => {
+}: HTMLProps<HTMLParagraphElement>) => {
   const { error, formMessageId } = useFormField();
   const body = error ? String(error.message) : children;
 
@@ -198,7 +202,6 @@ const FormMessage = ({
     </p>
   );
 };
-FormMessage.displayName = "FormMessage";
 
 export {
   useFormField,

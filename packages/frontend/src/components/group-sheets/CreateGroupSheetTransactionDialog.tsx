@@ -4,7 +4,7 @@ import {
   ThickArrowUpIcon,
 } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionType } from "@nihalgonsalves/expenses-shared/types/transaction";
@@ -79,7 +79,7 @@ export const CreateGroupSheetTransactionDialog = ({
   trigger,
 }: {
   sheetId: string;
-  trigger: React.ReactNode;
+  trigger: ReactNode;
 }) => {
   const { trpc } = useTRPC();
   const { data: groupSheet } = useQuery(

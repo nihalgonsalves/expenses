@@ -1,7 +1,7 @@
 "use client";
 
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import type * as React from "react";
+import type { ComponentProps } from "react";
 
 import { cn } from "./utils";
 
@@ -10,7 +10,7 @@ const ScrollBar = ({
   className,
   orientation = "vertical",
   ...props
-}: React.ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>) => (
+}: ComponentProps<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>) => (
   <ScrollAreaPrimitive.ScrollAreaScrollbar
     ref={ref}
     orientation={orientation}
@@ -31,7 +31,7 @@ const ScrollBar = ({
 type ScrollAreaProps = {
   viewportClassName?: string | undefined;
   rootClassName?: string | undefined;
-} & Omit<React.ComponentProps<typeof ScrollAreaPrimitive.Root>, "className">;
+} & Omit<ComponentProps<typeof ScrollAreaPrimitive.Root>, "className">;
 
 const ScrollArea = ({
   ref,

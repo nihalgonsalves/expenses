@@ -1,7 +1,7 @@
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import type { VariantProps } from "class-variance-authority";
 import { atom, useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import {
@@ -36,18 +36,16 @@ import {
 } from "../ui/drawer";
 
 type ResponsiveDialogProps = {
-  trigger: React.ReactNode;
-  title: React.ReactNode;
-  description?: React.ReactNode;
-  children?: React.ReactNode;
+  trigger: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  children?: ReactNode;
 } & (
   | { alert?: undefined }
   | {
       alert: true;
-      confirmLabel: React.ReactNode;
-      onConfirm: (
-        e: React.MouseEvent<HTMLButtonElement>,
-      ) => Promise<void> | void;
+      confirmLabel: ReactNode;
+      onConfirm: (e: MouseEvent<HTMLButtonElement>) => Promise<void> | void;
       isLoading: boolean;
       variant?: VariantProps<typeof buttonVariants>["$variant"];
     }

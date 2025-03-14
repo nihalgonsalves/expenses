@@ -1,7 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import type React from "react";
+import type { ReactNode, Ref } from "react";
 
 import { Button } from "./ui/button";
 import {
@@ -14,9 +14,9 @@ import {
 const MotionButton = motion.create(Button);
 
 type FloatingActionButtonProps = {
-  ref?: React.Ref<HTMLDivElement>;
+  ref?: Ref<HTMLDivElement>;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
 } & (
   | {
       to: string;

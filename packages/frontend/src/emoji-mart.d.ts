@@ -2,7 +2,7 @@
 
 declare module "react" {
   namespace JSX {
-    interface IntrinsicElements extends React.JSX.IntrinsicElements {
+    interface IntrinsicElements extends JSX.IntrinsicElements {
       "em-emoji": (
         | { id: string; shortcodes?: undefined }
         | { id?: undefined; shortcodes: string }

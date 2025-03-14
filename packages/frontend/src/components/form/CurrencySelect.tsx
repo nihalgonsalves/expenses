@@ -1,6 +1,6 @@
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Popover } from "@radix-ui/react-popover";
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { CURRENCY_CODES } from "../../utils/money";
@@ -22,7 +22,7 @@ type CurrencySelectProps = {
   value: string;
   onChange: (newCode: string) => void;
   options?: string[];
-} & Pick<React.ComponentProps<typeof Button>, "ref"> &
+} & Pick<ComponentProps<typeof Button>, "ref"> &
   Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const CurrencySelect = ({

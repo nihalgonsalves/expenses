@@ -1,5 +1,5 @@
 import type { VariantProps } from "class-variance-authority";
-import { type MouseEvent, useState } from "react";
+import { type MouseEvent, type ReactNode, useState } from "react";
 
 import type { buttonVariants } from "../ui/button";
 
@@ -12,10 +12,10 @@ export const ConfirmDialog = ({
   trigger,
   variant,
 }: {
-  description: React.ReactNode;
-  confirmLabel: React.ReactNode;
+  description: ReactNode;
+  confirmLabel: ReactNode;
   onConfirm: () => Promise<void> | void;
-  trigger: React.ReactNode;
+  trigger: ReactNode;
   variant?: VariantProps<typeof buttonVariants>["$variant"];
 }) => {
   const [isLoading, setIsLoading] = useState(false);

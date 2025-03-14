@@ -1,12 +1,8 @@
-import type * as React from "react";
+import type { HTMLProps } from "react";
 
 import { cn, twx } from "./utils";
 
-const Table = ({
-  ref,
-  className,
-  ...props
-}: React.HTMLProps<HTMLTableElement>) => (
+const Table = ({ ref, className, ...props }: HTMLProps<HTMLTableElement>) => (
   <div className="relative w-full overflow-auto">
     <table
       ref={ref}

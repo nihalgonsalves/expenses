@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 import { z } from "zod";
 
@@ -10,7 +11,7 @@ type ParticipantSelectProps = {
   groupSheet: GroupSheetByIdResponse;
   value: string | undefined;
   onChange: (val: string) => void;
-} & Pick<React.ComponentProps<typeof Select>, "ref"> &
+} & Pick<ComponentProps<typeof Select>, "ref"> &
   Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const ParticipantSelect = ({

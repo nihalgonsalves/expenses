@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { cn } from "../ui/utils";
 
 export const ParticipantListItem = ({
@@ -5,8 +7,8 @@ export const ParticipantListItem = ({
   avatar,
   className,
 }: {
-  children: React.ReactNode;
-  avatar?: React.ReactNode;
+  children: ReactNode;
+  avatar?: ReactNode;
   className?: string;
 }) => (
   <div className={cn("flex items-center gap-4", className)} role="listitem">

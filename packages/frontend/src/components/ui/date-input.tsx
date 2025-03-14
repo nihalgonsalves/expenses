@@ -1,6 +1,14 @@
 // https://github.com/johnpolacek/date-range-picker-for-shadcn/blob/2ee5787f5b2a2034f9133c484847ec4df9d296df/src/date-input.tsx
 
-import React, { useEffect, useRef } from "react";
+import {
+  type FC,
+  type ChangeEvent,
+  type FocusEvent,
+  type KeyboardEvent,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
 
 type DateInputProps = {
   value: Date | undefined;
@@ -13,8 +21,8 @@ type DateParts = {
   year: number;
 };
 
-export const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
-  const [date, setDate] = React.useState<DateParts>(() => {
+export const DateInput: FC<DateInputProps> = ({ value, onChange }) => {
+  const [date, setDate] = useState<DateParts>(() => {
     const d = value ? new Date(value) : new Date();
     return {
       day: d.getDate(),
@@ -56,7 +64,7 @@ export const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
   };
 
   const handleInputChange =
-    (field: keyof DateParts) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (field: keyof DateParts) => (e: ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value ? Number(e.target.value) : "";
       const isValid =
         typeof newValue === "number" && validateDate(field, newValue);
@@ -75,7 +83,7 @@ export const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
 
   const handleBlur =
     (field: keyof DateParts) =>
-    (e: React.FocusEvent<HTMLInputElement>): void => {
+    (e: FocusEvent<HTMLInputElement>): void => {
       if (!e.target.value) {
         setDate(initialDate.current);
         return;
@@ -93,7 +101,7 @@ export const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
     };
 
   const handleKeyDown =
-    (field: keyof DateParts) => (e: React.KeyboardEvent<HTMLInputElement>) => {
+    (field: keyof DateParts) => (e: KeyboardEvent<HTMLInputElement>) => {
       // Allow command (or control) combinations
       if (e.metaKey || e.ctrlKey) {
         return;

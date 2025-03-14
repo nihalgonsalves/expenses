@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type Ref } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEventHandler,
+  type Ref,
+} from "react";
 
 import {
   dineroToMoney,
@@ -77,9 +83,7 @@ export const MoneyField = ({
    * them out and reparse on every change, and without having to be aware of
    * whether the current locale uses commas or periods as decimal separators.
    */
-  const handleAmountKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
-    e,
-  ) => {
+  const handleAmountKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     const element = inputRef.current;
     if (!element) {
       return;

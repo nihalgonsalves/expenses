@@ -2,7 +2,7 @@
 
 import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import type { Column } from "@tanstack/react-table";
-import type * as React from "react";
+import type { ComponentType } from "react";
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import { Badge } from "../ui/badge";
@@ -26,7 +26,7 @@ type DataTableFacetedFilterProps<TData, TValue> = {
   options: {
     label: string;
     value: string;
-    icon?: React.ComponentType<{ className?: string }>;
+    icon?: ComponentType<{ className?: string }>;
   }[];
 };
 

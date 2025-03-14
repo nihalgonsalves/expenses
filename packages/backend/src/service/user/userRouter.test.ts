@@ -31,7 +31,7 @@ const getTokenFromMailbox = (index = 0) => {
 };
 
 describe("createUser", () => {
-  it("creates a user ", async () => {
+  it("creates a user", async () => {
     const caller = usePublicCaller();
 
     expect(await caller.user.createUser(userArgs)).toEqual<User>({

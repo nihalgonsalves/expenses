@@ -3,7 +3,7 @@
 import type { DialogProps } from "@radix-ui/react-dialog";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Command as CommandPrimitive } from "cmdk";
-import type * as React from "react";
+import type { ComponentProps } from "react";
 
 import { Dialog, DialogContent } from "./dialog";
 import { cn, twx } from "./utils";
@@ -29,7 +29,7 @@ const CommandInput = ({
   ref,
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) => (
+}: ComponentProps<typeof CommandPrimitive.Input>) => (
   <div
     className="flex items-center border-b px-3"
     // eslint-disable-next-line react/no-unknown-property
@@ -51,7 +51,7 @@ const CommandList = ({
   ref,
   className,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.List>) => (
+}: ComponentProps<typeof CommandPrimitive.List>) => (
   <CommandPrimitive.List ref={ref} className={cn(className)} {...props} />
 );
 

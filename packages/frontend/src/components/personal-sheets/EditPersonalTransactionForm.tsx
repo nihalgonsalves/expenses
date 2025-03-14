@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import type { ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -238,7 +239,7 @@ export const EditPersonalTransactionDialog = ({
 }: {
   sheetId: string;
   transactionId: string;
-  trigger: React.ReactNode;
+  trigger: ReactNode;
 }) => {
   const { trpc } = useTRPC();
   const { data } = useQuery(

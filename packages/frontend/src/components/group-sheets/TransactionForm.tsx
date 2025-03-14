@@ -10,7 +10,7 @@ import {
 } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { type Dinero, allocate } from "dinero.js";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import {
   useFieldArray,
   useForm,
@@ -152,7 +152,7 @@ type SplitConfig = (
 
 const SPLIT_OPTIONS: {
   value: GroupTransactionSplitType;
-  label: React.ReactNode;
+  label: ReactNode;
 }[] = [
   {
     value: GroupTransactionSplitType.Evenly,

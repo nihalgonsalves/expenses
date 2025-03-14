@@ -1,7 +1,7 @@
 import { PlusIcon, CaretSortIcon } from "@radix-ui/react-icons";
 import { Popover } from "@radix-ui/react-popover";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { useTRPC } from "../../api/trpc";
@@ -28,7 +28,7 @@ type CategorySelectProps = {
   onChange: (newCategory: string | undefined) => void;
   className?: string;
   placeholder?: string;
-} & Pick<React.ComponentProps<typeof Button>, "ref"> &
+} & Pick<ComponentProps<typeof Button>, "ref"> &
   Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const CategorySelect = ({

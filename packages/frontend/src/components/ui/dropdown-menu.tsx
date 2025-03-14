@@ -6,7 +6,7 @@ import {
   ChevronRightIcon,
   DotFilledIcon,
 } from "@radix-ui/react-icons";
-import type * as React from "react";
+import type { ComponentProps } from "react";
 
 import { cn, twx } from "./utils";
 
@@ -28,7 +28,7 @@ const DropdownMenuSubTrigger = ({
   inset,
   children,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
+}: ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
   inset?: boolean;
 }) => (
   <DropdownMenuPrimitive.SubTrigger
@@ -63,7 +63,7 @@ const DropdownMenuItem = ({
   className,
   inset,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
+}: ComponentProps<typeof DropdownMenuPrimitive.Item> & {
   inset?: boolean;
 }) => (
   <DropdownMenuPrimitive.Item
@@ -84,7 +84,7 @@ const DropdownMenuCheckboxItem = ({
   children,
   checked,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) => (
+}: ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) => (
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
@@ -110,7 +110,7 @@ const DropdownMenuRadioItem = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) => (
+}: ComponentProps<typeof DropdownMenuPrimitive.RadioItem>) => (
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
@@ -134,7 +134,7 @@ const DropdownMenuLabel = ({
   className,
   inset,
   ...props
-}: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & {
+}: ComponentProps<typeof DropdownMenuPrimitive.Label> & {
   inset?: boolean;
 }) => (
   <DropdownMenuPrimitive.Label

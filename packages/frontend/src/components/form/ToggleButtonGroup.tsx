@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export const ToggleButtonGroup = <T extends string>({
@@ -8,7 +10,7 @@ export const ToggleButtonGroup = <T extends string>({
   disabled,
 }: {
   className?: string;
-  options: readonly { value: T; label: React.ReactNode }[];
+  options: readonly { value: T; label: ReactNode }[];
   value: T;
   setValue: (newValue: T) => void;
   disabled?: boolean;

@@ -1,7 +1,7 @@
 "use client";
 
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import type * as React from "react";
+import type { ComponentProps } from "react";
 
 import { cn, twx } from "./utils";
 
@@ -21,7 +21,7 @@ const TabsContent = ({
   ref,
   className,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Content>) => (
+}: ComponentProps<typeof TabsPrimitive.Content>) => (
   <TabsPrimitive.Content
     ref={ref}
     className={cn(

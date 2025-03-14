@@ -1,6 +1,6 @@
 "use client";
 
-import type * as React from "react";
+import type { ComponentProps } from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn, twx } from "./utils";
@@ -8,7 +8,7 @@ import { cn, twx } from "./utils";
 const Drawer = ({
   shouldScaleBackground = false,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
+}: ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
     shouldScaleBackground={shouldScaleBackground}
     {...props}
@@ -32,7 +32,7 @@ const DrawerContent = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) => (
+}: ComponentProps<typeof DrawerPrimitive.Content>) => (
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content

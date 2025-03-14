@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { parse as dateFnsParse } from "date-fns";
 import Papa from "papaparse";
-import { useId, useState } from "react";
+import { useId, useState, type ChangeEventHandler } from "react";
 import { z } from "zod";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -392,7 +392,7 @@ export const PersonalTransactionsImporter = ({
     ...(headers?.map((header) => ({ value: header, label: header })) ?? []),
   ];
 
-  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const file = e.target.files?.[0];
     if (!file) {
       return;

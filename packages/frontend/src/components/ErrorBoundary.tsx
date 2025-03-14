@@ -1,7 +1,7 @@
 import { Collapsible } from "@radix-ui/react-collapsible";
 import * as Sentry from "@sentry/react";
 import { useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import { type ReactNode, Fragment } from "react";
 import { toast } from "react-hot-toast";
 
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -25,7 +25,7 @@ const RetryErrorButton = ({ reset }: { reset: () => void }) => {
   );
 };
 
-export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => (
+export const ErrorBoundary = ({ children }: { children: ReactNode }) => (
   <Sentry.ErrorBoundary
     fallback={({
       error,
@@ -82,11 +82,11 @@ export const ErrorBoundary = ({ children }: { children: React.ReactNode }) => (
                   .filter((line) => line !== "")
                   .map((line, index) => (
                     // eslint-disable-next-line react/no-array-index-key
-                    <React.Fragment key={index}>
+                    <Fragment key={index}>
                       {"> "}
                       {line}
                       <br />
-                    </React.Fragment>
+                    </Fragment>
                   ))}
               </pre>
             </CollapsibleContent>

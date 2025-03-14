@@ -2,7 +2,7 @@
 
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import type { VariantProps } from "class-variance-authority";
-import type * as React from "react";
+import type { ComponentProps } from "react";
 import type { TwcComponentProps } from "react-twc";
 
 import { buttonVariants } from "../ui/button";
@@ -24,7 +24,7 @@ const AlertDialogContent = ({
   ref,
   className,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Content>) => (
+}: ComponentProps<typeof AlertDialogPrimitive.Content>) => (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content

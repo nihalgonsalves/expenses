@@ -1,3 +1,4 @@
+import type { ComponentProps, ReactNode } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 import type { z } from "zod";
 
@@ -10,7 +11,7 @@ import {
 } from "../ui/select";
 
 export type SelectOption<T extends z.Schema<string | undefined>> = {
-  label: React.ReactNode;
+  label: ReactNode;
   value: z.infer<T> | undefined;
   disabled?: boolean;
 };
@@ -25,7 +26,7 @@ type SelectProps<T extends z.Schema<string | undefined>> = {
   onChange: (newValue: z.infer<T>) => void;
   schema: T;
   className?: string | undefined;
-} & Pick<React.ComponentProps<typeof SelectTrigger>, "ref"> &
+} & Pick<ComponentProps<typeof SelectTrigger>, "ref"> &
   Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const Select = <T extends z.Schema<string | undefined>>({

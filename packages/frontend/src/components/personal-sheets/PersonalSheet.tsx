@@ -9,6 +9,7 @@ import {
 } from "@radix-ui/react-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
@@ -52,8 +53,8 @@ const TransactionListItemComponent = ({
   addons,
 }: {
   transaction: Pick<TransactionListItem, "category" | "description" | "money">;
-  description: React.ReactNode;
-  addons?: React.ReactNode;
+  description: ReactNode;
+  addons?: ReactNode;
 }) => {
   const descriptionText = getTransactionDescription(transaction);
   return (

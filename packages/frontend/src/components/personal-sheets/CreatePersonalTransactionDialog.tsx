@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ThickArrowDownIcon, ThickArrowUpIcon } from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -368,7 +369,7 @@ export const CreatePersonalTransactionDialog = ({
   trigger,
   sheetId,
 }: {
-  trigger: React.ReactNode;
+  trigger: ReactNode;
   sheetId: string;
 }) => {
   const { trpc } = useTRPC();
