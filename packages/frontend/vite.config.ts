@@ -20,6 +20,16 @@ export default defineConfig(({ mode }) => ({
     target: "es2022",
     sourcemap: true,
     cssMinify: "lightningcss",
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // Suppress "Module level directives cause errors when bundled" warnings
+        if (warning.code === "MODULE_LEVEL_DIRECTIVE") {
+          return;
+        }
+
+        warn(warning);
+      },
+    },
   },
   css: { transformer: "lightningcss" },
   server: {
