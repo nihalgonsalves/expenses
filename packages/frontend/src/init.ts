@@ -5,6 +5,7 @@ import "./main.css";
 import emojiMartData from "@emoji-mart/data";
 import { init as initEmojiMart } from "emoji-mart";
 
+import { config } from "./config";
 import { registerSW } from "./registerSW";
 
 await registerSW();
@@ -15,3 +16,10 @@ await initEmojiMart({ data: emojiMartData });
 import.meta.hot?.accept(() => {
   void registerSW();
 });
+
+if (import.meta.env.DEV && !config.VITE_INTEGRATION_TEST) {
+  // eslint-disable-next-line import/no-extraneous-dependencies
+  const { scan } = await import("react-scan");
+
+  scan();
+}

@@ -5,6 +5,7 @@ import spotlightSidecar from "@spotlightjs/sidecar/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
+import { codeInspectorPlugin } from "code-inspector-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig, type Plugin } from "vite";
 import IstanbulPlugin from "vite-plugin-istanbul";
@@ -64,6 +65,11 @@ export default defineConfig(({ mode }) => ({
       },
     }),
     spotlightSidecar(),
+    mode === "development" &&
+      codeInspectorPlugin({
+        bundler: "vite",
+        hideConsole: true,
+      }),
     process.env["VITE_COVERAGE"] &&
       IstanbulPlugin({
         include: "src/*",
