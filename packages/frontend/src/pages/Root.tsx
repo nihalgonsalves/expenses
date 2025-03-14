@@ -10,8 +10,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import type { TRPCClientErrorLike } from "@trpc/client";
+import { atom, useAtom } from "jotai";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { toast } from "react-hot-toast";
 import { useInterval } from "react-use";
 
@@ -71,6 +72,8 @@ const navItems = [
     icon: <GearIcon className="size-5" />,
   },
 ];
+
+export const isOldDataAtom = atom(false);
 
 export const Root = ({
   title,
@@ -289,7 +292,7 @@ export const RootLoader = <TData,>({
 
   // we use staleTime: 0 so we can't check react-query's isStale parameter to show a warning.
   // let's just show a warning if data hasn't been updated in a while, defined by us:
-  const [isOldData, setIsOldData] = useState(false);
+  const [isOldData, setIsOldData] = useAtom(isOldDataAtom);
 
   const dataUpdatedAt = Temporal.Instant.fromEpochMilliseconds(
     result.dataUpdatedAt,

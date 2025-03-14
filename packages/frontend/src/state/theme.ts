@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
 import { useEffect } from "react";
 import { useMedia } from "react-use";
 import { z } from "zod";
@@ -12,6 +13,7 @@ import {
 import { useTRPC } from "../api/trpc";
 import { useCurrentUser } from "../api/useCurrentUser";
 import { useDialog } from "../components/form/ResponsiveDialog";
+import { isOldDataAtom } from "../pages/Root";
 
 import { createPreferenceWithDefault } from "./preferences";
 import { useNavigatorOnLine } from "./useNavigatorOnLine";
@@ -78,8 +80,16 @@ const syncMetaThemeColor = (shouldDarken: boolean) => {
   // if there's a "last updated at" or "offline" banner, it will still be first
   // see Root.tsx
 
-  const header = document.getElementsByTagName("header").item(0);
+  // fallback on load
+  const primaryColor = window
+    .getComputedStyle(document.documentElement)
+    .getPropertyValue("--primary");
 
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", primaryColor);
+
+  const header = document.getElementsByTagName("header").item(0);
   if (!header) {
     return;
   }
@@ -127,6 +137,7 @@ export const useThemeSync = () => {
   const [theme] = useTheme();
   const dialog = useDialog();
   const navigatorOnLine = useNavigatorOnLine();
+  const isOldData = useAtomValue(isOldDataAtom);
 
   const systemDarkMode = useMedia("(prefers-color-scheme: dark)");
 
@@ -134,5 +145,12 @@ export const useThemeSync = () => {
     syncTheme(themePreference, theme);
     syncColorScheme(themePreference);
     syncMetaThemeColor(dialog.isOpen);
-  }, [themePreference, theme, systemDarkMode, dialog.isOpen, navigatorOnLine]);
+  }, [
+    themePreference,
+    theme,
+    systemDarkMode,
+    dialog.isOpen,
+    navigatorOnLine,
+    isOldData,
+  ]);
 };
