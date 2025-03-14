@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { useOffLineToaster } from "../api/useOffLineToaster";
 import { usePrefetchQueries } from "../api/usePrefetchQueries";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { config } from "../config";
 import { useSwUpdateCheck } from "../registerSW";
 import { useThemeSync } from "../state/theme";
 
@@ -46,7 +47,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
           },
         }}
       />
-      {import.meta.env.DEV ? (
+      {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
         <TanStackRouterDevtools position="bottom-right" />
       ) : null}
     </>

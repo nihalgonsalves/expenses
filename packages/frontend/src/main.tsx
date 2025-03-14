@@ -53,7 +53,7 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0,
 });
 
-if (import.meta.env.DEV) {
+if (import.meta.env.DEV && !config.VITE_INTEGRATION_TEST) {
   // eslint-disable-next-line import/no-extraneous-dependencies
   const { init } = await import("@spotlightjs/spotlight");
 

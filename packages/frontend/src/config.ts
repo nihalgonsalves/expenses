@@ -8,6 +8,7 @@ const ZEnv = z.object({
   VITE_ENV_NAME: z.string().default("development"),
   VITE_GIT_COMMIT_SHA: z.string().default("unknown"),
   VITE_SENTRY_DSN: z.string().optional(),
+  VITE_INTEGRATION_TEST: z.coerce.boolean().default(false),
 });
 
 export const config = ZEnv.parse(import.meta.env);
