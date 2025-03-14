@@ -11,7 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import type { TRPCClientErrorLike } from "@trpc/client";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useInterval } from "react-use";
 
@@ -267,7 +267,7 @@ export const RootLoader = <TData,>({
 
   const mobileStandalone = isStandalone && "ontouchstart" in window;
 
-  const refetch = useCallback(async () => {
+  const refetch = async () => {
     await toast.promise(
       result.refetch(),
       {
@@ -283,7 +283,7 @@ export const RootLoader = <TData,>({
         },
       },
     );
-  }, [result]);
+  };
 
   usePullToRefresh(ROOT_TOAST, refetch);
 

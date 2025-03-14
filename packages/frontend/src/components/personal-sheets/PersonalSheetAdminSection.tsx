@@ -1,7 +1,6 @@
 import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback } from "react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -24,7 +23,7 @@ export const PersonalSheetAdminSection = ({
     trpc.sheet.archiveSheet.mutationOptions(),
   );
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     await deleteSheet(personalSheet.id);
 
     await invalidate(
@@ -32,9 +31,9 @@ export const PersonalSheetAdminSection = ({
       trpc.sheet.mySheets.queryKey(),
     );
     await navigate({ to: "/sheets" });
-  }, [deleteSheet, personalSheet.id, navigate, trpc, invalidate]);
+  };
 
-  const handleArchive = useCallback(async () => {
+  const handleArchive = async () => {
     await archiveSheet({
       sheetId: personalSheet.id,
       isArchived: !personalSheet.isArchived,
@@ -44,7 +43,7 @@ export const PersonalSheetAdminSection = ({
       trpc.sheet.personalSheetById.queryKey(personalSheet.id),
       trpc.sheet.mySheets.queryKey(),
     );
-  }, [archiveSheet, personalSheet, trpc, invalidate]);
+  };
 
   return (
     <>

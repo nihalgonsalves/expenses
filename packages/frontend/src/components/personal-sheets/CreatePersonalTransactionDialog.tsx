@@ -16,11 +16,11 @@ import {
 import { useCurrencyConversion } from "../../api/currencyConversion";
 import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { toMoneyValues } from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
 } from "../../utils/temporal";
-import { useMoneyValues } from "../../utils/useMoneyValues";
 import { CurrencySpan } from "../CurrencySpan";
 import { CategorySelect, OTHER_CATEGORY } from "../form/CategorySelect";
 import { CurrencySelect } from "../form/CurrencySelect";
@@ -141,7 +141,7 @@ const CreatePersonalTransactionForm = ({
     control: form.control,
   });
 
-  const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
+  const [, moneySnapshot] = toMoneyValues(amount, currencyCode);
 
   const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
     useCurrencyConversion(

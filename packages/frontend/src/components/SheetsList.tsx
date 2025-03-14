@@ -1,7 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import type { SheetsResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -64,10 +64,7 @@ const CardTitleWithButton = twx(
 )`flex place-items-center justify-between`;
 
 export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
-  const { personal, group, archived } = useMemo(
-    () => partitionSheets(sheets),
-    [sheets],
-  );
+  const { personal, group, archived } = partitionSheets(sheets);
 
   const [showArchived, setShowArchived] = useState(false);
 

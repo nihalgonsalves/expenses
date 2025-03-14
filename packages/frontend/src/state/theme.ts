@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useMedia } from "react-use";
 import { z } from "zod";
 
@@ -48,13 +48,10 @@ export const useTheme = () => {
     }
   }, [parsedTheme]);
 
-  const setTheme = useCallback(
-    async (theme: Theme) => {
-      await updateTheme(theme);
-      await invalidate(trpc.user.me.queryKey());
-    },
-    [updateTheme, invalidate, trpc],
-  );
+  const setTheme = async (theme: Theme) => {
+    await updateTheme(theme);
+    await invalidate(trpc.user.me.queryKey());
+  };
 
   if (parsedTheme.success) {
     return [parsedTheme.data, setTheme] as const;

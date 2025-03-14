@@ -3,7 +3,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { TRPCClientError, createTRPCClient, httpBatchLink } from "@trpc/client";
-import { useMemo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { toast } from "react-hot-toast";
 import { z } from "zod";
 
@@ -87,17 +87,13 @@ const queryClient = new QueryClient({
 });
 
 export const TrpcProvider = ({ children }: { children: ReactNode }) => {
-  const trpcClient = useMemo(
-    () =>
-      createTRPCClient<AppRouter>({
-        links: [
-          httpBatchLink({
-            url: config.VITE_API_BASE_URL,
-          }),
-        ],
+  const trpcClient = createTRPCClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url: config.VITE_API_BASE_URL,
       }),
-    [],
-  );
+    ],
+  });
 
   return (
     <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>

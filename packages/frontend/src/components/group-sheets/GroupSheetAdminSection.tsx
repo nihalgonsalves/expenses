@@ -1,7 +1,6 @@
 import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback } from "react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -25,7 +24,7 @@ export const GroupSheetAdminSection = ({
     trpc.sheet.archiveSheet.mutationOptions(),
   );
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     await deleteGroupSheet(groupSheet.id);
 
     void invalidate(
@@ -34,9 +33,9 @@ export const GroupSheetAdminSection = ({
     );
 
     await navigate({ to: "/sheets" });
-  }, [deleteGroupSheet, groupSheet.id, navigate, trpc, invalidate]);
+  };
 
-  const handleArchive = useCallback(async () => {
+  const handleArchive = async () => {
     await archiveSheet({
       sheetId: groupSheet.id,
       isArchived: !groupSheet.isArchived,
@@ -46,7 +45,7 @@ export const GroupSheetAdminSection = ({
       trpc.sheet.groupSheetById.queryKey(groupSheet.id),
       trpc.sheet.mySheets.queryKey(),
     );
-  }, [archiveSheet, groupSheet, trpc, invalidate]);
+  };
 
   return (
     <>

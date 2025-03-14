@@ -1,6 +1,5 @@
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback } from "react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -25,48 +24,44 @@ export const GroupSheetExportSection = ({
     ),
   );
 
-  const exportGroupSheet = useCallback(
-    (filetype: "json" | "csv") => {
-      void requestExport(
-        groupSheet.id,
-        groupSheet.name,
-        filetype,
-        async () => {
-          const { data } = await refetch({ throwOnError: true });
+  const exportGroupSheet = (filetype: "json" | "csv") => {
+    void requestExport(
+      groupSheet.id,
+      groupSheet.name,
+      filetype,
+      async () => {
+        const { data } = await refetch({ throwOnError: true });
 
-          // should not be possible with throwOnError: true
-          if (!data) throw new Error("Unknown Error");
+        // should not be possible with throwOnError: true
+        if (!data) throw new Error("Unknown Error");
 
-          return data.transactions;
-        },
-        ({ id, type, category, description, spentAt, money, participants }) => {
-          const participantColumns: Record<string, string> = {};
+        return data.transactions;
+      },
+      ({ id, type, category, description, spentAt, money, participants }) => {
+        const participantColumns: Record<string, string> = {};
 
-          participants.forEach(({ name, balance }) => {
-            participantColumns[`${getShortName(name).toLowerCase()}_share`] =
-              balance.share.amount === 0 ? "" : moneyToString(balance.share);
+        participants.forEach(({ name, balance }) => {
+          participantColumns[`${getShortName(name).toLowerCase()}_share`] =
+            balance.share.amount === 0 ? "" : moneyToString(balance.share);
 
-            participantColumns[
-              `${getShortName(name).toLowerCase()}_paid_or_received`
-            ] =
-              balance.actual.amount === 0 ? "" : moneyToString(balance.actual);
-          });
+          participantColumns[
+            `${getShortName(name).toLowerCase()}_paid_or_received`
+          ] = balance.actual.amount === 0 ? "" : moneyToString(balance.actual);
+        });
 
-          return {
-            id,
-            type,
-            category,
-            description,
-            spent_at: spentAt,
-            currency_code: money.currencyCode,
-            amount: moneyToString(money),
-            ...participantColumns,
-          };
-        },
-      );
-    },
-    [refetch, groupSheet],
-  );
+        return {
+          id,
+          type,
+          category,
+          description,
+          spent_at: spentAt,
+          currency_code: money.currencyCode,
+          amount: moneyToString(money),
+          ...participantColumns,
+        };
+      },
+    );
+  };
 
   return (
     <>

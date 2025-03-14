@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { parse as dateFnsParse } from "date-fns";
 import Papa from "papaparse";
-import { useCallback, useId, useMemo, useState } from "react";
+import { useId, useState } from "react";
 import { z } from "zod";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -208,10 +208,7 @@ const DataPreview = ({
   const [page, setPage] = useState(0);
   const maxPage = Math.floor(data.length / 10);
 
-  const rows = useMemo(
-    () => data.slice(page * 10, (page + 1) * 10),
-    [data, page],
-  );
+  const rows = data.slice(page * 10, (page + 1) * 10);
 
   return (
     <>
@@ -314,17 +311,12 @@ export const PersonalTransactionsImporter = ({
 
   const [amountField, setAmountField] = useState<string>();
   const [amountFormat, setAmountFormat] = useState<AmountFormat>("decimal-dot");
-  const amountParser = useCallback(
-    (value: string) => parseAmount(value, amountFormat),
-    [amountFormat],
-  );
+  const amountParser = (value: string) => parseAmount(value, amountFormat);
 
   const [dateField, setDateField] = useState<string>();
   const [dateFormat, setDateFormat] = useState("yyyy-MM-dd");
-  const dateParser = useCallback(
-    (value: string) => dateFnsParse(value, dateFormat, new Date()),
-    [dateFormat],
-  );
+  const dateParser = (value: string) =>
+    dateFnsParse(value, dateFormat, new Date());
 
   const [categoryField, setCategoryField] = useState<string>();
   const [descriptionField, setDescriptionField] = useState<string>();
@@ -335,55 +327,43 @@ export const PersonalTransactionsImporter = ({
 
   const fileId = useId();
 
-  const validRows = useMemo(
-    () =>
-      data && amountField
-        ? data.flatMap((row): CreateSheetTransactionInput | [] => {
-            try {
-              const amountValue = row[amountField];
-              const dateValue = dateField ? row[dateField] : undefined;
-              const categoryValue = categoryField
-                ? row[categoryField]
-                : undefined;
-              const descriptionValue = descriptionField
-                ? row[descriptionField]
-                : undefined;
+  const validRows =
+    data && amountField
+      ? data.flatMap((row): CreateSheetTransactionInput | [] => {
+          try {
+            const amountValue = row[amountField];
+            const dateValue = dateField ? row[dateField] : undefined;
+            const categoryValue = categoryField
+              ? row[categoryField]
+              : undefined;
+            const descriptionValue = descriptionField
+              ? row[descriptionField]
+              : undefined;
 
-              if (!amountValue) {
-                throw new Error("Missing amount");
-              }
-
-              const { amount, scale } = amountParser(amountValue);
-
-              return {
-                type: amount < 0 ? "EXPENSE" : "INCOME",
-                money: {
-                  amount: Math.abs(amount),
-                  scale,
-                  currencyCode: personalSheet.currencyCode,
-                },
-                spentAt: dateToISOString(
-                  dateValue ? dateParser(dateValue) : new Date(),
-                ),
-                category: findCategory(categoryValue),
-                description: descriptionValue ?? "",
-              };
-            } catch {
-              return [];
+            if (!amountValue) {
+              throw new Error("Missing amount");
             }
-          })
-        : [],
-    [
-      data,
-      personalSheet.currencyCode,
-      amountField,
-      amountParser,
-      dateField,
-      dateParser,
-      categoryField,
-      descriptionField,
-    ],
-  );
+
+            const { amount, scale } = amountParser(amountValue);
+
+            return {
+              type: amount < 0 ? "EXPENSE" : "INCOME",
+              money: {
+                amount: Math.abs(amount),
+                scale,
+                currencyCode: personalSheet.currencyCode,
+              },
+              spentAt: dateToISOString(
+                dateValue ? dateParser(dateValue) : new Date(),
+              ),
+              category: findCategory(categoryValue),
+              description: descriptionValue ?? "",
+            };
+          } catch {
+            return [];
+          }
+        })
+      : [];
 
   const handleCreate = async () => {
     if (validRows.length === 0) {
@@ -407,70 +387,64 @@ export const PersonalTransactionsImporter = ({
     });
   };
 
-  const fieldOptions = useMemo(
-    () => [
-      unsetFieldOption,
-      ...(headers?.map((header) => ({ value: header, label: header })) ?? []),
-    ],
-    [headers],
-  );
+  const fieldOptions = [
+    unsetFieldOption,
+    ...(headers?.map((header) => ({ value: header, label: header })) ?? []),
+  ];
 
-  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> =
-    useCallback((e) => {
-      const file = e.target.files?.[0];
-      if (!file) {
-        return;
-      }
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
 
-      Papa.parse(file, {
-        header: true,
-        transformHeader: (header) => header.toLowerCase().trim(),
-        complete: ({ data: papaData, errors, meta }) => {
-          if (errors.length > 0) {
-            setCsvError(errors[0]?.message ?? "Unknown error");
-            return;
-          }
+    Papa.parse(file, {
+      header: true,
+      transformHeader: (header) => header.toLowerCase().trim(),
+      complete: ({ data: papaData, errors, meta }) => {
+        if (errors.length > 0) {
+          setCsvError(errors[0]?.message ?? "Unknown error");
+          return;
+        }
 
-          const zodResult = z.array(z.record(z.string())).safeParse(papaData);
+        const zodResult = z.array(z.record(z.string())).safeParse(papaData);
 
-          if (!zodResult.success) {
-            setCsvError(zodResult.error.message);
-            return;
-          }
+        if (!zodResult.success) {
+          setCsvError(zodResult.error.message);
+          return;
+        }
 
-          setAmountField(
-            meta.fields?.find(
-              (field) => fieldMatchers.amount.exec(field) != null,
-            ),
-          );
-          setDateField(
-            meta.fields?.find(
-              (field) => fieldMatchers.date.exec(field) != null,
-            ),
-          );
-          setCategoryField(
-            meta.fields?.find(
-              (field) => fieldMatchers.category.exec(field) != null,
-            ),
-          );
-          setDescriptionField(
-            meta.fields?.find(
-              (field) => fieldMatchers.description.exec(field) != null,
-            ),
-          );
+        setAmountField(
+          meta.fields?.find(
+            (field) => fieldMatchers.amount.exec(field) != null,
+          ),
+        );
+        setDateField(
+          meta.fields?.find((field) => fieldMatchers.date.exec(field) != null),
+        );
+        setCategoryField(
+          meta.fields?.find(
+            (field) => fieldMatchers.category.exec(field) != null,
+          ),
+        );
+        setDescriptionField(
+          meta.fields?.find(
+            (field) => fieldMatchers.description.exec(field) != null,
+          ),
+        );
 
-          setHeaders(meta.fields);
-          setData(
-            zodResult.data.map((row, i) => ({
-              // needed for muix data grid
-              id: i.toFixed(0),
-              ...row,
-            })),
-          );
-          setActiveStep(ImportStep.CHOOSE_COLUMNS);
-        },
-      });
-    }, []);
+        setHeaders(meta.fields);
+        setData(
+          zodResult.data.map((row, i) => ({
+            // needed for muix data grid
+            id: i.toFixed(0),
+            ...row,
+          })),
+        );
+        setActiveStep(ImportStep.CHOOSE_COLUMNS);
+      },
+    });
+  };
 
   return (
     <div>

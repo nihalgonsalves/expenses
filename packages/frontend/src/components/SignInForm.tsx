@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import type { z } from "zod";
@@ -54,7 +53,7 @@ export const SignInForm = () => {
     },
   });
 
-  const onForgotPassword = useCallback(async () => {
+  const onForgotPassword = async () => {
     await form.trigger("email");
 
     if (form.getFieldState("email").invalid) {
@@ -66,7 +65,7 @@ export const SignInForm = () => {
     toast.success(
       "If the email matches a valid account, you will receive a link to reset your password.",
     );
-  }, [form, requestPasswordReset]);
+  };
 
   const resetCache = useResetCache();
 

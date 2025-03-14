@@ -1,7 +1,7 @@
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import type { VariantProps } from "class-variance-authority";
 import { atom, useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import {
@@ -60,9 +60,9 @@ export const useDialog = () => {
 
   return {
     isOpen,
-    dismiss: useCallback(() => {
+    dismiss: () => {
       setOpen(false);
-    }, [setOpen]),
+    },
   };
 };
 
@@ -78,13 +78,10 @@ const ResponsiveDialogInner = ({
   const [open, setOpen] = useState(false);
   const [globalOpen, setGlobalOpen] = useAtom(responsiveDialogOpen);
 
-  const handleSetOpen = useCallback(
-    (value: boolean) => {
-      setOpen(value);
-      setGlobalOpen(value);
-    },
-    [setOpen, setGlobalOpen],
-  );
+  const handleSetOpen = (value: boolean) => {
+    setOpen(value);
+    setGlobalOpen(value);
+  };
 
   // rudimentary global dismiss, see useDialog above
   useEffect(() => {

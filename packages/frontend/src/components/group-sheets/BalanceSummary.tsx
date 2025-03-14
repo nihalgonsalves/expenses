@@ -8,7 +8,7 @@ import {
 } from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
 import type {
@@ -165,7 +165,7 @@ const TransferItem = ({
     trpc.transaction.createGroupSheetSettlement.mutationOptions(),
   );
 
-  const handleSettleUp = useCallback(async () => {
+  const handleSettleUp = async () => {
     await createGroupSheetSettlement({
       groupSheetId,
       fromId: t.from.id,
@@ -181,7 +181,7 @@ const TransferItem = ({
       trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
       trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
     );
-  }, [createGroupSheetSettlement, groupSheetId, t, trpc, invalidate]);
+  };
 
   return (
     <div

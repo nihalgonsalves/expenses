@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
 
 import { useTRPC } from "../../../api/trpc";
 import { useCurrentUser } from "../../../api/useCurrentUser";
@@ -15,18 +14,15 @@ const GroupDetailPage = () => {
   const result = useQuery(trpc.sheet.groupSheetById.queryOptions(sheetId));
   const { data: me } = useCurrentUser();
 
-  const actorInfo: ActorInfo | undefined = useMemo(
-    () =>
-      me && result.data
-        ? {
-            id: me.id,
-            isAdmin:
-              result.data.participants.find(({ id }) => id === me.id)?.role ===
-              "ADMIN",
-          }
-        : undefined,
-    [result.data, me],
-  );
+  const actorInfo: ActorInfo | undefined =
+    me && result.data
+      ? {
+          id: me.id,
+          isAdmin:
+            result.data.participants.find(({ id }) => id === me.id)?.role ===
+            "ADMIN",
+        }
+      : undefined;
 
   return (
     <RootLoader

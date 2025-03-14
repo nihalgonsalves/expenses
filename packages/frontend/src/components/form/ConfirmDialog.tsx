@@ -1,5 +1,5 @@
 import type { VariantProps } from "class-variance-authority";
-import { type MouseEvent, useCallback, useState } from "react";
+import { type MouseEvent, useState } from "react";
 
 import type { buttonVariants } from "../ui/button";
 
@@ -20,19 +20,16 @@ export const ConfirmDialog = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const onConfirm = useCallback(
-    async (e: MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      setIsLoading(true);
+  const onConfirm = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-      try {
-        await onConfirmProp();
-      } catch {
-        setIsLoading(false);
-      }
-    },
-    [onConfirmProp],
-  );
+    try {
+      await onConfirmProp();
+    } catch {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <ResponsiveDialog

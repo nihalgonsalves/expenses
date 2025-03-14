@@ -19,7 +19,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { z } from "zod";
 
@@ -80,31 +80,28 @@ export const DataTable = ({
     { id: "spentAt", desc: true },
   ]);
 
-  const onColumnFiltersChange = useCallback(
-    (
-      updaterOrValue:
-        | ColumnFiltersState
-        | ((prev: ColumnFiltersState) => ColumnFiltersState),
-    ) => {
-      const next =
-        typeof updaterOrValue === "function"
-          ? updaterOrValue(columnFilters)
-          : updaterOrValue;
+  const onColumnFiltersChange = (
+    updaterOrValue:
+      | ColumnFiltersState
+      | ((prev: ColumnFiltersState) => ColumnFiltersState),
+  ) => {
+    const next =
+      typeof updaterOrValue === "function"
+        ? updaterOrValue(columnFilters)
+        : updaterOrValue;
 
-      setColumnFilters(next);
+    setColumnFilters(next);
 
-      void navigate({
-        search: (prev) => {
-          const valueByKey = ZTransactionFilters.parse(
-            Object.fromEntries(next.map((filter) => [filter.id, filter.value])),
-          );
+    void navigate({
+      search: (prev) => {
+        const valueByKey = ZTransactionFilters.parse(
+          Object.fromEntries(next.map((filter) => [filter.id, filter.value])),
+        );
 
-          return { ...prev, valueByKey };
-        },
-      });
-    },
-    [columnFilters, navigate],
-  );
+        return { ...prev, valueByKey };
+      },
+    });
+  };
 
   const table = useReactTable({
     data,

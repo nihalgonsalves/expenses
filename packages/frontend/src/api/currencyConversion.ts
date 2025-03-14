@@ -1,5 +1,4 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
 
@@ -46,33 +45,25 @@ export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
   });
 
   // Record<SourceCurrency, Rate SourceCurrency->TargetCurrency>>
-  const sourceRateMap = useMemo(
-    () =>
-      Object.fromEntries(
-        rates
-          .filter(
-            (r): r is typeof r & { status: "success" } =>
-              r.status === "success",
-          )
-          .map((r) => [r.data.from, r.data]),
-      ),
-    [rates],
+  const sourceRateMap = Object.fromEntries(
+    rates
+      .filter(
+        (r): r is typeof r & { status: "success" } => r.status === "success",
+      )
+      .map((r) => [r.data.from, r.data]),
   );
 
-  const convertToPreferred = useCallback(
-    (sourceSnapshot: Money) => {
-      if (sourceSnapshot.currencyCode === preferredCurrencyCode) {
-        return sourceSnapshot;
-      }
+  const convertToPreferred = (sourceSnapshot: Money) => {
+    if (sourceSnapshot.currencyCode === preferredCurrencyCode) {
+      return sourceSnapshot;
+    }
 
-      const rate = sourceRateMap[sourceSnapshot.currencyCode];
+    const rate = sourceRateMap[sourceSnapshot.currencyCode];
 
-      if (!rate) return undefined;
+    if (!rate) return undefined;
 
-      return convertCurrency(sourceSnapshot, preferredCurrencyCode, rate);
-    },
-    [sourceRateMap, preferredCurrencyCode],
-  );
+    return convertCurrency(sourceSnapshot, preferredCurrencyCode, rate);
+  };
 
   return [convertToPreferred, preferredCurrencyCode] as const;
 };
@@ -101,13 +92,10 @@ export const useCurrencyConversion = (
     ),
   );
 
-  const targetSnapshot = useMemo(
-    () =>
-      sourceCode !== targetCode && rate
-        ? convertCurrency(sourceSnapshot, targetCode, rate)
-        : undefined,
-    [rate, sourceCode, targetCode, sourceSnapshot],
-  );
+  const targetSnapshot =
+    sourceCode !== targetCode && rate
+      ? convertCurrency(sourceSnapshot, targetCode, rate)
+      : undefined;
 
   return { supportedCurrencies, rate, targetSnapshot };
 };

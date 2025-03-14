@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
 import type { UndefinedOnPartialDeep } from "type-fest";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
@@ -46,15 +45,11 @@ export const useAllUserTransactions = (
     data.map((transaction) => transaction.money.currencyCode),
   );
 
-  const convertedTransactions = useMemo(
-    () =>
-      data.map(({ sheet, ...transaction }) => ({
-        ...transaction,
-        convertedMoney: convertCurrency(transaction.money),
-        sheet,
-      })),
-    [data, convertCurrency],
-  );
+  const convertedTransactions = data.map(({ sheet, ...transaction }) => ({
+    ...transaction,
+    convertedMoney: convertCurrency(transaction.money),
+    sheet,
+  }));
 
   return {
     data: convertedTransactions,

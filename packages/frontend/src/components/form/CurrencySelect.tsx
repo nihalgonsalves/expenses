@@ -1,6 +1,6 @@
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Popover } from "@radix-ui/react-popover";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { CURRENCY_CODES } from "../../utils/money";
@@ -36,14 +36,10 @@ export const CurrencySelect = ({
 }: CurrencySelectProps) => {
   const [open, setOpen] = useState(false);
 
-  const optionObjects = useMemo(
-    () =>
-      options.map((o) => ({
-        value: o,
-        label: o,
-      })),
-    [options],
-  );
+  const optionObjects = options.map((o) => ({
+    value: o,
+    label: o,
+  }));
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal>

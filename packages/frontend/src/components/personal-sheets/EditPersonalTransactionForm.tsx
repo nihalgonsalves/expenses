@@ -11,11 +11,11 @@ import {
 import { useCurrencyConversion } from "../../api/currencyConversion";
 import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
+import { toMoneyValues } from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   isoToTemporalZonedDateTime,
 } from "../../utils/temporal";
-import { useMoneyValues } from "../../utils/useMoneyValues";
 import { CurrencySpan } from "../CurrencySpan";
 import { CategorySelect } from "../form/CategorySelect";
 import { CurrencySelect } from "../form/CurrencySelect";
@@ -74,7 +74,7 @@ const EditPersonalTransactionForm = ({
   });
   const spentAt = useWatch({ name: "spentAt", control: form.control });
 
-  const [, moneySnapshot] = useMoneyValues(amount, currencyCode);
+  const [, moneySnapshot] = toMoneyValues(amount, currencyCode);
 
   const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
     useCurrencyConversion(

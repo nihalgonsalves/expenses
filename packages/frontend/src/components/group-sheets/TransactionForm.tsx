@@ -10,7 +10,7 @@ import {
 } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { type Dinero, allocate } from "dinero.js";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   useFieldArray,
   useForm,
@@ -41,12 +41,12 @@ import {
   formatCurrency,
   formatDecimalCurrency,
   toDinero,
+  toMoneyValues,
 } from "../../utils/money";
 import {
   dateTimeLocalToZonedISOString,
   nowForDateTimeInput,
 } from "../../utils/temporal";
-import { useMoneyValues } from "../../utils/useMoneyValues";
 import { Avatar } from "../Avatar";
 import { CurrencySpan } from "../CurrencySpan";
 import { CategorySelect, OTHER_CATEGORY } from "../form/CategorySelect";
@@ -286,40 +286,31 @@ const SplitsFormSection = ({
   const splitType = useWatch({ name: "splitType", control: form.control });
   const ratios = useWatch({ name: "ratios", control: form.control });
 
-  const money = useMemo(
-    () => toDinero(amount, currencyCode),
-    [amount, currencyCode],
-  );
+  const money = toDinero(amount, currencyCode);
 
   const { fields } = useFieldArray({
     name: "ratios",
     control: form.control,
   });
 
-  const participantNameById = useMemo(
-    () =>
-      Object.fromEntries(
-        groupSheet.participants.map(({ id, name }) => [id, name]),
-      ),
-    [groupSheet.participants],
+  const participantNameById = Object.fromEntries(
+    groupSheet.participants.map(({ id, name }) => [id, name]),
   );
 
-  const splits = useMemo(
-    () => calcSplits(groupSheet.participants, currencyCode, money, ratios),
-    [groupSheet, currencyCode, money, ratios],
+  const splits = calcSplits(
+    groupSheet.participants,
+    currencyCode,
+    money,
+    ratios,
   );
 
-  const shareByParticipantId = useMemo(
-    () =>
-      Object.fromEntries(
-        splits.map(({ participantId, share }) => [participantId, share]),
-      ),
-    [splits],
+  const shareByParticipantId = Object.fromEntries(
+    splits.map(({ participantId, share }) => [participantId, share]),
   );
 
   const splitConfig = SPLIT_CONFIG[splitType];
 
-  const splitErrorMessage = useMemo((): string | undefined => {
+  const splitErrorMessage = (() => {
     const totalSum = ratios.reduce((sum, { ratio }) => sum + ratio, 0);
 
     if (totalSum === 0) {
@@ -341,132 +332,126 @@ const SplitsFormSection = ({
     }
 
     return undefined;
-  }, [splitConfig, amount, currencyCode, ratios]);
+  })();
 
   const splitValid = splitErrorMessage == null;
 
   const [ratioFocused, setRatioFocused] = useState(false);
 
-  const handleRatioFocus = useCallback(() => {
+  const handleRatioFocus = () => {
     setRatioFocused(true);
-  }, []);
+  };
 
-  const handleRatioBlur = useCallback(
-    (changedIndex: number) => {
-      setRatioFocused(false);
+  const handleRatioBlur = (changedIndex: number) => {
+    setRatioFocused(false);
 
-      if (splitConfig.isRedistributable) {
-        let dirtyRatioSum = 0;
-        const otherParticipants: { id: string }[] = [];
+    if (splitConfig.isRedistributable) {
+      let dirtyRatioSum = 0;
+      const otherParticipants: { id: string }[] = [];
 
-        fields.forEach(({ participantId }, i) => {
-          const value = form.getValues().ratios[i]?.ratio ?? 0;
-          const { isDirty } = form.getFieldState(`ratios.${i}.ratio`);
+      fields.forEach(({ participantId }, i) => {
+        const value = form.getValues().ratios[i]?.ratio ?? 0;
+        const { isDirty } = form.getFieldState(`ratios.${i}.ratio`);
 
-          if (isDirty || i === changedIndex) {
-            dirtyRatioSum += value;
-          } else {
-            otherParticipants.push({ id: participantId });
-          }
+        if (isDirty || i === changedIndex) {
+          dirtyRatioSum += value;
+        } else {
+          otherParticipants.push({ id: participantId });
+        }
+      });
+
+      const totalSum = splitConfig.expectedSum(amount);
+
+      if (!Number.isFinite(dirtyRatioSum) || dirtyRatioSum >= totalSum) {
+        return;
+      }
+
+      const remainingRatio = totalSum - dirtyRatioSum;
+
+      if (splitType === GroupTransactionSplitType.Amounts) {
+        const newSplits = calcSplits(
+          otherParticipants,
+          currencyCode,
+          toDinero(remainingRatio, currencyCode),
+          getDefaultRatios(otherParticipants),
+        );
+
+        newSplits.forEach(({ participantId, share }) => {
+          const index = fields.findIndex(
+            (field) => field.participantId === participantId,
+          );
+
+          form.setValue(`ratios.${index}.ratio`, share.amount);
+        });
+      } else if (splitType === GroupTransactionSplitType.Percentage) {
+        const newSplits = allocateByCount(
+          otherParticipants.length,
+          remainingRatio,
+        );
+
+        newSplits.forEach((percentage, i) => {
+          const participantId = otherParticipants[i]?.id;
+
+          const index = fields.findIndex(
+            (field) => field.participantId === participantId,
+          );
+
+          form.setValue(`ratios.${index}.ratio`, percentage);
+        });
+      }
+    }
+  };
+
+  const handleChangeSplitType = (value: GroupTransactionSplitType) => {
+    const newType = z.nativeEnum(GroupTransactionSplitType).parse(value);
+
+    const isCurrentlyDirty = form.formState.dirtyFields.ratios?.some(
+      ({ ratio }) => ratio === true,
+    );
+
+    switch (newType) {
+      case GroupTransactionSplitType.Evenly:
+      case GroupTransactionSplitType.Shares:
+      case GroupTransactionSplitType.Selected:
+        getDefaultRatios(groupSheet.participants).forEach((ratio, i) => {
+          form.resetField(`ratios.${i}.ratio`, {
+            defaultValue: ratio.ratio,
+          });
+        });
+        break;
+
+      case GroupTransactionSplitType.Percentage:
+        groupSheet.participants.forEach((_, i) => {
+          form.resetField(`ratios.${i}.ratio`, {
+            defaultValue: 100 / groupSheet.participants.length,
+          });
+        });
+        break;
+
+      case GroupTransactionSplitType.Amounts:
+        getDefaultRatios(groupSheet.participants, 0).forEach((ratio, i) => {
+          form.resetField(`ratios.${i}.ratio`, {
+            defaultValue: ratio.ratio,
+          });
         });
 
-        const totalSum = splitConfig.expectedSum(amount);
-
-        if (!Number.isFinite(dirtyRatioSum) || dirtyRatioSum >= totalSum) {
-          return;
-        }
-
-        const remainingRatio = totalSum - dirtyRatioSum;
-
-        if (splitType === GroupTransactionSplitType.Amounts) {
-          const newSplits = calcSplits(
-            otherParticipants,
-            currencyCode,
-            toDinero(remainingRatio, currencyCode),
-            getDefaultRatios(otherParticipants),
-          );
-
-          newSplits.forEach(({ participantId, share }) => {
-            const index = fields.findIndex(
-              (field) => field.participantId === participantId,
-            );
-
-            form.setValue(`ratios.${index}.ratio`, share.amount);
-          });
-        } else if (splitType === GroupTransactionSplitType.Percentage) {
-          const newSplits = allocateByCount(
-            otherParticipants.length,
-            remainingRatio,
-          );
-
-          newSplits.forEach((percentage, i) => {
-            const participantId = otherParticipants[i]?.id;
-
-            const index = fields.findIndex(
-              (field) => field.participantId === participantId,
-            );
-
-            form.setValue(`ratios.${index}.ratio`, percentage);
+        if (
+          splitValid &&
+          isCurrentlyDirty &&
+          [
+            GroupTransactionSplitType.Percentage,
+            GroupTransactionSplitType.Shares,
+          ].includes(splitType)
+        ) {
+          splits.map(({ share }, i) => {
+            form.setValue(`ratios.${i}.ratio`, share.amount, {
+              shouldDirty: true,
+            });
           });
         }
-      }
-    },
-    [form, fields, amount, currencyCode, splitConfig, splitType],
-  );
-
-  const handleChangeSplitType = useCallback(
-    (value: GroupTransactionSplitType) => {
-      const newType = z.nativeEnum(GroupTransactionSplitType).parse(value);
-
-      const isCurrentlyDirty = form.formState.dirtyFields.ratios?.some(
-        ({ ratio }) => ratio === true,
-      );
-
-      switch (newType) {
-        case GroupTransactionSplitType.Evenly:
-        case GroupTransactionSplitType.Shares:
-        case GroupTransactionSplitType.Selected:
-          getDefaultRatios(groupSheet.participants).forEach((ratio, i) => {
-            form.resetField(`ratios.${i}.ratio`, {
-              defaultValue: ratio.ratio,
-            });
-          });
-          break;
-
-        case GroupTransactionSplitType.Percentage:
-          groupSheet.participants.forEach((_, i) => {
-            form.resetField(`ratios.${i}.ratio`, {
-              defaultValue: 100 / groupSheet.participants.length,
-            });
-          });
-          break;
-
-        case GroupTransactionSplitType.Amounts:
-          getDefaultRatios(groupSheet.participants, 0).forEach((ratio, i) => {
-            form.resetField(`ratios.${i}.ratio`, {
-              defaultValue: ratio.ratio,
-            });
-          });
-
-          if (
-            splitValid &&
-            isCurrentlyDirty &&
-            [
-              GroupTransactionSplitType.Percentage,
-              GroupTransactionSplitType.Shares,
-            ].includes(splitType)
-          ) {
-            splits.map(({ share }, i) => {
-              form.setValue(`ratios.${i}.ratio`, share.amount, {
-                shouldDirty: true,
-              });
-            });
-          }
-          break;
-      }
-    },
-    [form, groupSheet, splits, splitValid, splitType],
-  );
+        break;
+    }
+  };
 
   return (
     <>
@@ -681,7 +666,7 @@ export const TransactionForm = ({
   });
   const spentAt = useWatch({ name: "spentAt", control: form.control });
 
-  const [dineroValue, moneySnapshot] = useMoneyValues(amount, currencyCode);
+  const [dineroValue, moneySnapshot] = toMoneyValues(amount, currencyCode);
 
   const {
     supportedCurrencies,

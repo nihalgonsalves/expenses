@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 import { useServiceWorkerRegistration } from "./useServiceWorkerRegistration";
 
@@ -44,7 +44,7 @@ export const useNotificationPermission = (): {
     }
   }, []);
 
-  const request = useCallback(async () => {
+  const request = async () => {
     if (permission === "granted") return permission;
 
     if (!notificationGlobal) return "not_supported";
@@ -56,7 +56,7 @@ export const useNotificationPermission = (): {
     setPermission(newPermission);
 
     return newPermission;
-  }, [permission]);
+  };
 
   if (!PUSH_SUPPORTED || !serviceWorkerRegistration) {
     return {

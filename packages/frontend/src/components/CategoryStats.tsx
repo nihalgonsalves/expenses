@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo } from "react";
 import type { DateRange } from "react-day-picker";
 
 import {
@@ -66,24 +65,17 @@ export const CategoryStats = ({
   dateRange: DateRange | undefined;
   setDateRange: (dateRange: DateRange | undefined) => void;
 }) => {
-  const categoryExpenseSumEntries = useMemo(
-    () =>
-      Object.entries(
-        getCategorySums(
-          data.filter((t) => t.type !== "TRANSFER" && t.money.amount < 0),
-        ),
-      ).sort(([, a], [, b]) => compareMoney(a, b)),
-    [data],
-  );
-  const categoryIncomeSumEntries = useMemo(
-    () =>
-      Object.entries(
-        getCategorySums(
-          data.filter((t) => t.type !== "TRANSFER" && t.money.amount > 0),
-        ),
-      ).sort(([, a], [, b]) => compareMoney(a, b)),
-    [data],
-  );
+  const categoryExpenseSumEntries = Object.entries(
+    getCategorySums(
+      data.filter((t) => t.type !== "TRANSFER" && t.money.amount < 0),
+    ),
+  ).sort(([, a], [, b]) => compareMoney(a, b));
+
+  const categoryIncomeSumEntries = Object.entries(
+    getCategorySums(
+      data.filter((t) => t.type !== "TRANSFER" && t.money.amount > 0),
+    ),
+  ).sort(([, a], [, b]) => compareMoney(a, b));
 
   return (
     <>
