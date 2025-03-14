@@ -120,7 +120,7 @@ const ResponsiveDialogInner = ({
     return (
       <Dialog open={open} onOpenChange={handleSetOpen}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogContent className="max-w-5xl">
+        <DialogContent className="max-h-[100dvh] max-w-[min(100dvw,var(--container-5xl))] overflow-auto">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
