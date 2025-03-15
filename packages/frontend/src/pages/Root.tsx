@@ -287,7 +287,6 @@ export const RootLoader = <TData,>({
           content: "w-full text-center",
         },
       }),
-      duration: Infinity,
       id: ROOT_TOAST,
       classNames: {
         content: "w-full text-center",
