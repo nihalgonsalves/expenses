@@ -1,5 +1,6 @@
 import { fileURLToPath } from "url";
 
+import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import spotlightSidecar from "@spotlightjs/sidecar/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
@@ -97,6 +98,14 @@ export default defineConfig(({ mode }) => ({
         project: process.env["SENTRY_PROJECT"],
         release: { name: process.env["VITE_GIT_COMMIT_SHA"] },
         reactComponentAnnotation: { enabled: true },
+        telemetry: false,
       }) as Plugin),
+    process.env["CODECOV_TOKEN"] &&
+      codecovVitePlugin({
+        enableBundleAnalysis: true,
+        bundleName: "frontend",
+        uploadToken: process.env["CODECOV_TOKEN"],
+        telemetry: false,
+      }),
   ].filter(Boolean),
 }));
