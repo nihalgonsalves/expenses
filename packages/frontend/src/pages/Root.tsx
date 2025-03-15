@@ -13,8 +13,8 @@ import type { TRPCClientErrorLike } from "@trpc/client";
 import { atom, useAtom } from "jotai";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
-import { toast } from "react-hot-toast";
 import { useInterval } from "react-use";
+import { toast } from "sonner";
 
 import { useTRPC } from "../api/trpc";
 import { usePullToRefresh } from "../api/usePullToRefresh";
@@ -270,22 +270,33 @@ export const RootLoader = <TData,>({
 
   const mobileStandalone = isStandalone && "ontouchstart" in window;
 
-  const refetch = async () => {
-    await toast.promise(
-      result.refetch(),
-      {
-        loading: "Refreshing",
-        success: "Done",
-        error: "Error",
-      },
-      {
-        id: ROOT_TOAST,
-        className: "w-48",
-        success: {
-          duration: 1000,
+  const refetch = () => {
+    toast.promise(result.refetch(), {
+      loading: "Refreshing",
+      success: () => ({
+        message: "Done",
+        classNames: {
+          icon: "text-primary",
+          content: "w-full text-center",
         },
+      }),
+      error: () => ({
+        message: "Error",
+        classNames: {
+          icon: "text-destructive",
+          content: "w-full text-center",
+        },
+      }),
+      duration: Infinity,
+      id: ROOT_TOAST,
+      classNames: {
+        content: "w-full text-center",
       },
-    );
+      style: {
+        border: "none",
+        backgroundColor: "var(--background)",
+      },
+    });
   };
 
   usePullToRefresh(ROOT_TOAST, refetch);

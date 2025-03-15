@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { TRPCClientError, createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { ReactNode } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import type { AppRouter } from "@nihalgonsalves/expenses-backend/build";

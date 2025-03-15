@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import type { z } from "zod";
 
 import { ZAuthorizeUserInput } from "@nihalgonsalves/expenses-shared/types/user";

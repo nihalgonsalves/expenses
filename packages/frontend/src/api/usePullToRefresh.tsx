@@ -1,6 +1,6 @@
 import { easeIn } from "motion/react";
 import { useEffect, useRef } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 import { useDialog } from "../components/form/ResponsiveDialog";
 import { CircularProgress } from "../components/ui/circular-progress";
@@ -11,10 +11,16 @@ const displayThreshold = () => window.innerHeight * 0.05;
 const reloadThreshold = () => window.innerHeight * 0.4;
 const inverseReloadThreshold = () => window.innerHeight * 0.6;
 
-export const usePullToRefresh = (
-  toastId: string,
-  onRefetch: () => Promise<void>,
-) => {
+const LoaderToast = ({ ratio }: { ratio: number }) => (
+  <div className="flex items-center justify-center">
+    <CircularProgress size={24} value={ratio * 100} />
+    <span className="grow text-center">
+      {ratio < 0.99999 ? "Pull to Refresh" : "Release to Refresh"}
+    </span>
+  </div>
+);
+
+export const usePullToRefresh = (toastId: string, onRefetch: () => void) => {
   const dialog = useDialog();
   const isStandalone = useIsStandalone();
 
@@ -49,12 +55,16 @@ export const usePullToRefresh = (
       ) {
         const ratio = easeIn(touchDiffY / reloadThreshold());
 
-        toast(() => <CircularProgress size={24} value={ratio * 100} />, {
+        toast(<LoaderToast ratio={ratio} />, {
           id: toastId,
-          className: "w-48",
           duration: Infinity,
+          classNames: {
+            content: "w-full",
+          },
           style: {
-            backgroundColor: `rgba(255, 255, 255, ${ratio.toFixed(2)})`,
+            border: "none",
+            color: `rgba(from var(--foreground) r g b / ${ratio.toFixed(2)})`,
+            backgroundColor: `rgba(from var(--background) r g b / ${ratio.toFixed(2)})`,
           },
         });
       } else {
@@ -64,7 +74,7 @@ export const usePullToRefresh = (
 
     const onTouchEnd = () => {
       if (touchDiffYRef.current > reloadThreshold()) {
-        void onRefetch();
+        onRefetch();
       } else {
         toast.dismiss(toastId);
       }

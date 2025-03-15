@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useForm, useFormState } from "react-hook-form";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import type { z } from "zod";
 
 import {

@@ -1,7 +1,7 @@
 import Picker from "@emoji-mart/react";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { useTRPC } from "../../api/trpc";

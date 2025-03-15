@@ -1,6 +1,5 @@
-import { CircleBackslashIcon } from "@radix-ui/react-icons";
 import Papa from "papaparse";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 import { Button } from "../components/ui/button";
 
@@ -13,60 +12,50 @@ export const requestExport = async <TData,>(
 ) => {
   const toastId = `${sheetId}-${type}`;
 
-  await toast.promise(
-    fetch(),
-    {
-      loading: "Preparing download...",
-      success: (data: TData[]) => {
-        const mapped = data.map((item) => mapItem(item));
+  const promise = fetch();
 
-        const blob =
-          type === "json"
-            ? new Blob([JSON.stringify(mapped, null, 2)], {
-                type: "application/json",
-              })
-            : new Blob([Papa.unparse(mapped)], { type: "text/csv" });
+  toast.promise(promise, {
+    loading: "Preparing download...",
+    success: (data: TData[]) => {
+      const mapped = data.map((item) => mapItem(item));
 
-        const objectURL = URL.createObjectURL(blob);
+      const blob =
+        type === "json"
+          ? new Blob([JSON.stringify(mapped, null, 2)], {
+              type: "application/json",
+            })
+          : new Blob([Papa.unparse(mapped)], { type: "text/csv" });
 
-        const filename = `${sheetId}-${sheetName
-          .replace(/[^\w]/g, "_")
-          .toLowerCase()}-${Temporal.Now.instant().epochSeconds}.${type}`;
+      const objectURL = URL.createObjectURL(blob);
 
-        return (
-          <>
-            <Button type="button" $variant="ghost" asChild>
-              <a
-                href={objectURL}
-                download={filename}
-                onClick={() => {
-                  toast.dismiss(toastId);
-                }}
-              >
-                Click to download .{type} file
-              </a>
-            </Button>
-            <Button
-              type="button"
-              $variant="outline"
+      const filename = `${sheetId}-${sheetName
+        .replace(/[^\w]/g, "_")
+        .toLowerCase()}-${Temporal.Now.instant().epochSeconds}.${type}`;
+
+      return {
+        message: (
+          <Button type="button" $variant="outline" asChild>
+            <a
+              href={objectURL}
+              download={filename}
               onClick={() => {
                 toast.dismiss(toastId);
               }}
             >
-              <CircleBackslashIcon />
-            </Button>
-          </>
-        );
-      },
-      error: (e: unknown) =>
-        `Download failed: ${e instanceof Error ? e.message : "Unknown"}`,
-    },
-    {
-      id: toastId,
-      success: {
+              Click to download .{type} file
+            </a>
+          </Button>
+        ),
+        closeButton: true,
         duration: Infinity,
-      },
-      error: { duration: 5_000 },
+      };
     },
-  );
+    error: (e: unknown) => ({
+      message: `Download failed: ${e instanceof Error ? e.message : "Unknown"}`,
+      duration: 5_000,
+    }),
+    id: toastId,
+  });
+
+  await promise;
 };

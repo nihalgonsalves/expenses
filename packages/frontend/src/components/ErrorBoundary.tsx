@@ -2,7 +2,7 @@ import { Collapsible } from "@radix-ui/react-collapsible";
 import * as Sentry from "@sentry/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { type ReactNode, Fragment } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";

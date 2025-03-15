@@ -1,7 +1,5 @@
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import { ReloadIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 
 import { Button } from "./components/ui/button";
 import { queryCache } from "./state/queryCache";
@@ -60,17 +58,20 @@ export const registerSW = async () => {
 
   const promptForUpdate = () => {
     toast(
-      <div className="flex items-center gap-2">
+      <>
         A web app update is available.
-        <Button $variant="outline" $size="icon" onClick={update}>
-          <AccessibleIcon label="Reload">
-            <ReloadIcon />
-          </AccessibleIcon>
+        <Button $variant="outline" onClick={update}>
+          Reload?
         </Button>
-      </div>,
+      </>,
       {
         id: "update-available",
         duration: Infinity,
+        closeButton: true,
+        classNames: {
+          content: "w-full",
+          title: "flex items-center justify-between",
+        },
       },
     );
   };
