@@ -22,7 +22,9 @@ jobs:
       - run: yarn install --immutable
       - working-directory: ./packages/backend/
         run: yarn db:generate
-      - run: yarn build:tsc
+      - run: yarn build
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - run: yarn lint
       - uses: hadolint/hadolint-action@v3.1.0
@@ -99,7 +101,11 @@ jobs:
         # pull so that testcontainers doesn't have to, timing out tests.
       - run: docker compose -f compose.dev.yml pull postgres redis
 
-      - run: yarn test --coverage
+      - run: yarn test --coverage --reporter=default --reporter=junit --outputFile=junit.xml
+
+      - uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:

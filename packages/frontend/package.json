@@ -82,6 +82,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@codecov/vite-plugin": "^1.9.0",
     "@spotlightjs/sidecar": "^1.11.2",
     "@spotlightjs/spotlight": "^2.11.1",
     "@storybook/addon-coverage": "^1.0.5",
