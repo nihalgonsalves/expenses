@@ -39,11 +39,11 @@
     "validate": "run-p --continue-on-error build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "0.11.1",
-    "@tanstack/react-router-devtools": "^1.114.21",
-    "@tanstack/router-plugin": "^1.114.17",
+    "@nihalgonsalves/esconfig": "0.11.2",
+    "@tanstack/react-router-devtools": "^1.114.23",
+    "@tanstack/router-plugin": "^1.114.23",
     "@types/node": "22",
-    "@vitest/ui": "^3.0.8",
+    "@vitest/ui": "^3.0.9",
     "eslint": "^9.22.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "knip": "^5.46.0",
@@ -57,6 +57,6 @@
     "type-fest": "^4.37.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.1",
-    "vitest": "^3.0.8"
+    "vitest": "^3.0.9"
   }
 }
