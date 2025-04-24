@@ -2863,7 +2863,7 @@ __metadata:
     "@testcontainers/redis": "npm:^10.22.0"
     "@total-typescript/ts-reset": "npm:^0.6.1"
     "@trpc/client": "npm:^11.0.0"
-    "@trpc/server": "npm:^11.0.0"
+    "@trpc/server": "npm:^11.1.1"
     "@types/bcrypt": "npm:^5.0.2"
     "@types/nodemailer": "npm:^6"
     "@types/pem": "npm:^1.14.4"
@@ -6862,12 +6862,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@trpc/server@npm:11.0.0"
+"@trpc/server@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "@trpc/server@npm:11.1.1"
   peerDependencies:
     typescript: ">=5.7.2"
-  checksum: 10c0/0fa6b9fd44d0378471df827fa1f35623d2ef463fe1af7c89de9433b22c81d0db5d60695a77a5ca723e91d2b77be08a48dee77703851109151c8e9febab478125
+  checksum: 10c0/d590d90144e23acad31c8346ee04b2d01439dec181ede156537321b53ece81f5b4131986d599f456c3a45cd8d7a0b1569336d20765fbd6906a8bc960193cd586
   languageName: node
   linkType: hard
 
