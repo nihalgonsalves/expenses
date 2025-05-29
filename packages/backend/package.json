@@ -23,7 +23,7 @@
     "@hono/node-server": "^1.14.3",
     "@hono/trpc-server": "^0.3.4",
     "@nihalgonsalves/expenses-shared": "*",
-    "@prisma/client": "6.5.0",
+    "@prisma/client": "6.8.2",
     "@sentry/node": "^9.23.0",
     "@sentry/profiling-node": "^9.23.0",
     "@trpc/server": "^11.1.4",
@@ -56,7 +56,7 @@
     "fetch-cookie": "^3.1.0",
     "npm-run-all2": "^8.0.4",
     "pem": "^1.15.1",
-    "prisma": "6.5.0",
+    "prisma": "6.8.2",
     "vitest": "^3.1.4",
     "wait-on": "^8.0.3"
   }
