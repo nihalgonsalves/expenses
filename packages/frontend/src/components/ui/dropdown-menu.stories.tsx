@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { userEvent, within, screen, waitFor, expect } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { userEvent, within, screen, waitFor, expect } from "storybook/test";
 
 import { Button } from "./button";
 import {

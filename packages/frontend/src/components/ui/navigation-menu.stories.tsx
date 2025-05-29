@@ -1,7 +1,7 @@
 import { StarFilledIcon } from "@radix-ui/react-icons";
-import type { Meta, StoryObj } from "@storybook/react";
-import { userEvent, within, screen, waitFor, expect } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ComponentProps } from "react";
+import { userEvent, within, screen, waitFor, expect } from "storybook/test";
 
 import {
   NavigationMenu,

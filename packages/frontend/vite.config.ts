@@ -58,23 +58,24 @@ export default defineConfig(({ mode }) => ({
       },
     }),
     tailwindcss(),
-    VitePWA({
-      srcDir: "src",
-      filename: "sw.ts",
-      injectRegister: null,
-      strategies: "injectManifest",
-      selfDestroying:
-        mode === "development" && process.env["ENABLE_DEV_PWA"] == null,
-      devOptions: {
-        enabled: true,
-        type: "module",
-        resolveTempFolder: () => relativePath("./dist/vite-pwa-dev/"),
-      },
-      manifest: false,
-      injectManifest: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
-      },
-    }),
+    !process.env["VITE_STORYBOOK"] &&
+      VitePWA({
+        srcDir: "src",
+        filename: "sw.ts",
+        injectRegister: null,
+        strategies: "injectManifest",
+        selfDestroying:
+          mode === "development" && process.env["ENABLE_DEV_PWA"] == null,
+        devOptions: {
+          enabled: true,
+          type: "module",
+          resolveTempFolder: () => relativePath("./dist/vite-pwa-dev/"),
+        },
+        manifest: false,
+        injectManifest: {
+          globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+        },
+      }),
     spotlightSidecar(),
     mode === "development" &&
       codeInspectorPlugin({

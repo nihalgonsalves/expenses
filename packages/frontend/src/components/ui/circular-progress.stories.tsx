@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import type { CssVariableName } from "@nihalgonsalves/expenses-shared/types/theme";
 

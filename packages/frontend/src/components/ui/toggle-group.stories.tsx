@@ -3,7 +3,7 @@ import {
   FontItalicIcon,
   UnderlineIcon,
 } from "@radix-ui/react-icons";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
 

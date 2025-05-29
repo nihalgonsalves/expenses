@@ -30,7 +30,7 @@ export const requestExport = async <TData,>(
 
       const filename = `${sheetId}-${sheetName
         .replace(/[^\w]/g, "_")
-        .toLowerCase()}-${Temporal.Now.instant().epochSeconds}.${type}`;
+        .toLowerCase()}-${Temporal.Now.instant().epochMilliseconds}.${type}`;
 
       return {
         message: (

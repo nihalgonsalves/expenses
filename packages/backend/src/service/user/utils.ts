@@ -46,7 +46,9 @@ export const signJWT = async (
     .setSubject(user.id)
     .setProtectedHeader({ alg })
     .setIssuedAt()
-    .setExpirationTime(Temporal.Now.instant().add(expiry).epochSeconds)
+    .setExpirationTime(
+      Temporal.Now.instant().add(expiry).epochMilliseconds / 1000,
+    )
     .setIssuer(identity)
     .setAudience(identity)
     .sign(secret);
@@ -70,7 +72,8 @@ export const verifyJWT = async (
     return {
       payload,
       reissue:
-        Temporal.Now.instant().epochSeconds - issuedAtEpochSeconds >=
+        Temporal.Now.instant().epochMilliseconds / 1000 -
+          issuedAtEpochSeconds >=
         REISSUE_MIN_AGE_SECS,
     };
   } catch (e) {

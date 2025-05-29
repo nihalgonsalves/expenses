@@ -1,7 +1,7 @@
 import type { AlertDialogProps } from "@radix-ui/react-alert-dialog";
-import type { Meta, StoryObj } from "@storybook/react";
-import { expect, userEvent, within, waitFor, screen } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { VariantProps } from "class-variance-authority";
+import { expect, userEvent, within, waitFor, screen } from "storybook/test";
 
 import {
   AlertDialog,
