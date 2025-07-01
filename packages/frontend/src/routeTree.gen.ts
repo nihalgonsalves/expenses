@@ -8,235 +8,87 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthVerifyEmailRouteImport } from './routes/auth/verify-email'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
+import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
+import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
+import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
+import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
+import { Route as AuthSheetsSheetIdRouteImport } from './routes/_auth/sheets/$sheetId'
+import { Route as AuthGroupsSheetIdRouteImport } from './routes/_auth/groups/$sheetId'
+import { Route as AuthSheetsSheetIdImportRouteImport } from './routes/_auth/sheets/$sheetId.import'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as SettingsImport } from './routes/settings'
-import { Route as AuthImport } from './routes/_auth'
-import { Route as AuthIndexImport } from './routes/_auth/index'
-import { Route as AuthVerifyEmailImport } from './routes/auth/verify-email'
-import { Route as AuthSignUpImport } from './routes/auth/sign-up'
-import { Route as AuthSignInImport } from './routes/auth/sign-in'
-import { Route as AuthResetPasswordImport } from './routes/auth/reset-password'
-import { Route as AuthStatsImport } from './routes/_auth/stats'
-import { Route as AuthSheetsIndexImport } from './routes/_auth/sheets/index'
-import { Route as AuthGroupsIndexImport } from './routes/_auth/groups/index'
-import { Route as AuthSheetsSheetIdImport } from './routes/_auth/sheets/$sheetId'
-import { Route as AuthGroupsSheetIdImport } from './routes/_auth/groups/$sheetId'
-import { Route as AuthSheetsSheetIdImportImport } from './routes/_auth/sheets/$sheetId.import'
-
-// Create/Update Routes
-
-const SettingsRoute = SettingsImport.update({
+const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthRoute = AuthImport.update({
+const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthIndexRoute = AuthIndexImport.update({
+const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthVerifyEmailRoute = AuthVerifyEmailImport.update({
+const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   id: '/auth/verify-email',
   path: '/auth/verify-email',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthSignUpRoute = AuthSignUpImport.update({
+const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/auth/sign-up',
   path: '/auth/sign-up',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthSignInRoute = AuthSignInImport.update({
+const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/auth/sign-in',
   path: '/auth/sign-in',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthResetPasswordRoute = AuthResetPasswordImport.update({
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/auth/reset-password',
   path: '/auth/reset-password',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthStatsRoute = AuthStatsImport.update({
+const AuthStatsRoute = AuthStatsRouteImport.update({
   id: '/stats',
   path: '/stats',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthSheetsIndexRoute = AuthSheetsIndexImport.update({
+const AuthSheetsIndexRoute = AuthSheetsIndexRouteImport.update({
   id: '/sheets/',
   path: '/sheets/',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthGroupsIndexRoute = AuthGroupsIndexImport.update({
+const AuthGroupsIndexRoute = AuthGroupsIndexRouteImport.update({
   id: '/groups/',
   path: '/groups/',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthSheetsSheetIdRoute = AuthSheetsSheetIdImport.update({
+const AuthSheetsSheetIdRoute = AuthSheetsSheetIdRouteImport.update({
   id: '/sheets/$sheetId',
   path: '/sheets/$sheetId',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthGroupsSheetIdRoute = AuthGroupsSheetIdImport.update({
+const AuthGroupsSheetIdRoute = AuthGroupsSheetIdRouteImport.update({
   id: '/groups/$sheetId',
   path: '/groups/$sheetId',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthSheetsSheetIdImportRoute = AuthSheetsSheetIdImportImport.update({
+const AuthSheetsSheetIdImportRoute = AuthSheetsSheetIdImportRouteImport.update({
   id: '/import',
   path: '/import',
   getParentRoute: () => AuthSheetsSheetIdRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth/stats': {
-      id: '/_auth/stats'
-      path: '/stats'
-      fullPath: '/stats'
-      preLoaderRoute: typeof AuthStatsImport
-      parentRoute: typeof AuthImport
-    }
-    '/auth/reset-password': {
-      id: '/auth/reset-password'
-      path: '/auth/reset-password'
-      fullPath: '/auth/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/sign-in': {
-      id: '/auth/sign-in'
-      path: '/auth/sign-in'
-      fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthSignInImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/sign-up': {
-      id: '/auth/sign-up'
-      path: '/auth/sign-up'
-      fullPath: '/auth/sign-up'
-      preLoaderRoute: typeof AuthSignUpImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/verify-email': {
-      id: '/auth/verify-email'
-      path: '/auth/verify-email'
-      fullPath: '/auth/verify-email'
-      preLoaderRoute: typeof AuthVerifyEmailImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth/': {
-      id: '/_auth/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthIndexImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/groups/$sheetId': {
-      id: '/_auth/groups/$sheetId'
-      path: '/groups/$sheetId'
-      fullPath: '/groups/$sheetId'
-      preLoaderRoute: typeof AuthGroupsSheetIdImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/sheets/$sheetId': {
-      id: '/_auth/sheets/$sheetId'
-      path: '/sheets/$sheetId'
-      fullPath: '/sheets/$sheetId'
-      preLoaderRoute: typeof AuthSheetsSheetIdImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/groups/': {
-      id: '/_auth/groups/'
-      path: '/groups'
-      fullPath: '/groups'
-      preLoaderRoute: typeof AuthGroupsIndexImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/sheets/': {
-      id: '/_auth/sheets/'
-      path: '/sheets'
-      fullPath: '/sheets'
-      preLoaderRoute: typeof AuthSheetsIndexImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/sheets/$sheetId/import': {
-      id: '/_auth/sheets/$sheetId/import'
-      path: '/import'
-      fullPath: '/sheets/$sheetId/import'
-      preLoaderRoute: typeof AuthSheetsSheetIdImportImport
-      parentRoute: typeof AuthSheetsSheetIdImport
-    }
-  }
-}
-
-// Create and export the route tree
-
-interface AuthSheetsSheetIdRouteChildren {
-  AuthSheetsSheetIdImportRoute: typeof AuthSheetsSheetIdImportRoute
-}
-
-const AuthSheetsSheetIdRouteChildren: AuthSheetsSheetIdRouteChildren = {
-  AuthSheetsSheetIdImportRoute: AuthSheetsSheetIdImportRoute,
-}
-
-const AuthSheetsSheetIdRouteWithChildren =
-  AuthSheetsSheetIdRoute._addFileChildren(AuthSheetsSheetIdRouteChildren)
-
-interface AuthRouteChildren {
-  AuthStatsRoute: typeof AuthStatsRoute
-  AuthIndexRoute: typeof AuthIndexRoute
-  AuthGroupsSheetIdRoute: typeof AuthGroupsSheetIdRoute
-  AuthSheetsSheetIdRoute: typeof AuthSheetsSheetIdRouteWithChildren
-  AuthGroupsIndexRoute: typeof AuthGroupsIndexRoute
-  AuthSheetsIndexRoute: typeof AuthSheetsIndexRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthStatsRoute: AuthStatsRoute,
-  AuthIndexRoute: AuthIndexRoute,
-  AuthGroupsSheetIdRoute: AuthGroupsSheetIdRoute,
-  AuthSheetsSheetIdRoute: AuthSheetsSheetIdRouteWithChildren,
-  AuthGroupsIndexRoute: AuthGroupsIndexRoute,
-  AuthSheetsIndexRoute: AuthSheetsIndexRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 export interface FileRoutesByFullPath {
-  '': typeof AuthRouteWithChildren
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
@@ -250,7 +102,6 @@ export interface FileRoutesByFullPath {
   '/sheets': typeof AuthSheetsIndexRoute
   '/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
 }
-
 export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
@@ -265,9 +116,8 @@ export interface FileRoutesByTo {
   '/sheets': typeof AuthSheetsIndexRoute
   '/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/settings': typeof SettingsRoute
   '/_auth/stats': typeof AuthStatsRoute
@@ -282,11 +132,9 @@ export interface FileRoutesById {
   '/_auth/sheets/': typeof AuthSheetsIndexRoute
   '/_auth/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | ''
     | '/settings'
     | '/stats'
     | '/auth/reset-password'
@@ -330,7 +178,6 @@ export interface FileRouteTypes {
     | '/_auth/sheets/$sheetId/import'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   SettingsRoute: typeof SettingsRoute
@@ -340,6 +187,133 @@ export interface RootRouteChildren {
   AuthVerifyEmailRoute: typeof AuthVerifyEmailRoute
 }
 
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/': {
+      id: '/_auth/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/verify-email': {
+      id: '/auth/verify-email'
+      path: '/auth/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof AuthVerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/auth/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/auth/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/stats': {
+      id: '/_auth/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof AuthStatsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/sheets/': {
+      id: '/_auth/sheets/'
+      path: '/sheets'
+      fullPath: '/sheets'
+      preLoaderRoute: typeof AuthSheetsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/groups/': {
+      id: '/_auth/groups/'
+      path: '/groups'
+      fullPath: '/groups'
+      preLoaderRoute: typeof AuthGroupsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/sheets/$sheetId': {
+      id: '/_auth/sheets/$sheetId'
+      path: '/sheets/$sheetId'
+      fullPath: '/sheets/$sheetId'
+      preLoaderRoute: typeof AuthSheetsSheetIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/groups/$sheetId': {
+      id: '/_auth/groups/$sheetId'
+      path: '/groups/$sheetId'
+      fullPath: '/groups/$sheetId'
+      preLoaderRoute: typeof AuthGroupsSheetIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/sheets/$sheetId/import': {
+      id: '/_auth/sheets/$sheetId/import'
+      path: '/import'
+      fullPath: '/sheets/$sheetId/import'
+      preLoaderRoute: typeof AuthSheetsSheetIdImportRouteImport
+      parentRoute: typeof AuthSheetsSheetIdRoute
+    }
+  }
+}
+
+interface AuthSheetsSheetIdRouteChildren {
+  AuthSheetsSheetIdImportRoute: typeof AuthSheetsSheetIdImportRoute
+}
+
+const AuthSheetsSheetIdRouteChildren: AuthSheetsSheetIdRouteChildren = {
+  AuthSheetsSheetIdImportRoute: AuthSheetsSheetIdImportRoute,
+}
+
+const AuthSheetsSheetIdRouteWithChildren =
+  AuthSheetsSheetIdRoute._addFileChildren(AuthSheetsSheetIdRouteChildren)
+
+interface AuthRouteChildren {
+  AuthStatsRoute: typeof AuthStatsRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+  AuthGroupsSheetIdRoute: typeof AuthGroupsSheetIdRoute
+  AuthSheetsSheetIdRoute: typeof AuthSheetsSheetIdRouteWithChildren
+  AuthGroupsIndexRoute: typeof AuthGroupsIndexRoute
+  AuthSheetsIndexRoute: typeof AuthSheetsIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthStatsRoute: AuthStatsRoute,
+  AuthIndexRoute: AuthIndexRoute,
+  AuthGroupsSheetIdRoute: AuthGroupsSheetIdRoute,
+  AuthSheetsSheetIdRoute: AuthSheetsSheetIdRouteWithChildren,
+  AuthGroupsIndexRoute: AuthGroupsIndexRoute,
+  AuthSheetsIndexRoute: AuthSheetsIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   SettingsRoute: SettingsRoute,
@@ -348,82 +322,6 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignUpRoute: AuthSignUpRoute,
   AuthVerifyEmailRoute: AuthVerifyEmailRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/_auth",
-        "/settings",
-        "/auth/reset-password",
-        "/auth/sign-in",
-        "/auth/sign-up",
-        "/auth/verify-email"
-      ]
-    },
-    "/_auth": {
-      "filePath": "_auth.tsx",
-      "children": [
-        "/_auth/stats",
-        "/_auth/",
-        "/_auth/groups/$sheetId",
-        "/_auth/sheets/$sheetId",
-        "/_auth/groups/",
-        "/_auth/sheets/"
-      ]
-    },
-    "/settings": {
-      "filePath": "settings.tsx"
-    },
-    "/_auth/stats": {
-      "filePath": "_auth/stats.tsx",
-      "parent": "/_auth"
-    },
-    "/auth/reset-password": {
-      "filePath": "auth/reset-password.tsx"
-    },
-    "/auth/sign-in": {
-      "filePath": "auth/sign-in.tsx"
-    },
-    "/auth/sign-up": {
-      "filePath": "auth/sign-up.tsx"
-    },
-    "/auth/verify-email": {
-      "filePath": "auth/verify-email.tsx"
-    },
-    "/_auth/": {
-      "filePath": "_auth/index.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/groups/$sheetId": {
-      "filePath": "_auth/groups/$sheetId.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/sheets/$sheetId": {
-      "filePath": "_auth/sheets/$sheetId.tsx",
-      "parent": "/_auth",
-      "children": [
-        "/_auth/sheets/$sheetId/import"
-      ]
-    },
-    "/_auth/groups/": {
-      "filePath": "_auth/groups/index.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/sheets/": {
-      "filePath": "_auth/sheets/index.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/sheets/$sheetId/import": {
-      "filePath": "_auth/sheets/$sheetId.import.tsx",
-      "parent": "/_auth/sheets/$sheetId"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
