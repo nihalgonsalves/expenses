@@ -1,8 +1,4 @@
-import { SheetType, SheetParticipantRole } from "@prisma/client";
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientValidationError,
-} from "@prisma/client/runtime/library";
+import { SheetType, SheetParticipantRole, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import type {
@@ -76,8 +72,8 @@ export class SheetService {
       });
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError ||
-        error instanceof PrismaClientValidationError
+        error instanceof Prisma.PrismaClientKnownRequestError ||
+        error instanceof Prisma.PrismaClientValidationError
       ) {
         throw new SheetServiceError({
           code: "BAD_REQUEST",
@@ -117,8 +113,8 @@ export class SheetService {
       });
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError ||
-        error instanceof PrismaClientValidationError
+        error instanceof Prisma.PrismaClientKnownRequestError ||
+        error instanceof Prisma.PrismaClientValidationError
       ) {
         throw new SheetServiceError({
           code: "BAD_REQUEST",
@@ -207,7 +203,7 @@ export class SheetService {
       return member;
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2002"
       ) {
         throw new SheetServiceError({

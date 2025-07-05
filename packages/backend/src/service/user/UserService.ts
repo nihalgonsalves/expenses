@@ -1,4 +1,4 @@
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { Prisma } from "@prisma/client";
 import type { JWTPayload } from "jose";
 import { z } from "zod";
 
@@ -140,7 +140,7 @@ export class UserService {
       return { user, token: await signJWT(user) };
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2002"
       ) {
         return this.authorize(input);

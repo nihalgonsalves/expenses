@@ -1,10 +1,9 @@
 import {
-  type Prisma,
+  Prisma,
   TransactionType,
   type TransactionEntry,
   type User as PrismaUser,
 } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { TRPCError } from "@trpc/server";
 
 import {
@@ -590,7 +589,7 @@ export class TransactionService {
       });
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2025"
       ) {
         throw new TransactionServiceError({
@@ -610,7 +609,7 @@ export class TransactionService {
       });
     } catch (error) {
       if (
-        error instanceof PrismaClientKnownRequestError &&
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2025"
       ) {
         throw new TransactionServiceError({
