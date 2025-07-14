@@ -8,11 +8,12 @@ http:
         stsIncludeSubdomains: false
         customResponseHeaders:
           document-policy: js-profiling
-          # reporting-endpoints: csp-endpoint="https://....ingest.us.sentry.io/api/.../security/?sentry_key=..."
+          cross-origin-opener-policy: same-origin
+          referrer-policy: same-origin
+          # reporting-endpoints: csp-endpoint="https://<org>.ingest.us.sentry.io/api/<id>/security/?sentry_key=<key>"
         contentSecurityPolicy: >
           default-src 'self';
           script-src 'self' blob:;
           style-src 'self' 'unsafe-inline';
-          connect-src 'self' https://....ingest.sentry.io;
-        # report-uri https://....ingest.us.sentry.io/api/.../security/?sentry_key=...;
-        # report-to csp-endpoint
+          connect-src 'self' https://<org>.ingest.sentry.io;
+        #   report-to csp-endpoint
