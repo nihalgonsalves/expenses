@@ -9,6 +9,7 @@ export const requestExport = async <TData,>(
   type: "json" | "csv",
   fetch: () => Promise<TData[]>,
   mapItem: (data: TData) => Record<string, unknown>,
+  columns?: readonly string[],
 ) => {
   const toastId = `${sheetId}-${type}`;
 
@@ -24,7 +25,14 @@ export const requestExport = async <TData,>(
           ? new Blob([JSON.stringify(mapped, null, 2)], {
               type: "application/json",
             })
-          : new Blob([Papa.unparse(mapped)], { type: "text/csv" });
+          : new Blob(
+              [
+                Papa.unparse(mapped, {
+                  columns: columns ? [...columns] : undefined,
+                }),
+              ],
+              { type: "text/csv" },
+            );
 
       const objectURL = URL.createObjectURL(blob);
 

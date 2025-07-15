@@ -23,7 +23,7 @@ export const PersonalSheetExportSection = ({
     ),
   );
 
-  const exportGroupSheet = (filetype: "json" | "csv") => {
+  const exportSheet = (filetype: "json" | "csv") => {
     void requestExport(
       personalSheet.id,
       personalSheet.name,
@@ -55,7 +55,7 @@ export const PersonalSheetExportSection = ({
         type="button"
         $variant="outline"
         onClick={() => {
-          exportGroupSheet("json");
+          exportSheet("json");
         }}
       >
         <DownloadIcon className="mr-2" /> Export .json
@@ -64,7 +64,7 @@ export const PersonalSheetExportSection = ({
         type="button"
         $variant="outline"
         onClick={() => {
-          exportGroupSheet("csv");
+          exportSheet("csv");
         }}
       >
         <DownloadIcon className="mr-2" /> Export .csv

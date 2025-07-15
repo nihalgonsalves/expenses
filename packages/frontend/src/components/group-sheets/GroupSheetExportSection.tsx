@@ -1,7 +1,7 @@
 import { DownloadIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 
-import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
+import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { requestExport } from "../../api/requestExport";
 import { useTRPC } from "../../api/trpc";
@@ -12,7 +12,7 @@ import { Button } from "../ui/button";
 export const GroupSheetExportSection = ({
   groupSheet,
 }: {
-  groupSheet: Sheet;
+  groupSheet: GroupSheetByIdResponse;
 }) => {
   const { trpc } = useTRPC();
   const { refetch } = useQuery(
@@ -24,7 +24,27 @@ export const GroupSheetExportSection = ({
     ),
   );
 
-  const exportGroupSheet = (filetype: "json" | "csv") => {
+  const baseColumns = [
+    "id",
+    "type",
+    "category",
+    "description",
+    "spent_at",
+    "currency_code",
+    "amount",
+  ] as const;
+
+  const participantColumns = groupSheet.participants.flatMap(
+    (participant) =>
+      [
+        `${getShortName(participant.name).toLowerCase()}_share`,
+        `${getShortName(participant.name).toLowerCase()}_paid_or_received`,
+      ] as const,
+  );
+
+  const columns = [...baseColumns, ...participantColumns] as const;
+
+  const exportSheet = (filetype: "json" | "csv") => {
     void requestExport(
       groupSheet.id,
       groupSheet.name,
@@ -37,16 +57,30 @@ export const GroupSheetExportSection = ({
 
         return data.transactions;
       },
-      ({ id, type, category, description, spentAt, money, participants }) => {
-        const participantColumns: Record<string, string> = {};
+      ({
+        id,
+        type,
+        category,
+        description,
+        spentAt,
+        money,
+        participants,
+      }): Record<(typeof columns)[number], string> => {
+        const participantData = new Map<
+          (typeof participantColumns)[number],
+          string
+        >();
 
         participants.forEach(({ name, balance }) => {
-          participantColumns[`${getShortName(name).toLowerCase()}_share`] =
-            balance.share.amount === 0 ? "" : moneyToString(balance.share);
+          participantData.set(
+            `${getShortName(name).toLowerCase()}_share`,
+            balance.share.amount === 0 ? "" : moneyToString(balance.share),
+          );
 
-          participantColumns[
-            `${getShortName(name).toLowerCase()}_paid_or_received`
-          ] = balance.actual.amount === 0 ? "" : moneyToString(balance.actual);
+          participantData.set(
+            `${getShortName(name).toLowerCase()}_paid_or_received`,
+            balance.actual.amount === 0 ? "" : moneyToString(balance.actual),
+          );
         });
 
         return {
@@ -57,9 +91,10 @@ export const GroupSheetExportSection = ({
           spent_at: spentAt,
           currency_code: money.currencyCode,
           amount: moneyToString(money),
-          ...participantColumns,
+          ...Object.fromEntries(participantData),
         };
       },
+      columns,
     );
   };
 
@@ -69,7 +104,7 @@ export const GroupSheetExportSection = ({
         type="button"
         $variant="outline"
         onClick={() => {
-          exportGroupSheet("json");
+          exportSheet("json");
         }}
       >
         <DownloadIcon className="mr-2" /> Export .json
@@ -78,7 +113,7 @@ export const GroupSheetExportSection = ({
         type="button"
         $variant="outline"
         onClick={() => {
-          exportGroupSheet("csv");
+          exportSheet("csv");
         }}
       >
         <DownloadIcon className="mr-2" /> Export .csv
