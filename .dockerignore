@@ -1,4 +1,5 @@
 .*
+!.yarn/patches/
 !.yarnrc.yml
 **/build
 **/dist
