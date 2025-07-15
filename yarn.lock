@@ -2884,13 +2884,13 @@ __metadata:
     rollup-plugin-visualizer: "npm:^6.0.3"
     serve: "npm:^14.2.4"
     sharp: "npm:^0.34.3"
-    sonner: "npm:^2.0.6"
+    sonner: "patch:sonner@npm%3A2.0.6#~/.yarn/patches/sonner-npm-2.0.6-04d41595a0.patch"
     storybook: "npm:^9.0.16"
     tailwind-merge: "npm:^3.3.1"
     tailwindcss-animate: "npm:^1.0.7"
     temporal-polyfill: "npm:^0.3.0"
     tsx: "npm:^4.20.3"
-    vaul: "npm:^1.1.2"
+    vaul: "patch:vaul@npm%3A1.1.2#~/.yarn/patches/vaul-npm-1.1.2-7a571c1ad6.patch"
     vite: "npm:^7.0.4"
     vite-plugin-istanbul: "npm:^7.1.0"
     vite-plugin-pwa: "npm:^1.0.1"
@@ -16360,13 +16360,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sonner@npm:^2.0.6":
+"sonner@npm:2.0.6":
   version: 2.0.6
   resolution: "sonner@npm:2.0.6"
   peerDependencies:
     react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
     react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
   checksum: 10c0/df6ab28ebc53d612ea9caa3b9ac2d12b7b15b619750c5bcf6c4e064a720cb24b383fd5ce074f5fe5183115c69d7f505226649cf157e25e954447ec4ed8749291
+  languageName: node
+  linkType: hard
+
+"sonner@patch:sonner@npm%3A2.0.6#~/.yarn/patches/sonner-npm-2.0.6-04d41595a0.patch":
+  version: 2.0.6
+  resolution: "sonner@patch:sonner@npm%3A2.0.6#~/.yarn/patches/sonner-npm-2.0.6-04d41595a0.patch::version=2.0.6&hash=437fb1"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+  checksum: 10c0/ddf7dc04250477b4288af8ce4d18e8cea29c64aac3d17a9807ea1b155e2b1b04c020cfb2cf2c1921e086dfb8ae97d1f0f7e81c8d549f132e15c15d13dc9c68af
   languageName: node
   linkType: hard
 
@@ -17846,7 +17856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vaul@npm:^1.1.2":
+"vaul@npm:1.1.2":
   version: 1.1.2
   resolution: "vaul@npm:1.1.2"
   dependencies:
@@ -17855,6 +17865,18 @@ __metadata:
     react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
     react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
   checksum: 10c0/a6da539eb5576c0004a6b17e3673ea1db2c34e80355860131183abf53279ce025bbd016d542c345d1cc8464ad12f9dc9860949c751055d8a84961e8472a53707
+  languageName: node
+  linkType: hard
+
+"vaul@patch:vaul@npm%3A1.1.2#~/.yarn/patches/vaul-npm-1.1.2-7a571c1ad6.patch":
+  version: 1.1.2
+  resolution: "vaul@patch:vaul@npm%3A1.1.2#~/.yarn/patches/vaul-npm-1.1.2-7a571c1ad6.patch::version=1.1.2&hash=5c61f6"
+  dependencies:
+    "@radix-ui/react-dialog": "npm:^1.1.1"
+  peerDependencies:
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
+  checksum: 10c0/0b32fa00ba39288caabf158c61e7315ca947e390fdadc18e206fe536fe7bd784ceccb93fbe05b4d17f5e664e0ab51cabeff38ec5d82e1771145a98035081fa15
   languageName: node
   linkType: hard
 

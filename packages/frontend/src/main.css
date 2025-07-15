@@ -1,3 +1,6 @@
+@import "vaul/style.css";
+@import "sonner/dist/styles.css";
+
 body {
   overscroll-behavior-y: contain;
 }

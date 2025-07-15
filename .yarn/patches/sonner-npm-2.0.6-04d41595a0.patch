@@ -1,0 +1,11 @@
+diff --git a/dist/index.mjs b/dist/index.mjs
+index fdd1741870f4685da05bbbefe3d5405ce3341073..1f2469cc75a929a172bbe3961db26861807c8160 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -1,5 +1,6 @@
+ 'use client';
+ function __insertCSS(code) {
++  return;
+   if (!code || typeof document == 'undefined') return
+   let head = document.head || document.getElementsByTagName('head')[0]
+   let style = document.createElement('style')
