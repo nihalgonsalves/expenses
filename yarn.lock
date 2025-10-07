@@ -2776,7 +2776,7 @@ __metadata:
     ioredis: "npm:^5.6.1"
     jose: "npm:^6.0.11"
     nanoid: "npm:^5.1.5"
-    nodemailer: "npm:^7.0.5"
+    nodemailer: "npm:^7.0.7"
     npm-run-all2: "npm:^8.0.4"
     pem: "npm:^1.15.1"
     prisma: "npm:6.11.1"
@@ -13964,10 +13964,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^7.0.5":
-  version: 7.0.5
-  resolution: "nodemailer@npm:7.0.5"
-  checksum: 10c0/8fcd417a5dc6cdde4193c3f27c8ae07f6998527578c1e70adfa5f2f00121471fcaa14abbf26b2a8c513ac8505c956f437aa2c2a693606eb0e8c68bc712698fa7
+"nodemailer@npm:^7.0.7":
+  version: 7.0.9
+  resolution: "nodemailer@npm:7.0.9"
+  checksum: 10c0/029af0c89d64a521aa9969196e44c13ef289c7f419264eed8d63682610999e06205b0fc264ab8ac65941dc3eefd3c435f23337a32880614cc199744c9be6209a
   languageName: node
   linkType: hard
 
