@@ -2772,7 +2772,7 @@ __metadata:
     bullmq: "npm:^5.56.4"
     cookie: "npm:^1.0.2"
     fetch-cookie: "npm:^3.1.0"
-    hono: "npm:^4.8.5"
+    hono: "npm:^4.10.3"
     ioredis: "npm:^5.6.1"
     jose: "npm:^6.0.11"
     nanoid: "npm:^5.1.5"
@@ -11227,10 +11227,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:^4.8.5":
-  version: 4.8.5
-  resolution: "hono@npm:4.8.5"
-  checksum: 10c0/f3d4632c92a51c8de5f5b645fbbe510c7bdab87390c3e84ee8cc3ba8e1f8912fe52444e58681307d95e45581d38a8cb178f615f73602d0acc768bf801eea18c1
+"hono@npm:^4.10.3":
+  version: 4.10.3
+  resolution: "hono@npm:4.10.3"
+  checksum: 10c0/bdcc4c7066c74ba7cfa63ed6550768a0f43a420286c8f8f74b7012ea4901b8b06778fa8e98264b46f1a86920f056b7ede1f07814da4934912f9945def4977c29
   languageName: node
   linkType: hard
 
