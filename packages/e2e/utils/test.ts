@@ -18,7 +18,7 @@ type Fixtures = {
 };
 
 declare global {
-  /* eslint-disable no-var, @typescript-eslint/naming-convention */
+  /* eslint-disable @typescript-eslint/naming-convention */
   var collectIstanbulCoverage: (coverageJSON: string) => void;
   var __coverage__: unknown;
   /* eslint-enable */
