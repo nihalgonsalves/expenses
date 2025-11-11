@@ -27,10 +27,10 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - run: yarn lint
-      - uses: hadolint/hadolint-action@v3.1.0
+      - uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: ./infra/Dockerfile-backend
-      - uses: hadolint/hadolint-action@v3.1.0
+      - uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: ./infra/Dockerfile-frontend
       - uses: crate-ci/typos@master
