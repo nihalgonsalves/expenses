@@ -162,7 +162,7 @@ const ResponsiveDialogInner = ({
   );
 };
 
-// Scope the dialogOpen atom to each instance, but have a global vaulDialogOpen for the themeing
+// Scope the dialogOpen atom to each instance, but have a global vaulDialogOpen for the theming
 export const ResponsiveDialog = (props: ResponsiveDialogProps) => (
   <ResponsiveDialogInner {...props} />
 );
