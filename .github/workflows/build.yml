@@ -73,7 +73,7 @@ jobs:
           autoAcceptChanges: main
           exitOnceUploaded: true
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: coverage-storybook
           path: packages/frontend/coverage/storybook/
@@ -107,7 +107,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: coverage-vitest
           path: coverage/
@@ -162,7 +162,7 @@ jobs:
       - working-directory: ./packages/e2e/
         run: yarn test
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: coverage-playwright
           path: packages/e2e/coverage/
