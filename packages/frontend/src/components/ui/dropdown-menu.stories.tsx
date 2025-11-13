@@ -115,10 +115,11 @@ const meta: Meta<typeof DropdownMenu> = {
 
     await waitFor(async () => {
       await expect(within(menu).getByText("My Account", {})).toBeVisible();
-
-      await userEvent.hover(within(menu).getByText("Invite users"));
-      await expect(screen.getByText("Email", {})).toBeVisible();
     });
+
+    await userEvent.hover(within(menu).getByText("Invite users"));
+
+    await expect(await screen.findByText("Email", {})).toBeVisible();
   },
 };
 

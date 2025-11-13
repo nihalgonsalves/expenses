@@ -1,5 +1,4 @@
 import { TransactionType } from "@prisma/client";
-import type { DeepPartial } from "@trpc/server";
 import { describe, expect, it } from "vitest";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -475,9 +474,9 @@ describe("createGroupSheetTransaction", () => {
 
     expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: -75_00, userId: member.id },
-      { scale: 2, amount: +75_00, userId: user.id },
+      { scale: 2, amount: 75_00, userId: user.id },
       { scale: 2, amount: -25_00, userId: user.id },
-      { scale: 2, amount: +25_00, userId: user.id },
+      { scale: 2, amount: 25_00, userId: user.id },
     ]);
   });
 
@@ -521,9 +520,9 @@ describe("createGroupSheetTransaction", () => {
     });
 
     expect(transaction?.transactionEntries).toMatchObject([
-      { scale: 2, amount: +75_00, userId: member.id },
+      { scale: 2, amount: 75_00, userId: member.id },
       { scale: 2, amount: -75_00, userId: user.id },
-      { scale: 2, amount: +25_00, userId: user.id },
+      { scale: 2, amount: 25_00, userId: user.id },
       { scale: 2, amount: -25_00, userId: user.id },
     ]);
   });
@@ -613,10 +612,10 @@ describe("createGroupSheetTransaction", () => {
       groupSheet.currencyCode,
       user.id,
       user.id,
-      +100_00,
+      100_00,
       // total +200_00 split
-      +100_00,
-      +100_00,
+      100_00,
+      100_00,
     );
 
     await expect(
@@ -723,7 +722,7 @@ describe("createGroupSheetSettlement", () => {
 
     expect(transaction?.transactionEntries).toMatchObject([
       { scale: 2, amount: -100_00, userId: member.id },
-      { scale: 2, amount: +100_00, userId: user.id },
+      { scale: 2, amount: 100_00, userId: user.id },
     ]);
   });
 
@@ -1395,8 +1394,7 @@ describe("getParticipantSummaries", () => {
       groupSheet.id,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
-    expect(summary).toMatchObject<DeepPartial<typeof summary>>([
+    expect(summary).toMatchObject([
       {
         balance: { amount: -62_00, scale: 2 },
         id: user.id,

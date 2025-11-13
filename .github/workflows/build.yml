@@ -39,7 +39,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.54.1
+      image: mcr.microsoft.com/playwright:v1.56.1
     steps:
       - uses: actions/checkout@v5
         with:
@@ -118,7 +118,7 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.54.1
+      image: mcr.microsoft.com/playwright:v1.56.1
     services:
       postgres:
         image: postgres:17-alpine
