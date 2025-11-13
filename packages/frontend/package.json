@@ -100,7 +100,7 @@
     "babel-plugin-react-compiler": "19.1.0-rc.2",
     "chromatic": "^13.3.3",
     "code-inspector-plugin": "^0.20.17",
-    "happy-dom": "^18.0.1",
+    "happy-dom": "^20.0.2",
     "npm-run-all2": "^8.0.4",
     "react-scan": "^0.4.3",
     "rollup-plugin-visualizer": "^6.0.5",

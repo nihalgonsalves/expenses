@@ -3007,7 +3007,7 @@ __metadata:
     dexie-react-hooks: "npm:^1.1.7"
     dinero.js: "npm:^2.0.0-alpha.14"
     emoji-mart: "npm:^5.6.0"
-    happy-dom: "npm:^18.0.1"
+    happy-dom: "npm:^20.0.2"
     jotai: "npm:^2.15.1"
     little-date: "npm:^1.0.0"
     motion: "npm:^12.23.24"
@@ -11882,14 +11882,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^18.0.1":
-  version: 18.0.1
-  resolution: "happy-dom@npm:18.0.1"
+"happy-dom@npm:^20.0.2":
+  version: 20.0.10
+  resolution: "happy-dom@npm:20.0.10"
   dependencies:
     "@types/node": "npm:^20.0.0"
     "@types/whatwg-mimetype": "npm:^3.0.2"
     whatwg-mimetype: "npm:^3.0.0"
-  checksum: 10c0/10f2115f5001fdaf1aedcbda89c15248a1c2e43a25d7e774cb641a35bf6763cef9097b438ef3c2248ab59a0ef33b3e88cb94da096f2bb0fc109ba3f43f7c66d4
+  checksum: 10c0/3e05425f3db943885b1d2235d968c8aab08bd32cb0d21bc1c8006db604445f5f6c1364d19b3763395fd748193dc00efd40695e6711ab15e3b9578791c5ce4207
   languageName: node
   linkType: hard
 
