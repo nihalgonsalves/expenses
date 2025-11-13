@@ -43,20 +43,20 @@
     "@tanstack/react-router-devtools": "^1.135.2",
     "@tanstack/router-plugin": "^1.135.2",
     "@types/node": "22",
-    "@vitest/ui": "^3.2.4",
+    "@vitest/ui": "^4.0.8",
     "eslint": "^9.39.1",
     "eslint-plugin-unused-imports": "^4.3.0",
     "knip": "5.69.1",
-    "lefthook": "^1.13.6",
+    "lefthook": "^2.0.4",
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.6.2",
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-sql": "^0.19.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "sherif": "^1.8.0",
-    "type-fest": "^4.41.0",
+    "type-fest": "^5.2.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.8"
   }
 }
