@@ -13,7 +13,7 @@ export default tseslint.config(
       "packages/e2e/test-results",
 
       // Not part of any tsc project and tseslint's new project service does not support multiple tsconfigs for a directory, e.g. a root tsconfig.tools.json
-      "vitest.workspace.ts",
+      "vitest.config.ts",
       "eslint.config.js",
       ".prettierrc.js",
     ],
