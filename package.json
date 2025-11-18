@@ -39,11 +39,11 @@
     "validate": "run-p --continue-on-error build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "0.12.1",
-    "@tanstack/react-router-devtools": "^1.135.2",
-    "@tanstack/router-plugin": "^1.135.2",
+    "@nihalgonsalves/esconfig": "0.13.0",
+    "@tanstack/react-router-devtools": "^1.136.8",
+    "@tanstack/router-plugin": "^1.136.8",
     "@types/node": "24",
-    "@vitest/ui": "^4.0.8",
+    "@vitest/ui": "^4.0.10",
     "eslint": "^9.39.1",
     "eslint-plugin-unused-imports": "^4.3.0",
     "knip": "5.69.1",
@@ -53,10 +53,10 @@
     "prettier-plugin-prisma": "^5.0.0",
     "prettier-plugin-sql": "^0.19.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
-    "sherif": "^1.8.0",
+    "sherif": "^1.9.0",
     "type-fest": "^5.2.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.4",
-    "vitest": "^4.0.8"
+    "typescript-eslint": "^8.47.0",
+    "vitest": "^4.0.10"
   }
 }
