@@ -24,7 +24,7 @@
     "@hono/trpc-server": "^0.4.0",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/client": "6.19.0",
-    "@sentry/node": "^10.25.0",
+    "@sentry/node": "^10.27.0",
     "@sentry/profiling-node": "^10.25.0",
     "@trpc/server": "11.1.4",
     "bcrypt": "^6.0.0",
