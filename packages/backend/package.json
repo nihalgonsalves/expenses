@@ -34,7 +34,7 @@
     "ioredis": "^5.8.2",
     "jose": "^6.1.1",
     "nanoid": "^5.1.6",
-    "nodemailer": "^7.0.10",
+    "nodemailer": "^7.0.11",
     "rate-limiter-flexible": "^8.2.0",
     "rrule": "^2.8.1",
     "temporal-polyfill": "^0.3.0",
