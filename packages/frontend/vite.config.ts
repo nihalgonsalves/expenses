@@ -2,7 +2,6 @@ import { fileURLToPath } from "url";
 
 import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
-import spotlightSidecar from "@spotlightjs/sidecar/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
@@ -76,7 +75,6 @@ export default defineConfig(({ mode }) => ({
           globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
         },
       }),
-    spotlightSidecar(),
     mode === "development" &&
       codeInspectorPlugin({
         bundler: "vite",
@@ -92,15 +90,14 @@ export default defineConfig(({ mode }) => ({
       process.env["SENTRY_ORG"] &&
       process.env["SENTRY_PROJECT"] &&
       process.env["VITE_GIT_COMMIT_SHA"] &&
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      (sentryVitePlugin({
+      sentryVitePlugin({
         authToken: process.env["SENTRY_AUTH_TOKEN"],
         org: process.env["SENTRY_ORG"],
         project: process.env["SENTRY_PROJECT"],
         release: { name: process.env["VITE_GIT_COMMIT_SHA"] },
         reactComponentAnnotation: { enabled: true },
         telemetry: false,
-      }) as Plugin),
+      }),
     process.env["CODECOV_TOKEN"] &&
       codecovVitePlugin({
         enableBundleAnalysis: true,
