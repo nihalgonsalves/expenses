@@ -19,10 +19,10 @@ type TransactionScheduleWorkerResult = {
   failedSchedules: Record<string, string>;
 };
 
-export class TransactionScheduleWorker
-  implements
-    IWorker<{ now: string | undefined }, TransactionScheduleWorkerResult>
-{
+export class TransactionScheduleWorker implements IWorker<
+  { now: string | undefined },
+  TransactionScheduleWorkerResult
+> {
   queue: Queue<{ now: string | undefined }, TransactionScheduleWorkerResult>;
 
   worker: Worker<{ now: string | undefined }, TransactionScheduleWorkerResult>;

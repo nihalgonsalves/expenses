@@ -26,9 +26,7 @@ export type FakeNotificationItem = {
   userId: string;
   payload: NotificationPayload;
 };
-export class FakeNotificationDispatchService
-  implements INotificationDispatchWorker
-{
+export class FakeNotificationDispatchService implements INotificationDispatchWorker {
   public messages: FakeNotificationItem[] = [];
 
   async sendNotifications(

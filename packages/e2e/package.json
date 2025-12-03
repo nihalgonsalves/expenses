@@ -13,9 +13,9 @@
   "devDependencies": {
     "@nihalgonsalves/expenses-backend": "*",
     "@nihalgonsalves/expenses-shared": "*",
-    "@playwright/test": "1.56.1",
+    "@playwright/test": "1.57.0",
     "@trpc/client": "11.1.4",
-    "chromatic": "^13.3.3",
+    "chromatic": "^13.3.4",
     "zod": "^3.25.76"
   }
 }
