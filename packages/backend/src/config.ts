@@ -1,9 +1,14 @@
+import { existsSync } from "node:fs";
 import { loadEnvFile } from "node:process";
 import { hostname } from "os";
 
+import { Temporal } from "temporal-polyfill";
+import { default as webPush } from "web-push";
 import { z } from "zod";
 
-loadEnvFile(new URL("../.env", import.meta.url));
+if (existsSync(new URL("../.env", import.meta.url))) {
+  loadEnvFile(new URL("../.env", import.meta.url));
+}
 
 const defaultSecret = "test-secret";
 
@@ -13,6 +18,8 @@ const devOnlyDefault = <T extends z.ZodType>(
   type: T,
   defaultValue: z.output<T> extends undefined ? never : z.output<T>,
 ) => (IS_PROD ? type : type.default(defaultValue));
+
+const DEV_VAPID_KEYS = webPush.generateVAPIDKeys();
 
 const ZEnv = z.object({
   GIT_COMMIT_SHA: z.string().default("unknown"),
@@ -39,10 +46,16 @@ const ZEnv = z.object({
     .default(Temporal.Duration.from({ days: 7 }).total("seconds")),
 
   VAPID_EMAIL: devOnlyDefault(z.email(), "nobody@example.com"),
-  VAPID_PRIVATE_KEY: z.string().min(1),
-  VAPID_PUBLIC_KEY: z.string().min(1),
+  VAPID_PRIVATE_KEY: devOnlyDefault(
+    z.string().min(1),
+    DEV_VAPID_KEYS.privateKey,
+  ),
+  VAPID_PUBLIC_KEY: devOnlyDefault(z.string().min(1), DEV_VAPID_KEYS.publicKey),
 
-  DATABASE_URL: z.url(),
+  DATABASE_URL: devOnlyDefault(
+    z.url(),
+    "postgresql://postgres:postgres@localhost:5432/postgres",
+  ),
   REDIS_URL: devOnlyDefault(z.url(), "redis://localhost:6379/0"),
   FRANKFURTER_BASE_URL: devOnlyDefault(
     z.url({ protocol: /^https?$/ }),

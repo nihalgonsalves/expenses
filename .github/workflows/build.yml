@@ -21,7 +21,7 @@ jobs:
 
       - run: yarn install --immutable
       - working-directory: ./packages/backend/
-        run: yarn prepare:e2e && yarn db:generate
+        run: yarn db:generate
       - run: yarn build
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -96,7 +96,7 @@ jobs:
 
       - run: yarn install --immutable
       - working-directory: ./packages/backend/
-        run: yarn prepare:e2e && yarn db:generate
+        run: yarn db:generate
 
         # pull so that testcontainers doesn't have to, timing out tests.
       - run: docker compose -f compose.dev.yml pull postgres redis

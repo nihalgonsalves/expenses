@@ -11,7 +11,6 @@ await writeFile(
   Object.entries({
     VAPID_PRIVATE_KEY: privateKey,
     VAPID_PUBLIC_KEY: publicKey,
-    DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres",
   })
     .map(([key, value]) => `${key}=${value}`)
     .join("\n"),

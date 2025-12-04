@@ -36,7 +36,7 @@
     "dev:fe": "yarn fe dev",
     "dev:be": "yarn be dev",
     "dev:build": "yarn build:tsc --watch --preserveWatchOutput",
-    "validate": "run-p --continue-on-error build 'lint:eslint --fix' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
+    "validate": "run-p --continue-on-error build 'lint:eslint --fix' 'lint:sherif' 'lint:knip' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "0.13.1",
