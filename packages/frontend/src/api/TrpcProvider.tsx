@@ -20,7 +20,7 @@ const ZData = z.object({
   zodError: z
     .object({
       formErrors: z.array(z.string()),
-      fieldErrors: z.record(z.array(z.string())),
+      fieldErrors: z.record(z.string(), z.array(z.string())),
     })
     .nullish(),
 });

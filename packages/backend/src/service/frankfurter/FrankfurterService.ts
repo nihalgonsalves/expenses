@@ -35,7 +35,7 @@ const ZRateSchema = z.object({
   amount: z.number(),
   base: z.string(),
   date: z.string(),
-  rates: z.record(z.number()),
+  rates: z.record(z.string(), z.number()),
 });
 
 export class FrankfurterService {
@@ -58,7 +58,9 @@ export class FrankfurterService {
       });
     }
 
-    const parseResult = z.record(z.string()).safeParse(fetchResult.response);
+    const parseResult = z
+      .record(z.string(), z.string())
+      .safeParse(fetchResult.response);
 
     if (!parseResult.success) {
       throw new FrankfurterServiceError({

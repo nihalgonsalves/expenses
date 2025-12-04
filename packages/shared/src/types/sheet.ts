@@ -35,7 +35,7 @@ export const ZCreateGroupSheetInput = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   currencyCode: z.string().length(3, { message: "Currency code is required" }),
   additionalParticipantEmailAddresses: z.array(
-    z.object({ email: z.string().email({ message: "Invalid email address" }) }),
+    z.object({ email: z.email({ message: "Invalid email address" }) }),
   ),
 });
 export type CreateGroupSheetInput = z.infer<typeof ZCreateGroupSheetInput>;
@@ -48,7 +48,7 @@ export type UpdateSheetInput = z.infer<typeof ZUpdateSheetInput>;
 
 export const ZAddGroupSheetMemberInput = z.object({
   groupSheetId: z.string().min(1),
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.email({ message: "Invalid email address" }),
 });
 export type AddGroupSheetMemberInput = z.infer<
   typeof ZAddGroupSheetMemberInput

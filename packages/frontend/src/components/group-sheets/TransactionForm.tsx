@@ -250,7 +250,7 @@ const formSchema = ZCreateGroupSheetTransactionInput.omit({
 }).extend({
   currencyCode: z.string().min(1),
   amount: z.number().positive({ message: "Amount is required" }),
-  splitType: z.nativeEnum(GroupTransactionSplitType),
+  splitType: z.enum(GroupTransactionSplitType),
   ratios: z.array(ZRatio),
 });
 
@@ -403,7 +403,7 @@ const SplitsFormSection = ({
   };
 
   const handleChangeSplitType = (value: GroupTransactionSplitType) => {
-    const newType = z.nativeEnum(GroupTransactionSplitType).parse(value);
+    const newType = z.enum(GroupTransactionSplitType).parse(value);
 
     const isCurrentlyDirty = form.formState.dirtyFields.ratios?.some(
       ({ ratio }) => ratio === true,

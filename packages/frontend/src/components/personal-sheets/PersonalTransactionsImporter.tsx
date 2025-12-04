@@ -407,7 +407,9 @@ export const PersonalTransactionsImporter = ({
           return;
         }
 
-        const zodResult = z.array(z.record(z.string())).safeParse(papaData);
+        const zodResult = z
+          .array(z.record(z.string(), z.string()))
+          .safeParse(papaData);
 
         if (!zodResult.success) {
           setCsvError(zodResult.error.message);

@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "../ui/select";
 
-export type SelectOption<T extends z.Schema<string | undefined>> = {
+export type SelectOption<T extends z.ZodType<string>> = {
   label: ReactNode;
   value: z.infer<T> | undefined;
   disabled?: boolean;
@@ -18,7 +18,7 @@ export type SelectOption<T extends z.Schema<string | undefined>> = {
 
 const UNSET = "unset";
 
-type SelectProps<T extends z.Schema<string | undefined>> = {
+type SelectProps<T extends z.ZodType<string>> = {
   id?: string | undefined;
   placeholder?: string;
   options: SelectOption<T>[];
@@ -29,7 +29,7 @@ type SelectProps<T extends z.Schema<string | undefined>> = {
 } & Pick<ComponentProps<typeof SelectTrigger>, "ref"> &
   Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
-export const Select = <T extends z.Schema<string | undefined>>({
+export const Select = <T extends z.ZodType<string>>({
   ref,
   id,
   placeholder,
@@ -50,11 +50,11 @@ export const Select = <T extends z.Schema<string | undefined>>({
     }
     onValueChange={(newValue) => {
       onBlur();
-      setValue(
-        newValue !== "" && newValue !== UNSET
-          ? schema.parse(newValue)
-          : undefined,
-      );
+
+      if (newValue === "" || newValue === UNSET) {
+        setValue(schema.parse(newValue));
+        return;
+      }
     }}
   >
     <SelectTrigger {...controllerProps} id={id} ref={ref} className={className}>

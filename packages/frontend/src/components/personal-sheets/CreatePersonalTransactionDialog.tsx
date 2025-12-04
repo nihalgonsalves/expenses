@@ -78,8 +78,8 @@ const RECURRENCE_OPTIONS = [
   },
 ] satisfies SelectOption<typeof ZRecurrenceFrequency>[];
 
-const formSchema = ZCreatePersonalSheetTransactionInput.merge(
-  ZCreatePersonalSheetTransactionScheduleInput,
+const formSchema = ZCreatePersonalSheetTransactionInput.extend(
+  ZCreatePersonalSheetTransactionScheduleInput.shape,
 )
   .omit({
     money: true,

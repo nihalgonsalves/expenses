@@ -57,7 +57,7 @@ export const ZNotificationPayload = z.union([
 export type NotificationPayload = z.infer<typeof ZNotificationPayload>;
 
 export const ZPushSubscription = z.object({
-  endpoint: z.string().url(),
+  endpoint: z.url({ protocol: /^https?$/, hostname: z.regexes.domain }),
   keys: z.object({
     auth: z.string().min(1),
     p256dh: z.string().min(1),

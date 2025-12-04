@@ -34,7 +34,7 @@ const ZPasswordResetJWTPayload = z.object({
 
 const ZVerifyEmailJWTPayload = z.object({
   purpose: z.literal("VERIFY_EMAIL"),
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export class UserService {

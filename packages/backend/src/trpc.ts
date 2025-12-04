@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/node";
 import { TRPCError, initTRPC } from "@trpc/server";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
 
 import type { ContextFn } from "./context.ts";
 
@@ -12,7 +12,7 @@ export const t = initTRPC.context<ContextFn>().create({
         ...shape.data,
         zodError:
           error.code === "BAD_REQUEST" && error.cause instanceof ZodError
-            ? error.cause.flatten()
+            ? z.treeifyError(error.cause)
             : null,
       },
     };

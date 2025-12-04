@@ -185,8 +185,8 @@ export const ZTransactionWithSheet = z.discriminatedUnion("sheetType", [
 export type TransactionWithSheet = z.infer<typeof ZTransactionWithSheet>;
 
 export const ZGetAllUserTransactionsInput = z.object({
-  fromTimestamp: z.string().datetime(),
-  toTimestamp: z.string().datetime(),
+  fromTimestamp: z.iso.datetime(),
+  toTimestamp: z.iso.datetime(),
 });
 export type GetAllUserTransactionsInput = z.infer<
   typeof ZGetAllUserTransactionsInput

@@ -32,7 +32,7 @@ export const userRouter = router({
     }),
 
   requestPasswordReset: publicProcedure
-    .input(z.string().email())
+    .input(z.email())
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
       await ctx.userService.requestPasswordReset(input);

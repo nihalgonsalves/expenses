@@ -50,12 +50,8 @@ describe("verifyJWT", () => {
   });
 
   it("throws an error for invalid tokens", async () => {
-    await expect(
-      verifyJWT(
-        // @ts-expect-error supposed to be invalid
-        "<invalid-token>",
-        "<identity>",
-      ),
-    ).rejects.toThrow("Invalid token");
+    await expect(verifyJWT("<invalid-token>", "<identity>")).rejects.toThrow(
+      "Invalid token",
+    );
   });
 });
