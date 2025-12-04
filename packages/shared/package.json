@@ -17,12 +17,12 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@dinero.js/currencies": "^2.0.0-alpha.14",
-    "dinero.js": "^2.0.0-alpha.14",
-    "fastpriorityqueue": "^0.7.5",
-    "zod": "^4.1.13"
+    "@dinero.js/currencies": "2.0.0-alpha.14",
+    "dinero.js": "2.0.0-alpha.14",
+    "fastpriorityqueue": "0.7.5",
+    "zod": "4.1.13"
   },
   "devDependencies": {
-    "vitest": "^4.0.15"
+    "vitest": "4.0.15"
   }
 }
