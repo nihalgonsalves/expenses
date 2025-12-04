@@ -23,10 +23,10 @@
     "@hono/node-server": "^1.19.6",
     "@hono/trpc-server": "^0.4.0",
     "@nihalgonsalves/expenses-shared": "*",
-    "@prisma/client": "6.19.0",
-    "@sentry/node": "^10.28.0",
-    "@sentry/profiling-node": "^10.28.0",
-    "@trpc/server": "11.1.4",
+    "@prisma/client": "7.1.0",
+    "@sentry/node": "^10.29.0",
+    "@sentry/profiling-node": "^10.29.0",
+    "@trpc/server": "11.7.2",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.65.1",
     "cookie": "^1.1.1",
@@ -43,11 +43,11 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@faker-js/faker": "^9.9.0",
+    "@faker-js/faker": "^10.1.0",
     "@testcontainers/postgresql": "^11.9.0",
     "@testcontainers/redis": "^11.9.0",
     "@total-typescript/ts-reset": "^0.6.1",
-    "@trpc/client": "11.1.4",
+    "@trpc/client": "11.7.2",
     "@types/bcrypt": "^6.0.0",
     "@types/nodemailer": "^7",
     "@types/pem": "^1.14.4",
@@ -56,7 +56,7 @@
     "fetch-cookie": "^3.1.0",
     "npm-run-all2": "^8.0.4",
     "pem": "^1.15.1",
-    "prisma": "6.19.0",
+    "prisma": "7.1.0",
     "vitest": "^4.0.15",
     "wait-on": "^9.0.3"
   }
