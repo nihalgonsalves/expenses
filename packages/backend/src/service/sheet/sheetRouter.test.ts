@@ -1,5 +1,4 @@
 import { faker } from "@faker-js/faker";
-import { SheetParticipantRole } from "@prisma/client";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -9,6 +8,7 @@ import {
 } from "../../../test/factories.ts";
 import { getTRPCCaller } from "../../../test/getTRPCCaller.ts";
 import { createGroupSheetTransactionInput } from "../../../test/input.ts";
+import { SheetParticipantRole } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();

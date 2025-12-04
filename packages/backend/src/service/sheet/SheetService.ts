@@ -1,4 +1,3 @@
-import { SheetType, SheetParticipantRole, Prisma } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import type {
@@ -10,7 +9,12 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "../../app.ts";
+import type { PrismaClientType } from "../../create-prisma.ts";
+import {
+  SheetType,
+  SheetParticipantRole,
+  Prisma,
+} from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 import { getTRPCError } from "../../utils/trpcUtils.ts";
 import type { TransactionService } from "../transaction/TransactionService.ts";

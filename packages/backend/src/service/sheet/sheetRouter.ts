@@ -1,4 +1,3 @@
-import { SheetParticipantRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -15,6 +14,7 @@ import {
   ZUpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 
+import { SheetParticipantRole } from "../../prisma/client.ts";
 import { protectedProcedure, router } from "../../trpc.ts";
 
 export const sheetRouter = router({

@@ -1,6 +1,9 @@
+import { loadEnvFile } from "node:process";
 import { hostname } from "os";
 
 import { z } from "zod";
+
+loadEnvFile(new URL("../.env", import.meta.url));
 
 const defaultSecret = "test-secret";
 
@@ -39,10 +42,8 @@ const ZEnv = z.object({
   VAPID_PRIVATE_KEY: z.string().min(1),
   VAPID_PUBLIC_KEY: z.string().min(1),
 
-  REDIS_URL: devOnlyDefault(
-    z.url({ protocol: /^redis:\/\// }),
-    "redis://localhost:6379/0",
-  ),
+  DATABASE_URL: z.url(),
+  REDIS_URL: devOnlyDefault(z.url(), "redis://localhost:6379/0"),
   FRANKFURTER_BASE_URL: devOnlyDefault(
     z.url({ protocol: /^https?$/ }),
     "http://localhost:5200/",

@@ -1,8 +1,8 @@
 import type { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
-import type { PrismaClientType } from "./app.ts";
 import { config } from "./config.ts";
+import type { PrismaClientType } from "./create-prisma.ts";
 import { EmailWorker } from "./service/email/EmailWorker.ts";
 import { NotificationDispatchWorker } from "./service/notification/NotificationDispatchWorker.ts";
 import { TransactionScheduleWorker } from "./service/transaction/TransactionScheduleWorker.ts";

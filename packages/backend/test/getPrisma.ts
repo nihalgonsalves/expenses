@@ -1,9 +1,10 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 
-import { PrismaClient } from "@prisma/client";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { afterAll, beforeEach } from "vitest";
+
+import { createPrisma } from "../src/create-prisma.ts";
 
 export const getPrisma = async () => {
   const container = await new PostgreSqlContainer("postgres:17-alpine")
@@ -11,7 +12,7 @@ export const getPrisma = async () => {
     .withReuse()
     .start();
 
-  await promisify(exec)(`yarn prisma db push --skip-generate`, {
+  await promisify(exec)(`yarn prisma db push`, {
     cwd: new URL("../", import.meta.url),
     env: {
       ...process.env,
@@ -19,13 +20,7 @@ export const getPrisma = async () => {
     },
   });
 
-  const prisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: container.getConnectionUri(),
-      },
-    },
-  });
+  const prisma = createPrisma(container.getConnectionUri());
 
   beforeEach(async () => {
     const tablenames = await prisma.$queryRaw<

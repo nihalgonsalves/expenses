@@ -1,9 +1,3 @@
-import {
-  Prisma,
-  TransactionType,
-  type TransactionEntry,
-  type User as PrismaUser,
-} from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 import {
@@ -32,7 +26,13 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "../../app.ts";
+import type { PrismaClientType } from "../../create-prisma.ts";
+import {
+  Prisma,
+  TransactionType,
+  type TransactionEntry,
+  type User as PrismaUser,
+} from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 import type { INotificationDispatchWorker } from "../notification/NotificationDispatchWorker.ts";
 
@@ -710,12 +710,14 @@ export class TransactionService {
     );
 
     transactions.forEach((entry) => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      balances[entry.userId] = addMoney(balances[entry.userId]!, {
-        currencyCode: groupSheet.currencyCode,
-        amount: entry.amount,
-        scale: entry.scale,
-      });
+      balances[entry.userId] = addMoney(
+        balances[entry.userId] ?? zeroMoney(groupSheet.currencyCode),
+        {
+          currencyCode: groupSheet.currencyCode,
+          amount: entry.amount,
+          scale: entry.scale,
+        },
+      );
     });
 
     return simplifyBalances(groupSheet.currencyCode, balances).map(

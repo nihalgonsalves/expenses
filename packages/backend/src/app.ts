@@ -6,7 +6,6 @@ import { HonoAdapter } from "@bull-board/hono";
 import { serve } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
-import { PrismaClient } from "@prisma/client";
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import { Hono } from "hono";
@@ -16,17 +15,9 @@ import { Redis } from "ioredis";
 import { appRouter } from "./appRouter.ts";
 import { config, IS_PROD } from "./config.ts";
 import { makeCreateContext } from "./context.ts";
+import { type PrismaClientType, createPrisma } from "./create-prisma.ts";
 import { makePWARouter } from "./pwaRouter.ts";
 import { startWorkers } from "./startWorkers.ts";
-
-export const createPrisma = () =>
-  new PrismaClient({
-    omit: {
-      user: { passwordHash: true, passwordResetToken: true },
-    },
-  });
-
-export type PrismaClientType = ReturnType<typeof createPrisma>;
 
 export const createApp = async (prisma: PrismaClientType, redis: Redis) => {
   const app = new Hono();
@@ -79,11 +70,7 @@ void (async () => {
     profilesSampleRate: 1.0,
   });
 
-  const prisma = new PrismaClient({
-    omit: {
-      user: { passwordHash: true, passwordResetToken: true },
-    },
-  });
+  const prisma = createPrisma();
 
   const redis = new Redis(config.REDIS_URL, { maxRetriesPerRequest: null });
 

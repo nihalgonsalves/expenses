@@ -1,5 +1,3 @@
-import type { Prisma } from "@prisma/client";
-
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type {
   CreatePersonalSheetTransactionInput,
@@ -7,6 +5,7 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { Prisma } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
 export const mapInputToCreatePersonalTransaction = (

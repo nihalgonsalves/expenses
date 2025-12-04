@@ -1,9 +1,9 @@
-import type { Prisma } from "@prisma/client";
 import { Queue, Worker } from "bullmq";
 import type { Redis } from "ioredis";
 
-import type { PrismaClientType } from "../../app.ts";
 import { TRANSACTION_SCHEDULE_BULLMQ_QUEUE } from "../../config.ts";
+import type { PrismaClientType } from "../../create-prisma.ts";
+import type { Prisma } from "../../prisma/client.ts";
 import type { IWorker } from "../../startWorkers.ts";
 import { generateId } from "../../utils/nanoid.ts";
 

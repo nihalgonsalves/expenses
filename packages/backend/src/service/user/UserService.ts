@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import type { JWTPayload } from "jose";
 import { z } from "zod";
 
@@ -14,8 +13,9 @@ import type {
   UpdateUserInput,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "../../app.ts";
 import { config } from "../../config.ts";
+import type { PrismaClientType } from "../../create-prisma.ts";
+import { Prisma } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 import { EmailWorkerError, type IEmailWorker } from "../email/EmailWorker.ts";
 

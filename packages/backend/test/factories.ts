@@ -1,14 +1,14 @@
 import { faker } from "@faker-js/faker";
-import {
-  type PrismaClient,
-  type Prisma,
-  SheetParticipantRole,
-  SheetType,
-} from "@prisma/client";
 
 import { CURRENCY_CODES } from "@nihalgonsalves/expenses-shared/money";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { PrismaClientType } from "../src/create-prisma.ts";
+import {
+  type Prisma,
+  SheetParticipantRole,
+  SheetType,
+} from "../src/prisma/client.ts";
 import { generateId } from "../src/utils/nanoid.ts";
 
 import { getUserKeys } from "./webPushUtils.ts";
@@ -19,7 +19,7 @@ const randomItem = <T>(items: T[]): T =>
 export const currencyCodeFactory = () => randomItem(CURRENCY_CODES);
 
 export const userFactory = async (
-  prisma: PrismaClient,
+  prisma: PrismaClientType,
   overrides: Partial<Prisma.UserCreateInput> = {},
 ) =>
   prisma.user.create({
@@ -29,10 +29,11 @@ export const userFactory = async (
       email: faker.internet.email(),
       ...overrides,
     },
+    omit: { passwordHash: false, passwordResetToken: false },
   });
 
 export const groupSheetFactory = async (
-  prisma: PrismaClient,
+  prisma: PrismaClientType,
   opts: {
     withOwnerId?: string;
     withParticipantIds?: string[];
@@ -73,7 +74,7 @@ export const groupSheetFactory = async (
 };
 
 export const personalSheetFactory = async (
-  prisma: PrismaClient,
+  prisma: PrismaClientType,
   opts: {
     withOwnerId?: string;
     currencyCode?: string;
@@ -104,7 +105,7 @@ export const personalSheetFactory = async (
 };
 
 export const notificationSubscriptionFactory = async (
-  prisma: PrismaClient,
+  prisma: PrismaClientType,
   user: User,
   endpoint?: string,
 ) => {

@@ -1,10 +1,11 @@
-import type { TransactionSchedule } from "@prisma/client";
 import RRule from "rrule";
 
 import {
   ZRecurrenceFrequency,
   type RecurrenceFrequency,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
+
+import type { TransactionSchedule } from "../../prisma/client.ts";
 
 const frequencyToRRuleEnum: Record<RecurrenceFrequency, RRule.Frequency> = {
   WEEKLY: RRule.Frequency.WEEKLY,

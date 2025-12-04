@@ -1,8 +1,8 @@
-import type { Transaction } from "@prisma/client";
-
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
 import type { NotificationPayload } from "@nihalgonsalves/expenses-shared/types/notification";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
+
+import type { Transaction } from "../../prisma/client.ts";
 
 export const transactionToNotificationPayload = (
   transaction: Omit<Transaction, "type"> & { type: "INCOME" | "EXPENSE" },

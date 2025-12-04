@@ -11,8 +11,8 @@ import {
   ZNotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import type { PrismaClientType } from "../../app.ts";
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
+import type { PrismaClientType } from "../../create-prisma.ts";
 import type { IWorker } from "../../startWorkers.ts";
 
 type WebPushQueueItem = {

@@ -1,7 +1,7 @@
 import type { NotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "../../app.ts";
+import type { PrismaClientType } from "../../create-prisma.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
 export class NotificationService {

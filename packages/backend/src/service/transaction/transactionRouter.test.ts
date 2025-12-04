@@ -1,4 +1,3 @@
-import { TransactionType } from "@prisma/client";
 import { describe, expect, it } from "vitest";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -16,6 +15,7 @@ import {
   createPersonalSheetTransactionInput,
   createPersonalSheetTransactionScheduleInput,
 } from "../../../test/input.ts";
+import { TransactionType } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
 const { prisma, useProtectedCaller } = await getTRPCCaller();

@@ -114,6 +114,7 @@ describe("updateUser", () => {
 
     const updatedUser = await prisma.user.findUniqueOrThrow({
       where: { id: user.id },
+      omit: { passwordResetToken: false },
     });
 
     expect(updatedUser.emailVerified).toBe(false);
@@ -137,9 +138,12 @@ describe("updateUser", () => {
 
     const { passwordHash: newHash } = await prisma.user.findUniqueOrThrow({
       where: { id: user.id },
+      omit: { passwordHash: false },
     });
 
-    await expect(comparePassword("new-password", newHash!)).resolves.toBe(true);
+    await expect(comparePassword("new-password", newHash ?? "")).resolves.toBe(
+      true,
+    );
   });
 
   it("returns 401 if the old password is wrong", async () => {
@@ -277,6 +281,7 @@ describe("anonymizeUser", () => {
 
     const deletedUser = await prisma.user.findUnique({
       where: { id: user.id },
+      omit: { passwordHash: false },
     });
     expect(deletedUser).toMatchObject({
       id: user.id,
@@ -400,6 +405,7 @@ describe("requestPasswordReset", () => {
 
     const { passwordResetToken } = await prisma.user.findUniqueOrThrow({
       where: { id: user.id },
+      omit: { passwordResetToken: false },
     });
 
     expect(passwordResetToken).toBeTruthy();
@@ -425,6 +431,7 @@ describe("resetPassword", () => {
     const { emailVerified, passwordHash } = await prisma.user.findUniqueOrThrow(
       {
         where: { id: user.id },
+        omit: { passwordHash: false },
       },
     );
 

@@ -7,8 +7,8 @@ import {
   ZJWTToken,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
-import type { PrismaClientType } from "./app.ts";
 import { config } from "./config.ts";
+import type { PrismaClientType } from "./create-prisma.ts";
 import { FrankfurterService } from "./service/frankfurter/FrankfurterService.ts";
 import { NotificationService } from "./service/notification/NotificationService.ts";
 import { SheetService } from "./service/sheet/SheetService.ts";
