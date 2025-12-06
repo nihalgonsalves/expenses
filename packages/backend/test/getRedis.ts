@@ -1,20 +1,14 @@
-import { RedisContainer } from "@testcontainers/redis";
 import { Redis } from "ioredis";
-import { afterAll } from "vitest";
+import { inject, afterAll } from "vitest";
 
 export const getRedis = async () => {
-  const container = await new RedisContainer("redis:7-alpine")
-    .withName(`vitest-redis-${process.env["VITEST_WORKER_ID"] ?? 0}`)
-    .withReuse()
-    .start();
-
-  const redis = new Redis(container.getConnectionUrl(), {
+  const redis = new Redis(inject("redisConnectionUri"), {
+    db: Number.parseInt(process.env["VITEST_WORKER_ID"] ?? "0"),
     maxRetriesPerRequest: null,
   });
 
   afterAll(async () => {
     await redis.quit();
-    await container.stop();
   });
 
   return redis;

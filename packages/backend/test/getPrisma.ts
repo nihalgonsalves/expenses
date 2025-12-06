@@ -1,26 +1,23 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 
-import { PostgreSqlContainer } from "@testcontainers/postgresql";
-import { afterAll, beforeEach } from "vitest";
+import { beforeEach, inject } from "vitest";
 
 import { createPrisma } from "../src/create-prisma.ts";
 
 export const getPrisma = async () => {
-  const container = await new PostgreSqlContainer("postgres:17-alpine")
-    .withName(`vitest-backend-${process.env["VITEST_WORKER_ID"]}`)
-    .withReuse()
-    .start();
+  const postgresConnectionUri = new URL(inject("postgresConnectionUri"));
+  postgresConnectionUri.pathname = `/expenses-${process.env["VITEST_WORKER_ID"]}`;
 
   await promisify(exec)(`yarn prisma db push`, {
     cwd: new URL("../", import.meta.url),
     env: {
       ...process.env,
-      DATABASE_URL: container.getConnectionUri(),
+      DATABASE_URL: postgresConnectionUri.toString(),
     },
   });
 
-  const prisma = createPrisma(container.getConnectionUri());
+  const prisma = createPrisma(postgresConnectionUri.toString());
 
   beforeEach(async () => {
     const tablenames = await prisma.$queryRaw<
@@ -34,10 +31,6 @@ export const getPrisma = async () => {
       .join(", ");
 
     await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${tables} CASCADE;`);
-  });
-
-  afterAll(async () => {
-    await container.stop();
   });
 
   return prisma;
