@@ -7,7 +7,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "dev": "run-p 'start' 'db:generate --watch'",
-    "start": "node --enable-source-maps --experimental-strip-types --env-file=.env --watch ./src/app.ts",
+    "start": "node --enable-source-maps --env-file=.env --watch ./src/app.ts",
     "test": "vitest",
     "db:migrate": "prisma migrate dev --name",
     "db:sql-lint": "yarn dlx squawk-cli",
@@ -15,7 +15,7 @@
     "db:generate": "prisma generate",
     "prepare:e2e": "node bin/prepare-ci-e2e.js",
     "prepare:local": "node bin/prepare-local-env.js",
-    "prepare:demo": "node --experimental-strip-types bin/demo.ts"
+    "prepare:demo": "node bin/demo.ts"
   },
   "dependencies": {
     "@bull-board/api": "6.14.2",
