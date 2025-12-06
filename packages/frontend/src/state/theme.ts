@@ -130,10 +130,6 @@ const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
     "data-theme",
     getThemeDataAttribute(themePreference, theme),
   );
-
-  document
-    .getElementById("rel-icon-png")
-    ?.setAttribute("href", `/assets/icon-${theme}.png`);
 };
 
 const syncColorScheme = (themePreference: ThemePreference) => {
