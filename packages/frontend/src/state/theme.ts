@@ -75,19 +75,30 @@ export const getThemeDataAttribute = (
   theme: Theme,
 ) => `${theme}-${isDarkMode(themePreference) ? "dark" : "light"}`;
 
+const setColor = (color: string) => {
+  // Chrome PWA, Safari <=17
+  document
+    .querySelector('meta[name="theme-color"]')
+    ?.setAttribute("content", color);
+
+  // Safari >=26, iOS >=26
+  document
+    .getElementsByTagName("body")
+    .item(0)
+    ?.style.setProperty("background-color", color);
+};
+
 const syncMetaThemeColor = (shouldDarken: boolean) => {
   // this works because the first header is the one that touches the status bar
   // if there's a "last updated at" or "offline" banner, it will still be first
   // see Root.tsx
 
   // fallback on load
-  const primaryColor = window
-    .getComputedStyle(document.documentElement)
-    .getPropertyValue("--primary");
-
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", primaryColor);
+  setColor(
+    window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue("--primary"),
+  );
 
   const header = document.getElementsByTagName("header").item(0);
   if (!header) {
@@ -106,8 +117,7 @@ const syncMetaThemeColor = (shouldDarken: boolean) => {
 
   const [r, g, b] = result.data;
 
-  document.querySelector('meta[name="theme-color"]')?.setAttribute(
-    "content",
+  setColor(
     shouldDarken
       ? // the DrawerRoot is styled as bg-black/80, we can mimic the same 80% black effect by setting the RGB value to 20% of the original
         `rgb(${r * 0.2}, ${g * 0.2}, ${b * 0.2})`

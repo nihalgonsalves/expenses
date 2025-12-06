@@ -95,7 +95,7 @@ export const Root = ({
   return (
     <>
       <title>{data ? `${data.name} - ${title}` : title}</title>
-      <div className="m-auto flex h-dvh flex-col">
+      <div className="bg-background m-auto flex h-dvh flex-col">
         {!navigatorOnLine || bannerText ? (
           <header className="bg-muted text-muted-foreground flex justify-center gap-1 p-1 text-center text-xs tracking-tighter">
             {bannerText ? <span>{bannerText}</span> : null}
