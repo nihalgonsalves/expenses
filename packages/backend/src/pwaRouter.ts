@@ -40,23 +40,17 @@ export const makePWARouter = (
         description: "Expenses App",
         theme_color: primary,
         icons: [
-          ...["any", "maskable"].map((purpose) => ({
+          {
             src: `/assets/icon-normal-${theme}.svg`,
             type: "image/svg+xml",
-            sizes: "any 512x512",
-            purpose,
-          })),
+            sizes: "any",
+            purpose: "any",
+          },
           {
             src: `/assets/icon-maskable-${theme}.svg`,
             type: "image/svg+xml",
-            sizes: "any 512x512 192x192 180x180 120x120",
+            sizes: "any",
             purpose: "maskable",
-          },
-          {
-            src: `/assets/icon-${theme}.png`,
-            type: "image/png",
-            sizes: "180x180",
-            purpose: "any",
           },
           {
             src: "/assets/icon-monochrome.svg",

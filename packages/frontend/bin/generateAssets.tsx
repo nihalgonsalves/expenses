@@ -3,7 +3,6 @@ import fs from "fs/promises";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { format } from "prettier";
 import { renderToString } from "react-dom/server";
-import sharp from "sharp";
 
 import {
   type ThemeColors,
@@ -67,8 +66,8 @@ const icon = async (
 };
 
 await Promise.all(
-  Object.entries(themeColors).flatMap(([theme, colors]) => [
-    ...types.flatMap(async (type) => {
+  Object.entries(themeColors).flatMap(([theme, colors]) =>
+    types.flatMap(async (type) => {
       const svgIcon = await icon(colors, type);
 
       await fs.writeFile(
@@ -76,18 +75,5 @@ await Promise.all(
         svgIcon,
       );
     }),
-
-    icon(colors, "normal").then(async (i) =>
-      sharp(Buffer.from(i))
-        .resize(512)
-        .png()
-        .toBuffer()
-        .then(async (image) =>
-          fs.writeFile(
-            new URL(`../public/assets/icon-${theme}.png`, import.meta.url),
-            image,
-          ),
-        ),
-    ),
-  ]),
+  ),
 );
