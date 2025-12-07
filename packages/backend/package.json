@@ -18,10 +18,10 @@
     "prepare:demo": "node bin/demo.ts"
   },
   "dependencies": {
-    "@bull-board/api": "6.14.2",
-    "@bull-board/hono": "6.14.2",
+    "@bull-board/api": "6.15.0",
+    "@bull-board/hono": "6.15.0",
     "@hono/node-server": "1.19.6",
-    "@hono/trpc-server": "0.4.0",
+    "@hono/trpc-server": "0.4.1",
     "@nihalgonsalves/expenses-shared": "*",
     "@prisma/adapter-pg": "7.1.0",
     "@prisma/client": "7.1.0",
