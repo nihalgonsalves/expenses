@@ -13,11 +13,4 @@ export default defineConfig({
       provider: "v8",
     },
   },
-  // `using` is not supported yet:
-  // https://github.com/vitejs/vite/issues/15464
-  esbuild: {
-    target: "es2022",
-    include: /\.m?[jt]sx?$/,
-    exclude: [],
-  },
 });

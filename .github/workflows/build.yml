@@ -35,7 +35,7 @@ jobs:
           dockerfile: ./infra/Dockerfile-frontend
       - uses: crate-ci/typos@master
 
-  test-storybook:
+  test-vitest:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
@@ -48,44 +48,7 @@ jobs:
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
       - run: chown -R $(id -u):$(id -g) $PWD
       # waiting on: https://github.com/actions/setup-node/issues/531
-      - run: corepack enable
-      - uses: actions/setup-node@v6
-        with:
-          # NODE_VERSION
-          node-version: 24
-          cache: yarn
 
-      - run: yarn install --immutable
-
-      - name: build:storybook, preview:storybook, test:storybook
-        working-directory: ./packages/frontend/
-        run: |
-          yarn run-s 'build:storybook' 'preview:storybook' &
-          yarn wait-on tcp:6006
-          yarn test:storybook
-
-      - id: chromatic
-        name: Publish to Chromatic
-        uses: chromaui/action@v13
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          storybookBuildDir: ./packages/frontend/build/storybook/
-          autoAcceptChanges: main
-          exitOnceUploaded: true
-
-      - uses: actions/upload-artifact@v5
-        with:
-          name: coverage-storybook
-          path: packages/frontend/coverage/storybook/
-          if-no-files-found: error
-          retention-days: 1
-
-  test-vitest:
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v6
       # waiting on: https://github.com/actions/setup-node/issues/531
       - run: corepack enable
       - uses: actions/setup-node@v6
@@ -103,6 +66,13 @@ jobs:
 
       - run: yarn test --coverage --reporter=default --reporter=junit --outputFile=junit.xml
 
+      - id: chromatic
+        name: Publish to Chromatic
+        uses: chromaui/action@v13
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          autoAcceptChanges: main
+          exitOnceUploaded: true
       - uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -169,7 +139,7 @@ jobs:
   codecov:
     timeout-minutes: 5
     runs-on: ubuntu-latest
-    needs: [test-storybook, test-vitest, test-playwright]
+    needs: [test-vitest, test-playwright]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v6

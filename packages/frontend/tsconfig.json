@@ -5,7 +5,14 @@
     "lib": ["ES2022", "DOM", "WebWorker"],
     "outDir": "./build/tsc/"
   },
-  "include": ["./*.config.*", "./src/", "./bin/", "./test/", "./.storybook/*"],
+  "include": [
+    "./*.config.*",
+    "./src/",
+    "./bin/",
+    "./test/",
+    "./.storybook/*",
+    "vitest.shims.d.ts"
+  ],
   "references": [
     {
       "path": "../backend"
