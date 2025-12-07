@@ -13,10 +13,6 @@ updates:
       - dependency-name: "@types/node"
         update-types:
           - "version-update:semver-major"
-      # 2024-08: https://github.com/shadcn-ui/ui/issues/4366
-      - dependency-name: "react-day-picker"
-        update-types:
-          - "version-update:semver-major"
       # can't be updated without also updating the Docker image in build.yml
       - dependency-name: "@playwright/test"
 
