@@ -44,7 +44,7 @@ export const SignInForm = () => {
     trpc.user.requestPasswordReset.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
+  const form = useForm({
     resolver: zodResolver(ZAuthorizeUserInput),
     mode: "onTouched",
     defaultValues: {

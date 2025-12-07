@@ -31,7 +31,7 @@ export const GroupSheetFormSection = ({
     trpc.sheet.updateSheet.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZUpdateSheetInput>>({
+  const form = useForm({
     resolver: zodResolver(ZUpdateSheetInput),
     mode: "onTouched",
     defaultValues: {

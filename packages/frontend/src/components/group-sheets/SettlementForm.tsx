@@ -41,7 +41,7 @@ export const SettlementForm = ({
     amount: z.number().positive({ message: "Amount is required" }),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
     defaultValues: {

@@ -35,7 +35,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
     trpc.user.requestEmailVerification.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZUpdateUserInput>>({
+  const form = useForm({
     resolver: zodResolver(ZUpdateUserInput),
     mode: "onTouched",
     defaultValues: {

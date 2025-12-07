@@ -31,7 +31,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
     trpc.sheet.addGroupSheetMember.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZAddGroupSheetMemberInput>>({
+  const form = useForm({
     resolver: zodResolver(ZAddGroupSheetMemberInput),
     mode: "onSubmit",
     defaultValues: {

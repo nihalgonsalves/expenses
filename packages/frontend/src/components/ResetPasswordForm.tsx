@@ -29,7 +29,7 @@ export const ResetPasswordForm = ({ token }: { token: string }) => {
     trpc.user.resetPassword.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZResetPasswordInput>>({
+  const form = useForm({
     resolver: zodResolver(ZResetPasswordInput),
     mode: "onTouched",
     defaultValues: {

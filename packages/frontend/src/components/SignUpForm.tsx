@@ -27,7 +27,7 @@ export const SignUpForm = () => {
     trpc.user.createUser.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZCreateUserInput>>({
+  const form = useForm({
     resolver: zodResolver(ZCreateUserInput),
     mode: "onTouched",
     defaultValues: {

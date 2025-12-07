@@ -39,7 +39,7 @@ export const CreateGroupForm = ({
     trpc.sheet.createGroupSheet.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZCreateGroupSheetInput>>({
+  const form = useForm({
     resolver: zodResolver(ZCreateGroupSheetInput),
     mode: "onTouched",
     defaultValues: {

@@ -37,7 +37,7 @@ export const CreateSheetForm = ({
     trpc.sheet.createPersonalSheet.mutationOptions(),
   );
 
-  const form = useForm<z.infer<typeof ZCreatePersonalSheetInput>>({
+  const form = useForm({
     resolver: zodResolver(ZCreatePersonalSheetInput),
     mode: "onTouched",
     defaultValues: {

@@ -643,7 +643,7 @@ export const TransactionForm = ({
 
   const onLine = useNavigatorOnLine();
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
     defaultValues: {
