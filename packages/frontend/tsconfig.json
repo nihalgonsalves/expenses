@@ -8,7 +8,14 @@
       "#/*": ["./src/*"]
     }
   },
-  "include": ["./*.config.*", "./src/", "./bin/", "./test/", "./.storybook/*"],
+  "include": [
+    "./*.config.*",
+    "./src/",
+    "./bin/",
+    "./test/",
+    "./.storybook/*",
+    "vitest.shims.d.ts"
+  ],
   "references": [
     {
       "path": "../backend"

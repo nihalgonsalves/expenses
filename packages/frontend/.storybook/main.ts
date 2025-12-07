@@ -5,9 +5,13 @@ const config: StorybookConfig = {
 
   addons: [
     "@storybook/addon-links",
-    "@storybook/addon-coverage",
     "@storybook/addon-docs",
+    "@storybook/addon-vitest",
   ],
+
+  core: {
+    disableTelemetry: true,
+  },
 
   framework: {
     name: "@storybook/react-vite",
