@@ -1,135 +1,106 @@
-import { PlusIcon, CaretSortIcon } from "@radix-ui/react-icons";
-import { Popover } from "@radix-ui/react-popover";
+import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
-import { useState, type ComponentProps } from "react";
+import { useState, type Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { useTRPC } from "../../api/trpc";
 import { CategoryIcon } from "../CategoryAvatar";
-import { Button } from "../ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-} from "../ui/command";
-import { PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ScrollArea } from "../ui/scroll-area";
-import { cn } from "../ui/utils";
+  Combobox,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxInput,
+  ComboboxPopup,
+  ComboboxPositioner,
+  ComboboxIcon,
+  ComboboxTrigger,
+  ComboboxItemIndicator,
+  ComboboxPortal,
+  ComboboxClear,
+} from "../ui/combobox";
 
 export const OTHER_CATEGORY = "other";
 
 type CategorySelectProps = {
   id?: string;
   value: string | undefined;
-  onChange: (newCategory: string | undefined) => void;
-  className?: string;
+  onChange: (newCategory: string | null | undefined) => void;
   placeholder?: string;
-} & Pick<ComponentProps<typeof Button>, "ref"> &
-  Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
+  ref?: Ref<HTMLInputElement>;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const CategorySelect = ({
-  ref,
-  id,
   value,
   onChange,
-  onBlur,
-  className,
   placeholder = "Select a category",
   ...controllerProps
 }: CategorySelectProps) => {
-  const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   const { trpc } = useTRPC();
-  const { data: categories } = useQuery(
+  const { data: categories = [] } = useQuery(
     trpc.transaction.getCategories.queryOptions(),
   );
 
+  // issues with rendering inside the Vaul drawer
+  const [portalRef, setPortalRef] = useState<HTMLDivElement | null>(null);
+
+  const categoryIds = categories.map((c) => c.id);
+  const categoryIdsSet = new Set(categoryIds);
+
+  const items =
+    value && !categoryIdsSet.has(value)
+      ? // selected "create" value
+        [...categoryIds, value]
+      : searchValue.length > 0 && !categoryIdsSet.has(searchValue)
+        ? // suggested to-create value
+          [...categoryIds, searchValue]
+        : categoryIds;
+
   return (
-    <Popover open={open} onOpenChange={setOpen} modal>
-      <PopoverTrigger asChild>
-        <Button
-          {...controllerProps}
-          id={id}
-          ref={ref}
-          $variant="outline"
-          role="combobox"
-          className={cn("min-w-48 justify-between", className)}
-        >
-          {value ?? placeholder}
-          <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
-        <Command>
-          <CommandInput
-            inputMode="search"
-            placeholder="Search"
-            value={searchValue}
-            onValueChange={setSearchValue}
-          />
-          <CommandList>
-            {/* Only displayed when allowCreate=false, as otherwise there's always a CommandItem */}
-            <CommandEmpty>No category found</CommandEmpty>
+    <Combobox
+      items={items}
+      value={value}
+      onValueChange={onChange}
+      onInputValueChange={setSearchValue}
+    >
+      <div className="relative">
+        <ComboboxInput placeholder={placeholder} {...controllerProps} />
 
-            <ScrollArea viewportClassName="max-h-64">
-              <CommandGroup className="h-full overflow-y-auto">
-                {value ? (
-                  <>
-                    <CommandItem
-                      className="opacity-80"
-                      value="unset"
-                      onSelect={() => {
-                        onChange(undefined);
-                        setOpen(false);
-                        onBlur();
-                      }}
-                    >
-                      Clear Selection
-                    </CommandItem>
-                    <CommandSeparator />
-                  </>
-                ) : null}
+        <div className="absolute top-0 right-2 flex">
+          <ComboboxClear />
 
-                {categories?.map((category) => (
-                  <CommandItem
-                    key={category.id}
-                    value={category.id}
-                    onSelect={() => {
-                      onChange(category.id);
-                      setOpen(false);
-                    }}
-                  >
+          <ComboboxTrigger className="p-2">
+            <ComboboxIcon>
+              <CaretSortIcon className="size-4" />
+            </ComboboxIcon>
+          </ComboboxTrigger>
+        </div>
+      </div>
+
+      <div ref={setPortalRef} className="contents" />
+
+      <ComboboxPortal container={portalRef}>
+        <ComboboxPositioner align="start" sideOffset={4}>
+          <ComboboxPopup className="w-full pt-0" aria-label="Select category">
+            <ComboboxList>
+              {(category: string) => (
+                <ComboboxItem key={category} value={category}>
+                  <ComboboxItemIndicator />
+                  <div className="col-start-2 flex gap-2">
                     <div className="mr-2">
-                      <CategoryIcon category={category.id} />
+                      <CategoryIcon category={category} />
                     </div>
-                    {category.id}
-                  </CommandItem>
-                ))}
-
-                {searchValue.length > 0 &&
-                  !categories?.some((c) => c.id === searchValue) && (
-                    <CommandItem
-                      value={searchValue}
-                      onSelect={() => {
-                        onChange(searchValue);
-                        setOpen(false);
-                        onBlur();
-                      }}
-                    >
-                      <PlusIcon className="mr-2 size-4" />
-                      Create {`'${searchValue}'`}
-                    </CommandItem>
-                  )}
-              </CommandGroup>
-            </ScrollArea>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+                    {categoryIdsSet.has(category)
+                      ? category
+                      : `Create: "${category}"`}
+                  </div>
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxPopup>
+        </ComboboxPositioner>
+      </ComboboxPortal>
+    </Combobox>
   );
 };

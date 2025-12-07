@@ -24,9 +24,9 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
 
   await expect(page.getByLabel(/amount/i)).toBeFocused();
   await page.getByLabel(/amount/i).pressSequentially("10000");
-  await page.getByLabel(/category/i).click();
 
-  await page.getByPlaceholder(/search/i).fill("new category");
+  await page.getByPlaceholder(/category/i).clear();
+  await page.getByPlaceholder(/category/i).fill("new category");
   await page.getByRole("option", { name: /create/i }).click();
 
   await page.getByLabel(/description/i).fill("test transaction");
@@ -84,9 +84,9 @@ test(`creates a shared sheet transaction successfully`, async ({
 
   await expect(page.getByLabel(/how much/i)).toBeFocused();
   await page.getByLabel(/how much/i).pressSequentially("10000");
-  await page.getByLabel(/category/i).click();
 
-  await page.getByPlaceholder(/search/i).fill("new category");
+  await page.getByPlaceholder(/category/i).clear();
+  await page.getByPlaceholder(/category/i).fill("new category");
   await page.getByRole("option", { name: /create/i }).click();
 
   await page.getByLabel(/description/i).fill("test transaction");

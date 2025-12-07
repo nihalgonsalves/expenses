@@ -176,11 +176,7 @@ const EditPersonalTransactionForm = ({
             <FormItem>
               <FormLabel>Category</FormLabel>
               <FormControl>
-                <CategorySelect
-                  className="w-full"
-                  placeholder="Select a category"
-                  {...field}
-                />
+                <CategorySelect placeholder="Select a category" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

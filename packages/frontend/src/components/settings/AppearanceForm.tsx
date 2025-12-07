@@ -114,7 +114,9 @@ export const AppearanceForm = () => {
             onBlur={noop}
             options={supportedCurrencies}
             value={preferredCurrencyCode}
-            onChange={setPreferredCurrencyCode}
+            onChange={(newCode) => {
+              void setPreferredCurrencyCode(newCode ?? undefined);
+            }}
           />
         </Label>
 

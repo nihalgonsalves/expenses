@@ -1,98 +1,69 @@
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { Popover } from "@radix-ui/react-popover";
-import { useState, type ComponentProps } from "react";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import { useState, type Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { CURRENCY_CODES } from "../../utils/money";
-import { Button } from "../ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
-import { PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ScrollArea } from "../ui/scroll-area";
-import { cn } from "../ui/utils";
+  Combobox,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxPopup,
+  ComboboxPositioner,
+  ComboboxIcon,
+  ComboboxTrigger,
+  ComboboxItemIndicator,
+  ComboboxPortal,
+} from "../ui/combobox";
 
 type CurrencySelectProps = {
   id?: string;
   value: string;
-  onChange: (newCode: string) => void;
+  onChange: (newCode: string | null) => void;
   options?: string[];
-} & Pick<ComponentProps<typeof Button>, "ref"> &
-  Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
+  ref?: Ref<HTMLInputElement>;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const CurrencySelect = ({
-  ref,
-  id,
   value,
   onChange,
   options = CURRENCY_CODES,
-  onBlur,
+  ref,
   ...controllerProps
 }: CurrencySelectProps) => {
-  const [open, setOpen] = useState(false);
-
-  const optionObjects = options.map((o) => ({
-    value: o,
-    label: o,
-  }));
+  // issues with rendering inside the Vaul drawer
+  const [portalRef, setPortalRef] = useState<HTMLDivElement | null>(null);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} modal>
-      <PopoverTrigger asChild>
-        <Button
-          {...controllerProps}
-          id={id}
-          ref={ref}
-          $variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="min-w-24 justify-between bg-inherit md:min-w-48"
-        >
-          {value
-            ? optionObjects.find((opt) => opt.value === value)?.label
-            : "Select"}
-          <CaretSortIcon className="ml-2 size-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-(--radix-popover-trigger-width) p-0">
-        <Command>
-          <CommandInput inputMode="search" placeholder="Search" />
-          <CommandList>
-            <CommandEmpty>
-              <span className="visible md:hidden">Not found</span>
-              <span className="hidden md:inline">No currency code found</span>
-            </CommandEmpty>
-            <CommandGroup>
-              <ScrollArea viewportClassName="max-h-72">
-                {optionObjects.map((option) => (
-                  <CommandItem
-                    key={option.value}
-                    value={option.value}
-                    onSelect={() => {
-                      onChange(option.value);
-                      setOpen(false);
-                      onBlur();
-                    }}
-                  >
-                    <CheckIcon
-                      className={cn(
-                        "mr-2 size-4",
-                        value === option.value ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    {option.label}
-                  </CommandItem>
-                ))}
-              </ScrollArea>
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Combobox items={options} value={value} onValueChange={onChange}>
+      <div className="relative">
+        <ComboboxInput placeholder="e.g. EUR" ref={ref} {...controllerProps} />
+
+        <ComboboxTrigger className="absolute top-0 right-0 border-none">
+          <ComboboxIcon>
+            <CaretSortIcon />
+          </ComboboxIcon>
+        </ComboboxTrigger>
+      </div>
+
+      <div ref={setPortalRef} className="contents" />
+
+      <ComboboxPortal container={portalRef}>
+        <ComboboxPositioner align="start" sideOffset={4}>
+          <ComboboxPopup className="w-full pt-0" aria-label="Select currency">
+            <ComboboxEmpty>No currency codes found.</ComboboxEmpty>
+            <ComboboxList>
+              {(code: string) => (
+                <ComboboxItem key={code} value={code}>
+                  <ComboboxItemIndicator />
+                  <div className="col-start-2">{code}</div>
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxPopup>
+        </ComboboxPositioner>
+      </ComboboxPortal>
+    </Combobox>
   );
 };
