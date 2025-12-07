@@ -9,6 +9,13 @@ import { userRouter } from "./service/user/userRouter.ts";
 import { publicProcedure, router } from "./trpc.ts";
 import { getErrorMessage } from "./utils/trpcUtils.ts";
 
+// HACK: fix for this error on the frontend:
+//  The inferred type of 'useTRPC' cannot be named without a reference to
+//  '../../../../node_modules/@trpc/server/dist/unstable-core-do-not-import.d-BJCeJk5P.cjs'.
+//  This is likely not portable. A type annotation is necessary.
+// Note that this seems to be fixed in tsgo, it could be unnecessary when TypeScript v7 is out.
+export type * from "@trpc/server";
+
 const health = publicProcedure.query(async ({ ctx }) => {
   try {
     const response = await ctx.prisma.$queryRaw`SELECT 1 as one`;
