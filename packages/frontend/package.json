@@ -106,7 +106,7 @@
     "serve": "14.2.5",
     "storybook": "10.1.4",
     "tsx": "4.21.0",
-    "vite": "7.2.6",
+    "vite": "8.0.0-beta.0",
     "vite-plugin-istanbul": "7.2.1",
     "vite-plugin-pwa": "1.2.0",
     "vitest": "4.0.15",
