@@ -1,5 +1,5 @@
-import { CaretSortIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
+import { ChevronsUpDownIcon } from "lucide-react";
 import { useState, type Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
@@ -72,7 +72,7 @@ export const CategorySelect = ({
 
           <ComboboxTrigger className="p-2">
             <ComboboxIcon>
-              <CaretSortIcon className="size-4" />
+              <ChevronsUpDownIcon className="size-4" />
             </ComboboxIcon>
           </ComboboxTrigger>
         </div>

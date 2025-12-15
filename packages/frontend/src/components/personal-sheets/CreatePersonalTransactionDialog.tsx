@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ThickArrowDownIcon, ThickArrowUpIcon } from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
@@ -47,7 +47,7 @@ const TYPE_OPTIONS = [
     value: "EXPENSE",
     label: (
       <>
-        <ThickArrowUpIcon className="mr-2 text-xl" />
+        <ArrowUpIcon className="mr-2 size-4" />
         Expense
       </>
     ),
@@ -56,7 +56,7 @@ const TYPE_OPTIONS = [
     value: "INCOME",
     label: (
       <>
-        <ThickArrowDownIcon className="mr-2 text-xl" />
+        <ArrowDownIcon className="mr-2 size-4" />
         Income
       </>
     ),

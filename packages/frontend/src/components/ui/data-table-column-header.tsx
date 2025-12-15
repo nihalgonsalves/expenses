@@ -1,12 +1,12 @@
 "use no memo";
 
+import type { Column } from "@tanstack/react-table";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
-  CaretSortIcon,
-  EyeNoneIcon,
-} from "@radix-ui/react-icons";
-import type { Column } from "@tanstack/react-table";
+  ChevronsUpDownIcon,
+  EyeOffIcon,
+} from "lucide-react";
 import type { ComponentProps } from "react";
 
 import { Button } from "./button";
@@ -48,7 +48,7 @@ export const DataTableColumnHeader = <TData, TValue>({
             ) : column.getIsSorted() === "asc" ? (
               <ArrowUpIcon className="ml-2 h-4 w-4" />
             ) : (
-              <CaretSortIcon className="ml-2 h-4 w-4" />
+              <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
             )}
           </Button>
         </DropdownMenuTrigger>
@@ -75,7 +75,7 @@ export const DataTableColumnHeader = <TData, TValue>({
               column.toggleVisibility(false);
             }}
           >
-            <EyeNoneIcon className="text-muted-foreground/70 mr-2 size-3.5" />
+            <EyeOffIcon className="text-muted-foreground/70 mr-2 size-3.5" />
             Hide
           </DropdownMenuItem>
         </DropdownMenuContent>

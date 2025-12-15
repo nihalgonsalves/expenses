@@ -1,5 +1,5 @@
-import { ActivityLogIcon } from "@radix-ui/react-icons";
 import { Link } from "@tanstack/react-router";
+import { ActivityIcon } from "lucide-react";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -29,7 +29,7 @@ export const GroupSheet = ({
     <div className="p-2">
       <Button $variant="outline" className="w-full" asChild>
         <Link to="/" search={{ sheetId: [groupSheet.id] }}>
-          <ActivityLogIcon className="mr-2" /> Transactions
+          <ActivityIcon className="mr-2" /> Transactions
         </Link>
       </Button>
     </div>

@@ -1,7 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import { AvatarIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { UserIcon } from "lucide-react";
 
 import { useTRPC } from "../api/trpc";
 import { useResetCache } from "../api/useCacheReset";
@@ -53,7 +53,7 @@ export const LoggedInNavBarAvatar = ({
     <DropdownMenuTrigger asChild>
       <Button className={className} $variant="ghost" $size="icon">
         <AccessibleIcon label="Profile and Settings menu">
-          <AvatarIcon className="text-primary-foreground size-5" />
+          <UserIcon className="text-primary-foreground size-5" />
         </AccessibleIcon>
       </Button>
     </DropdownMenuTrigger>

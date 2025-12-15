@@ -1,5 +1,5 @@
-import { PlusIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
+import { PlusIcon } from "lucide-react";
 
 import { useTRPC } from "../../api/trpc";
 import { FloatingActionButton } from "../FloatingActionButton";

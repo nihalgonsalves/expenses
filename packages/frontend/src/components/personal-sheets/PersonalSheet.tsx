@@ -1,14 +1,14 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import {
-  ActivityLogIcon,
-  DotsVerticalIcon,
-  PlusIcon,
-  TimerIcon,
-  TrashIcon,
-  UploadIcon,
-} from "@radix-ui/react-icons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import {
+  ActivityIcon,
+  MoreVerticalIcon,
+  PlusIcon,
+  ClockIcon,
+  Trash2Icon,
+  UploadIcon,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -99,7 +99,7 @@ const TransactionScheduleDropdownMenu = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button $size="icon" $variant="outline" className="bg-inherit">
-          <DotsVerticalIcon />
+          <MoreVerticalIcon />
         </Button>
       </DropdownMenuTrigger>
 
@@ -115,7 +115,7 @@ const TransactionScheduleDropdownMenu = ({
                 e.preventDefault();
               }}
             >
-              <TrashIcon className="mr-2" /> Delete
+              <Trash2Icon className="mr-2" /> Delete
             </DropdownMenuItem>
           }
         />
@@ -154,7 +154,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
       <div className="p-2">
         <Button $variant="outline" className="w-full" asChild>
           <Link to="/" search={{ sheetId: [personalSheet.id] }}>
-            <ActivityLogIcon className="mr-2" /> Transactions
+            <ActivityIcon className="mr-2" /> Transactions
           </Link>
         </Button>
       </div>
@@ -214,7 +214,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                                   <TooltipTrigger>
                                     <Badge variant="outline">
                                       <AccessibleIcon label="Pending processing">
-                                        <TimerIcon />
+                                        <ClockIcon />
                                       </AccessibleIcon>
                                     </Badge>
                                   </TooltipTrigger>

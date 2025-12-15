@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { PlusCircleIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -106,7 +106,7 @@ export const CreateSheetForm = ({
           disabled={disabled}
           isLoading={isPending}
         >
-          <PlusCircledIcon className="mr-2" /> Create Sheet
+          <PlusCircleIcon className="mr-2" /> Create Sheet
         </Button>
       </form>
     </Form>

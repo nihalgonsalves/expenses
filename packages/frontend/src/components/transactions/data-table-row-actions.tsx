@@ -2,13 +2,14 @@
 "use no memo";
 
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import {
-  DotsVerticalIcon,
-  Pencil1Icon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import type { Row } from "@tanstack/react-table";
+import {
+  MoreVerticalIcon,
+  PencilIcon,
+  Trash2Icon,
+  TrashIcon,
+} from "lucide-react";
 
 import { useTRPC } from "../../api/trpc";
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
@@ -62,7 +63,7 @@ const PersonalTransactionDropdownContent = ({
               e.preventDefault();
             }}
           >
-            <Pencil1Icon className="mr-2" /> Edit
+            <PencilIcon className="mr-3 size-3" /> Edit
           </DropdownMenuItem>
         }
       />
@@ -77,7 +78,7 @@ const PersonalTransactionDropdownContent = ({
               e.preventDefault();
             }}
           >
-            <TrashIcon className="mr-2" /> Delete
+            <Trash2Icon className="mr-3 size-3" /> Delete
           </DropdownMenuItem>
         }
       />
@@ -140,7 +141,7 @@ export const DataTableRowActions = ({ row }: DataTableRowActionsProps) => (
           className="data-[state=open]:bg-muted flex p-0"
         >
           <AccessibleIcon label="Open menu">
-            <DotsVerticalIcon />
+            <MoreVerticalIcon />
           </AccessibleIcon>
         </Button>
       </DropdownMenuTrigger>

@@ -1,7 +1,7 @@
 "use no memo";
 
-import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import type { Column } from "@tanstack/react-table";
+import { CheckIcon, PlusCircleIcon } from "lucide-react";
 import type { ComponentType } from "react";
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
@@ -49,7 +49,7 @@ export const DataTableFacetedFilter = <TData, TValue>({
           $size="sm"
           className="h-8 justify-start border-dashed lg:justify-center"
         >
-          <PlusCircledIcon className="mr-2 size-4" />
+          <PlusCircleIcon className="mr-2 size-4" />
           {title}
           {selectedValues.size > 0 && (
             <>

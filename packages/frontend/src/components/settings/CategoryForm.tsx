@@ -1,6 +1,6 @@
 import Picker from "@emoji-mart/react";
-import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { HelpCircleIcon } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -77,7 +77,7 @@ export const CategoryForm = () => {
                       {emojiShortCode ? (
                         <em-emoji shortcodes={emojiShortCode} />
                       ) : (
-                        <QuestionMarkCircledIcon />
+                        <HelpCircleIcon />
                       )}
                     </Button>
                   </PopoverTrigger>

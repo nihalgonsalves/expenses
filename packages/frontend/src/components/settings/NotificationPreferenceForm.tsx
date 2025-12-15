@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ExclamationTriangleIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { AlertTriangleIcon, Trash2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -129,7 +129,7 @@ export const NotificationPreferenceForm = () => {
       <CardContent className="flex flex-col gap-8">
         {permission === "denied" && (
           <Alert $variant="destructive">
-            <ExclamationTriangleIcon className="size-4" />
+            <AlertTriangleIcon className="size-4" />
             <AlertTitle>You have denied notifications.</AlertTitle>
             <AlertDescription>
               Please allow them in your browser settings, and make sure that
@@ -141,7 +141,7 @@ export const NotificationPreferenceForm = () => {
 
         {permission === "not_supported" && (
           <Alert $variant="destructive">
-            <ExclamationTriangleIcon className="size-4" />
+            <AlertTriangleIcon className="size-4" />
             <AlertTitle>
               Push notifications are not supported in your browser or
               environment.
@@ -212,7 +212,7 @@ export const NotificationPreferenceForm = () => {
                     handleDeleteSubscription(subscription.id)
                   }
                 >
-                  <TrashIcon />
+                  <Trash2Icon />
                 </Button>
               </li>
             ))}

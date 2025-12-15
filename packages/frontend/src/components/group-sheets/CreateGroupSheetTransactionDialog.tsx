@@ -1,9 +1,5 @@
-import {
-  CheckIcon,
-  ThickArrowDownIcon,
-  ThickArrowUpIcon,
-} from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
+import { CheckIcon, ArrowDownIcon, ArrowUpIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
@@ -23,7 +19,7 @@ const TYPE_OPTIONS = [
     value: "EXPENSE",
     label: (
       <>
-        <ThickArrowUpIcon className="mr-2 text-xl" />
+        <ArrowUpIcon className="mr-2 size-4" />
         Expense
       </>
     ),
@@ -32,7 +28,7 @@ const TYPE_OPTIONS = [
     value: "INCOME",
     label: (
       <>
-        <ThickArrowDownIcon className="mr-2 text-xl" />
+        <ArrowDownIcon className="mr-2 size-4" />
         Income
       </>
     ),
@@ -41,7 +37,7 @@ const TYPE_OPTIONS = [
     value: "TRANSFER",
     label: (
       <>
-        <CheckIcon className="mr-2 text-xl" />
+        <CheckIcon className="mr-2 size-4" />
         Settlement
       </>
     ),

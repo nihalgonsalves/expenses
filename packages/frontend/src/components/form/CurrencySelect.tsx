@@ -1,4 +1,4 @@
-import { CaretSortIcon } from "@radix-ui/react-icons";
+import { ChevronsUpDownIcon } from "lucide-react";
 import { useState, type Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
@@ -42,7 +42,7 @@ export const CurrencySelect = ({
 
         <ComboboxTrigger className="absolute top-0 right-0 border-none">
           <ComboboxIcon>
-            <CaretSortIcon />
+            <ChevronsUpDownIcon className="size-4" />
           </ComboboxIcon>
         </ComboboxTrigger>
       </div>

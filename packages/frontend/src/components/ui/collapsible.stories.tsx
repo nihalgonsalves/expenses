@@ -1,5 +1,5 @@
-import { CaretSortIcon } from "@radix-ui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ChevronsUpDownIcon } from "lucide-react";
 
 import { Button } from "./button";
 import {
@@ -18,7 +18,7 @@ const meta: Meta<typeof Collapsible> = {
         </h4>
         <CollapsibleTrigger asChild>
           <Button $variant="ghost" $size="sm">
-            <CaretSortIcon className="size-4" />
+            <ChevronsUpDownIcon className="size-4" />
             <span className="sr-only">Toggle</span>
           </Button>
         </CollapsibleTrigger>

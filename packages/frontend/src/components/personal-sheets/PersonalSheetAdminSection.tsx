@@ -1,6 +1,6 @@
-import { ArchiveIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { ArchiveIcon, Trash2Icon } from "lucide-react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -59,7 +59,7 @@ export const PersonalSheetAdminSection = ({
         variant="destructive"
         trigger={
           <Button type="button" $variant="destructive">
-            <TrashIcon className="mr-2" /> Delete
+            <Trash2Icon className="mr-2" /> Delete
           </Button>
         }
       />

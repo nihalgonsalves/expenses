@@ -1,12 +1,12 @@
 "use client";
 
+import * as SelectPrimitive from "@radix-ui/react-select";
 import {
-  CaretSortIcon,
+  ChevronsUpDownIcon,
   CheckIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-} from "@radix-ui/react-icons";
-import * as SelectPrimitive from "@radix-ui/react-select";
+} from "lucide-react";
 import type { ComponentProps } from "react";
 
 import { cn, twx } from "./utils";
@@ -33,7 +33,7 @@ const SelectTrigger = ({
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <CaretSortIcon className="size-4 opacity-50" />
+      <ChevronsUpDownIcon className="size-4 opacity-50" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 );

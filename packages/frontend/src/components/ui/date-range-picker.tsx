@@ -2,8 +2,8 @@
 
 // https://github.com/johnpolacek/date-range-picker-for-shadcn/blob/2ee5787f5b2a2034f9133c484847ec4df9d296df/src/date-range-picker.tsx
 
-import { CheckIcon, CalendarIcon } from "@radix-ui/react-icons";
 import { formatDateRange } from "little-date";
+import { CheckIcon, CalendarIcon } from "lucide-react";
 import {
   type FC,
   useState,

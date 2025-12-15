@@ -1,9 +1,9 @@
 "use client";
 "use no memo";
 
-import { Cross2Icon, MixerHorizontalIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import type { Table } from "@tanstack/react-table";
+import { XIcon, SlidersHorizontalIcon } from "lucide-react";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { z } from "zod";
@@ -76,7 +76,7 @@ export const DataTableToolbar = <TData,>({
                 setIsOpen((prev) => !prev);
               }}
             >
-              <MixerHorizontalIcon className="mr-2" />
+              <SlidersHorizontalIcon className="mr-2" />
               Filters
             </Button>
           </CollapsibleTrigger>
@@ -144,7 +144,7 @@ export const DataTableToolbar = <TData,>({
               className="h-8"
             >
               Reset
-              <Cross2Icon className="ml-2 size-4" />
+              <XIcon className="ml-2 size-4" />
             </Button>
           ) : null}
           <div className="grow" />

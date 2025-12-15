@@ -1,9 +1,4 @@
-import {
-  CheckIcon,
-  MoonIcon,
-  SunIcon,
-  TargetIcon,
-} from "@radix-ui/react-icons";
+import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from "lucide-react";
 
 import {
   type Theme,
@@ -60,7 +55,7 @@ export const AppearanceForm = () => {
               value: "system",
               label: (
                 <>
-                  <TargetIcon className="mr-2" /> System
+                  <MonitorIcon className="mr-2" /> System
                 </>
               ),
             },

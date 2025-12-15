@@ -1,5 +1,5 @@
 import { Combobox as ComboboxPrimitive } from "@base-ui-components/react/combobox";
-import { CheckIcon, Cross1Icon, Cross2Icon } from "@radix-ui/react-icons";
+import { CheckIcon, XIcon } from "lucide-react";
 import type { Ref, RefObject } from "react";
 
 import { Button } from "./button";
@@ -47,7 +47,7 @@ const ComboboxClear = ({
     data-slot="combobox-clear"
     {...props}
   >
-    {children ?? <Cross2Icon className="size-3" />}
+    {children ?? <XIcon className="size-3" />}
   </ComboboxPrimitive.Clear>
 );
 
@@ -100,7 +100,7 @@ const ComboboxChipRemove = ({
     aria-label="Remove"
     {...props}
   >
-    {children ?? <Cross1Icon className="size-3.5" />}
+    {children ?? <XIcon className="size-3.5" />}
   </ComboboxPrimitive.ChipRemove>
 );
 

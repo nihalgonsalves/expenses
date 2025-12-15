@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import { PersonIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import { UserIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import type { z } from "zod";
 
@@ -137,7 +137,7 @@ export const CreateGroupForm = ({
                       }}
                     >
                       <AccessibleIcon label="Delete Participant">
-                        <TrashIcon />
+                        <Trash2Icon />
                       </AccessibleIcon>
                     </Button>
                   </div>
@@ -154,7 +154,7 @@ export const CreateGroupForm = ({
           $variant="outline"
           onClick={handleAddParticipant}
         >
-          <PersonIcon className="mr-2" />
+          <UserIcon className="mr-2" />
           Add Participant
         </Button>
 

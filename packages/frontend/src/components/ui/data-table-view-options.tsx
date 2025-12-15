@@ -2,8 +2,8 @@
 "use no memo";
 
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { EyeOpenIcon } from "@radix-ui/react-icons";
 import type { Table } from "@tanstack/react-table";
+import { EyeIcon } from "lucide-react";
 
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 
@@ -32,7 +32,7 @@ export const DataTableViewOptions = <TData,>({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button $variant="outline" $size="sm" className={className}>
-          <EyeOpenIcon className="mr-2 size-4" />
+          <EyeIcon className="mr-2 size-4" />
           View
         </Button>
       </DropdownMenuTrigger>

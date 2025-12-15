@@ -1,9 +1,5 @@
-import {
-  FontBoldIcon,
-  FontItalicIcon,
-  UnderlineIcon,
-} from "@radix-ui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { BoldIcon, ItalicIcon, UnderlineIcon } from "lucide-react";
 
 import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
 
@@ -17,10 +13,10 @@ const meta: Meta<typeof ToggleGroup> = {
   render: (props) => (
     <ToggleGroup {...props}>
       <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <FontBoldIcon className="size-4" />
+        <BoldIcon className="size-4" />
       </ToggleGroupItem>
       <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <FontItalicIcon className="size-4" />
+        <ItalicIcon className="size-4" />
       </ToggleGroupItem>
       <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
         <UnderlineIcon className="size-4" />

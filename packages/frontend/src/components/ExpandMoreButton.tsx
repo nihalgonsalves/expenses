@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon } from "lucide-react";
 import { motion } from "motion/react";
 
 import { Button } from "./ui/button";

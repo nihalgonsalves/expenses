@@ -1,11 +1,7 @@
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  ExclamationTriangleIcon,
-} from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { parse as dateFnsParse } from "date-fns";
+import { ArrowLeftIcon, ArrowRightIcon, AlertTriangleIcon } from "lucide-react";
 import Papa from "papaparse";
 import { useId, useState, type ChangeEventHandler } from "react";
 import { z } from "zod";
@@ -172,7 +168,7 @@ const SafeDisplay = ({
       <TooltipProvider delayDuration={100}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <ExclamationTriangleIcon />
+            <AlertTriangleIcon />
           </TooltipTrigger>
           <TooltipContent side="top">
             <p>{`${

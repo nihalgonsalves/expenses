@@ -3629,7 +3629,6 @@ __metadata:
     "@radix-ui/react-collapsible": "npm:1.1.12"
     "@radix-ui/react-dialog": "npm:1.1.15"
     "@radix-ui/react-dropdown-menu": "npm:2.1.16"
-    "@radix-ui/react-icons": "npm:1.3.2"
     "@radix-ui/react-label": "npm:2.1.8"
     "@radix-ui/react-navigation-menu": "npm:1.2.14"
     "@radix-ui/react-popover": "npm:1.1.15"
@@ -3678,6 +3677,7 @@ __metadata:
     happy-dom: "npm:20.0.11"
     jotai: "npm:2.15.2"
     little-date: "npm:1.2.1"
+    lucide-react: "npm:^0.561.0"
     motion: "npm:12.23.25"
     npm-run-all2: "npm:8.0.4"
     papaparse: "npm:5.5.3"
@@ -5068,15 +5068,6 @@ __metadata:
     "@types/react-dom":
       optional: true
   checksum: 10c0/8a6071331bdeeb79b223463de75caf759b8ad19339cab838e537b8dbb2db236891a1f4df252445c854d375d43d9d315dfcce0a6b01553a2984ec372bb8f1300e
-  languageName: node
-  linkType: hard
-
-"@radix-ui/react-icons@npm:1.3.2":
-  version: 1.3.2
-  resolution: "@radix-ui/react-icons@npm:1.3.2"
-  peerDependencies:
-    react: ^16.x || ^17.x || ^18.x || ^19.0.0 || ^19.0.0-rc
-  checksum: 10c0/3a380c7ae47e330ebd8ab4846729a543b4a0be5ecb1e2a7a571f4394728ff7d428b01f6620128051b6b69d63138a0ab8de77af78221ec364fbc5d126acf55b4a
   languageName: node
   linkType: hard
 
@@ -15103,6 +15094,15 @@ __metadata:
   version: 1.1.3
   resolution: "lru.min@npm:1.1.3"
   checksum: 10c0/62567c9d9e6e3b1b3793853ac509007082d93dc838819998a9911a3058b7ca53045ba6a477ab8ccb983788591dd7ff90e05f3b073ba0d30d8b8245c9ef17a06d
+  languageName: node
+  linkType: hard
+
+"lucide-react@npm:^0.561.0":
+  version: 0.561.0
+  resolution: "lucide-react@npm:0.561.0"
+  peerDependencies:
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/d23c96a543bdb1e11cec1f05a631f86f961f2ee17a10da42e7c297bb06c5f1587a1b66927f58082c67d8edc0749b0a5e44e543b461deab9db19d22fb9ca93cd7
   languageName: node
   linkType: hard
 

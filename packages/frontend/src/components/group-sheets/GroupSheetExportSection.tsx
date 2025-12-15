@@ -1,5 +1,5 @@
-import { DownloadIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
+import { DownloadIcon } from "lucide-react";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 

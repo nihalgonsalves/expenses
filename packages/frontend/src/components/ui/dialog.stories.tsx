@@ -1,5 +1,5 @@
-import { CopyIcon } from "@radix-ui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { CopyIcon } from "lucide-react";
 import { expect, userEvent, within, waitFor, screen } from "storybook/test";
 
 import { Button } from "./button";

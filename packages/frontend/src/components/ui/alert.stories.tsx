@@ -1,5 +1,5 @@
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { AlertTriangleIcon } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 
@@ -10,7 +10,7 @@ const meta: Meta<typeof Alert> = {
   },
   render: (props) => (
     <Alert {...props}>
-      <ExclamationTriangleIcon />
+      <AlertTriangleIcon />
       <AlertTitle>Title</AlertTitle>
       <AlertDescription>Description</AlertDescription>
     </Alert>

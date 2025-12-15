@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircledIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
+import { CheckCircle2Icon } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -108,7 +108,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
                   <FormDescription className="flex items-center gap-1.5">
                     {me.emailVerified ? (
                       <>
-                        <CheckCircledIcon /> Verified
+                        <CheckCircle2Icon /> Verified
                       </>
                     ) : (
                       <Button

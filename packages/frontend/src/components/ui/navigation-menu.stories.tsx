@@ -1,5 +1,5 @@
-import { StarFilledIcon } from "@radix-ui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { StarIcon } from "lucide-react";
 import type { ComponentProps } from "react";
 import { userEvent, within, screen, waitFor, expect } from "storybook/test";
 
@@ -94,7 +94,7 @@ const meta: Meta<typeof NavigationMenu> = {
                     className="from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-linear-to-b p-6 no-underline outline-hidden select-none focus:shadow-md"
                     href="/"
                   >
-                    <StarFilledIcon className="size-6" />
+                    <StarIcon className="size-6" />
                     <div className="mt-4 mb-2 text-lg font-medium">
                       shadcn/ui
                     </div>

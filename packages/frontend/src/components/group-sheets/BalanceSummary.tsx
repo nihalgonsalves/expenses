@@ -1,13 +1,13 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import {
-  CaretSortIcon,
-  CheckIcon,
-  DotsVerticalIcon,
-  ExitIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
+import {
+  ChevronsUpDownIcon,
+  CheckIcon,
+  MoreVerticalIcon,
+  LogOutIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { useState } from "react";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
@@ -88,7 +88,7 @@ const PersonMenu = ({
   if (!visible) {
     return (
       <Button $size="icon" $variant="outline" disabled>
-        <DotsVerticalIcon />
+        <MoreVerticalIcon />
       </Button>
     );
   }
@@ -98,7 +98,7 @@ const PersonMenu = ({
       <DropdownMenuTrigger asChild>
         <Button $size="icon" $variant="outline" className="bg-inherit">
           <AccessibleIcon label="Member actions">
-            <DotsVerticalIcon />
+            <MoreVerticalIcon />
           </AccessibleIcon>
         </Button>
       </DropdownMenuTrigger>
@@ -109,11 +109,11 @@ const PersonMenu = ({
         >
           {actorInfo.isAdmin ? (
             <>
-              <TrashIcon className="mr-2" /> Remove Participant
+              <Trash2Icon className="mr-2" /> Remove Participant
             </>
           ) : (
             <>
-              <ExitIcon className="mr-2" /> Leave
+              <LogOutIcon className="mr-2" /> Leave
             </>
           )}
         </DropdownMenuItem>
@@ -259,7 +259,7 @@ const SummaryCard = ({
               </AccessibleIcon>
             ) : (
               <AccessibleIcon label="Toggle">
-                <CaretSortIcon className="h-4 w-4" />
+                <ChevronsUpDownIcon className="h-4 w-4" />
               </AccessibleIcon>
             )}
           </Button>

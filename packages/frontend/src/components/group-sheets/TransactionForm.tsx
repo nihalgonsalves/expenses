@@ -1,15 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import {
-  Pencil1Icon,
-  PieChartIcon,
-  PlusIcon,
-  ReloadIcon,
-  SwitchIcon,
-  TokensIcon,
-} from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
 import { type Dinero, allocate } from "dinero.js";
+import {
+  PieChartIcon,
+  PlusIcon,
+  RotateCcwIcon,
+  SplitIcon,
+  ListChecksIcon,
+  CalculatorIcon,
+  CirclePercentIcon,
+} from "lucide-react";
 import { useState, type ReactNode } from "react";
 import {
   useFieldArray,
@@ -158,7 +159,7 @@ const SPLIT_OPTIONS: {
     value: GroupTransactionSplitType.Evenly,
     label: (
       <>
-        <TokensIcon className="mr-2" /> Split Evenly
+        <SplitIcon className="mr-2" /> Split Evenly
       </>
     ),
   },
@@ -167,7 +168,7 @@ const SPLIT_OPTIONS: {
     value: GroupTransactionSplitType.Selected,
     label: (
       <>
-        <SwitchIcon className="mr-2" /> Select Participants
+        <ListChecksIcon className="mr-2" /> Select Participants
       </>
     ),
   },
@@ -181,13 +182,20 @@ const SPLIT_OPTIONS: {
     ),
   },
 
-  { value: GroupTransactionSplitType.Percentage, label: <>% Percentage</> },
+  {
+    value: GroupTransactionSplitType.Percentage,
+    label: (
+      <>
+        <CirclePercentIcon className="mr-2" /> Percentage
+      </>
+    ),
+  },
 
   {
     value: GroupTransactionSplitType.Amounts,
     label: (
       <>
-        <Pencil1Icon className="mr-2" /> Enter Amounts
+        <CalculatorIcon className="mr-2" /> Enter Amounts
       </>
     ),
   },
@@ -537,7 +545,7 @@ const SplitsFormSection = ({
                         }}
                       >
                         <AccessibleIcon label="Reset ratio">
-                          <ReloadIcon />
+                          <RotateCcwIcon />
                         </AccessibleIcon>
                       </Button>
                     )}

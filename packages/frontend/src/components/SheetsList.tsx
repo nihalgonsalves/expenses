@@ -1,6 +1,6 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import { PlusIcon } from "@radix-ui/react-icons";
 import { Link } from "@tanstack/react-router";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import type { SheetsResponse } from "@nihalgonsalves/expenses-shared/types/sheet";

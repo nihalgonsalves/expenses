@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import { PlusIcon } from "@radix-ui/react-icons";
 import { useMutation } from "@tanstack/react-query";
+import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 

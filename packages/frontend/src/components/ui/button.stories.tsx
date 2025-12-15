@@ -1,5 +1,5 @@
-import { ChevronRightIcon } from "@radix-ui/react-icons";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { ChevronRightIcon } from "lucide-react";
 
 import { Button } from "./button";
 

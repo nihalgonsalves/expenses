@@ -4,7 +4,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronDownIcon,
-} from "@radix-ui/react-icons";
+} from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
   DayPicker,

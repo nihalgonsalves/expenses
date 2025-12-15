@@ -1,16 +1,16 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import {
-  ArrowLeftIcon,
-  GearIcon,
-  HomeIcon,
-  ListBulletIcon,
-  PieChartIcon,
-  SymbolIcon,
-} from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import type { TRPCClientErrorLike } from "@trpc/client";
 import { atom, useAtom } from "jotai";
+import {
+  ArrowLeftIcon,
+  CogIcon,
+  HomeIcon,
+  ListIcon,
+  PieChartIcon,
+  RefreshCcwIcon,
+} from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 import { useInterval } from "react-use";
@@ -59,7 +59,7 @@ const navItems = [
   {
     to: "/sheets",
     text: "Sheets",
-    icon: <ListBulletIcon className="size-5" />,
+    icon: <ListIcon className="size-5" />,
   },
   {
     to: "/stats",
@@ -69,7 +69,7 @@ const navItems = [
   {
     to: "/settings",
     text: "Settings",
-    icon: <GearIcon className="size-5" />,
+    icon: <CogIcon className="size-5" />,
   },
 ];
 
@@ -336,7 +336,7 @@ export const RootLoader = <TData,>({
               onClick={refetch}
             >
               <AccessibleIcon label="Refresh">
-                <SymbolIcon />
+                <RefreshCcwIcon />
               </AccessibleIcon>
             </Button>
           ) : null}
