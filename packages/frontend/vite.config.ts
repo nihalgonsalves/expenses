@@ -16,6 +16,11 @@ const relativePath = (path: string) =>
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  resolve: {
+    alias: {
+      "#": relativePath("./src"),
+    },
+  },
   build: {
     target: "es2022",
     sourcemap: true,

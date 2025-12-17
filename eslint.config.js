@@ -20,6 +20,11 @@ export default tseslint.config(
   },
   ...sharedConfig,
   {
+    rules: {
+      "import/extensions": "off",
+    },
+  },
+  {
     plugins: {
       "unused-imports": unusedImports,
     },
@@ -64,12 +69,6 @@ export default tseslint.config(
           },
         },
       ],
-    },
-  },
-  {
-    files: ["packages/backend/**/*", "packages/shared/**/*"],
-    rules: {
-      "import/extensions": "off",
     },
   },
   {

@@ -3,7 +3,10 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "WebWorker"],
-    "outDir": "./build/tsc/"
+    "outDir": "./build/tsc/",
+    "paths": {
+      "#/*": ["./src/*"]
+    }
   },
   "include": ["./*.config.*", "./src/", "./bin/", "./test/", "./.storybook/*"],
   "references": [
