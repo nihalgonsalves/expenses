@@ -18,12 +18,12 @@
       ]
     }
   },
-  "onCreateCommand": "yarn install",
+  "onCreateCommand": "pnpm install",
   "postCreateCommand": {
-    "migrate": "yarn be prisma migrate dev",
-    "prepare": "yarn be prepare:local"
+    "migrate": "pnpm be prisma migrate dev",
+    "prepare": "pnpm be prepare:local"
   },
-  "postAttachCommand": "yarn dev",
+  "postAttachCommand": "pnpm dev",
   "forwardPorts": [5173, 5174],
   "portsAttributes": {
     "5173": {

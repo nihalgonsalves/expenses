@@ -1,4 +1,4 @@
-import { Combobox as ComboboxPrimitive } from "@base-ui-components/react/combobox";
+import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
 import { CheckIcon, XIcon } from "lucide-react";
 import type { Ref, RefObject } from "react";
 

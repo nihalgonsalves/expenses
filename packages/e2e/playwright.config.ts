@@ -15,7 +15,7 @@ export default defineConfig({
   },
   webServer: {
     reuseExistingServer: true,
-    command: "yarn start:e2e",
+    command: "pnpm start:e2e",
     cwd: fileURLToPath(new URL("../../", import.meta.url)),
     port: 5173,
     env: {

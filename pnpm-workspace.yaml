@@ -1,0 +1,24 @@
+packages:
+  - packages/*
+
+saveExact: true
+
+allowBuilds:
+  "@prisma/engines": true
+  "@sentry-internal/node-cpu-profiler": true
+  "@sentry/cli": true
+  "@swc/core": true
+  bcrypt: true
+  cpu-features: true
+  esbuild: true
+  lefthook: true
+  msgpackr-extract: true
+  prisma: true
+  protobufjs: true
+
+  ssh2: false
+  unrs-resolver: false
+
+patchedDependencies:
+  sonner: patches/sonner.patch
+  vaul: patches/vaul.patch

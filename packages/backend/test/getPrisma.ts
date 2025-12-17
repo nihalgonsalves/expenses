@@ -9,7 +9,7 @@ export const getPrisma = async () => {
   const postgresConnectionUri = new URL(inject("postgresConnectionUri"));
   postgresConnectionUri.pathname = `/expenses-${process.env["VITEST_WORKER_ID"]}`;
 
-  await promisify(exec)(`yarn prisma db push`, {
+  await promisify(exec)(`pnpm prisma db push`, {
     cwd: new URL("../", import.meta.url),
     env: {
       ...process.env,

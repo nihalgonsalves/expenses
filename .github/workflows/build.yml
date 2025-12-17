@@ -17,16 +17,16 @@ jobs:
         with:
           # NODE_VERSION
           node-version: 24
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --immutable
+      - run: pnpm install --frozen-lockfile
       - working-directory: ./packages/backend/
-        run: yarn db:generate
-      - run: yarn build
+        run: pnpm db:generate
+      - run: pnpm build
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-      - run: yarn lint
+      - run: pnpm lint
       - uses: hadolint/hadolint-action@v3.3.0
         with:
           dockerfile: ./infra/Dockerfile-backend
@@ -53,16 +53,16 @@ jobs:
         with:
           # NODE_VERSION
           node-version: 24
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --immutable
+      - run: pnpm install --frozen-lockfile
 
       - name: build:storybook, preview:storybook, test:storybook
         working-directory: ./packages/frontend/
         run: |
-          yarn run-s 'build:storybook' 'preview:storybook' &
-          yarn wait-on tcp:6006
-          yarn test:storybook
+          pnpm run-s 'build:storybook' 'preview:storybook' &
+          pnpm wait-on tcp:6006
+          pnpm test:storybook
 
       - id: chromatic
         name: Publish to Chromatic
@@ -92,16 +92,16 @@ jobs:
         with:
           # NODE_VERSION
           node-version: 24
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --immutable
+      - run: pnpm install --frozen-lockfile
       - working-directory: ./packages/backend/
-        run: yarn db:generate
+        run: pnpm db:generate
 
         # pull so that testcontainers doesn't have to, timing out tests.
       - run: docker compose -f compose.dev.yml pull postgres redis
 
-      - run: yarn test --coverage --reporter=default --reporter=junit --outputFile=junit.xml
+      - run: pnpm test --coverage --reporter=default --reporter=junit --outputFile=junit.xml
 
       - uses: codecov/test-results-action@v1
         with:
@@ -151,13 +151,13 @@ jobs:
         with:
           # NODE_VERSION
           node-version: 24
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --immutable
+      - run: pnpm install --frozen-lockfile
       - working-directory: ./packages/backend/
-        run: yarn prepare:e2e && yarn db:generate && yarn prisma migrate deploy
+        run: pnpm prepare:e2e && pnpm db:generate && pnpm prisma migrate deploy
       - working-directory: ./packages/e2e/
-        run: yarn test
+        run: pnpm test
 
       - uses: actions/upload-artifact@v5
         with:

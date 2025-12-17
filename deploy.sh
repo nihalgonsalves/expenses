@@ -18,4 +18,4 @@ docker compose build \
 
 docker compose up --wait --detach
 
-docker compose exec backend yarn prisma migrate deploy
+docker compose exec backend pnpm prisma migrate deploy

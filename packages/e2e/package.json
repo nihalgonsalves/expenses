@@ -7,12 +7,11 @@
     "test": "playwright test",
     "ui": "playwright test --ui",
     "codegen": "playwright codegen http://localhost:5173/",
-    "prepare": "playwright install",
     "prepare-pw": "playwright install --with-deps"
   },
   "devDependencies": {
-    "@nihalgonsalves/expenses-backend": "*",
-    "@nihalgonsalves/expenses-shared": "*",
+    "@nihalgonsalves/expenses-backend": "workspace:*",
+    "@nihalgonsalves/expenses-shared": "workspace:*",
     "@playwright/test": "1.57.0",
     "@trpc/client": "11.8.0",
     "chromatic": "13.3.4",

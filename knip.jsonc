@@ -20,9 +20,9 @@
   ],
   "ignoreDependencies": [
     "chromatic",
-    "tailwindcss-animate",
     "wait-on",
     "@prisma/client",
+    "@vitest/coverage-v8",
   ],
   "ignoreBinaries": [],
 }

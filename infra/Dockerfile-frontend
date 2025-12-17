@@ -8,6 +8,12 @@ RUN apt-get update -y && \
     ca-certificates openssl \
   && rm -rf /var/lib/apt/lists/*
 
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
 
@@ -16,14 +22,12 @@ COPY ./packages/frontend/package.json ./packages/frontend/
 COPY ./packages/backend/package.json ./packages/backend/
 COPY ./packages/shared/package.json ./packages/shared/
 COPY ./packages/e2e/package.json ./packages/e2e/
-COPY ./yarn.lock .
-COPY ./.yarnrc.yml ./
-COPY ./.yarn/ ./.yarn/
+COPY ./pnpm-lock.yaml .
+COPY ./pnpm-workspace.yaml .
+COPY ./patches/ ./patches/
 
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable
 # hadolint ignore=DL3060
-RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --immutable
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY ./tsconfig.json ./tsconfig.base.json ./
 COPY ./packages/frontend/ ./packages/frontend/
@@ -45,7 +49,7 @@ ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV SENTRY_ORG=${SENTRY_ORG}
 ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 
-RUN yarn fe build:vite
+RUN pnpm fe build:vite
 
 FROM caddy:2.8-alpine
 

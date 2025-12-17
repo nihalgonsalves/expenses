@@ -53,7 +53,7 @@ If using GitHub Codespaces or a Dev Container, skip to step 5.
 1. Configure local environment variables
 
    ```sh
-   yarn be prepare:local
+   pnpm be prepare:local
    ```
 
 2. Start dev services
@@ -65,13 +65,13 @@ If using GitHub Codespaces or a Dev Container, skip to step 5.
 3. Migrate databases
 
    ```sh
-   yarn be prisma migrate dev
+   pnpm be prisma migrate dev
    ```
 
 4. Start dev servers
 
    ```sh
-   yarn dev
+   pnpm dev
    ```
 
 5. Optional: Generate demo data
@@ -79,7 +79,7 @@ If using GitHub Codespaces or a Dev Container, skip to step 5.
    Dev server must be running
 
    ```sh
-   yarn be prepare:demo
+   pnpm be prepare:demo
    ```
 
    Login with `user@example.com` and `password1234` (see

@@ -1,6 +1,4 @@
 .*
-!.yarn/patches/
-!.yarnrc.yml
 **/build
 **/dist
 **/node_modules
