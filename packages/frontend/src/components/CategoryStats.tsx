@@ -57,7 +57,7 @@ const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
 );
 
 export const CategoryStats = ({
-  data = [],
+  data,
   dateRange,
   setDateRange,
 }: {

@@ -1,14 +1,8 @@
-import { existsSync } from "node:fs";
-import { loadEnvFile } from "node:process";
 import { hostname } from "os";
 
 import { Temporal } from "temporal-polyfill";
 import { default as webPush } from "web-push";
 import { z } from "zod";
-
-if (existsSync(new URL("../.env", import.meta.url))) {
-  loadEnvFile(new URL("../.env", import.meta.url));
-}
 
 const defaultSecret = "test-secret";
 
