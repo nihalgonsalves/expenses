@@ -20,7 +20,7 @@ const Template = ({
   variant,
   ...props
 }: AlertDialogRootProps & {
-  variant: VariantProps<typeof buttonVariants>["$variant"];
+  variant: VariantProps<typeof buttonVariants>["variant"];
 }) => (
   <AlertDialog {...props}>
     <AlertDialogTrigger>Open</AlertDialogTrigger>
@@ -34,7 +34,7 @@ const Template = ({
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction $variant={variant}>Continue</AlertDialogAction>
+        <AlertDialogAction variant={variant}>Continue</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

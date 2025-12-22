@@ -60,7 +60,7 @@ export const registerSW = async () => {
     toast(
       <>
         A web app update is available.
-        <Button $variant="outline" onClick={update}>
+        <Button variant="outline" onClick={update}>
           Reload?
         </Button>
       </>,

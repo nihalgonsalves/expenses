@@ -13,7 +13,13 @@ export const Avatar = ({ name }: { name: string }) => (
   <Tooltip>
     <TooltipTrigger
       render={
-        <UIAvatar className="border-primary border">
+        <UIAvatar
+          className="border-primary border"
+          render={
+            // eslint-disable-next-line jsx-a11y/control-has-associated-label
+            <button type="button" />
+          }
+        >
           <AvatarFallback className="cursor-pointer">
             {getInitials(name)}
           </AvatarFallback>

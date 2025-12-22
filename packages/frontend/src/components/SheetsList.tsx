@@ -42,12 +42,12 @@ const SheetItem = ({ sheet }: { sheet: SheetsResponse[0] }) => {
   return (
     <div key={sheet.id} className="flex h-14 items-center gap-4">
       <Button
-        $variant="outline"
+        variant="outline"
         className="text-primary grow justify-start gap-4 text-xl font-normal"
-        asChild
-      >
-        <Link to={link}>{sheet.name}</Link>
-      </Button>
+        role="link"
+        nativeButton={false}
+        render={<Link to={link}>{sheet.name}</Link>}
+      />
       {sheet.type === "GROUP" && (
         <div className="flex -space-x-4">
           {sheet.participants.map((participant) => (
@@ -76,7 +76,7 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
             Personal Sheets
             <NewPersonalSheetDialog
               render={
-                <Button $size="icon" $variant="outline">
+                <Button size="icon" variant="outline">
                   <AccessibleIcon label="New personal sheet">
                     <PlusIcon />
                   </AccessibleIcon>
@@ -98,7 +98,7 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
             Group Sheets
             <NewGroupSheetDialog
               render={
-                <Button $size="icon" $variant="outline">
+                <Button size="icon" variant="outline">
                   <AccessibleIcon label="New group sheet">
                     <PlusIcon />
                   </AccessibleIcon>
@@ -119,14 +119,16 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
           <CardHeader>
             <CardTitleWithButton>
               Archived Sheets
-              <CollapsibleTrigger asChild>
-                <ExpandMoreButton
-                  expand={showArchived}
-                  onClick={() => {
-                    setShowArchived((prev) => !prev);
-                  }}
-                />
-              </CollapsibleTrigger>
+              <CollapsibleTrigger
+                render={
+                  <ExpandMoreButton
+                    expand={showArchived}
+                    onClick={() => {
+                      setShowArchived((prev) => !prev);
+                    }}
+                  />
+                }
+              />
             </CardTitleWithButton>
           </CardHeader>
           <CollapsibleContent>

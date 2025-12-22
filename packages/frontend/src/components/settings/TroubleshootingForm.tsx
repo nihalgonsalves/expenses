@@ -54,7 +54,7 @@ export const TroubleshootingForm = () => {
         cache data, and local settings here. This is safe but you need to be
         online to sign in and reload data.
         <Button
-          $variant="destructive"
+          variant="destructive"
           onClick={handleReset}
           isLoading={state === "loading"}
         >

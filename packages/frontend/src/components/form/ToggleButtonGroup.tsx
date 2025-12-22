@@ -15,24 +15,21 @@ export const ToggleButtonGroup = <T extends string>({
   setValue: (newValue: T) => void;
   disabled?: boolean;
 }) => (
-  <ToggleGroup
-    type="single"
+  <ToggleGroup<T>
+    {...(className && { className })}
     variant="outline"
-    className={className}
-    value={value}
-    onValueChange={(newVal) => {
-      // https://www.radix-ui.com/primitives/docs/components/toggle-group#ensuring-there-is-always-a-value
+    value={[value]}
+    onValueChange={([newVal]) => {
       if (newVal) {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        setValue(newVal as T);
+        setValue(newVal);
       }
     }}
   >
     {options.map((option) => (
       <ToggleGroupItem
         key={option.value}
-        disabled={disabled}
         value={option.value}
+        {...(disabled && { disabled })}
       >
         {option.label}
       </ToggleGroupItem>

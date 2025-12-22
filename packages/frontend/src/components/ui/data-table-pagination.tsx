@@ -52,7 +52,7 @@ export const DataTablePagination = <TData,>({
       </div>
       <div className="flex items-center gap-2">
         <Button
-          $variant="outline"
+          variant="outline"
           className="hidden h-8 w-8 p-0 lg:flex"
           onClick={() => {
             table.setPageIndex(0);
@@ -63,7 +63,7 @@ export const DataTablePagination = <TData,>({
           <ChevronsLeftIcon className="h-4 w-4" />
         </Button>
         <Button
-          $variant="outline"
+          variant="outline"
           className="h-8 w-8 p-0"
           onClick={() => {
             table.previousPage();
@@ -79,7 +79,7 @@ export const DataTablePagination = <TData,>({
         </div>
 
         <Button
-          $variant="outline"
+          variant="outline"
           className="h-8 w-8 p-0"
           onClick={() => {
             table.nextPage();
@@ -90,7 +90,7 @@ export const DataTablePagination = <TData,>({
           <ChevronRightIcon className="h-4 w-4" />
         </Button>
         <Button
-          $variant="outline"
+          variant="outline"
           className="hidden h-8 w-8 p-0 lg:flex"
           onClick={() => {
             table.setPageIndex(table.getPageCount() - 1);

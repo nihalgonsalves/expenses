@@ -87,7 +87,7 @@ const PersonMenu = ({
 
   if (!visible) {
     return (
-      <Button $size="icon" $variant="outline" disabled>
+      <Button size="icon" variant="outline" disabled>
         <MoreVerticalIcon />
       </Button>
     );
@@ -97,7 +97,7 @@ const PersonMenu = ({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button $size="icon" $variant="outline" className="bg-inherit">
+          <Button size="icon" variant="outline" className="bg-inherit">
             <AccessibleIcon label="Member actions">
               <MoreVerticalIcon />
             </AccessibleIcon>
@@ -208,7 +208,7 @@ const TransferItem = ({
         onConfirm={handleSettleUp}
         triggerType="trigger"
         render={
-          <Button isLoading={isPending} type="button" $variant="outline">
+          <Button isLoading={isPending} type="button" variant="outline">
             <CheckIcon className="mr-2" /> Settled?
           </Button>
         }
@@ -254,19 +254,22 @@ const SummaryCard = ({
             <BalanceText balance={summary.balance} />
           </span>
         </div>
-        <CollapsibleTrigger asChild disabled={transfers?.length === 0}>
-          <Button $variant="ghost" $size="icon">
-            {transfers?.length === 0 ? (
-              <AccessibleIcon label="Settled up">
-                <CheckIcon className="h-4 w-4" />
-              </AccessibleIcon>
-            ) : (
-              <AccessibleIcon label="Toggle">
-                <ChevronsUpDownIcon className="h-4 w-4" />
-              </AccessibleIcon>
-            )}
-          </Button>
-        </CollapsibleTrigger>
+        <CollapsibleTrigger
+          disabled={transfers?.length === 0}
+          render={
+            <Button variant="ghost" size="icon">
+              {transfers?.length === 0 ? (
+                <AccessibleIcon label="Settled up">
+                  <CheckIcon className="h-4 w-4" />
+                </AccessibleIcon>
+              ) : (
+                <AccessibleIcon label="Toggle">
+                  <ChevronsUpDownIcon className="h-4 w-4" />
+                </AccessibleIcon>
+              )}
+            </Button>
+          }
+        />
 
         <PersonMenu
           groupSheetId={groupSheetId}

@@ -123,7 +123,7 @@ export const SignInForm = () => {
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button $variant="link" onClick={onForgotPassword}>
+        <Button variant="link" onClick={onForgotPassword}>
           Forgot password?
         </Button>
       </CardFooter>

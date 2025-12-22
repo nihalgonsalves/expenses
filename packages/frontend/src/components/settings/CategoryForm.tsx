@@ -71,8 +71,8 @@ export const CategoryForm = () => {
                   <PopoverTrigger
                     render={
                       <Button
-                        $variant="outline"
-                        $size="icon"
+                        variant="outline"
+                        size="icon"
                         className="bg-inherit"
                       >
                         {emojiShortCode ? (

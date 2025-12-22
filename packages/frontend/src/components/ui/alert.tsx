@@ -21,7 +21,7 @@ const alertVariants = cva(
   ],
   {
     variants: {
-      $variant: {
+      variant: {
         default: "bg-background text-foreground",
         destructive: [
           "border-destructive/50",
@@ -32,15 +32,15 @@ const alertVariants = cva(
       },
     },
     defaultVariants: {
-      $variant: "default",
+      variant: "default",
     },
   },
 );
 
 type AlertProps = TwcComponentProps<"div"> & VariantProps<typeof alertVariants>;
 
-const Alert = twx.div.attrs({ role: "alert" })<AlertProps>(({ $variant }) =>
-  cn(alertVariants({ $variant })),
+const Alert = twx.div.attrs({ role: "alert" })<AlertProps>(({ variant }) =>
+  cn(alertVariants({ variant })),
 );
 Alert.displayName = "Alert";
 

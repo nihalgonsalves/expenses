@@ -53,7 +53,7 @@ export const PersonalSheetExportSection = ({
     <>
       <Button
         type="button"
-        $variant="outline"
+        variant="outline"
         onClick={() => {
           exportSheet("json");
         }}
@@ -62,7 +62,7 @@ export const PersonalSheetExportSection = ({
       </Button>
       <Button
         type="button"
-        $variant="outline"
+        variant="outline"
         onClick={() => {
           exportSheet("csv");
         }}

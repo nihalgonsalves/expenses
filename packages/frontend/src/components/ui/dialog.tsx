@@ -61,8 +61,8 @@ const DialogContent = ({
           data-slot="dialog-close"
           render={
             <Button
-              $variant="ghost"
-              $size="icon"
+              variant="ghost"
+              size="icon"
               className="absolute top-2 right-2"
             />
           }
@@ -101,7 +101,7 @@ const DialogFooter = ({
   >
     {children}
     {showCloseButton ? (
-      <DialogPrimitive.Close render={<Button $variant="outline" />}>
+      <DialogPrimitive.Close render={<Button variant="outline" />}>
         Close
       </DialogPrimitive.Close>
     ) : null}

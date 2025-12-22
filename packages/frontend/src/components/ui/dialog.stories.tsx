@@ -20,7 +20,7 @@ const meta: Meta<typeof Dialog> = {
   component: Dialog,
   render: () => (
     <Dialog>
-      <DialogTrigger render={<Button $variant="outline">Share</Button>} />
+      <DialogTrigger render={<Button variant="outline">Share</Button>} />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Share link</DialogTitle>
@@ -39,7 +39,7 @@ const meta: Meta<typeof Dialog> = {
               readOnly
             />
           </div>
-          <Button type="submit" $size="sm" className="px-3">
+          <Button type="submit" size="sm" className="px-3">
             <span className="sr-only">Copy</span>
             <CopyIcon className="size-4" />
           </Button>
@@ -47,7 +47,7 @@ const meta: Meta<typeof Dialog> = {
         <DialogFooter className="sm:justify-start">
           <DialogClose
             render={
-              <Button type="button" $variant="secondary">
+              <Button type="button" variant="secondary">
                 Close
               </Button>
             }

@@ -31,7 +31,7 @@ export const QuickCreateTransactionFAB = () => {
               key={sheet.id}
               sheetId={sheet.id}
               render={
-                <Button className="w-full" $variant="outline">
+                <Button className="w-full" variant="outline">
                   {sheet.name}
                 </Button>
               }
@@ -41,7 +41,7 @@ export const QuickCreateTransactionFAB = () => {
               key={sheet.id}
               sheetId={sheet.id}
               render={
-                <Button className="w-full" $variant="outline">
+                <Button className="w-full" variant="outline">
                   {sheet.name}
                 </Button>
               }

@@ -532,8 +532,8 @@ const SplitsFormSection = ({
 
                     {splitConfig.resetNumber != null && (
                       <Button
-                        $variant="ghost"
-                        $size="icon"
+                        variant="ghost"
+                        size="icon"
                         disabled={
                           !form.formState.dirtyFields.ratios?.[i]?.ratio
                         }
@@ -625,7 +625,7 @@ const SplitsFormSection = ({
         })}
       </div>
       {splitErrorMessage && !ratioFocused ? (
-        <Alert $variant="destructive">
+        <Alert variant="destructive">
           <AlertTitle>{splitErrorMessage}</AlertTitle>
         </Alert>
       ) : null}

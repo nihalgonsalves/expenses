@@ -46,8 +46,8 @@ export const DataTableFacetedFilter = <TData, TValue>({
       <PopoverTrigger
         render={
           <Button
-            $variant="outline"
-            $size="sm"
+            variant="outline"
+            size="sm"
             className="h-8 justify-start border-dashed lg:justify-center"
           >
             <PlusCircleIcon className="mr-2 size-4" />

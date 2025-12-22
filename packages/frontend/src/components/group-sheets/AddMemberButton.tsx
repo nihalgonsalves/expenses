@@ -58,7 +58,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
     <ResponsiveDialog
       triggerType="trigger"
       render={
-        <Button $variant="outline" $size="icon" disabled={!onLine}>
+        <Button variant="outline" size="icon" disabled={!onLine}>
           <AccessibleIcon label="Add Participant">
             <PlusIcon />
           </AccessibleIcon>

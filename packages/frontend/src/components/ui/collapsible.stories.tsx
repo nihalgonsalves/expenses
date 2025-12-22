@@ -16,12 +16,14 @@ const meta: Meta<typeof Collapsible> = {
         <h4 className="text-sm font-semibold">
           @peduarte starred 3 repositories
         </h4>
-        <CollapsibleTrigger asChild>
-          <Button $variant="ghost" $size="sm">
-            <ChevronsUpDownIcon className="size-4" />
-            <span className="sr-only">Toggle</span>
-          </Button>
-        </CollapsibleTrigger>
+        <CollapsibleTrigger
+          render={
+            <Button variant="ghost" size="sm">
+              <ChevronsUpDownIcon className="size-4" />
+              <span className="sr-only">Toggle</span>
+            </Button>
+          }
+        />
       </div>
       <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-xs">
         @radix-ui/primitives

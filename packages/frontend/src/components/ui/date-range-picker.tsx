@@ -100,7 +100,7 @@ const PresetButton = ({
 }): ReactElement => (
   <Button
     className={cn(isSelected && "pointer-events-none")}
-    $variant="ghost"
+    variant="ghost"
     onClick={() => {
       setPreset(preset);
     }}
@@ -265,7 +265,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
     >
       <PopoverTrigger
         render={
-          <Button $variant="outline" className="h-8">
+          <Button variant="outline" className="h-8">
             <CalendarIcon className="mr-2 size-4" />
 
             <div>
@@ -377,7 +377,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
               setIsOpen(false);
               resetValues();
             }}
-            $variant="ghost"
+            variant="ghost"
           >
             Cancel
           </Button>

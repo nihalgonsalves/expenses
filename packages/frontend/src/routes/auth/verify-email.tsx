@@ -16,7 +16,7 @@ const VerifyEmailPage = () => {
       {token ? (
         <VerifyEmailForm token={token} />
       ) : (
-        <Alert $variant="destructive">
+        <Alert variant="destructive">
           <AlertTitle>Token not found</AlertTitle>
         </Alert>
       )}

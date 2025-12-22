@@ -30,20 +30,26 @@ const SheetLink = ({
 }: {
   transaction: ConvertedTransactionWithSheet;
 }) => (
-  <Button className="h-[auto] p-0" $variant="link" asChild>
-    <Link
-      to={
-        transaction.sheetType === "PERSONAL"
-          ? `/sheets/$sheetId`
-          : `/groups/$sheetId`
-      }
-      params={{
-        sheetId: transaction.sheet.id,
-      }}
-    >
-      {transaction.sheet.name}
-    </Link>
-  </Button>
+  <Button
+    className="h-auto p-0"
+    variant="link"
+    role="link"
+    nativeButton={false}
+    render={
+      <Link
+        to={
+          transaction.sheetType === "PERSONAL"
+            ? `/sheets/$sheetId`
+            : `/groups/$sheetId`
+        }
+        params={{
+          sheetId: transaction.sheet.id,
+        }}
+      >
+        {transaction.sheet.name}
+      </Link>
+    }
+  />
 );
 const columnHelper = createColumnHelper<ConvertedTransactionWithSheet>();
 

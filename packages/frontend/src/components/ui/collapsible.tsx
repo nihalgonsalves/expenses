@@ -1,24 +1,28 @@
 "use client";
 
-import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
+import { Collapsible as CollapsiblePrimitive } from "@base-ui/react/collapsible";
 import { AnimatePresence, motion } from "motion/react";
-import type { ComponentProps } from "react";
 
-import { collapse } from "../../utils/motion";
+import { collapse } from "#/utils/motion";
 
-const Collapsible = CollapsiblePrimitive.Root;
+const Collapsible = ({ ...props }: CollapsiblePrimitive.Root.Props) => (
+  <CollapsiblePrimitive.Root data-slot="collapsible" {...props} />
+);
 
-const CollapsibleTrigger = CollapsiblePrimitive.CollapsibleTrigger;
-
-const CollapsibleContent = ({
-  ref,
-  children,
+const CollapsibleTrigger = ({
   ...props
-}: ComponentProps<typeof CollapsiblePrimitive.CollapsibleContent>) => (
+}: CollapsiblePrimitive.Trigger.Props) => (
+  <CollapsiblePrimitive.Trigger data-slot="collapsible-trigger" {...props} />
+);
+
+const CollapsibleContent = ({ ...props }: CollapsiblePrimitive.Panel.Props) => (
   <AnimatePresence initial={false}>
-    <CollapsiblePrimitive.CollapsibleContent ref={ref} {...props} asChild>
-      <motion.div {...collapse}>{children}</motion.div>
-    </CollapsiblePrimitive.CollapsibleContent>
+    <CollapsiblePrimitive.Panel
+      key="collapsible-content"
+      data-slot="collapsible-content"
+      {...props}
+      render={<motion.div {...collapse} />}
+    />
   </AnimatePresence>
 );
 

@@ -26,19 +26,19 @@ export const LoggedOutNavBarAvatar = ({
     <Separator orientation="vertical">&nbsp;</Separator>
 
     <Button
-      $variant="outline"
+      variant="outline"
       className="text-primary-foreground bg-transparent"
-      asChild
-    >
-      <Link to="/auth/sign-in">Sign in</Link>
-    </Button>
+      role="link"
+      nativeButton={false}
+      render={<Link to="/auth/sign-in">Sign in</Link>}
+    />
     <Button
-      $variant="outline"
+      variant="outline"
       className="text-primary-foreground bg-transparent"
-      asChild
-    >
-      <Link to="/auth/sign-up">Sign up</Link>
-    </Button>
+      role="link"
+      nativeButton={false}
+      render={<Link to="/auth/sign-up">Sign up</Link>}
+    />
   </div>
 );
 
@@ -52,7 +52,7 @@ export const LoggedInNavBarAvatar = ({
   <DropdownMenu>
     <DropdownMenuTrigger
       render={
-        <Button className={className} $variant="ghost" $size="icon">
+        <Button variant="ghost" size="icon" {...(className && { className })}>
           <AccessibleIcon label="Profile and Settings menu">
             <UserIcon className="text-primary-foreground size-5" />
           </AccessibleIcon>

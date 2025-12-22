@@ -33,7 +33,7 @@ export const DataTableViewOptions = <TData,>({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button $variant="outline" $size="sm" className={className}>
+          <Button variant="outline" size="sm" {...(className && { className })}>
             <EyeIcon className="mr-2 size-4" />
             View
           </Button>

@@ -68,18 +68,20 @@ export const DataTableToolbar = <TData,>({
         open={breakpointMd || isOpen}
       >
         {!breakpointMd && (
-          <CollapsibleTrigger asChild>
-            <Button
-              $variant="outline"
-              className="h-8 w-full justify-start"
-              onClick={() => {
-                setIsOpen((prev) => !prev);
-              }}
-            >
-              <SlidersHorizontalIcon className="mr-2" />
-              Filters
-            </Button>
-          </CollapsibleTrigger>
+          <CollapsibleTrigger
+            render={
+              <Button
+                variant="outline"
+                className="h-8 w-full justify-start"
+                onClick={() => {
+                  setIsOpen((prev) => !prev);
+                }}
+              >
+                <SlidersHorizontalIcon className="mr-2" />
+                Filters
+              </Button>
+            }
+          />
         )}
         <CollapsibleContent className="flex flex-col gap-2 lg:flex-row">
           <Input
@@ -137,7 +139,7 @@ export const DataTableToolbar = <TData,>({
           ) : null}
           {isFiltered ? (
             <Button
-              $variant="ghost"
+              variant="ghost"
               onClick={() => {
                 table.resetColumnFilters();
               }}

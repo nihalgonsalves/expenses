@@ -152,8 +152,8 @@ export const DataTableRowActions = ({ row }: DataTableRowActionsProps) => (
         }}
         render={
           <Button
-            $size="icon"
-            $variant="ghost"
+            size="icon"
+            variant="ghost"
             className="data-[state=open]:bg-muted flex p-0"
           >
             <AccessibleIcon label="Open menu">

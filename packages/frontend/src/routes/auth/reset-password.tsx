@@ -18,7 +18,7 @@ const ResetPasswordPage = () => {
       {token ? (
         <ResetPasswordForm token={token} />
       ) : (
-        <Alert $variant="destructive">
+        <Alert variant="destructive">
           <AlertTitle>Token not found</AlertTitle>
         </Alert>
       )}

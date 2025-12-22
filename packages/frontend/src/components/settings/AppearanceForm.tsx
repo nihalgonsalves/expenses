@@ -1,9 +1,6 @@
 import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from "lucide-react";
 
-import {
-  type Theme,
-  THEMES,
-} from "@nihalgonsalves/expenses-shared/types/theme";
+import { THEMES } from "@nihalgonsalves/expenses-shared/types/theme";
 
 import { useSupportedCurrencies } from "../../api/currencyConversion";
 import { usePreferredCurrencyCode } from "../../state/preferences";
@@ -41,7 +38,7 @@ export const AppearanceForm = () => {
       </CardHeader>
       <CardContent className="flex grow flex-col gap-4">
         <ToggleButtonGroup
-          className="[&>button]:grow"
+          className="flex w-full [&>button]:grow"
           options={[
             {
               value: "light",
@@ -75,14 +72,12 @@ export const AppearanceForm = () => {
         <Label className="flex flex-col gap-2">
           Theme
           <ToggleGroup
-            type="single"
+            className="self-center"
             variant="outline"
-            value={theme}
-            onValueChange={(newVal) => {
-              // https://www.radix-ui.com/primitives/docs/components/toggle-group#ensuring-there-is-always-a-value
+            value={[theme]}
+            onValueChange={([newVal]) => {
               if (newVal) {
-                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                void setTheme(newVal as Theme);
+                void setTheme(newVal);
               }
             }}
           >

@@ -114,7 +114,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
                       <Button
                         onClick={onVerifyEmail}
                         type="button"
-                        $variant="link"
+                        variant="link"
                         className="p-0"
                       >
                         Not verified. Resend verification email?

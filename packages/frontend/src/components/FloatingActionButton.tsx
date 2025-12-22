@@ -40,15 +40,17 @@ export const FloatingActionButton = ({
         render={
           to ? (
             <MotionButton
-              asChild
+              role="link"
+              nativeButton={false}
+              render={
+                <Link to={to}>
+                  <AccessibleIcon label={label}>{icon}</AccessibleIcon>
+                </Link>
+              }
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
               className="absolute right-4 bottom-4 size-12 rounded-full text-2xl"
-            >
-              <Link to={to}>
-                <AccessibleIcon label={label}>{icon}</AccessibleIcon>
-              </Link>
-            </MotionButton>
+            />
           ) : (
             <MotionButton
               whileHover={{ scale: 1.1 }}

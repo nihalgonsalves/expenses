@@ -61,7 +61,7 @@ export type ResponsiveDialogProps = {
       confirmLabel: ReactNode;
       onConfirm: (e: MouseEvent<HTMLButtonElement>) => Promise<void> | void;
       isLoading: boolean;
-      variant?: VariantProps<typeof buttonVariants>["$variant"];
+      variant?: VariantProps<typeof buttonVariants>["variant"];
     }
 ) &
   DialogControlsOrRender;
@@ -136,17 +136,21 @@ export const ResponsiveDialog = ({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction tabIndex={0} $variant={props.variant} asChild>
-                <Button
-                  onClick={async (e) => {
-                    await props.onConfirm(e);
-                    handleSetOpen(false);
-                  }}
-                  isLoading={props.isLoading}
-                >
-                  {props.confirmLabel}
-                </Button>
-              </AlertDialogAction>
+              <AlertDialogAction
+                tabIndex={0}
+                variant={props.variant}
+                render={
+                  <Button
+                    onClick={async (e) => {
+                      await props.onConfirm(e);
+                      handleSetOpen(false);
+                    }}
+                    isLoading={props.isLoading}
+                  >
+                    {props.confirmLabel}
+                  </Button>
+                }
+              />
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -186,7 +190,7 @@ export const ResponsiveDialog = ({
         <DrawerFooter>
           {props.alert ? (
             <Button
-              $variant={props.variant}
+              variant={props.variant}
               isLoading={props.isLoading}
               onClick={async (e) => {
                 await props.onConfirm(e);
@@ -198,7 +202,7 @@ export const ResponsiveDialog = ({
           ) : null}
           {/*
             TODO: vaul-base doesn't seem to respect the render prop for DrawerClose
-            <DrawerClose render={<Button $variant="outline">Cancel</Button>} />
+            <DrawerClose render={<Button variant="outline">Cancel</Button>} />
           */}
           <DrawerClose>Cancel</DrawerClose>
         </DrawerFooter>

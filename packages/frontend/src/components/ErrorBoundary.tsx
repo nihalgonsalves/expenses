@@ -1,4 +1,3 @@
-import { Collapsible } from "@radix-ui/react-collapsible";
 import * as Sentry from "@sentry/react";
 import { useQueryClient } from "@tanstack/react-query";
 import { type ReactNode, Fragment } from "react";
@@ -6,14 +5,18 @@ import { toast } from "sonner";
 
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
-import { CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 
 const RetryErrorButton = ({ reset }: { reset: () => void }) => {
   const queryClient = useQueryClient();
 
   return (
     <Button
-      $variant="outline"
+      variant="outline"
       onClick={async () => {
         queryClient.clear();
         await queryClient.invalidateQueries();
@@ -42,17 +45,17 @@ export const ErrorBoundary = ({ children }: { children: ReactNode }) => (
           : "Unknown Error";
 
       return (
-        <Collapsible className="p-4">
-          <Alert $variant="destructive" className="flex flex-col gap-2">
+        <Collapsible>
+          <Alert variant="destructive" className="flex flex-col gap-2">
             <AlertTitle>Something went wrong</AlertTitle>
             <AlertDescription className="flex gap-2">
               <RetryErrorButton reset={resetError} />
 
-              <CollapsibleTrigger asChild>
-                <Button $variant="outline">Display error</Button>
-              </CollapsibleTrigger>
+              <CollapsibleTrigger
+                render={<Button variant="outline">Display error</Button>}
+              />
               <Button
-                $variant="outline"
+                variant="outline"
                 onClick={async () => {
                   await navigator.clipboard.writeText(
                     JSON.stringify(

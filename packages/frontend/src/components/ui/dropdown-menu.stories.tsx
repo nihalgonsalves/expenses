@@ -24,7 +24,7 @@ const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,
   render: (props) => (
     <DropdownMenu {...props}>
-      <DropdownMenuTrigger render={<Button $variant="outline">Open</Button>} />
+      <DropdownMenuTrigger render={<Button variant="outline">Open</Button>} />
       <DropdownMenuContent className="w-56">
         <DropdownMenuGroup>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -107,7 +107,7 @@ const meta: Meta<typeof DropdownMenu> = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button"));
 
-    const menu = screen.getByRole("menu");
+    const menu = await screen.findByRole("menu");
 
     await waitFor(async () => {
       await expect(within(menu).getByText("My Account", {})).toBeVisible();

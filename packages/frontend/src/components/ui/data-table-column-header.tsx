@@ -39,8 +39,8 @@ export const DataTableColumnHeader = <TData, TValue>({
         <DropdownMenuTrigger
           render={
             <Button
-              $variant="ghost"
-              $size="sm"
+              variant="ghost"
+              size="sm"
               className="data-[state=open]:bg-accent -ml-3 h-8"
             >
               <span>{title}</span>

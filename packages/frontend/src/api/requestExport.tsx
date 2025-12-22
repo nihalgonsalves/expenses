@@ -42,17 +42,22 @@ export const requestExport = async <TData,>(
 
       return {
         message: (
-          <Button type="button" $variant="outline" asChild>
-            <a
-              href={objectURL}
-              download={filename}
-              onClick={() => {
-                toast.dismiss(toastId);
-              }}
-            >
-              Click to download .{type} file
-            </a>
-          </Button>
+          <Button
+            variant="outline"
+            role="link"
+            nativeButton={false}
+            render={
+              <a
+                href={objectURL}
+                download={filename}
+                onClick={() => {
+                  toast.dismiss(toastId);
+                }}
+              >
+                Click to download .{type} file
+              </a>
+            }
+          />
         ),
         closeButton: true,
         duration: Infinity,

@@ -1,25 +1,19 @@
 "use client";
 
-import * as LabelPrimitive from "@radix-ui/react-label";
-import { cva, type VariantProps } from "class-variance-authority";
 import type { ComponentProps } from "react";
 
-import { cn } from "./utils";
+import { cn } from "#/components/ui/utils";
 
-const labelVariants = cva(
-  "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
-);
-
-const Label = ({
-  ref,
-  className,
-  ...props
-}: ComponentProps<typeof LabelPrimitive.Root> &
-  VariantProps<typeof labelVariants>) => (
-  <LabelPrimitive.Root
-    ref={ref}
-    className={cn(labelVariants(), className)}
+const Label = ({ className, ...props }: ComponentProps<"label">) => (
+  // eslint-disable-next-line jsx-a11y/label-has-associated-control
+  <label
+    data-slot="label"
+    className={cn(
+      "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+      className,
+    )}
     {...props}
   />
 );
+
 export { Label };

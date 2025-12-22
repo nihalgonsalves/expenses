@@ -27,11 +27,17 @@ export const GroupSheet = ({
 }) => (
   <div className="flex flex-col gap-2">
     <div className="p-2">
-      <Button $variant="outline" className="w-full" asChild>
-        <Link to="/" search={{ sheetId: [groupSheet.id] }}>
-          <ActivityIcon className="mr-2" /> Transactions
-        </Link>
-      </Button>
+      <Button
+        variant="outline"
+        className="w-full"
+        role="link"
+        nativeButton={false}
+        render={
+          <Link to="/" search={{ sheetId: [groupSheet.id] }}>
+            <ActivityIcon className="mr-2" /> Transactions
+          </Link>
+        }
+      />
     </div>
     <div className="grid gap-2 md:grid-cols-2 md:gap-4">
       <Card>

@@ -105,7 +105,7 @@ export const Root = ({
         <header className="bg-primary flex place-items-center justify-center p-4 px-5 align-middle text-lg md:text-2xl">
           {showBackButton ? (
             <Button
-              $variant="ghost"
+              variant="ghost"
               className="text-primary-foreground md:hidden"
               onClick={() => {
                 router.history.back();
@@ -330,8 +330,8 @@ export const RootLoader = <TData,>({
           {result.isLoading ? <LoadingSpinner className="ml-4 size-4" /> : null}
           {!mobileStandalone && !result.isLoading && onLine ? (
             <Button
-              $variant="ghost"
-              $size="icon"
+              variant="ghost"
+              size="icon"
               className="ml-2"
               onClick={refetch}
             >
@@ -352,7 +352,7 @@ export const RootLoader = <TData,>({
       <ErrorBoundary>
         <AnimatePresence mode="wait">
           {result.error != null && (
-            <Alert $variant="destructive">
+            <Alert variant="destructive">
               <AlertTitle>{result.error.message}</AlertTitle>
             </Alert>
           )}

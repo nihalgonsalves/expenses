@@ -6,7 +6,7 @@ import { ToggleGroup, ToggleGroupItem } from "./toggle-group";
 const meta: Meta<typeof ToggleGroup> = {
   component: ToggleGroup,
   args: {
-    type: "multiple",
+    multiple: false,
     variant: "default",
     size: "default",
   },
@@ -34,10 +34,9 @@ export const Outline: Story = {
     variant: "outline",
   },
 };
+
 export const Single: Story = {
-  args: {
-    type: "single",
-  },
+  args: {},
 };
 
 export const Small: Story = {

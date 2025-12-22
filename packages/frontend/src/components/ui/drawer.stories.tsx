@@ -18,7 +18,7 @@ const meta: Meta<typeof Drawer> = {
   args: {},
   render: (props) => (
     <Drawer {...props}>
-      <DrawerTrigger render={<Button $variant="outline">Open</Button>} />
+      <DrawerTrigger render={<Button variant="outline">Open</Button>} />
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Are you sure?</DrawerTitle>
@@ -27,7 +27,7 @@ const meta: Meta<typeof Drawer> = {
         <DrawerFooter>
           <Button>Submit</Button>
           <DrawerClose>
-            <Button $variant="outline" className="w-full">
+            <Button variant="outline" className="w-full">
               Cancel
             </Button>
           </DrawerClose>

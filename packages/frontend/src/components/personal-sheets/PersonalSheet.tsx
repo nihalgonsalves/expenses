@@ -110,7 +110,7 @@ const TransactionScheduleDropdownMenu = ({
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
-            <Button $size="icon" $variant="outline" className="bg-inherit">
+            <Button size="icon" variant="outline" className="bg-inherit">
               <MoreVerticalIcon />
             </Button>
           }
@@ -146,7 +146,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     <CreatePersonalTransactionDialog
       sheetId={personalSheet.id}
       render={
-        <Button $variant="outline" $size="icon">
+        <Button variant="outline" size="icon">
           <AccessibleIcon label="Add Transaction">
             <PlusIcon />
           </AccessibleIcon>
@@ -158,11 +158,17 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   return (
     <div className="flex flex-col gap-2">
       <div className="p-2">
-        <Button $variant="outline" className="w-full" asChild>
-          <Link to="/" search={{ sheetId: [personalSheet.id] }}>
-            <ActivityIcon className="mr-2" /> Transactions
-          </Link>
-        </Button>
+        <Button
+          variant="outline"
+          className="w-full"
+          role="link"
+          nativeButton={false}
+          render={
+            <Link to="/" search={{ sheetId: [personalSheet.id] }}>
+              <ActivityIcon className="mr-2" /> Transactions
+            </Link>
+          }
+        />
       </div>
       <div className="grid gap-2 md:grid-cols-2 md:gap-4">
         <Card>
@@ -258,15 +264,20 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
 
             <Separator />
 
-            <Button $variant="outline" asChild>
-              <Link
-                to="/sheets/$sheetId/import"
-                params={{ sheetId: personalSheet.id }}
-              >
-                <UploadIcon className="mr-2" />
-                Import .csv
-              </Link>
-            </Button>
+            <Button
+              variant="outline"
+              role="link"
+              nativeButton={false}
+              render={
+                <Link
+                  to="/sheets/$sheetId/import"
+                  params={{ sheetId: personalSheet.id }}
+                >
+                  <UploadIcon className="mr-2" />
+                  Import .csv
+                </Link>
+              }
+            />
 
             <Separator />
 

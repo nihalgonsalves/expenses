@@ -24,7 +24,7 @@ const ComboboxInput = (
 const ComboboxTrigger = (props: ComboboxPrimitive.Trigger.Props) => (
   <ComboboxPrimitive.Trigger
     data-slot="combobox-trigger"
-    render={<Button $variant="ghost" />}
+    render={<Button variant="ghost" />}
     {...props}
   />
 );

@@ -47,7 +47,7 @@ export const PersonalSheetAdminSection = ({
 
   return (
     <>
-      <Button type="button" $variant="outline" onClick={handleArchive}>
+      <Button type="button" variant="outline" onClick={handleArchive}>
         <ArchiveIcon className="mr-2" />
         {personalSheet.isArchived ? "Unarchive" : "Archive"}
       </Button>
@@ -59,7 +59,7 @@ export const PersonalSheetAdminSection = ({
         variant="destructive"
         triggerType="trigger"
         render={
-          <Button type="button" $variant="destructive">
+          <Button type="button" variant="destructive">
             <Trash2Icon className="mr-2" /> Delete
           </Button>
         }

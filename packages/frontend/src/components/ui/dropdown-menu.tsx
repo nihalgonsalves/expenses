@@ -2,6 +2,7 @@
 
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import { ChevronRightIcon, CheckIcon } from "lucide-react";
+import type { ComponentProps } from "react";
 
 import { cn } from "#/components/ui/utils";
 
@@ -125,7 +126,7 @@ const DropdownMenuSubContent = ({
   sideOffset = 0,
   className,
   ...props
-}: React.ComponentProps<typeof DropdownMenuContent>) => (
+}: ComponentProps<typeof DropdownMenuContent>) => (
   <DropdownMenuContent
     data-slot="dropdown-menu-sub-content"
     className={cn(
@@ -210,7 +211,7 @@ const DropdownMenuSeparator = ({
 const DropdownMenuShortcut = ({
   className,
   ...props
-}: React.ComponentProps<"span">) => (
+}: ComponentProps<"span">) => (
   <span
     data-slot="dropdown-menu-shortcut"
     className={cn(

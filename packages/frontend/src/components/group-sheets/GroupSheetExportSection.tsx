@@ -102,7 +102,7 @@ export const GroupSheetExportSection = ({
     <>
       <Button
         type="button"
-        $variant="outline"
+        variant="outline"
         onClick={() => {
           exportSheet("json");
         }}
@@ -111,7 +111,7 @@ export const GroupSheetExportSection = ({
       </Button>
       <Button
         type="button"
-        $variant="outline"
+        variant="outline"
         onClick={() => {
           exportSheet("csv");
         }}

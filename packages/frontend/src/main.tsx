@@ -8,6 +8,7 @@ import ReactDOM from "react-dom/client";
 import { TrpcProvider } from "./api/TrpcProvider";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { NotFoundPage } from "./components/NotFoundPage";
+import { TooltipRoot } from "./components/TooltipRoot";
 import { config } from "./config";
 import { routeTree } from "./routeTree.gen";
 
@@ -21,6 +22,7 @@ const App = () => (
   <TrpcProvider>
     <ErrorBoundary>
       <RouterProvider router={router} context={{}} />
+      <TooltipRoot />
     </ErrorBoundary>
   </TrpcProvider>
 );

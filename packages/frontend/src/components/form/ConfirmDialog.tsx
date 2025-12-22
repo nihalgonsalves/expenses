@@ -18,7 +18,7 @@ export const ConfirmDialog = ({
   description: ReactNode;
   confirmLabel: ReactNode;
   onConfirm: () => Promise<void> | void;
-  variant?: VariantProps<typeof buttonVariants>["$variant"];
+  variant?: VariantProps<typeof buttonVariants>["variant"];
 } & DialogControlsOrRender) => {
   const [isLoading, setIsLoading] = useState(false);
 
