@@ -4,12 +4,7 @@ import { motion } from "motion/react";
 import type { ReactNode, Ref } from "react";
 
 import { Button } from "./ui/button";
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "./ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
 
 const MotionButton = motion.create(Button);
 
@@ -40,10 +35,10 @@ export const FloatingActionButton = ({
   icon,
 }: FloatingActionButtonProps) => (
   <div ref={ref} className="sticky bottom-0 w-full">
-    <TooltipProvider delayDuration={100}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          {to ? (
+    <Tooltip>
+      <TooltipTrigger
+        render={
+          to ? (
             <MotionButton
               asChild
               whileHover={{ scale: 1.1 }}
@@ -63,16 +58,12 @@ export const FloatingActionButton = ({
             >
               <AccessibleIcon label={label}>{icon}</AccessibleIcon>
             </MotionButton>
-          )}
-        </TooltipTrigger>
-        <TooltipContent
-          side="left"
-          sideOffset={4}
-          className="bg-primary text-primary-foreground"
-        >
-          <p>{label}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+          )
+        }
+      />
+      <TooltipContent side="left" sideOffset={4}>
+        <p>{label}</p>
+      </TooltipContent>
+    </Tooltip>
   </div>
 );

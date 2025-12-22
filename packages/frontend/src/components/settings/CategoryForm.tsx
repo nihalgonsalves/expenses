@@ -68,19 +68,21 @@ export const CategoryForm = () => {
                 className="flex items-center gap-2 text-sm tracking-tight"
               >
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      $variant="outline"
-                      $size="icon"
-                      className="bg-inherit"
-                    >
-                      {emojiShortCode ? (
-                        <em-emoji shortcodes={emojiShortCode} />
-                      ) : (
-                        <HelpCircleIcon />
-                      )}
-                    </Button>
-                  </PopoverTrigger>
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        $variant="outline"
+                        $size="icon"
+                        className="bg-inherit"
+                      >
+                        {emojiShortCode ? (
+                          <em-emoji shortcodes={emojiShortCode} />
+                        ) : (
+                          <HelpCircleIcon />
+                        )}
+                      </Button>
+                    }
+                  />
                   <PopoverContent className="w-auto p-0" align="start">
                     <Picker
                       onEmojiSelect={(emojiData: unknown) => {

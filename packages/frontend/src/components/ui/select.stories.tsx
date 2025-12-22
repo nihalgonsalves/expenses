@@ -16,7 +16,11 @@ const meta: Meta<typeof Select> = {
   render: (props) => (
     <Select {...props}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a fruit" />
+        {props.value != null ? (
+          <SelectValue />
+        ) : (
+          <SelectValue>Select a fruit…</SelectValue>
+        )}
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

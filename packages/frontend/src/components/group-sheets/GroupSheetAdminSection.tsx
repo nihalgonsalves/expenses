@@ -59,7 +59,8 @@ export const GroupSheetAdminSection = ({
         description="Are you sure you want to delete this group? This action is irreversible."
         onConfirm={handleDelete}
         variant="destructive"
-        trigger={
+        triggerType="trigger"
+        render={
           <Button type="button" $variant="destructive">
             <Trash2Icon className="mr-2" /> Delete
           </Button>

@@ -2,16 +2,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
-import type { ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import {
-  ZRecurrenceFrequency,
   ZCreatePersonalSheetTransactionScheduleInput,
   ZCreatePersonalSheetTransactionInput,
   ZRecurrenceRule,
+  type RecurrenceFrequency,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { useCurrencyConversion } from "../../api/currencyConversion";
@@ -41,6 +40,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
+import type { RenderProp } from "../ui/utils";
 
 const TYPE_OPTIONS = [
   {
@@ -76,7 +76,7 @@ const RECURRENCE_OPTIONS = [
     value: "WEEKLY",
     label: "Every week",
   },
-] satisfies SelectOption<typeof ZRecurrenceFrequency>[];
+] satisfies SelectOption<RecurrenceFrequency>[];
 
 const formSchema = ZCreatePersonalSheetTransactionInput.extend(
   ZCreatePersonalSheetTransactionScheduleInput.shape,
@@ -203,6 +203,9 @@ const CreatePersonalTransactionForm = ({
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
       trpc.transaction.getPersonalSheetTransactions.queryKey({
+        personalSheetId: personalSheet.id,
+      }),
+      trpc.transaction.getPersonalSheetTransactionSchedules.queryKey({
         personalSheetId: personalSheet.id,
       }),
     );
@@ -337,11 +340,7 @@ const CreatePersonalTransactionForm = ({
             <FormItem>
               <FormLabel>Recurring?</FormLabel>
               <FormControl>
-                <Select
-                  options={RECURRENCE_OPTIONS}
-                  schema={ZRecurrenceFrequency}
-                  {...field}
-                />
+                <Select options={RECURRENCE_OPTIONS} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -362,10 +361,10 @@ const CreatePersonalTransactionForm = ({
 };
 
 export const CreatePersonalTransactionDialog = ({
-  trigger,
+  render,
   sheetId,
 }: {
-  trigger: ReactNode;
+  render: RenderProp;
   sheetId: string;
 }) => {
   const { trpc } = useTRPC();
@@ -374,7 +373,11 @@ export const CreatePersonalTransactionDialog = ({
   );
 
   return (
-    <ResponsiveDialog trigger={trigger} title="Add Transaction">
+    <ResponsiveDialog
+      triggerType="trigger"
+      render={render}
+      title="Add Transaction"
+    >
       {personalSheet ? (
         <CreatePersonalTransactionForm personalSheet={personalSheet} />
       ) : null}

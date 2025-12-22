@@ -19,6 +19,6 @@ allowBuilds:
 
 patchedDependencies:
   sonner: patches/sonner.patch
-  vaul: patches/vaul.patch
+  vaul-base: patches/vaul-base.patch
 
 saveExact: true

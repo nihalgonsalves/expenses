@@ -43,49 +43,51 @@ export const DataTableFacetedFilter = <TData, TValue>({
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          $variant="outline"
-          $size="sm"
-          className="h-8 justify-start border-dashed lg:justify-center"
-        >
-          <PlusCircleIcon className="mr-2 size-4" />
-          {title}
-          {selectedValues.size > 0 && (
-            <>
-              <Separator orientation="vertical" className="mx-2 h-4" />
-              <Badge
-                variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
-              >
-                {selectedValues.size}
-              </Badge>
-              <div className="hidden space-x-1 lg:flex">
-                {selectedValues.size > 2 ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
-                    {selectedValues.size} selected
-                  </Badge>
-                ) : (
-                  options
-                    .filter((option) => selectedValues.has(option.value))
-                    .map((option) => (
-                      <Badge
-                        variant="secondary"
-                        key={option.value}
-                        className="rounded-sm px-1 font-normal"
-                      >
-                        {option.label}
-                      </Badge>
-                    ))
-                )}
-              </div>
-            </>
-          )}
-        </Button>
-      </PopoverTrigger>
+      <PopoverTrigger
+        render={
+          <Button
+            $variant="outline"
+            $size="sm"
+            className="h-8 justify-start border-dashed lg:justify-center"
+          >
+            <PlusCircleIcon className="mr-2 size-4" />
+            {title}
+            {selectedValues.size > 0 && (
+              <>
+                <Separator orientation="vertical" className="mx-2 h-4" />
+                <Badge
+                  variant="secondary"
+                  className="rounded-sm px-1 font-normal lg:hidden"
+                >
+                  {selectedValues.size}
+                </Badge>
+                <div className="hidden space-x-1 lg:flex">
+                  {selectedValues.size > 2 ? (
+                    <Badge
+                      variant="secondary"
+                      className="rounded-sm px-1 font-normal"
+                    >
+                      {selectedValues.size} selected
+                    </Badge>
+                  ) : (
+                    options
+                      .filter((option) => selectedValues.has(option.value))
+                      .map((option) => (
+                        <Badge
+                          variant="secondary"
+                          key={option.value}
+                          className="rounded-sm px-1 font-normal"
+                        >
+                          {option.label}
+                        </Badge>
+                      ))
+                  )}
+                </div>
+              </>
+            )}
+          </Button>
+        }
+      />
       <PopoverContent
         className="w-[200px] p-0"
         align={breakpointLg ? "start" : "center"}

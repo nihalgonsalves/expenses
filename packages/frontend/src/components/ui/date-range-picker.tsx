@@ -15,6 +15,7 @@ import {
 import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import { shortDateFormatter } from "../../utils/temporal";
 import { getUserLanguage } from "../../utils/utils";
+import type { SelectOption } from "../form/Select";
 
 import { Button } from "./button";
 import { Calendar } from "./calendar";
@@ -73,23 +74,18 @@ type DateRange = {
   to: Date | undefined;
 };
 
-type Preset = {
-  name: string;
-  label: string;
-};
-
 // Define presets
 const PRESETS = [
-  { name: "today", label: "Today" },
-  { name: "yesterday", label: "Yesterday" },
-  { name: "last7", label: "Last 7 days" },
-  { name: "last14", label: "Last 14 days" },
-  { name: "last30", label: "Last 30 days" },
-  { name: "thisWeek", label: "This Week" },
-  { name: "lastWeek", label: "Last Week" },
-  { name: "thisMonth", label: "This Month" },
-  { name: "lastMonth", label: "Last Month" },
-] as const satisfies Preset[];
+  { value: "today", label: "Today" },
+  { value: "yesterday", label: "Yesterday" },
+  { value: "last7", label: "Last 7 days" },
+  { value: "last14", label: "Last 14 days" },
+  { value: "last30", label: "Last 30 days" },
+  { value: "thisWeek", label: "This Week" },
+  { value: "lastWeek", label: "Last Week" },
+  { value: "thisMonth", label: "This Month" },
+  { value: "lastMonth", label: "Last Month" },
+] as const satisfies SelectOption<string>[];
 
 const PresetButton = ({
   preset,
@@ -141,14 +137,14 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
 
   const isSmallScreen = !useBreakpoint("lg");
 
-  const getPresetRange = (presetName: string): DateRange => {
-    const preset = PRESETS.find(({ name }) => name === presetName);
-    if (!preset) throw new Error(`Unknown date range preset: ${presetName}`);
+  const getPresetRange = (presetValue: string): DateRange => {
+    const preset = PRESETS.find(({ value }) => value === presetValue);
+    if (!preset) throw new Error(`Unknown date range preset: ${presetValue}`);
     const from = new Date();
     const to = new Date();
     const first = from.getDate() - from.getDay();
 
-    switch (preset.name) {
+    switch (preset.value) {
       case "today":
         from.setHours(0, 0, 0, 0);
         to.setHours(23, 59, 59, 999);
@@ -209,7 +205,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
 
   const checkPreset = useCallback((): void => {
     for (const preset of PRESETS) {
-      const presetRange = getPresetRange(preset.name);
+      const presetRange = getPresetRange(preset.value);
 
       const normalizedRangeFrom = new Date(range.from);
       normalizedRangeFrom.setHours(0, 0, 0, 0);
@@ -227,7 +223,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
         normalizedRangeFrom.getTime() === normalizedPresetFrom.getTime() &&
         normalizedRangeTo.getTime() === normalizedPresetTo.getTime()
       ) {
-        setSelectedPreset(preset.name);
+        setSelectedPreset(preset.value);
         return;
       }
     }
@@ -267,19 +263,21 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
         setIsOpen(open);
       }}
     >
-      <PopoverTrigger asChild>
-        <Button $variant="outline" className="h-8">
-          <CalendarIcon className="mr-2 size-4" />
+      <PopoverTrigger
+        render={
+          <Button $variant="outline" className="h-8">
+            <CalendarIcon className="mr-2 size-4" />
 
-          <div>
-            {range.to
-              ? formatDateRange(range.from, range.to, {
-                  locale: getUserLanguage(),
-                })
-              : `${shortDateFormatter.format(range.from)} - `}
-          </div>
-        </Button>
-      </PopoverTrigger>
+            <div>
+              {range.to
+                ? formatDateRange(range.from, range.to, {
+                    locale: getUserLanguage(),
+                  })
+                : `${shortDateFormatter.format(range.from)} - `}
+            </div>
+          </Button>
+        }
+      />
       <PopoverContent align={align} className="w-auto">
         <div className="flex py-2">
           <div className="flex">
@@ -318,15 +316,20 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
                 <Select
                   defaultValue={selectedPreset || ""}
                   onValueChange={(value) => {
-                    setPreset(value);
+                    setPreset(value ?? "");
                   }}
+                  items={PRESETS}
                 >
                   <SelectTrigger className="mx-auto mb-2 w-[180px]">
-                    <SelectValue placeholder="Select..." />
+                    {selectedPreset ? (
+                      <SelectValue />
+                    ) : (
+                      <SelectValue>Select...</SelectValue>
+                    )}
                   </SelectTrigger>
                   <SelectContent>
                     {PRESETS.map((preset) => (
-                      <SelectItem key={preset.name} value={preset.name}>
+                      <SelectItem key={preset.value} value={preset.value}>
                         {preset.label}
                       </SelectItem>
                     ))}
@@ -358,10 +361,10 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
             <div className="flex flex-col items-end gap-1 pr-2 pb-6">
               {PRESETS.map((preset) => (
                 <PresetButton
-                  key={preset.name}
-                  preset={preset.name}
+                  key={preset.value}
+                  preset={preset.value}
                   label={preset.label}
-                  isSelected={selectedPreset === preset.name}
+                  isSelected={selectedPreset === preset.value}
                   setPreset={setPreset}
                 />
               ))}

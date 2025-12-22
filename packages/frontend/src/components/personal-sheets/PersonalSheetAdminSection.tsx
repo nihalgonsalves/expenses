@@ -57,7 +57,8 @@ export const PersonalSheetAdminSection = ({
         description="Are you sure you want to delete this sheet? This action is irreversible."
         onConfirm={handleDelete}
         variant="destructive"
-        trigger={
+        triggerType="trigger"
+        render={
           <Button type="button" $variant="destructive">
             <Trash2Icon className="mr-2" /> Delete
           </Button>

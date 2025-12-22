@@ -24,15 +24,10 @@ const meta: Meta<typeof DropdownMenu> = {
   component: DropdownMenu,
   render: (props) => (
     <DropdownMenu {...props}>
-      <DropdownMenuTrigger asChild>
-        <Button $variant="outline">Open</Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger render={<Button $variant="outline">Open</Button>} />
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-
-        <DropdownMenuSeparator />
-
         <DropdownMenuGroup>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuItem>
             Profile
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
@@ -54,7 +49,7 @@ const meta: Meta<typeof DropdownMenu> = {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuLabel>Team</DropdownMenuLabel>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
             <DropdownMenuPortal>
@@ -85,25 +80,26 @@ const meta: Meta<typeof DropdownMenu> = {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+
+          <DropdownMenuCheckboxItem>Status Bar</DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem disabled>
+            Activity Bar
+          </DropdownMenuCheckboxItem>
+          <DropdownMenuCheckboxItem>Panel</DropdownMenuCheckboxItem>
+        </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuCheckboxItem>Status Bar</DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem disabled>
-          Activity Bar
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem>Panel</DropdownMenuCheckboxItem>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value="top">
-          <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
+          <DropdownMenuRadioGroup value="top">
+            <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   ),

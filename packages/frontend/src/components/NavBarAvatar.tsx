@@ -50,15 +50,17 @@ export const LoggedInNavBarAvatar = ({
   className?: string | undefined;
 }) => (
   <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button className={className} $variant="ghost" $size="icon">
-        <AccessibleIcon label="Profile and Settings menu">
-          <UserIcon className="text-primary-foreground size-5" />
-        </AccessibleIcon>
-      </Button>
-    </DropdownMenuTrigger>
+    <DropdownMenuTrigger
+      render={
+        <Button className={className} $variant="ghost" $size="icon">
+          <AccessibleIcon label="Profile and Settings menu">
+            <UserIcon className="text-primary-foreground size-5" />
+          </AccessibleIcon>
+        </Button>
+      }
+    />
     <DropdownMenuContent>
-      <DropdownMenuItem onSelect={handleSignOut}>Sign out</DropdownMenuItem>
+      <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 );

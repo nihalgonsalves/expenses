@@ -42,9 +42,6 @@ export const CategorySelect = ({
     trpc.transaction.getCategories.queryOptions(),
   );
 
-  // issues with rendering inside the Vaul drawer
-  const [portalRef, setPortalRef] = useState<HTMLDivElement | null>(null);
-
   const categoryIds = categories.map((c) => c.id);
   const categoryIdsSet = new Set(categoryIds);
 
@@ -78,9 +75,7 @@ export const CategorySelect = ({
         </div>
       </div>
 
-      <div ref={setPortalRef} className="contents" />
-
-      <ComboboxPortal container={portalRef}>
+      <ComboboxPortal>
         <ComboboxPositioner align="start" sideOffset={4}>
           <ComboboxPopup className="w-full pt-0" aria-label="Select category">
             <ComboboxList>

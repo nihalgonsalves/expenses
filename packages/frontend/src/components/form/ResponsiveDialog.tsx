@@ -34,9 +34,23 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
+import type { RenderProp } from "../ui/utils";
 
-type ResponsiveDialogProps = {
-  trigger: ReactNode;
+type DialogControls = {
+  triggerType: "controlled";
+  open: boolean;
+  handleSetOpen: (value: boolean) => void;
+};
+
+type DialogTrigger = {
+  triggerType: "trigger";
+  render: RenderProp;
+  nativeButton?: boolean;
+};
+
+export type DialogControlsOrRender = DialogControls | DialogTrigger;
+
+export type ResponsiveDialogProps = {
   title: ReactNode;
   description?: ReactNode;
   children?: ReactNode;
@@ -49,7 +63,8 @@ type ResponsiveDialogProps = {
       isLoading: boolean;
       variant?: VariantProps<typeof buttonVariants>["$variant"];
     }
-);
+) &
+  DialogControlsOrRender;
 
 const responsiveDialogOpen = atom(false);
 
@@ -64,15 +79,7 @@ export const useDialog = () => {
   };
 };
 
-const ResponsiveDialogInner = ({
-  trigger,
-  title,
-  description,
-  children,
-  ...props
-}: ResponsiveDialogProps) => {
-  const isDesktop = useBreakpoint("md");
-
+export const useDialogControls = (): DialogControls => {
   const [open, setOpen] = useState(false);
   const [globalOpen, setGlobalOpen] = useAtom(responsiveDialogOpen);
 
@@ -88,11 +95,40 @@ const ResponsiveDialogInner = ({
     }
   }, [open, globalOpen, setOpen]);
 
+  return { triggerType: "controlled", open, handleSetOpen };
+};
+
+export const ResponsiveDialog = ({
+  title,
+  description,
+  children,
+  ...props
+}: ResponsiveDialogProps & DialogControlsOrRender) => {
+  const uncontrolledControls = useDialogControls();
+
+  const { open, handleSetOpen } =
+    props.triggerType === "controlled"
+      ? {
+          open: props.open,
+          handleSetOpen: props.handleSetOpen,
+        }
+      : {
+          open: uncontrolledControls.open,
+          handleSetOpen: uncontrolledControls.handleSetOpen,
+        };
+
+  const isDesktop = useBreakpoint("md");
+
   if (isDesktop) {
     if (props.alert) {
       return (
         <AlertDialog open={open} onOpenChange={handleSetOpen}>
-          <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+          {props.triggerType === "trigger" && (
+            <AlertDialogTrigger
+              render={props.render}
+              nativeButton={props.nativeButton ?? true}
+            />
+          )}
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Confirm</AlertDialogTitle>
@@ -119,8 +155,13 @@ const ResponsiveDialogInner = ({
 
     return (
       <Dialog open={open} onOpenChange={handleSetOpen}>
-        <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogContent className="max-h-[100dvh] max-w-[min(100dvw,var(--container-5xl))] overflow-auto">
+        {props.triggerType === "trigger" && (
+          <DialogTrigger
+            render={props.render}
+            nativeButton={props.nativeButton ?? true}
+          />
+        )}
+        <DialogContent className="max-h-dvh max-w-[min(100dvw,var(--container-5xl))] overflow-auto">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
@@ -133,7 +174,9 @@ const ResponsiveDialogInner = ({
 
   return (
     <Drawer open={open} onOpenChange={handleSetOpen}>
-      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+      {props.triggerType === "trigger" && (
+        <DrawerTrigger render={props.render} />
+      )}
       <DrawerContent className="max-h-dvh">
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
@@ -153,16 +196,13 @@ const ResponsiveDialogInner = ({
               {props.confirmLabel}
             </Button>
           ) : null}
-          <DrawerClose asChild>
-            <Button $variant="outline">Cancel</Button>
-          </DrawerClose>
+          {/*
+            TODO: vaul-base doesn't seem to respect the render prop for DrawerClose
+            <DrawerClose render={<Button $variant="outline">Cancel</Button>} />
+          */}
+          <DrawerClose>Cancel</DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
 };
-
-// Scope the dialogOpen atom to each instance, but have a global vaulDialogOpen for the theming
-export const ResponsiveDialog = (props: ResponsiveDialogProps) => (
-  <ResponsiveDialogInner {...props} />
-);

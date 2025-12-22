@@ -75,7 +75,7 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
           <CardTitleWithButton>
             Personal Sheets
             <NewPersonalSheetDialog
-              trigger={
+              render={
                 <Button $size="icon" $variant="outline">
                   <AccessibleIcon label="New personal sheet">
                     <PlusIcon />
@@ -97,7 +97,7 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
           <CardTitleWithButton>
             Group Sheets
             <NewGroupSheetDialog
-              trigger={
+              render={
                 <Button $size="icon" $variant="outline">
                   <AccessibleIcon label="New group sheet">
                     <PlusIcon />

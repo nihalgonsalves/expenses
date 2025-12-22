@@ -1,5 +1,5 @@
 import { ChevronsUpDownIcon } from "lucide-react";
-import { useState, type Ref } from "react";
+import type { Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
 import { CURRENCY_CODES } from "../../utils/money";
@@ -31,39 +31,32 @@ export const CurrencySelect = ({
   options = CURRENCY_CODES,
   ref,
   ...controllerProps
-}: CurrencySelectProps) => {
-  // issues with rendering inside the Vaul drawer
-  const [portalRef, setPortalRef] = useState<HTMLDivElement | null>(null);
+}: CurrencySelectProps) => (
+  <Combobox items={options} value={value} onValueChange={onChange}>
+    <div className="relative">
+      <ComboboxInput placeholder="e.g. EUR" ref={ref} {...controllerProps} />
 
-  return (
-    <Combobox items={options} value={value} onValueChange={onChange}>
-      <div className="relative">
-        <ComboboxInput placeholder="e.g. EUR" ref={ref} {...controllerProps} />
+      <ComboboxTrigger className="absolute top-0 right-0 border-none">
+        <ComboboxIcon>
+          <ChevronsUpDownIcon className="size-4" />
+        </ComboboxIcon>
+      </ComboboxTrigger>
+    </div>
 
-        <ComboboxTrigger className="absolute top-0 right-0 border-none">
-          <ComboboxIcon>
-            <ChevronsUpDownIcon className="size-4" />
-          </ComboboxIcon>
-        </ComboboxTrigger>
-      </div>
-
-      <div ref={setPortalRef} className="contents" />
-
-      <ComboboxPortal container={portalRef}>
-        <ComboboxPositioner align="start" sideOffset={4}>
-          <ComboboxPopup className="w-full pt-0" aria-label="Select currency">
-            <ComboboxEmpty>No currency codes found.</ComboboxEmpty>
-            <ComboboxList>
-              {(code: string) => (
-                <ComboboxItem key={code} value={code}>
-                  <ComboboxItemIndicator />
-                  <div className="col-start-2">{code}</div>
-                </ComboboxItem>
-              )}
-            </ComboboxList>
-          </ComboboxPopup>
-        </ComboboxPositioner>
-      </ComboboxPortal>
-    </Combobox>
-  );
-};
+    <ComboboxPortal>
+      <ComboboxPositioner align="start" sideOffset={4}>
+        <ComboboxPopup className="w-full pt-0" aria-label="Select currency">
+          <ComboboxEmpty>No currency codes found.</ComboboxEmpty>
+          <ComboboxList>
+            {(code: string) => (
+              <ComboboxItem key={code} value={code}>
+                <ComboboxItemIndicator />
+                <div className="col-start-2">{code}</div>
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxPopup>
+      </ComboboxPositioner>
+    </ComboboxPortal>
+  </Combobox>
+);

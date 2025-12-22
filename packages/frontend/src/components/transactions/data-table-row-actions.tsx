@@ -14,6 +14,7 @@ import {
 import { useTRPC } from "../../api/trpc";
 import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
 import { ConfirmDialog } from "../form/ConfirmDialog";
+import { useDialogControls } from "../form/ResponsiveDialog";
 import { EditPersonalTransactionDialog } from "../personal-sheets/EditPersonalTransactionForm";
 import { Button } from "../ui/button";
 import {
@@ -30,6 +31,9 @@ type DataTableRowActionsProps = {
 const PersonalTransactionDropdownContent = ({
   row,
 }: DataTableRowActionsProps) => {
+  const editDialogControls = useDialogControls();
+  const deleteDialogControls = useDialogControls();
+
   const { trpc, invalidate } = useTRPC();
   const { mutateAsync: deleteTransaction } = useMutation(
     trpc.transaction.deleteTransaction.mutationOptions(),
@@ -57,36 +61,40 @@ const PersonalTransactionDropdownContent = ({
       <EditPersonalTransactionDialog
         sheetId={sheetId}
         transactionId={transactionId}
-        trigger={
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <PencilIcon className="mr-3 size-3" /> Edit
-          </DropdownMenuItem>
-        }
+        dialogProps={editDialogControls}
       />
+
       <ConfirmDialog
         confirmLabel="Confirm Delete"
         description="Are you sure you want to delete this transaction?"
         onConfirm={handleDelete}
         variant="destructive"
-        trigger={
-          <DropdownMenuItem
-            onSelect={(e) => {
-              e.preventDefault();
-            }}
-          >
-            <Trash2Icon className="mr-3 size-3" /> Delete
-          </DropdownMenuItem>
-        }
+        {...deleteDialogControls}
       />
+
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          onClick={() => {
+            editDialogControls.handleSetOpen(true);
+          }}
+        >
+          <PencilIcon className="mr-3 size-3" /> Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            deleteDialogControls.handleSetOpen(true);
+          }}
+        >
+          <Trash2Icon className="mr-3 size-3" /> Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
     </>
   );
 };
 
 const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
+  const deleteDialogControls = useDialogControls();
+
   const { trpc, invalidate } = useTRPC();
   const { mutateAsync: deleteTransaction } = useMutation(
     trpc.transaction.deleteTransaction.mutationOptions(),
@@ -112,21 +120,25 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
   };
 
   return (
-    <ConfirmDialog
-      confirmLabel="Confirm Delete"
-      description="Are you sure you want to delete this transaction?"
-      onConfirm={handleDelete}
-      variant="destructive"
-      trigger={
+    <>
+      <DropdownMenuContent align="end">
         <DropdownMenuItem
-          onSelect={(e) => {
-            e.preventDefault();
+          onClick={() => {
+            deleteDialogControls.handleSetOpen(true);
           }}
         >
           <TrashIcon className="mr-2" /> Delete
         </DropdownMenuItem>
-      }
-    />
+      </DropdownMenuContent>
+
+      <ConfirmDialog
+        confirmLabel="Confirm Delete"
+        description="Are you sure you want to delete this transaction?"
+        onConfirm={handleDelete}
+        variant="destructive"
+        {...deleteDialogControls}
+      />
+    </>
   );
 };
 
@@ -134,25 +146,28 @@ export const DataTableRowActions = ({ row }: DataTableRowActionsProps) => (
   // const task = taskSchema.parse(row.original);
   <div className="flex gap-2">
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          $size="icon"
-          $variant="ghost"
-          className="data-[state=open]:bg-muted flex p-0"
-        >
-          <AccessibleIcon label="Open menu">
-            <MoreVerticalIcon />
-          </AccessibleIcon>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {row.original.sheetType === "PERSONAL" && (
-          <PersonalTransactionDropdownContent row={row} />
-        )}
-        {row.original.sheetType === "GROUP" && (
-          <GroupTransactionDropdownContent row={row} />
-        )}
-      </DropdownMenuContent>
+      <DropdownMenuTrigger
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        render={
+          <Button
+            $size="icon"
+            $variant="ghost"
+            className="data-[state=open]:bg-muted flex p-0"
+          >
+            <AccessibleIcon label="Open menu">
+              <MoreVerticalIcon />
+            </AccessibleIcon>
+          </Button>
+        }
+      />
+      {row.original.sheetType === "PERSONAL" && (
+        <PersonalTransactionDropdownContent row={row} />
+      )}
+      {row.original.sheetType === "GROUP" && (
+        <GroupTransactionDropdownContent row={row} />
+      )}
     </DropdownMenu>
   </div>
 );

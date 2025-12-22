@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import type { ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -21,7 +20,11 @@ import { CurrencySpan } from "../CurrencySpan";
 import { CategorySelect } from "../form/CategorySelect";
 import { CurrencySelect } from "../form/CurrencySelect";
 import { MoneyField } from "../form/MoneyField";
-import { ResponsiveDialog, useDialog } from "../form/ResponsiveDialog";
+import {
+  ResponsiveDialog,
+  useDialog,
+  type DialogControlsOrRender,
+} from "../form/ResponsiveDialog";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -231,11 +234,11 @@ const EditPersonalTransactionForm = ({
 export const EditPersonalTransactionDialog = ({
   sheetId,
   transactionId,
-  trigger,
+  dialogProps,
 }: {
   sheetId: string;
   transactionId: string;
-  trigger: ReactNode;
+  dialogProps: DialogControlsOrRender;
 }) => {
   const { trpc } = useTRPC();
   const { data } = useQuery(
@@ -246,7 +249,7 @@ export const EditPersonalTransactionDialog = ({
   );
 
   return (
-    <ResponsiveDialog title="Edit Transaction" trigger={trigger}>
+    <ResponsiveDialog title="Edit Transaction" {...dialogProps}>
       {data ? <EditPersonalTransactionForm data={data} /> : null}
     </ResponsiveDialog>
   );

@@ -1,6 +1,5 @@
-import type { ComponentProps } from "react";
+import type { Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
-import { z } from "zod";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
@@ -10,9 +9,9 @@ type ParticipantSelectProps = {
   id?: string;
   groupSheet: GroupSheetByIdResponse;
   value: string | undefined;
-  onChange: (val: string) => void;
-} & Pick<ComponentProps<typeof Select>, "ref"> &
-  Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
+  onChange: (newValue: string | undefined) => void;
+  ref?: Ref<HTMLInputElement> | undefined;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const ParticipantSelect = ({
   ref,
@@ -29,17 +28,13 @@ export const ParticipantSelect = ({
       {...controllerProps}
       id={id}
       ref={ref}
-      placeholder="Please Select..."
-      value={value ?? ""}
+      placeholder="Please select…"
+      value={value}
       onChange={onChange}
-      schema={z.string()}
-      options={[
-        { label: "Please Select...", value: undefined, disabled: true },
-        ...options.map(({ id: optValue, name: label }) => ({
-          value: optValue,
-          label,
-        })),
-      ]}
+      options={options.map(({ id: optValue, name: label }) => ({
+        value: optValue,
+        label,
+      }))}
     />
   );
 };

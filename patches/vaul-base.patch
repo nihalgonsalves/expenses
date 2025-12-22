@@ -1,5 +1,5 @@
 diff --git a/dist/index.mjs b/dist/index.mjs
-index 0dbbce5526681925a81804ced237a045a53c0355..5acf237fe2076db7318f7ec733ef02a6a915cad4 100644
+index cbdca1a9e4ea3de2b4fff9e8c0530e23040202b1..81c82c57cd823db439dccd9e3052e004e980b02f 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
 @@ -1,5 +1,6 @@
@@ -10,15 +10,15 @@ index 0dbbce5526681925a81804ced237a045a53c0355..5acf237fe2076db7318f7ec733ef02a6
    let head = document.head || document.getElementsByTagName('head')[0]
    let style = document.createElement('style')
 diff --git a/package.json b/package.json
-index f71a696ed94bc284ee60ae5d819d8ef14dadccec..66776722396651921cc8816ae91af75cc4906c7a 100644
+index d18fcaad6272a2f51e03578a3792821583224d67..81f5dd962d6c0ac29cb789febcfda9c412efdeca 100644
 --- a/package.json
 +++ b/package.json
-@@ -10,14 +10,11 @@
-     "style.css"
+@@ -34,14 +34,11 @@
+     "README.md"
    ],
    "exports": {
 -    "import": {
-+    ".":{
++    ".": {
        "types": "./dist/index.d.mts",
        "default": "./dist/index.mjs"
      },
@@ -30,16 +30,3 @@ index f71a696ed94bc284ee60ae5d819d8ef14dadccec..66776722396651921cc8816ae91af75c
    },
    "scripts": {
      "type-check": "tsc --noEmit",
-diff --git a/style.css b/style.css
-index 9d7c6bf22013d888051243badb4197301cdffe46..3bddaace06fcb02cd476c73b8f9cbc391f7c5c1f 100644
---- a/style.css
-+++ b/style.css
-@@ -174,7 +174,7 @@
- }
- 
- @media (pointer: fine) {
--  [data-vaul-handle-hitarea]: {
-+  [data-vaul-handle-hitarea] {
-     width: 100%;
-     height: 100%;
-   }

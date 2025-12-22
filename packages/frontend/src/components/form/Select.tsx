@@ -1,6 +1,5 @@
-import type { ComponentProps, ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
-import type { z } from "zod";
 
 import {
   Select as UISelect,
@@ -10,61 +9,52 @@ import {
   SelectValue,
 } from "../ui/select";
 
-export type SelectOption<T extends z.ZodType<string>> = {
+export type SelectOption<T> = {
   label: ReactNode;
-  value: z.infer<T> | undefined;
+  value: T | undefined;
   disabled?: boolean;
 };
 
-const UNSET = "unset";
-
-type SelectProps<T extends z.ZodType<string>> = {
+type SelectProps<T> = {
   id?: string | undefined;
   placeholder?: string;
   options: SelectOption<T>[];
-  value: z.infer<T> | undefined;
-  onChange: (newValue: z.infer<T>) => void;
-  schema: T;
-  className?: string | undefined;
-} & Pick<ComponentProps<typeof SelectTrigger>, "ref"> &
-  Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
+  value: T | undefined;
+  onChange: (newValue: T | undefined) => void;
+  ref?: Ref<HTMLInputElement> | undefined;
+} & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
-export const Select = <T extends z.ZodType<string>>({
+export const Select = <T extends string | undefined>({
   ref,
   id,
   placeholder,
   options,
   value,
-  onChange: setValue,
-  schema,
-  className,
-  onBlur,
+  onChange,
   ...controllerProps
 }: SelectProps<T>) => (
-  <UISelect
-    value={
-      value ??
-      // if there's a placeholder, use "" so that the select displays it.
-      // if not, fallback a value with `undefined` in it
-      (placeholder ? "" : UNSET)
-    }
-    onValueChange={(newValue) => {
-      onBlur();
-
-      if (newValue === "" || newValue === UNSET) {
-        setValue(schema.parse(newValue));
-        return;
-      }
+  <UISelect<T>
+    {...controllerProps}
+    {...(ref && { inputRef: ref })}
+    {...(id && { id })}
+    items={options}
+    value={value ?? null}
+    onValueChange={(next) => {
+      onChange(next ?? undefined);
     }}
   >
-    <SelectTrigger {...controllerProps} id={id} ref={ref} className={className}>
-      <SelectValue placeholder={placeholder} />
+    <SelectTrigger className="w-full">
+      {value != null ? (
+        <SelectValue />
+      ) : (
+        <SelectValue>{placeholder}</SelectValue>
+      )}
     </SelectTrigger>
     <SelectContent>
       {options.map((opt) => (
         <SelectItem
-          key={opt.value ?? UNSET}
-          value={opt.value ?? UNSET}
+          key={opt.value}
+          value={opt.value}
           disabled={opt.disabled ?? false}
         >
           {opt.label}

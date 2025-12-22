@@ -1,74 +1,144 @@
 "use client";
 
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 import type { ComponentProps } from "react";
 
-import { cn, twx } from "./utils";
+import { Button } from "#/components/ui/button";
+import { cn } from "#/components/ui/utils";
 
-const Dialog = DialogPrimitive.Root;
+const Dialog = ({ ...props }: DialogPrimitive.Root.Props) => (
+  <DialogPrimitive.Root data-slot="dialog" {...props} />
+);
 
-const DialogTrigger = DialogPrimitive.Trigger;
+const DialogTrigger = ({ ...props }: DialogPrimitive.Trigger.Props) => (
+  <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
+);
 
-const DialogPortal = DialogPrimitive.Portal;
+const DialogPortal = ({ ...props }: DialogPrimitive.Portal.Props) => (
+  <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
+);
 
-const DialogClose = DialogPrimitive.Close;
+const DialogClose = ({ ...props }: DialogPrimitive.Close.Props) => (
+  <DialogPrimitive.Close data-slot="dialog-close" {...props} />
+);
 
-const DialogOverlay = twx(
-  DialogPrimitive.Overlay,
-)`fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0`;
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+const DialogOverlay = ({
+  className,
+  ...props
+}: DialogPrimitive.Backdrop.Props) => (
+  <DialogPrimitive.Backdrop
+    data-slot="dialog-overlay"
+    className={cn(
+      "data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs",
+      className,
+    )}
+    {...props}
+  />
+);
 
 const DialogContent = ({
-  ref,
   className,
   children,
+  showCloseButton = true,
   ...props
-}: ComponentProps<typeof DialogPrimitive.Content>) => (
+}: DialogPrimitive.Popup.Props & {
+  showCloseButton?: boolean;
+}) => (
   <DialogPortal>
     <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
+    <DialogPrimitive.Popup
+      data-slot="dialog-content"
       className={cn(
-        "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200",
+        "bg-background data-open:animate-in data-closed:animate-out data-closed:fade-out-0 data-open:fade-in-0 data-closed:zoom-out-95 data-open:zoom-in-95 ring-foreground/10 fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl p-4 text-sm ring-1 duration-100 outline-none",
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
-        <XIcon className="size-4" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
+      {showCloseButton ? (
+        <DialogPrimitive.Close
+          data-slot="dialog-close"
+          render={
+            <Button
+              $variant="ghost"
+              $size="icon"
+              className="absolute top-2 right-2"
+            />
+          }
+        >
+          <XIcon />
+          <span className="sr-only">Close</span>
+        </DialogPrimitive.Close>
+      ) : null}
+    </DialogPrimitive.Popup>
   </DialogPortal>
 );
 
-const DialogHeader = twx.div`flex flex-col space-y-1.5 text-center sm:text-left`;
-DialogHeader.displayName = "DialogHeader";
+const DialogHeader = ({ className, ...props }: ComponentProps<"div">) => (
+  <div
+    data-slot="dialog-header"
+    className={cn("flex flex-col gap-2", className)}
+    {...props}
+  />
+);
 
-const DialogFooter = twx.div`flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2`;
-DialogFooter.displayName = "DialogFooter";
+const DialogFooter = ({
+  className,
+  showCloseButton = false,
+  children,
+  ...props
+}: ComponentProps<"div"> & {
+  showCloseButton?: boolean;
+}) => (
+  <div
+    data-slot="dialog-footer"
+    className={cn(
+      "bg-muted/50 -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t p-4 sm:flex-row sm:justify-end",
+      className,
+    )}
+    {...props}
+  >
+    {children}
+    {showCloseButton ? (
+      <DialogPrimitive.Close render={<Button $variant="outline" />}>
+        Close
+      </DialogPrimitive.Close>
+    ) : null}
+  </div>
+);
 
-const DialogTitle = twx(
-  DialogPrimitive.Title,
-)`text-lg font-semibold leading-none tracking-tight`;
-DialogTitle.displayName = DialogPrimitive.Title.displayName;
+const DialogTitle = ({ className, ...props }: DialogPrimitive.Title.Props) => (
+  <DialogPrimitive.Title
+    data-slot="dialog-title"
+    className={cn("text-sm leading-none font-medium", className)}
+    {...props}
+  />
+);
 
-const DialogDescription = twx(
-  DialogPrimitive.Description,
-)`text-sm text-muted-foreground`;
-DialogDescription.displayName = DialogPrimitive.Description.displayName;
+const DialogDescription = ({
+  className,
+  ...props
+}: DialogPrimitive.Description.Props) => (
+  <DialogPrimitive.Description
+    data-slot="dialog-description"
+    className={cn(
+      "text-muted-foreground *:[a]:hover:text-foreground text-sm *:[a]:underline *:[a]:underline-offset-3",
+      className,
+    )}
+    {...props}
+  />
+);
 
 export {
   Dialog,
-  DialogPortal,
-  DialogOverlay,
-  DialogTrigger,
   DialogClose,
   DialogContent,
-  DialogHeader,
-  DialogFooter,
-  DialogTitle,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
 };

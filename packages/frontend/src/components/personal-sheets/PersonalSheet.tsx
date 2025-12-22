@@ -23,6 +23,7 @@ import { getTransactionDescription } from "../../utils/utils";
 import { CategoryAvatar } from "../CategoryAvatar";
 import { CurrencySpan } from "../CurrencySpan";
 import { ConfirmDialog } from "../form/ConfirmDialog";
+import { useDialogControls } from "../form/ResponsiveDialog";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -83,6 +84,8 @@ const TransactionScheduleDropdownMenu = ({
   sheetId: string;
   transactionScheduleId: string;
 }) => {
+  const deleteDialogControls = useDialogControls();
+
   const { trpc, invalidate } = useTRPC();
   const { mutateAsync: deleteTransactionSchedule } = useMutation(
     trpc.transaction.deleteTransactionSchedule.mutationOptions(),
@@ -96,31 +99,34 @@ const TransactionScheduleDropdownMenu = ({
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button $size="icon" $variant="outline" className="bg-inherit">
-          <MoreVerticalIcon />
-        </Button>
-      </DropdownMenuTrigger>
-
-      <DropdownMenuContent align="end">
-        <ConfirmDialog
-          confirmLabel="Confirm Delete"
-          description="Delete transaction schedule? Existing transactions will not be affected."
-          onConfirm={handleDelete}
-          variant="destructive"
-          trigger={
-            <DropdownMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
-            >
-              <Trash2Icon className="mr-2" /> Delete
-            </DropdownMenuItem>
+    <>
+      <ConfirmDialog
+        confirmLabel="Confirm Delete"
+        description="Delete transaction schedule? Existing transactions will not be affected."
+        onConfirm={handleDelete}
+        variant="destructive"
+        {...deleteDialogControls}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button $size="icon" $variant="outline" className="bg-inherit">
+              <MoreVerticalIcon />
+            </Button>
           }
         />
-      </DropdownMenuContent>
-    </DropdownMenu>
+
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => {
+              deleteDialogControls.handleSetOpen(true);
+            }}
+          >
+            <Trash2Icon className="mr-2" /> Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 
@@ -139,7 +145,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
   const addButton = (
     <CreatePersonalTransactionDialog
       sheetId={personalSheet.id}
-      trigger={
+      render={
         <Button $variant="outline" $size="icon">
           <AccessibleIcon label="Add Transaction">
             <PlusIcon />
@@ -190,7 +196,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                               {schedule.recurrenceRule.freq.toLowerCase()}
                             </Badge>
 
-                            <TooltipProvider delayDuration={100}>
+                            <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger>
                                   <Badge variant="outline">
@@ -200,7 +206,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                                     )}
                                   </Badge>
                                 </TooltipTrigger>
-                                <TooltipContent className="bg-muted text-muted-foreground">
+                                <TooltipContent>
                                   <p>
                                     {shortDateTimeFormatter.format(
                                       nextOccurrenceAt.epochMilliseconds,
@@ -218,7 +224,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                                       </AccessibleIcon>
                                     </Badge>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-muted text-muted-foreground">
+                                  <TooltipContent>
                                     <p>Pending processing</p>
                                   </TooltipContent>
                                 </Tooltip>

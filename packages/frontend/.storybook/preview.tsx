@@ -8,6 +8,8 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 
+import { TooltipRoot } from "#/components/TooltipRoot";
+
 const rootRoute = createRootRoute();
 const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/" });
 const memoryHistory = createMemoryHistory({ initialEntries: ["/"] });
@@ -25,7 +27,12 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (story) => <RouterProvider router={router} defaultComponent={story} />,
+    (story) => (
+      <>
+        <RouterProvider router={router} defaultComponent={story} />
+        <TooltipRoot />
+      </>
+    ),
   ],
 };
 

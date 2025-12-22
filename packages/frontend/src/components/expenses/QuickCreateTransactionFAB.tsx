@@ -16,9 +16,11 @@ export const QuickCreateTransactionFAB = () => {
 
   return (
     <ResponsiveDialog
-      trigger={
+      triggerType="trigger"
+      render={
         <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
       }
+      nativeButton={false}
       title="Choose a sheet"
     >
       <div className="mt-2 flex flex-col gap-4">
@@ -28,7 +30,7 @@ export const QuickCreateTransactionFAB = () => {
             <CreatePersonalTransactionDialog
               key={sheet.id}
               sheetId={sheet.id}
-              trigger={
+              render={
                 <Button className="w-full" $variant="outline">
                   {sheet.name}
                 </Button>
@@ -38,7 +40,7 @@ export const QuickCreateTransactionFAB = () => {
             <CreateGroupSheetTransactionDialog
               key={sheet.id}
               sheetId={sheet.id}
-              trigger={
+              render={
                 <Button className="w-full" $variant="outline">
                   {sheet.name}
                 </Button>

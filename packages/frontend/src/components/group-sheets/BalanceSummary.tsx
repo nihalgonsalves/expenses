@@ -95,16 +95,18 @@ const PersonMenu = ({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button $size="icon" $variant="outline" className="bg-inherit">
-          <AccessibleIcon label="Member actions">
-            <MoreVerticalIcon />
-          </AccessibleIcon>
-        </Button>
-      </DropdownMenuTrigger>
+      <DropdownMenuTrigger
+        render={
+          <Button $size="icon" $variant="outline" className="bg-inherit">
+            <AccessibleIcon label="Member actions">
+              <MoreVerticalIcon />
+            </AccessibleIcon>
+          </Button>
+        }
+      />
       <DropdownMenuContent align="end">
         <DropdownMenuItem
-          onSelect={handleDelete}
+          onClick={handleDelete}
           disabled={balance.amount !== 0 || !onLine}
         >
           {actorInfo.isAdmin ? (
@@ -204,7 +206,8 @@ const TransferItem = ({
       </Badge>
       <ConfirmDialog
         onConfirm={handleSettleUp}
-        trigger={
+        triggerType="trigger"
+        render={
           <Button isLoading={isPending} type="button" $variant="outline">
             <CheckIcon className="mr-2" /> Settled?
           </Button>

@@ -18,7 +18,7 @@ const meta: Meta<typeof Drawer> = {
   args: {},
   render: (props) => (
     <Drawer {...props}>
-      <DrawerTrigger>Open</DrawerTrigger>
+      <DrawerTrigger render={<Button $variant="outline">Open</Button>} />
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>Are you sure?</DrawerTitle>

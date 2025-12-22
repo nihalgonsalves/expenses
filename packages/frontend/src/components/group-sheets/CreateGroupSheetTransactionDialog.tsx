@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { CheckIcon, ArrowDownIcon, ArrowUpIcon } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionType } from "@nihalgonsalves/expenses-shared/types/transaction";
@@ -10,6 +10,7 @@ import { useTRPC } from "../../api/trpc";
 import { useCurrentUser } from "../../api/useCurrentUser";
 import { ResponsiveDialog } from "../form/ResponsiveDialog";
 import { ToggleButtonGroup } from "../form/ToggleButtonGroup";
+import type { RenderProp } from "../ui/utils";
 
 import { SettlementForm } from "./SettlementForm";
 import { TransactionForm } from "./TransactionForm";
@@ -72,10 +73,10 @@ const CreateGroupSheetTransactionForm = ({
 
 export const CreateGroupSheetTransactionDialog = ({
   sheetId,
-  trigger,
+  render,
 }: {
   sheetId: string;
-  trigger: ReactNode;
+  render: RenderProp;
 }) => {
   const { trpc } = useTRPC();
   const { data: groupSheet } = useQuery(
@@ -85,7 +86,11 @@ export const CreateGroupSheetTransactionDialog = ({
   const { data: me } = useCurrentUser();
 
   return (
-    <ResponsiveDialog trigger={trigger} title="Add Transaction">
+    <ResponsiveDialog
+      triggerType="trigger"
+      render={render}
+      title="Add Transaction"
+    >
       {groupSheet && me ? (
         <CreateGroupSheetTransactionForm groupSheet={groupSheet} me={me} />
       ) : null}

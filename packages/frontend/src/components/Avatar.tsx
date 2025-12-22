@@ -10,23 +10,18 @@ import {
 import { cn } from "./ui/utils";
 
 export const Avatar = ({ name }: { name: string }) => (
-  <TooltipProvider delayDuration={100}>
-    <Tooltip>
-      <TooltipTrigger asChild>
+  <Tooltip>
+    <TooltipTrigger
+      render={
         <UIAvatar className="border-primary border">
           <AvatarFallback className="cursor-pointer">
             {getInitials(name)}
           </AvatarFallback>
         </UIAvatar>
-      </TooltipTrigger>
-      <TooltipContent
-        side="left"
-        className="bg-primary text-primary-foreground"
-      >
-        <p>{name}</p>
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+      }
+    />
+    <TooltipContent side="left">{name}</TooltipContent>
+  </Tooltip>
 );
 
 export const AvatarGroup = ({
@@ -42,15 +37,19 @@ export const AvatarGroup = ({
   const hidden = users.length - visible.length;
 
   return (
-    <div className={cn("flex -space-x-4", className)}>
-      {visible.map(({ id, name }) => (
-        <Avatar key={id} name={name} />
-      ))}
-      {hidden !== 0 && (
-        <UIAvatar className="border-2">
-          <AvatarFallback className="cursor-pointer">+{hidden}</AvatarFallback>
-        </UIAvatar>
-      )}
-    </div>
+    <TooltipProvider>
+      <div className={cn("flex -space-x-4", className)}>
+        {visible.map(({ id, name }) => (
+          <Avatar key={id} name={name} />
+        ))}
+        {hidden !== 0 && (
+          <UIAvatar className="border-2">
+            <AvatarFallback className="cursor-pointer">
+              +{hidden}
+            </AvatarFallback>
+          </UIAvatar>
+        )}
+      </div>
+    </TooltipProvider>
   );
 };

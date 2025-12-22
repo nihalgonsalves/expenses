@@ -20,9 +20,7 @@ const meta: Meta<typeof Dialog> = {
   component: Dialog,
   render: () => (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button $variant="outline">Share</Button>
-      </DialogTrigger>
+      <DialogTrigger render={<Button $variant="outline">Share</Button>} />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Share link</DialogTitle>
@@ -47,11 +45,13 @@ const meta: Meta<typeof Dialog> = {
           </Button>
         </div>
         <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" $variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
+          <DialogClose
+            render={
+              <Button type="button" $variant="secondary">
+                Close
+              </Button>
+            }
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

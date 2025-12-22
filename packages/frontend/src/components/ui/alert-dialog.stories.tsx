@@ -1,4 +1,4 @@
-import type { AlertDialogProps } from "@radix-ui/react-alert-dialog";
+import type { AlertDialogRootProps } from "@base-ui/react/alert-dialog";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { VariantProps } from "class-variance-authority";
 import { expect, userEvent, within, waitFor, screen } from "storybook/test";
@@ -16,10 +16,12 @@ import {
 } from "./alert-dialog";
 import type { buttonVariants } from "./button";
 
-const render = (
-  props: AlertDialogProps,
-  variant: VariantProps<typeof buttonVariants>["$variant"],
-) => (
+const Template = ({
+  variant,
+  ...props
+}: AlertDialogRootProps & {
+  variant: VariantProps<typeof buttonVariants>["$variant"];
+}) => (
   <AlertDialog {...props}>
     <AlertDialogTrigger>Open</AlertDialogTrigger>
     <AlertDialogContent>
@@ -38,9 +40,11 @@ const render = (
   </AlertDialog>
 );
 
-const meta: Meta<typeof AlertDialog> = {
-  component: AlertDialog,
-  render: (props) => render(props, "default"),
+const meta: Meta<typeof Template> = {
+  component: Template,
+  args: {
+    variant: "default",
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button"));
@@ -55,12 +59,14 @@ const meta: Meta<typeof AlertDialog> = {
   },
 };
 
-type Story = StoryObj<typeof AlertDialog>;
+type Story = StoryObj<typeof Template>;
 
 export const Base: Story = {};
 
 export const Destructive: Story = {
-  render: (props) => render(props, "destructive"),
+  args: {
+    variant: "destructive",
+  },
 };
 
 export default meta;

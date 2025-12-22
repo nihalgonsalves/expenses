@@ -26,12 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from "../ui/tooltip";
+import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 
 const ImportStep = {
   UPLOAD_FILE: "UPLOAD_FILE",
@@ -93,15 +88,13 @@ const findCategory = (value: string | undefined) =>
       CategoryId.Other)
     : CategoryId.Other;
 
-const ZAmountFormat = z.enum([
-  "decimal-dot",
-  "decimal-comma",
-  "decimal-dot-inverse",
-  "decimal-comma-inverse",
-]);
+type AmountFormat =
+  | "decimal-dot"
+  | "decimal-dot-inverse"
+  | "decimal-comma"
+  | "decimal-comma-inverse";
 
-type AmountFormat = z.infer<typeof ZAmountFormat>;
-const amountFormatOptions: SelectOption<typeof ZAmountFormat>[] = [
+const amountFormatOptions: SelectOption<AmountFormat>[] = [
   {
     value: "decimal-dot",
     label: "Decimal, dot (1,000.50), expenses negative.",
@@ -165,18 +158,14 @@ const SafeDisplay = ({
     );
   } catch (e) {
     return (
-      <TooltipProvider delayDuration={100}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <AlertTriangleIcon />
-          </TooltipTrigger>
-          <TooltipContent side="top">
-            <p>{`${
-              e instanceof Error ? e.message : "Unknown Error"
-            } (${value})`}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger render={<AlertTriangleIcon />} />
+        <TooltipContent side="top">
+          <p>{`${
+            e instanceof Error ? e.message : "Unknown Error"
+          } (${value})`}</p>
+        </TooltipContent>
+      </Tooltip>
     );
   }
 };
@@ -306,8 +295,11 @@ export const PersonalTransactionsImporter = ({
   const [csvError, setCsvError] = useState("");
 
   const [amountField, setAmountField] = useState<string>();
-  const [amountFormat, setAmountFormat] = useState<AmountFormat>("decimal-dot");
-  const amountParser = (value: string) => parseAmount(value, amountFormat);
+  const [amountFormat, setAmountFormat] = useState<AmountFormat | undefined>(
+    "decimal-dot",
+  );
+  const amountParser = (value: string) =>
+    parseAmount(value, amountFormat ?? "decimal-dot");
 
   const [dateField, setDateField] = useState<string>();
   const [dateFormat, setDateFormat] = useState("yyyy-MM-dd");
@@ -475,7 +467,6 @@ export const PersonalTransactionsImporter = ({
                 options={fieldOptions}
                 value={amountField}
                 onChange={setAmountField}
-                schema={z.string()}
               />
             </Label>
             <Label className="flex flex-col gap-2">
@@ -487,7 +478,6 @@ export const PersonalTransactionsImporter = ({
                 options={amountFormatOptions}
                 value={amountFormat}
                 onChange={setAmountFormat}
-                schema={ZAmountFormat}
               />
             </Label>
 
@@ -500,7 +490,6 @@ export const PersonalTransactionsImporter = ({
                 options={fieldOptions}
                 value={dateField}
                 onChange={setDateField}
-                schema={z.string()}
               />
             </Label>
 
@@ -537,7 +526,6 @@ export const PersonalTransactionsImporter = ({
                 options={fieldOptions}
                 value={categoryField}
                 onChange={setCategoryField}
-                schema={z.string()}
               />
             </Label>
 
@@ -552,7 +540,6 @@ export const PersonalTransactionsImporter = ({
                 options={fieldOptions}
                 value={descriptionField}
                 onChange={setDescriptionField}
-                schema={z.string()}
               />
             </Label>
 

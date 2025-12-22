@@ -1,9 +1,9 @@
 "use client";
 
-import type { DialogProps } from "@radix-ui/react-dialog";
+import type { DialogRootProps } from "@base-ui/react/dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react";
-import type { ComponentProps } from "react";
+import type { ComponentProps, PropsWithChildren } from "react";
 
 import { Dialog, DialogContent } from "./dialog";
 import { cn, twx } from "./utils";
@@ -13,7 +13,7 @@ const Command = twx(
 )`flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground`;
 Command.displayName = CommandPrimitive.displayName;
 
-type CommandDialogProps = DialogProps;
+type CommandDialogProps = PropsWithChildren<Omit<DialogRootProps, "children">>;
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => (
   <Dialog {...props}>

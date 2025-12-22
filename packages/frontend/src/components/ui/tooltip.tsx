@@ -1,18 +1,71 @@
 "use client";
 
-import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
+import { useAtomValue } from "jotai";
 
-import { twx } from "./utils";
+import { cn } from "#/components/ui/utils";
+import { tooltipPortalRootElementAtom } from "#/state/portals";
 
-const TooltipProvider = TooltipPrimitive.Provider;
+const TooltipProvider = ({
+  delay = 0,
+  ...props
+}: TooltipPrimitive.Provider.Props) => (
+  <TooltipPrimitive.Provider
+    data-slot="tooltip-provider"
+    delay={delay}
+    {...props}
+  />
+);
 
-const Tooltip = TooltipPrimitive.Root;
+const Tooltip = ({ ...props }: TooltipPrimitive.Root.Props) => (
+  <TooltipProvider>
+    <TooltipPrimitive.Root data-slot="tooltip" {...props} />
+  </TooltipProvider>
+);
 
-const TooltipTrigger = TooltipPrimitive.Trigger;
+const TooltipTrigger = ({ ...props }: TooltipPrimitive.Trigger.Props) => (
+  <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+);
 
-const TooltipContent = twx(
-  TooltipPrimitive.Content,
-)`z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2`;
-TooltipContent.displayName = TooltipPrimitive.Content.displayName;
+const TooltipContent = ({
+  className,
+  side = "top",
+  sideOffset = 4,
+  align = "center",
+  alignOffset = 0,
+  children,
+  ...props
+}: TooltipPrimitive.Popup.Props &
+  Pick<
+    TooltipPrimitive.Positioner.Props,
+    "align" | "alignOffset" | "side" | "sideOffset"
+  >) => {
+  const container = useAtomValue(tooltipPortalRootElementAtom);
+
+  return (
+    <TooltipPrimitive.Portal container={container}>
+      <TooltipPrimitive.Positioner
+        align={align}
+        alignOffset={alignOffset}
+        side={side}
+        sideOffset={sideOffset}
+        className="isolate z-50"
+      >
+        <TooltipPrimitive.Popup
+          role="tooltip"
+          data-slot="tooltip-content"
+          className={cn(
+            "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 bg-foreground text-background z-50 w-fit max-w-xs origin-(--transform-origin) rounded-md px-3 py-1.5 text-xs",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+          <TooltipPrimitive.Arrow className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px] data-[side=bottom]:top-1 data-[side=left]:top-1/2! data-[side=left]:-right-1 data-[side=left]:-translate-y-1/2 data-[side=right]:top-1/2! data-[side=right]:-left-1 data-[side=right]:-translate-y-1/2 data-[side=top]:-bottom-2.5" />
+        </TooltipPrimitive.Popup>
+      </TooltipPrimitive.Positioner>
+    </TooltipPrimitive.Portal>
+  );
+};
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
