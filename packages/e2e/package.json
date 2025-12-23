@@ -13,7 +13,7 @@
     "@nihalgonsalves/expenses-backend": "workspace:*",
     "@nihalgonsalves/expenses-shared": "workspace:*",
     "@playwright/test": "1.57.0",
-    "@trpc/client": "11.8.0",
+    "@trpc/client": "11.8.1",
     "chromatic": "13.3.4",
     "zod": "4.2.1"
   }
