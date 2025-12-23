@@ -1,6 +1,11 @@
 packages:
   - packages/*
 
+engineStrict: true
+blockExoticSubdeps: true
+strictDepBuilds: true
+saveExact: true
+
 allowBuilds:
   "@prisma/engines": true
   "@sentry-internal/node-cpu-profiler": true
@@ -20,5 +25,3 @@ allowBuilds:
 patchedDependencies:
   sonner: patches/sonner.patch
   vaul-base: patches/vaul-base.patch
-
-saveExact: true
