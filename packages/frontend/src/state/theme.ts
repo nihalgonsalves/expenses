@@ -119,8 +119,9 @@ const syncMetaThemeColor = (shouldDarken: boolean) => {
 
   setColor(
     shouldDarken
-      ? // the DrawerRoot is styled as bg-black/80, we can mimic the same 80% black effect by setting the RGB value to 20% of the original
-        `rgb(${r * 0.2}, ${g * 0.2}, ${b * 0.2})`
+      ? // the DrawerRoot is styled as bg-black/10, we can mimic the same 10% black effect
+        // by setting the RGB value to 90% of the original
+        `rgb(${r * 0.9}, ${g * 0.9}, ${b * 0.9})`
       : backgroundColor,
   );
 };
