@@ -37,16 +37,16 @@
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "0.13.2",
-    "@tanstack/react-router-devtools": "1.143.2",
-    "@tanstack/router-plugin": "1.143.2",
+    "@tanstack/react-router-devtools": "1.144.0",
+    "@tanstack/router-plugin": "1.144.0",
     "@types/node": "24",
-    "@typescript/native-preview": "7.0.0-dev.20251223.1",
+    "@typescript/native-preview": "7.0.0-dev.20251229.1",
     "@vitest/coverage-v8": "4.0.16",
     "@vitest/ui": "4.0.16",
     "eslint": "9.39.2",
     "eslint-plugin-unused-imports": "4.3.0",
-    "knip": "5.76.3",
-    "lefthook": "2.0.12",
+    "knip": "5.78.0",
+    "lefthook": "2.0.13",
     "npm-run-all2": "8.0.4",
     "prettier": "3.7.4",
     "prettier-plugin-prisma": "5.0.0",
@@ -55,7 +55,7 @@
     "sherif": "1.9.0",
     "type-fest": "5.3.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.50.1",
+    "typescript-eslint": "8.51.0",
     "vitest": "4.0.16"
   }
 }
