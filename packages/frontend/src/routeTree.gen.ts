@@ -89,17 +89,17 @@ const AuthSheetsSheetIdImportRoute = AuthSheetsSheetIdImportRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof AuthIndexRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/verify-email': typeof AuthVerifyEmailRoute
-  '/': typeof AuthIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
-  '/groups': typeof AuthGroupsIndexRoute
-  '/sheets': typeof AuthSheetsIndexRoute
+  '/groups/': typeof AuthGroupsIndexRoute
+  '/sheets/': typeof AuthSheetsIndexRoute
   '/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
 }
 export interface FileRoutesByTo {
@@ -135,17 +135,17 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/settings'
     | '/stats'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/auth/verify-email'
-    | '/'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
-    | '/groups'
-    | '/sheets'
+    | '/groups/'
+    | '/sheets/'
     | '/sheets/$sheetId/import'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -199,7 +199,7 @@ declare module '@tanstack/react-router' {
     '/_auth': {
       id: '/_auth'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -248,14 +248,14 @@ declare module '@tanstack/react-router' {
     '/_auth/sheets/': {
       id: '/_auth/sheets/'
       path: '/sheets'
-      fullPath: '/sheets'
+      fullPath: '/sheets/'
       preLoaderRoute: typeof AuthSheetsIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/groups/': {
       id: '/_auth/groups/'
       path: '/groups'
-      fullPath: '/groups'
+      fullPath: '/groups/'
       preLoaderRoute: typeof AuthGroupsIndexRouteImport
       parentRoute: typeof AuthRoute
     }

@@ -65,7 +65,7 @@ If using GitHub Codespaces or a Dev Container, skip to step 5.
 3. Migrate databases
 
    ```sh
-   pnpm be prisma migrate dev
+   pnpm be db:migrate
    ```
 
 4. Start dev servers

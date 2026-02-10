@@ -9,6 +9,7 @@ const { publicKey, privateKey } = webPush.generateVAPIDKeys();
 await writeFile(
   new URL("../.env", import.meta.url),
   Object.entries({
+    DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres",
     VAPID_PRIVATE_KEY: privateKey,
     VAPID_PUBLIC_KEY: publicKey,
   })
