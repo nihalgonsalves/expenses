@@ -150,7 +150,7 @@ export const ResponsiveDialog = ({
           nativeButton={props.nativeButton ?? true}
         />
       )}
-      <DialogContent className="max-h-95dvh max-w-[min(95dvw,var(--container-5xl))] overflow-auto">
+      <DialogContent className="mb-[env(safe-area-inset-bottom)] max-h-[95dvh] max-w-[min(95dvw,var(--container-5xl))] overflow-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
