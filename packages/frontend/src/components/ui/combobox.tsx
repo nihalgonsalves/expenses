@@ -1,6 +1,6 @@
 import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
 import { CheckIcon, XIcon } from "lucide-react";
-import type { Ref, RefObject } from "react";
+import type { ComponentProps, Ref, RefObject } from "react";
 
 import { Button } from "./button";
 import { Input } from "./input";
@@ -29,7 +29,7 @@ const ComboboxTrigger = (props: ComboboxPrimitive.Trigger.Props) => (
   />
 );
 
-const ComboboxIcon = (props: ComboboxPrimitive.Icon.Props) => (
+const ComboboxIcon = (props: ComponentProps<typeof ComboboxPrimitive.Icon>) => (
   <ComboboxPrimitive.Icon data-slot="combobox-icon" {...props} />
 );
 

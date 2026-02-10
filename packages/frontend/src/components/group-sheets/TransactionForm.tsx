@@ -503,7 +503,7 @@ const SplitsFormSection = ({
                 key={id}
                 control={form.control}
                 name={`ratios.${i}.ratio`}
-                render={({ field }) => (
+                render={({ field: { value, ...field } }) => (
                   <FormItem className="flex grow items-center justify-between gap-2">
                     <div className="grow">
                       <FormLabel>
@@ -563,6 +563,7 @@ const SplitsFormSection = ({
                             inputMode={splitConfig.inputMode}
                             maxLength={4}
                             {...field}
+                            value={value}
                             onChange={(e) => {
                               field.onChange(getNewRatioValue(e.target.value));
                             }}
@@ -594,7 +595,7 @@ const SplitsFormSection = ({
                             currencyCode={currencyCode}
                             {...field}
                             mode="onBlur"
-                            value={field.value}
+                            value={value}
                             onFocus={handleRatioFocus}
                             onChange={(newAmount) => {
                               field.onChange(getNewRatioValue(newAmount));
@@ -608,7 +609,7 @@ const SplitsFormSection = ({
                       <FormControl>
                         <Switch
                           {...field}
-                          checked={field.value == 1}
+                          checked={value == 1}
                           onCheckedChange={(checked) => {
                             field.onChange(checked ? 1 : 0);
                           }}
