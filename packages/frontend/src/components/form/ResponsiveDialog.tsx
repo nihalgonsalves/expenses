@@ -1,9 +1,7 @@
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import type { VariantProps } from "class-variance-authority";
 import { atom, useAtom } from "jotai";
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 
-import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,16 +22,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "../ui/drawer";
 import type { RenderProp } from "../ui/utils";
 
 type DialogControls = {
@@ -117,96 +105,58 @@ export const ResponsiveDialog = ({
           handleSetOpen: uncontrolledControls.handleSetOpen,
         };
 
-  const isDesktop = useBreakpoint("md");
-
-  if (isDesktop) {
-    if (props.alert) {
-      return (
-        <AlertDialog open={open} onOpenChange={handleSetOpen}>
-          {props.triggerType === "trigger" && (
-            <AlertDialogTrigger
-              render={props.render}
-              nativeButton={props.nativeButton ?? true}
-            />
-          )}
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Confirm</AlertDialogTitle>
-              <AlertDialogDescription>{description}</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                tabIndex={0}
-                variant={props.variant}
-                render={
-                  <Button
-                    onClick={async (e) => {
-                      await props.onConfirm(e);
-                      handleSetOpen(false);
-                    }}
-                    isLoading={props.isLoading}
-                  >
-                    {props.confirmLabel}
-                  </Button>
-                }
-              />
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      );
-    }
-
+  if (props.alert) {
     return (
-      <Dialog open={open} onOpenChange={handleSetOpen}>
+      <AlertDialog open={open} onOpenChange={handleSetOpen}>
         {props.triggerType === "trigger" && (
-          <DialogTrigger
+          <AlertDialogTrigger
             render={props.render}
             nativeButton={props.nativeButton ?? true}
           />
         )}
-        <DialogContent className="max-h-dvh max-w-[min(100dvw,var(--container-5xl))] overflow-auto">
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
-          </DialogHeader>
-          {children}
-        </DialogContent>
-      </Dialog>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm</AlertDialogTitle>
+            <AlertDialogDescription>{description}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              tabIndex={0}
+              variant={props.variant}
+              render={
+                <Button
+                  onClick={async (e) => {
+                    await props.onConfirm(e);
+                    handleSetOpen(false);
+                  }}
+                  isLoading={props.isLoading}
+                >
+                  {props.confirmLabel}
+                </Button>
+              }
+            />
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     );
   }
 
   return (
-    <Drawer open={open} onOpenChange={handleSetOpen}>
+    <Dialog open={open} onOpenChange={handleSetOpen}>
       {props.triggerType === "trigger" && (
-        <DrawerTrigger render={props.render} />
+        <DialogTrigger
+          render={props.render}
+          nativeButton={props.nativeButton ?? true}
+        />
       )}
-      <DrawerContent className="max-h-dvh">
-        <DrawerHeader className="text-left">
-          <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>{description}</DrawerDescription>
-        </DrawerHeader>
-        <ScrollArea className="overflow-y-auto px-4">{children}</ScrollArea>
-        <DrawerFooter>
-          {props.alert ? (
-            <Button
-              variant={props.variant}
-              isLoading={props.isLoading}
-              onClick={async (e) => {
-                await props.onConfirm(e);
-                handleSetOpen(false);
-              }}
-            >
-              {props.confirmLabel}
-            </Button>
-          ) : null}
-          {/*
-            TODO: vaul-base doesn't seem to respect the render prop for DrawerClose
-            <DrawerClose render={<Button variant="outline">Cancel</Button>} />
-          */}
-          <DrawerClose>Cancel</DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+      <DialogContent className="max-h-95dvh max-w-[min(95dvw,var(--container-5xl))] overflow-auto">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
+        </DialogHeader>
+        {children}
+      </DialogContent>
+    </Dialog>
   );
 };

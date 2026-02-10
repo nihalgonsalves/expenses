@@ -24,4 +24,3 @@ allowBuilds:
 
 patchedDependencies:
   sonner: patches/sonner.patch
-  vaul-base: patches/vaul-base.patch
