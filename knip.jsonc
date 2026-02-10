@@ -1,9 +1,9 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "node_modules/knip/schema.json",
   "workspaces": {
     "packages/backend": {},
     "packages/frontend": {
-      "entry": ["src/main.tsx!", "src/sw.ts!"],
+      "entry": ["src/sw.ts!"],
     },
   },
   "rules": {
@@ -17,6 +17,8 @@
     ".github/workflows/build.yml",
     "packages/frontend/postcss.config.js",
     "packages/backend/prisma/schema.prisma",
+    // extra files in shadcn components
+    "packages/frontend/src/components/ui/**/*",
   ],
   "ignoreDependencies": [
     "chromatic",
