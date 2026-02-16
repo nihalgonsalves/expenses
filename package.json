@@ -36,17 +36,17 @@
     "validate": "run-p --continue-on-error build 'lint:eslint --fix' 'lint:sherif' 'lint:knip' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "0.13.5",
-    "@tanstack/react-router-devtools": "1.159.5",
-    "@tanstack/router-plugin": "1.159.5",
+    "@nihalgonsalves/esconfig": "0.13.6",
+    "@tanstack/react-router-devtools": "1.160.2",
+    "@tanstack/router-plugin": "1.160.2",
     "@types/node": "24",
-    "@typescript/native-preview": "7.0.0-dev.20260210.1",
+    "@typescript/native-preview": "7.0.0-dev.20260216.1",
     "@vitest/coverage-v8": "4.0.18",
     "@vitest/ui": "4.0.18",
     "eslint": "9.39.2",
     "eslint-plugin-unused-imports": "4.4.1",
     "knip": "5.83.1",
-    "lefthook": "2.1.0",
+    "lefthook": "2.1.1",
     "npm-run-all2": "8.0.4",
     "prettier": "3.8.1",
     "prettier-plugin-prisma": "5.0.0",
@@ -55,7 +55,7 @@
     "sherif": "1.10.0",
     "type-fest": "5.4.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.55.0",
+    "typescript-eslint": "8.56.0",
     "vitest": "4.0.18"
   }
 }

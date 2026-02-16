@@ -51,4 +51,4 @@ USER node
 ARG GIT_COMMIT_SHA
 ENV GIT_COMMIT_SHA=${GIT_COMMIT_SHA}
 
-CMD ["node", "--enable-source-maps", "--experimental-strip-types", "src/app.ts"]
+CMD ["node", "--enable-source-maps", "src/app.ts"]
