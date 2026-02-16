@@ -19,18 +19,18 @@
     "prepare:demo": "node bin/demo.ts"
   },
   "dependencies": {
-    "@bull-board/api": "6.17.0",
-    "@bull-board/hono": "6.17.0",
+    "@bull-board/api": "6.18.2",
+    "@bull-board/hono": "6.18.2",
     "@hono/node-server": "1.19.9",
     "@hono/trpc-server": "0.4.2",
     "@nihalgonsalves/expenses-shared": "workspace:*",
-    "@prisma/adapter-pg": "7.3.0",
-    "@prisma/client": "7.3.0",
-    "@sentry/node": "10.38.0",
-    "@sentry/profiling-node": "10.38.0",
+    "@prisma/adapter-pg": "7.4.0",
+    "@prisma/client": "7.4.0",
+    "@sentry/node": "10.39.0",
+    "@sentry/profiling-node": "10.39.0",
     "@trpc/server": "11.10.0",
     "bcrypt": "6.0.0",
-    "bullmq": "5.67.3",
+    "bullmq": "5.69.3",
     "cookie": "1.1.1",
     "hono": "4.11.9",
     "ioredis": "5.9.2",
@@ -58,8 +58,8 @@
     "fetch-cookie": "3.2.0",
     "npm-run-all2": "8.0.4",
     "pem": "1.15.1",
-    "prisma": "7.3.0",
+    "prisma": "7.4.0",
     "vitest": "4.0.18",
-    "wait-on": "9.0.3"
+    "wait-on": "9.0.4"
   }
 }
