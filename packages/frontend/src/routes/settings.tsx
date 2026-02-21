@@ -9,7 +9,11 @@ import { ProfileForm } from "../components/settings/ProfileForm";
 import { TroubleshootingForm } from "../components/settings/TroubleshootingForm";
 import { Root } from "../pages/Root";
 
-const SettingsPage = () => {
+export const Route = createFileRoute("/settings")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
   const { data, status } = useCurrentUser();
 
   return (
@@ -28,8 +32,4 @@ const SettingsPage = () => {
       </div>
     </Root>
   );
-};
-
-export const Route = createFileRoute("/settings")({
-  component: SettingsPage,
-});
+}

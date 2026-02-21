@@ -1,17 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useTRPC } from "../../../api/trpc";
+import { useTRPC, type QueryOptionsContext } from "../../../api/trpc";
 import { useCurrentUser } from "../../../api/useCurrentUser";
 import type { ActorInfo } from "../../../components/group-sheets/BalanceSummary";
 import { GroupSheet } from "../../../components/group-sheets/GroupSheet";
 import { RootLoader } from "../../../pages/Root";
 
-const GroupDetailPage = () => {
+const queryOptions = (context: QueryOptionsContext, sheetId: string) =>
+  context.trpc.sheet.groupSheetById.queryOptions(sheetId);
+
+export const Route = createFileRoute("/_auth/groups/$sheetId")({
+  component: RouteComponent,
+  loader: async ({ context: { queryClient, trpc }, params: { sheetId } }) =>
+    queryClient.ensureQueryData(queryOptions({ trpc }, sheetId)),
+});
+
+function RouteComponent() {
   const { trpc } = useTRPC();
   const { sheetId } = Route.useParams();
 
-  const result = useQuery(trpc.sheet.groupSheetById.queryOptions(sheetId));
+  const result = useQuery(queryOptions({ trpc }, sheetId));
   const { data: me } = useCurrentUser();
 
   const actorInfo: ActorInfo | undefined =
@@ -35,8 +44,4 @@ const GroupDetailPage = () => {
       showBackButton
     />
   );
-};
-
-export const Route = createFileRoute("/_auth/groups/$sheetId")({
-  component: GroupDetailPage,
-});
+}

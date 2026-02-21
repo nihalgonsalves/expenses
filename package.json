@@ -37,8 +37,6 @@
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "0.13.6",
-    "@tanstack/react-router-devtools": "1.160.2",
-    "@tanstack/router-plugin": "1.160.2",
     "@types/node": "24",
     "@typescript/native-preview": "7.0.0-dev.20260216.1",
     "@vitest/coverage-v8": "4.0.18",

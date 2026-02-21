@@ -7,7 +7,14 @@ import { ResetPasswordForm } from "../../components/ResetPasswordForm";
 import { Alert, AlertTitle } from "../../components/ui/alert";
 import { Root } from "../../pages/Root";
 
-const ResetPasswordPage = () => {
+export const Route = createFileRoute(RESET_PASSWORD_ROUTE)({
+  component: RouteComponent,
+  validateSearch: z.object({
+    token: z.string().min(1).optional().catch(undefined),
+  }),
+});
+
+function RouteComponent() {
   const { token } = Route.useSearch();
 
   return (
@@ -24,11 +31,4 @@ const ResetPasswordPage = () => {
       )}
     </Root>
   );
-};
-
-export const Route = createFileRoute(RESET_PASSWORD_ROUTE)({
-  component: ResetPasswordPage,
-  validateSearch: z.object({
-    token: z.string().min(1).optional().catch(undefined),
-  }),
-});
+}

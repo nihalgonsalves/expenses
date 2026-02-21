@@ -2,58 +2,85 @@ import "./init";
 
 import * as Sentry from "@sentry/react";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
-import { TrpcProvider } from "./api/TrpcProvider";
+import type { AppRouter } from "@nihalgonsalves/expenses-backend/build";
+
+import { getQueryClient, TrpcProvider } from "./api/TrpcProvider";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { NotFoundPage } from "./components/NotFoundPage";
-import { TooltipRoot } from "./components/TooltipRoot";
 import { config } from "./config";
 import { routeTree } from "./routeTree.gen";
 
-const router = createRouter({
-  routeTree,
-  defaultNotFoundComponent: NotFoundPage,
-  context: {},
-});
+const getRouter = () => {
+  const url = config.VITE_API_BASE_URL;
 
-const App = () => (
-  <TrpcProvider>
-    <ErrorBoundary>
-      <RouterProvider router={router} context={{}} />
-      <TooltipRoot />
-    </ErrorBoundary>
-  </TrpcProvider>
-);
+  const trpcClient = createTRPCClient<AppRouter>({
+    links: [
+      httpBatchLink({
+        url,
+      }),
+    ],
+  });
+
+  const queryClient = getQueryClient();
+
+  const trpc = createTRPCOptionsProxy({
+    client: trpcClient,
+    queryClient,
+  });
+
+  const router = createRouter({
+    routeTree,
+    defaultNotFoundComponent: NotFoundPage,
+    defaultPreload: "intent",
+    context: {
+      trpcClient,
+      queryClient,
+      trpc,
+    },
+    Wrap: ({ children }) => (
+      <TrpcProvider trpcClient={trpcClient} queryClient={queryClient}>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </TrpcProvider>
+    ),
+  });
+
+  Sentry.init({
+    ...(config.VITE_SENTRY_DSN ? { dsn: config.VITE_SENTRY_DSN } : {}),
+    release: config.VITE_GIT_COMMIT_SHA,
+    integrations: [
+      Sentry.browserProfilingIntegration(),
+      Sentry.captureConsoleIntegration({
+        levels: ["error", "warn"],
+      }),
+      Sentry.httpClientIntegration(),
+      Sentry.reportingObserverIntegration(),
+      Sentry.tanstackRouterBrowserTracingIntegration(router),
+      Sentry.replayIntegration({
+        maskAllText: true,
+        blockAllMedia: false,
+      }),
+    ],
+    tracesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+  });
+
+  return router;
+};
+
+const App = () => <RouterProvider router={getRouter()} context={{}} />;
 
 declare module "@tanstack/react-router" {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Register {
-    router: typeof router;
+    router: ReturnType<typeof getRouter>;
   }
 }
-
-Sentry.init({
-  ...(config.VITE_SENTRY_DSN ? { dsn: config.VITE_SENTRY_DSN } : {}),
-  release: config.VITE_GIT_COMMIT_SHA,
-  integrations: [
-    Sentry.browserProfilingIntegration(),
-    Sentry.captureConsoleIntegration({
-      levels: ["error", "warn"],
-    }),
-    Sentry.httpClientIntegration(),
-    Sentry.reportingObserverIntegration(),
-    Sentry.tanstackRouterBrowserTracingIntegration(router),
-    Sentry.replayIntegration({
-      maskAllText: true,
-      blockAllMedia: false,
-    }),
-  ],
-  tracesSampleRate: 1.0,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-});
 
 const rootElement = document.getElementById("root");
 

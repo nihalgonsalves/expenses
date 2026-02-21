@@ -12,7 +12,12 @@ import {
 } from "../../components/transactions/data-table";
 import { RootLoader } from "../../pages/Root";
 
-const TransactionsIndexPage = () => {
+export const Route = createFileRoute("/_auth/")({
+  component: RouteComponent,
+  validateSearch: ZTransactionFilters,
+});
+
+function RouteComponent() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
@@ -38,9 +43,4 @@ const TransactionsIndexPage = () => {
       )}
     />
   );
-};
-
-export const Route = createFileRoute("/_auth/")({
-  component: TransactionsIndexPage,
-  validateSearch: ZTransactionFilters,
-});
+}

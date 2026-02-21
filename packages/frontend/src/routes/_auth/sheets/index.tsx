@@ -1,15 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useTRPC } from "../../../api/trpc";
+import { useTRPC, type QueryOptionsContext } from "../../../api/trpc";
 import { SheetsList } from "../../../components/SheetsList";
 import { RootLoader } from "../../../pages/Root";
 
-const SheetsIndexPage = () => {
+const queryOptions = (context: QueryOptionsContext) =>
+  context.trpc.sheet.mySheets.queryOptions({ includeArchived: true });
+
+export const Route = createFileRoute("/_auth/sheets/")({
+  component: RouteComponent,
+  loader: async ({ context: { queryClient, trpc } }) =>
+    queryClient.ensureQueryData(queryOptions({ trpc })),
+});
+
+function RouteComponent() {
   const { trpc } = useTRPC();
-  const result = useQuery(
-    trpc.sheet.mySheets.queryOptions({ includeArchived: true }),
-  );
+  const result = useQuery(queryOptions({ trpc }));
 
   return (
     <RootLoader
@@ -19,8 +26,4 @@ const SheetsIndexPage = () => {
       render={(sheets) => <SheetsList sheets={sheets} />}
     />
   );
-};
-
-export const Route = createFileRoute("/_auth/sheets/")({
-  component: SheetsIndexPage,
-});
+}

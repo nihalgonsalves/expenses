@@ -5,7 +5,14 @@ import { useCurrentUser } from "../../api/useCurrentUser";
 import { SignInForm } from "../../components/SignInForm";
 import { Root } from "../../pages/Root";
 
-const AuthenticationPage = () => {
+export const Route = createFileRoute("/auth/sign-in")({
+  component: RouteComponent,
+  validateSearch: z.object({
+    redirect: z.string().min(1).optional().catch(undefined),
+  }),
+});
+
+function RouteComponent() {
   const currentUser = useCurrentUser();
   const { redirect } = Route.useSearch();
 
@@ -20,11 +27,4 @@ const AuthenticationPage = () => {
       </div>
     </Root>
   );
-};
-
-export const Route = createFileRoute("/auth/sign-in")({
-  component: AuthenticationPage,
-  validateSearch: z.object({
-    redirect: z.string().min(1).optional().catch(undefined),
-  }),
-});
+}

@@ -5,7 +5,14 @@ import { VerifyEmailForm } from "../../components/VerifyEmailForm";
 import { Alert, AlertTitle } from "../../components/ui/alert";
 import { Root } from "../../pages/Root";
 
-const VerifyEmailPage = () => {
+export const Route = createFileRoute("/auth/verify-email")({
+  component: RouteComponent,
+  validateSearch: z.object({
+    token: z.string().min(1).optional().catch(undefined),
+  }),
+});
+
+function RouteComponent() {
   const { token } = Route.useSearch();
 
   return (
@@ -22,11 +29,4 @@ const VerifyEmailPage = () => {
       )}
     </Root>
   );
-};
-
-export const Route = createFileRoute("/auth/verify-email")({
-  component: VerifyEmailPage,
-  validateSearch: z.object({
-    token: z.string().min(1).optional().catch(undefined),
-  }),
-});
+}

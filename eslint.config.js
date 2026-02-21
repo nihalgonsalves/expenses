@@ -74,6 +74,7 @@ export default tseslint.config(
   {
     files: ["packages/frontend/src/routes/**/*"],
     rules: {
+      "func-style": ["off"],
       "@typescript-eslint/no-use-before-define": "off",
     },
   },

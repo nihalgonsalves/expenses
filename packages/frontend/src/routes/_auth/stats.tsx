@@ -7,7 +7,11 @@ import { useAllUserTransactions } from "../../api/useAllUserTransactions";
 import { CategoryStats } from "../../components/CategoryStats";
 import { RootLoader } from "../../pages/Root";
 
-const StatsIndexPage = () => {
+export const Route = createFileRoute("/_auth/stats")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
@@ -31,8 +35,4 @@ const StatsIndexPage = () => {
       )}
     />
   );
-};
-
-export const Route = createFileRoute("/_auth/stats")({
-  component: StatsIndexPage,
-});
+}
