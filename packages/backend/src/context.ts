@@ -79,17 +79,6 @@ export const makeCreateContext = (
         resHeaders.set("clear-site-data", '"*"');
       }
 
-      // Clear old versions of the cookie
-      resHeaders.append(
-        "Set-Cookie",
-        cookie.serialize(AUTH_COOKIE_NAME, value ?? "", {
-          path: "/api/trpc",
-          httpOnly: true,
-          secure: config.SECURE,
-          maxAge: -1,
-        }),
-      );
-
       resHeaders.append(
         "Set-Cookie",
         cookie.serialize(AUTH_COOKIE_NAME, value ?? "", {

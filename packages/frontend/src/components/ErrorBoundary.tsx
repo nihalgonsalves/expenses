@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/react";
 import { type ReactNode, Fragment } from "react";
 import { toast } from "sonner";
 
-import { useInvalidateRouter } from "#/api/useInvalidateRouter";
+import { useResetCache } from "#/api/useResetCache";
 
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
@@ -13,7 +13,7 @@ import {
 } from "./ui/collapsible";
 
 const RetryErrorButton = ({ reset }: { reset: () => void }) => {
-  const resetCache = useInvalidateRouter();
+  const resetCache = useResetCache();
 
   return (
     <Button
