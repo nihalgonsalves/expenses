@@ -9,7 +9,10 @@ import {
 } from "dinero.js";
 import { z } from "zod";
 
-export const CURRENCY_CODES = Object.keys(Currencies);
+// hack: avoid ESM/CJS compat things such as `default` and `module.exports`
+export const CURRENCY_CODES = Object.keys(Currencies).filter(
+  (code) => code.length === 3,
+);
 
 export const ZCurrencyCode = z.string().length(3, {
   message: "Currency must be a 3-letter ISO 4217 code",
