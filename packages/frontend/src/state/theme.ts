@@ -10,6 +10,8 @@ import {
   ZTheme,
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
+import { useInvalidateRouter } from "#/api/useInvalidateRouter";
+
 import { useTRPC } from "../api/trpc";
 import { useCurrentUser } from "../api/useCurrentUser";
 import { useDialog } from "../components/form/ResponsiveDialog";
@@ -32,7 +34,8 @@ export const [useThemePreference] = createPreferenceWithDefault(
 );
 
 export const useTheme = () => {
-  const { trpc, invalidate } = useTRPC();
+  const { trpc } = useTRPC();
+  const invalidateRouter = useInvalidateRouter();
 
   const me = useCurrentUser();
   const { mutateAsync: updateTheme } = useMutation(
@@ -52,7 +55,7 @@ export const useTheme = () => {
 
   const setTheme = async (theme: Theme) => {
     await updateTheme(theme);
-    await invalidate(trpc.user.me.queryKey());
+    await invalidateRouter();
   };
 
   if (parsedTheme.success) {

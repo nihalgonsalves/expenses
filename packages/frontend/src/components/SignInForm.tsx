@@ -7,7 +7,7 @@ import type { z } from "zod";
 import { ZAuthorizeUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { useTRPC } from "../api/trpc";
-import { useResetCache } from "../api/useCacheReset";
+import { useInvalidateRouter } from "../api/useInvalidateRouter";
 
 import { Button } from "./ui/button";
 import {
@@ -67,7 +67,7 @@ export const SignInForm = () => {
     );
   };
 
-  const resetCache = useResetCache();
+  const invalidateRouter = useInvalidateRouter();
 
   const onSubmit = async (values: z.infer<typeof ZAuthorizeUserInput>) => {
     await authorizeUser({
@@ -75,7 +75,7 @@ export const SignInForm = () => {
       password: values.password,
     });
 
-    await resetCache();
+    await invalidateRouter();
   };
 
   return (

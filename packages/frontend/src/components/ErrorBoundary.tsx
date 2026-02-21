@@ -1,7 +1,8 @@
 import * as Sentry from "@sentry/react";
-import { useQueryClient } from "@tanstack/react-query";
 import { type ReactNode, Fragment } from "react";
 import { toast } from "sonner";
+
+import { useInvalidateRouter } from "#/api/useInvalidateRouter";
 
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
@@ -12,14 +13,13 @@ import {
 } from "./ui/collapsible";
 
 const RetryErrorButton = ({ reset }: { reset: () => void }) => {
-  const queryClient = useQueryClient();
+  const resetCache = useInvalidateRouter();
 
   return (
     <Button
       variant="outline"
       onClick={async () => {
-        queryClient.clear();
-        await queryClient.invalidateQueries();
+        await resetCache();
         reset();
       }}
     >

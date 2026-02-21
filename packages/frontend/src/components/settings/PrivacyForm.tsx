@@ -8,7 +8,7 @@ import type { z } from "zod";
 import { ZAuthorizeUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { useTRPC } from "../../api/trpc";
-import { useResetCache } from "../../api/useCacheReset";
+import { useInvalidateRouter } from "../../api/useInvalidateRouter";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -33,7 +33,7 @@ export const PrivacyForm = () => {
     mode: "onTouched",
   });
 
-  const resetCache = useResetCache();
+  const invalidateRouter = useInvalidateRouter();
   const { trpc } = useTRPC();
   const { mutateAsync: anonymizeUser, isPending } = useMutation(
     trpc.user.anonymizeUser.mutationOptions(),
@@ -47,7 +47,7 @@ export const PrivacyForm = () => {
 
     await anonymizeUser({ email: values.email, password: values.password });
 
-    await resetCache();
+    await invalidateRouter();
     await navigate({ to: "/" });
   };
 

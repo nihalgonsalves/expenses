@@ -6,7 +6,7 @@ import type { z } from "zod";
 import { ZCreateUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { useTRPC } from "../api/trpc";
-import { useResetCache } from "../api/useCacheReset";
+import { useInvalidateRouter } from "../api/useInvalidateRouter";
 
 import { SingleScreenCard } from "./SignInForm";
 import { Button } from "./ui/button";
@@ -37,7 +37,7 @@ export const SignUpForm = () => {
     },
   });
 
-  const resetCache = useResetCache();
+  const invalidateRouter = useInvalidateRouter();
 
   const onSubmit = async (values: z.infer<typeof ZCreateUserInput>) => {
     await createUser({
@@ -46,7 +46,7 @@ export const SignUpForm = () => {
       password: values.password,
     });
 
-    await resetCache();
+    await invalidateRouter();
   };
 
   return (

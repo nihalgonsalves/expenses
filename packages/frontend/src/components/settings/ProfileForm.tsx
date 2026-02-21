@@ -10,6 +10,8 @@ import {
   type User,
 } from "@nihalgonsalves/expenses-shared/types/user";
 
+import { useInvalidateRouter } from "#/api/useInvalidateRouter";
+
 import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { Button } from "../ui/button";
@@ -27,7 +29,8 @@ import { Input } from "../ui/input";
 
 export const ProfileForm = ({ me }: { me: User }) => {
   const onLine = useNavigatorOnLine();
-  const { trpc, invalidate } = useTRPC();
+  const { trpc } = useTRPC();
+  const invalidateRouter = useInvalidateRouter();
   const { mutateAsync: updateUser, isPending } = useMutation(
     trpc.user.updateUser.mutationOptions(),
   );
@@ -59,7 +62,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
     toast.success("Saved!");
 
-    await invalidate(trpc.user.me.queryKey());
+    await invalidateRouter();
 
     form.reset({
       name: newName,

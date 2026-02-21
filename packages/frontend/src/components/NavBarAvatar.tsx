@@ -4,8 +4,8 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { UserIcon } from "lucide-react";
 
 import { useTRPC } from "../api/trpc";
-import { useResetCache } from "../api/useCacheReset";
 import { useCurrentUser } from "../api/useCurrentUser";
+import { useInvalidateRouter } from "../api/useInvalidateRouter";
 
 import { Button } from "./ui/button";
 import {
@@ -70,7 +70,7 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
   const navigate = useNavigate();
 
   const { trpc } = useTRPC();
-  const resetCache = useResetCache();
+  const invalidateRouter = useInvalidateRouter();
 
   const me = useCurrentUser();
   const signOut = useMutation(trpc.user.signOut.mutationOptions());
@@ -83,7 +83,7 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
       params: { redirect: location.pathname },
     });
 
-    await resetCache();
+    await invalidateRouter();
   };
 
   if (me != null) {

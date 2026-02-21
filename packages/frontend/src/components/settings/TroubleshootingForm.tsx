@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { useTRPC } from "../../api/trpc";
-import { useResetCache } from "../../api/useCacheReset";
+import { useInvalidateRouter } from "../../api/useInvalidateRouter";
 import { config } from "../../config";
 import { useServiceWorkerRegistration } from "../../utils/hooks/useServiceWorkerRegistration";
 import { Button } from "../ui/button";
@@ -17,7 +17,7 @@ import {
 export const TroubleshootingForm = () => {
   const [state, setState] = useState<"initial" | "loading" | "done">("initial");
 
-  const resetCache = useResetCache();
+  const invalidateRouter = useInvalidateRouter();
   const serviceWorker = useServiceWorkerRegistration();
 
   const { trpc } = useTRPC();
@@ -33,10 +33,10 @@ export const TroubleshootingForm = () => {
 
     localStorage.clear();
 
-    await resetCache();
     await serviceWorker?.unregister();
 
     await signOut();
+    await invalidateRouter();
 
     await minTimer;
     setState("done");
