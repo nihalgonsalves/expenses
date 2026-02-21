@@ -1,9 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
-
-import { useTRPC } from "./trpc";
+import { useRouteContext } from "@tanstack/react-router";
 
 export const useCurrentUser = () => {
-  const { trpc } = useTRPC();
+  const { user } = useRouteContext({ strict: false });
 
-  return useQuery(trpc.user.me.queryOptions());
+  return user;
 };

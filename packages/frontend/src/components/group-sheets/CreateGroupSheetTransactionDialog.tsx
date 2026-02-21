@@ -83,7 +83,7 @@ export const CreateGroupSheetTransactionDialog = ({
     trpc.sheet.groupSheetById.queryOptions(sheetId),
   );
 
-  const { data: me } = useCurrentUser();
+  const me = useCurrentUser();
 
   return (
     <ResponsiveDialog

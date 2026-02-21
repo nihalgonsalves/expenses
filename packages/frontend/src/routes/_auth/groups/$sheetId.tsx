@@ -21,7 +21,7 @@ function RouteComponent() {
   const { sheetId } = Route.useParams();
 
   const result = useQuery(queryOptions({ trpc }, sheetId));
-  const { data: me } = useCurrentUser();
+  const me = useCurrentUser();
 
   const actorInfo: ActorInfo | undefined =
     me && result.data

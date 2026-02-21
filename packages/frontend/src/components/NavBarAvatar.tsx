@@ -72,7 +72,7 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
   const { trpc } = useTRPC();
   const resetCache = useResetCache();
 
-  const { status, error } = useCurrentUser();
+  const me = useCurrentUser();
   const signOut = useMutation(trpc.user.signOut.mutationOptions());
 
   const handleSignOut = async () => {
@@ -86,7 +86,7 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
     await resetCache();
   };
 
-  if (status == "success") {
+  if (me != null) {
     return (
       <LoggedInNavBarAvatar
         className={className}
@@ -95,12 +95,5 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
     );
   }
 
-  if (
-    status === "error" &&
-    (error.data?.httpStatus === 401 || error.data?.httpStatus === 403)
-  ) {
-    return <LoggedOutNavBarAvatar className={className} />;
-  }
-
-  return null;
+  return <LoggedOutNavBarAvatar className={className} />;
 };

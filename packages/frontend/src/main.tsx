@@ -15,7 +15,7 @@ import { NotFoundPage } from "./components/NotFoundPage";
 import { config } from "./config";
 import { routeTree } from "./routeTree.gen";
 
-const getRouter = () => {
+const getRouter = async () => {
   const url = config.VITE_API_BASE_URL;
 
   const trpcClient = createTRPCClient<AppRouter>({
@@ -36,12 +36,9 @@ const getRouter = () => {
   const router = createRouter({
     routeTree,
     defaultNotFoundComponent: NotFoundPage,
+    context: { queryClient, trpcClient, trpc },
+    scrollRestoration: true,
     defaultPreload: "intent",
-    context: {
-      trpcClient,
-      queryClient,
-      trpc,
-    },
     Wrap: ({ children }) => (
       <TrpcProvider trpcClient={trpcClient} queryClient={queryClient}>
         <ErrorBoundary>{children}</ErrorBoundary>
@@ -73,12 +70,14 @@ const getRouter = () => {
   return router;
 };
 
-const App = () => <RouterProvider router={getRouter()} context={{}} />;
+const router = await getRouter();
+
+const App = () => <RouterProvider router={router} context={{}} />;
 
 declare module "@tanstack/react-router" {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Register {
-    router: ReturnType<typeof getRouter>;
+    router: Awaited<ReturnType<typeof getRouter>>;
   }
 }
 

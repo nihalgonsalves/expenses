@@ -1,6 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { MotionConfig } from "motion/react";
 
@@ -29,6 +28,11 @@ export type RouterContext = {
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async ({ context: { trpcClient } }) => {
+    const user = await trpcClient.user.me.query().catch(() => null);
+
+    return { user };
+  },
   component: () => (
     <>
       <GlobalHookContainer />

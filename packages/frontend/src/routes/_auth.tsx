@@ -1,26 +1,23 @@
-import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { useCurrentUser } from "../api/useCurrentUser";
+import { usePrefetchQueries } from "#/api/usePrefetchQueries";
 
 export const Route = createFileRoute("/_auth")({
   component: RouteComponent,
+  beforeLoad: async ({ context: { user }, location }) => {
+    if (user == null) {
+      throw redirect({
+        to: "/auth/sign-in",
+        search: {
+          redirect: location.pathname,
+        },
+      });
+    }
+  },
 });
 
 function RouteComponent() {
-  const currentUser = useCurrentUser();
-
-  if (currentUser.error?.data?.httpStatus === 401) {
-    return (
-      <Navigate
-        to="/auth/sign-in"
-        search={{
-          // TODO: using useLocation ends up in a circular redirect param
-          // eslint-disable-next-line no-restricted-globals
-          redirect: location.pathname,
-        }}
-      />
-    );
-  }
+  usePrefetchQueries();
 
   return <Outlet />;
 }

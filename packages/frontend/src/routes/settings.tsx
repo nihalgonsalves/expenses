@@ -14,15 +14,15 @@ export const Route = createFileRoute("/settings")({
 });
 
 function RouteComponent() {
-  const { data, status } = useCurrentUser();
+  const me = useCurrentUser();
 
   return (
     <Root title="Settings" className="p-2 md:p-5" showBackButton>
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        {status === "success" && (
+        {me != null && (
           <>
             <AppearanceForm />
-            <ProfileForm me={data} />
+            <ProfileForm me={me} />
             <CategoryForm />
             <NotificationPreferenceForm />
             <PrivacyForm />

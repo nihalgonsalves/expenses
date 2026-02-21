@@ -20,7 +20,7 @@ import { DataTableColumnHeader } from "../ui/data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 
 const MeAvatar = () => {
-  const { data: me } = useCurrentUser();
+  const me = useCurrentUser();
 
   return <AvatarGroup max={1} users={me ? [me] : []} />;
 };

@@ -34,13 +34,13 @@ export const [useThemePreference] = createPreferenceWithDefault(
 export const useTheme = () => {
   const { trpc, invalidate } = useTRPC();
 
-  const { data } = useCurrentUser();
+  const me = useCurrentUser();
   const { mutateAsync: updateTheme } = useMutation(
     trpc.user.updateTheme.mutationOptions(),
   );
 
   const parsedTheme = ZTheme.safeParse(
-    data?.theme ?? localStorage.getItem("theme"),
+    me?.theme ?? localStorage.getItem("theme"),
   );
 
   // cache preference locally to avoid flickering on load

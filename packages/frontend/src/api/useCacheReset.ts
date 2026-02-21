@@ -1,12 +1,12 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 
 import { queryCache } from "../state/queryCache";
 
 export const useResetCache = () => {
-  const queryClient = useQueryClient();
+  const router = useRouter();
 
   return async () => {
     await queryCache.clear();
-    await queryClient.invalidateQueries();
+    await router.invalidate();
   };
 };

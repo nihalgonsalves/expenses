@@ -69,6 +69,12 @@ export default tseslint.config(
           },
         },
       ],
+      "@typescript-eslint/only-throw-error": [
+        "error",
+        {
+          allow: ["Redirect"],
+        },
+      ],
     },
   },
   {
