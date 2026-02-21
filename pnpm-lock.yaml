@@ -299,12 +299,6 @@ importers:
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
-      dexie:
-        specifier: 4.3.0
-        version: 4.3.0
-      dexie-react-hooks:
-        specifier: 4.2.0
-        version: 4.2.0(@types/react@19.2.14)(dexie@4.3.0)(react@19.2.4)
       dinero.js:
         specifier: 2.0.0-alpha.16
         version: 2.0.0-alpha.16
@@ -317,6 +311,9 @@ importers:
       little-date:
         specifier: 1.2.1
         version: 1.2.1
+      localspace:
+        specifier: 1.1.0
+        version: 1.1.0
       lucide-react:
         specifier: 0.564.0
         version: 0.564.0(react@19.2.4)
@@ -4422,16 +4419,6 @@ packages:
   detect-node-es@1.1.0:
     resolution: {integrity: sha512-ypdmJU/TbBby2Dxibuv7ZLW3Bs1QEmM7nHjEANfohJLvE0XVujisn1qPJcZxg+qDucsr+bP6fLD1rPS3AhJ7EQ==}
 
-  dexie-react-hooks@4.2.0:
-    resolution: {integrity: sha512-u7KqTX9JpBQK8+tEyA9X0yMGXlSCsbm5AU64N6gjvGk/IutYDpLBInMYEAEC83s3qhIvryFS+W+sqLZUBEvePQ==}
-    peerDependencies:
-      '@types/react': '>=16'
-      dexie: '>=4.2.0-alpha.1 <5.0.0'
-      react: '>=16'
-
-  dexie@4.3.0:
-    resolution: {integrity: sha512-5EeoQpJvMKHe6zWt/FSIIuRa3CWlZeIl6zKXt+Lz7BU6RoRRLgX9dZEynRfXrkLcldKYCBiz7xekTEylnie1Ug==}
-
   diff@8.0.3:
     resolution: {integrity: sha512-qejHi7bcSD4hQAZE0tNAawRK1ZtafHDmMTMkrrIGgSLl7hTnQHmKCeB45xAcbfTqK2zowkM3j3bHt/4b/ARbYQ==}
     engines: {node: '>=0.3.1'}
@@ -5836,6 +5823,9 @@ packages:
   little-date@1.2.1:
     resolution: {integrity: sha512-O5LUKWMw96qEyS+12mxnRP49MZEEM9fPWzIylgutX6RHf6F1JakvfNeBgteP0CIeEyNFiPM8nohTldtbmyjEqQ==}
     engines: {node: '>=10'}
+
+  localspace@1.1.0:
+    resolution: {integrity: sha512-H6gM1zn0N7CNCjhN0IJbTRr2osie3Rr68fKVX9SFTmpOkPmykIF59ij6/KND1wZJU6BoUjdE6Js819zcn19vVQ==}
 
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
@@ -12291,14 +12281,6 @@ snapshots:
 
   detect-node-es@1.1.0: {}
 
-  dexie-react-hooks@4.2.0(@types/react@19.2.14)(dexie@4.3.0)(react@19.2.4):
-    dependencies:
-      '@types/react': 19.2.14
-      dexie: 4.3.0
-      react: 19.2.4
-
-  dexie@4.3.0: {}
-
   diff@8.0.3: {}
 
   dinero.js@2.0.0-alpha.16: {}
@@ -13815,6 +13797,10 @@ snapshots:
   little-date@1.2.1:
     dependencies:
       date-fns: 2.30.0
+
+  localspace@1.1.0:
+    dependencies:
+      lz-string: 1.5.0
 
   locate-path@5.0.0:
     dependencies:

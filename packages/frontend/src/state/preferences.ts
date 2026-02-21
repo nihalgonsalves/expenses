@@ -1,30 +1,35 @@
-import { useLiveQuery } from "dexie-react-hooks";
+import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
 
-import { prefsDexie } from "./prefsDexie";
+import { prefsDb } from "./prefsDb";
 
 const createUsePreference = <T>(key: string, parse: (value: unknown) => T) => {
   const getPreference = async () => {
-    const item = await prefsDexie.preferences.get(key);
-    return item === undefined ? undefined : parse(item.value);
-  };
-
-  const setPreference = async (value: T | undefined) => {
-    if (value === undefined) {
-      await prefsDexie.preferences.delete(key);
-    } else {
-      await prefsDexie.preferences.put({ key, value });
-    }
+    const value = await prefsDb.getItem(key);
+    return value == null ? null : parse(value);
   };
 
   const usePreference = () => {
-    const value = useLiveQuery(getPreference);
-    return [value, setPreference] as const;
+    const { data, refetch } = useQuery({
+      queryKey: ["preference", key],
+      queryFn: getPreference,
+    });
+
+    const setPreference = async (value: T | undefined) => {
+      if (value === undefined) {
+        await prefsDb.removeItem(key);
+      } else {
+        await prefsDb.setItem(key, value);
+      }
+      await refetch();
+    };
+
+    return [data, setPreference] as const;
   };
 
-  return [usePreference, getPreference] as const;
+  return usePreference;
 };
 
 export const createPreferenceWithDefault = <T>(
@@ -32,26 +37,23 @@ export const createPreferenceWithDefault = <T>(
   parse: (value: unknown) => T,
   defaultValue: T,
 ) => {
-  const [usePreference, getPreference] = createUsePreference(key, parse);
+  const usePreference = createUsePreference(key, parse);
 
   const usePreferenceWithDefault = () => {
     const [preference, setPreference] = usePreference();
     return [preference ?? defaultValue, setPreference] as const;
   };
 
-  const getPreferenceWithDefault = async () =>
-    (await getPreference()) ?? defaultValue;
-
-  return [usePreferenceWithDefault, getPreferenceWithDefault] as const;
+  return usePreferenceWithDefault;
 };
 
-export const [usePreferredCurrencyCode] = createPreferenceWithDefault(
+export const usePreferredCurrencyCode = createPreferenceWithDefault(
   "preferred_currency_code",
   (v) => ZCurrencyCode.parse(v),
   "EUR",
 );
 
-export const [useSubscriptionEndpoint] = createUsePreference(
+export const useSubscriptionEndpoint = createUsePreference(
   "subscription_endpoint",
   (v) => z.string().parse(v),
 );

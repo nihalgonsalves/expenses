@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-export const REACT_QUERY_CACHE_DEXIE_TABLE = "react-query-cache";
-export const PREFERENCES_DEXIE_TABLE = "preferences";
+export const LOCALSPACE_NAMESPACE = "expenses";
+export const REACT_QUERY_CACHE_LOCALSPACE = "react-query-cache";
+export const PREFERENCES_LOCALSPACE = "preferences";
 
 const ZEnv = z.object({
   VITE_API_BASE_URL: z.string().default("/api/trpc"),

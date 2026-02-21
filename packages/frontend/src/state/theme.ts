@@ -24,7 +24,7 @@ const ZThemePreference = z.enum(["system", "light", "dark"]);
 
 type ThemePreference = z.infer<typeof ZThemePreference>;
 
-export const [useThemePreference] = createPreferenceWithDefault(
+export const useThemePreference = createPreferenceWithDefault(
   "theme_preference",
   (v) => {
     const result = ZThemePreference.safeParse(v);

@@ -1,21 +1,11 @@
-import Dexie, { type Table } from "dexie";
+import localspace, { ttlPlugin } from "localspace";
 
-import { REACT_QUERY_CACHE_DEXIE_TABLE } from "../config";
+import { durationMilliseconds } from "#/utils/temporal";
 
-type CacheItem = {
-  key: string;
-  value: string;
-};
+import { LOCALSPACE_NAMESPACE, REACT_QUERY_CACHE_LOCALSPACE } from "../config";
 
-class CacheDexie extends Dexie {
-  queryCache!: Table<CacheItem, string>;
-
-  constructor() {
-    super(REACT_QUERY_CACHE_DEXIE_TABLE);
-    this.version(1).stores({
-      queryCache: "key",
-    });
-  }
-}
-
-export const queryCache = new CacheDexie().queryCache;
+export const queryCache = localspace.createInstance({
+  name: LOCALSPACE_NAMESPACE,
+  storeName: REACT_QUERY_CACHE_LOCALSPACE,
+  plugins: [ttlPlugin({ defaultTTL: durationMilliseconds({ days: 7 }) })],
+});

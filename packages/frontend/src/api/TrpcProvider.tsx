@@ -27,10 +27,9 @@ const ZData = z.object({
 
 const asyncStoragePersister = createAsyncStoragePersister({
   storage: {
-    getItem: async (key) =>
-      queryCache.get(key).then((item) => item?.value ?? null),
-    removeItem: async (key) => queryCache.delete(key),
-    setItem: async (key, value) => queryCache.put({ key, value }),
+    getItem: async (key) => queryCache.getItem(key),
+    removeItem: async (key) => queryCache.removeItem(key),
+    setItem: async (key, value) => queryCache.setItem(key, value),
   },
 });
 

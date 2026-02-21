@@ -12,7 +12,7 @@ import {
   type NotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import { prefsDexie } from "./state/prefsDexie";
+import { prefsDb } from "./state/prefsDb";
 import { formatCurrency } from "./utils/money";
 import { getTransactionDescription } from "./utils/utils";
 
@@ -91,11 +91,11 @@ self.addEventListener("install", (event) => {
 
   event.waitUntil(
     (async () => {
-      const preference = await prefsDexie.preferences.get(KEY);
+      const preference = await prefsDb.getItem<boolean>(KEY);
 
-      if (preference === undefined) {
+      if (preference == null) {
         await self.skipWaiting();
-        await prefsDexie.preferences.put({ key: KEY, value: true });
+        await prefsDb.setItem<boolean>(KEY, true);
       }
     })(),
   );

@@ -15,7 +15,6 @@ export const Route = createFileRoute("/_auth/sheets/$sheetId/import")({
 });
 
 function RouteComponent() {
-  console.log("wat");
   const { trpc } = useTRPC();
 
   const { sheetId } = Route.useParams();
