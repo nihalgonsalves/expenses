@@ -1,3 +1,4 @@
+import { useInterval } from "@mantine/hooks";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -13,7 +14,6 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
-import { useInterval } from "react-use";
 import { toast } from "sonner";
 
 import { useTRPC } from "../api/trpc";

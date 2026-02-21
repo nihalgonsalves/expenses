@@ -1,7 +1,7 @@
-import { useNetworkState } from "react-use";
+import { useNetwork } from "@mantine/hooks";
 
 export const useNavigatorOnLine = () => {
-  const { online } = useNetworkState();
+  const { online } = useNetwork();
 
   return online;
 };

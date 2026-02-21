@@ -1,4 +1,4 @@
-import { useMedia } from "react-use";
+import { useMediaQuery } from "@mantine/hooks";
 
 // See https://github.com/tailwindlabs/tailwindcss/discussions/14764
 // This used to use v3's resolveConfig. This should be replaced with a build
@@ -20,4 +20,4 @@ const breakpoints = {
 } as const satisfies Record<string, `${number}px`>;
 
 export const useBreakpoint = (breakpoint: keyof typeof breakpoints) =>
-  useMedia(`(min-width: ${breakpoints[breakpoint]})`);
+  useMediaQuery(`(min-width: ${breakpoints[breakpoint]})`);

@@ -1,7 +1,7 @@
+import { useMediaQuery } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { useEffect } from "react";
-import { useMedia } from "react-use";
 import { z } from "zod";
 
 import {
@@ -146,7 +146,7 @@ export const useThemeSync = () => {
   const navigatorOnLine = useNavigatorOnLine();
   const isOldData = useAtomValue(isOldDataAtom);
 
-  const systemDarkMode = useMedia("(prefers-color-scheme: dark)");
+  const systemDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   useEffect(() => {
     syncTheme(themePreference, theme);
