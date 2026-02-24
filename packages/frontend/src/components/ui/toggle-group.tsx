@@ -20,23 +20,13 @@ const ToggleGroupContext = createContext<
   orientation: "horizontal",
 });
 
-type ToggleGroupProps<T> = Omit<
-  ToggleGroupPrimitive.Props,
-  "value" | "defaultValue" | "onValueChange"
-> & {
-  // https://github.com/mui/base-ui/pull/3173
-  value: T[];
-  defaultValue?: T[];
-  onValueChange?: (
-    groupValue: T[],
-    eventDetails: ToggleGroupPrimitive.ChangeEventDetails,
-  ) => void;
-} & VariantProps<typeof toggleVariants> & {
+type ToggleGroupProps<T extends string> = ToggleGroupPrimitive.Props<T> &
+  VariantProps<typeof toggleVariants> & {
     spacing?: number;
     orientation?: "horizontal" | "vertical";
   };
 
-const ToggleGroup = <T,>({
+const ToggleGroup = <T extends string>({
   className,
   variant,
   size,
