@@ -33,7 +33,7 @@ export const ErrorBoundary = ({ children }: { children: ReactNode }) => (
     fallback={({
       error,
       componentStack,
-      // eslint-disable-next-line @typescript-eslint/unbound-method
+      // oxlint-disable typescript/unbound-method
       resetError,
     }) => {
       const errorMessage =
@@ -84,7 +84,7 @@ export const ErrorBoundary = ({ children }: { children: ReactNode }) => (
                   .map((line) => line.trim())
                   .filter((line) => line !== "")
                   .map((line, index) => (
-                    // eslint-disable-next-line react/no-array-index-key
+                    // oxlint-disable-next-line react/no-array-index-key
                     <Fragment key={index}>
                       {"> "}
                       {line}

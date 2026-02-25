@@ -48,6 +48,8 @@ export const registerSW = async () => {
 
   const update = () => {
     if (registration.waiting) {
+      // TODO
+      // oxlint-disable-next-line unicorn/require-post-message-target-origin
       registration.waiting.postMessage("SKIP_WAITING");
     }
   };

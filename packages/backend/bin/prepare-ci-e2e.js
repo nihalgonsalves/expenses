@@ -19,12 +19,10 @@ const env = {
   VAPID_PUBLIC_KEY: publicKey,
 };
 
-await Promise.all([
-  writeFile(
-    new URL("../.env", import.meta.url),
-    Object.entries(env)
-      .map(([key, value]) => `${key}=${value}`)
-      .join("\n"),
-    "utf8",
-  ),
-]);
+await writeFile(
+  new URL("../.env", import.meta.url),
+  Object.entries(env)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("\n"),
+  "utf8",
+);

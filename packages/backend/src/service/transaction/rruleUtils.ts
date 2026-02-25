@@ -1,3 +1,5 @@
+// note: poor cjs/esm interop
+// oxlint-disable import/no-named-as-default, import/no-named-as-default-member
 import RRule from "rrule";
 
 import {

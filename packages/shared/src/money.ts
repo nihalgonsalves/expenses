@@ -30,7 +30,7 @@ export type Currency = { code: string; base: number; exponent: number };
 
 export const getCurrency = (code: string): Currency =>
   // @ts-expect-error no good way to strongly type the Currencies * import
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  // oxlint-disable-next-line import/namespace, typescript/no-unsafe-type-assertion
   Currencies[code] as Currency;
 
 export const moneyToDinero = ({ amount, scale, currencyCode }: Money) =>

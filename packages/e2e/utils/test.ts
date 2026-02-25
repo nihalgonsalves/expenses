@@ -18,10 +18,8 @@ type Fixtures = {
 };
 
 declare global {
-  /* eslint-disable @typescript-eslint/naming-convention */
   var collectIstanbulCoverage: (coverageJSON: string) => void;
   var __coverage__: unknown;
-  /* eslint-enable */
 }
 
 export const test = base.extend<Fixtures>({
@@ -88,7 +86,7 @@ export const test = base.extend<Fixtures>({
                 data: body,
                 headers: Array.isArray(headers)
                   ? Object.fromEntries(headers)
-                  : // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                  : // oxlint-disable-next-line typescript/no-unsafe-type-assertion
                     (headers as Record<string, string>),
               });
 

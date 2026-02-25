@@ -28,6 +28,7 @@ const nodemailerTransport = createTransport({
   },
 });
 
+// oxlint-disable-next-line typescript/no-invalid-void-type
 export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
   queue: Queue<EmailPayload, void>;
 

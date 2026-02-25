@@ -1,6 +1,5 @@
 import fs from "fs/promises";
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { format } from "prettier";
 import { renderToString } from "react-dom/server";
 

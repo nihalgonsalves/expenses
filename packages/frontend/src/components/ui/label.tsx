@@ -5,7 +5,7 @@ import type { ComponentProps } from "react";
 import { cn } from "#/components/ui/utils";
 
 const Label = ({ className, ...props }: ComponentProps<"label">) => (
-  // eslint-disable-next-line jsx-a11y/label-has-associated-control
+  // oxlint-disable-next-line jsx-a11y/label-has-associated-control
   <label
     data-slot="label"
     className={cn(

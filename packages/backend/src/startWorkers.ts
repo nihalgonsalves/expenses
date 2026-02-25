@@ -13,7 +13,7 @@ export type IWorker<TData, TResult> = {
   init?: () => Promise<void>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable typescript/no-explicit-any
 const startWorker = async (worker: IWorker<any, any>) => {
   console.log(`Worker '${worker.worker.name}' started`);
   if (worker.init) {
@@ -26,7 +26,7 @@ const startWorker = async (worker: IWorker<any, any>) => {
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable typescript/no-explicit-any
 export const closeWorker = async ({ worker, queue }: IWorker<any, any>) => {
   try {
     await Promise.all([worker.close(), queue.close()]);
@@ -45,7 +45,7 @@ export const startWorkers = async (prisma: PrismaClientType, redis: Redis) => {
     }),
     transactionScheduleWorker: new TransactionScheduleWorker(prisma, redis),
     emailWorker: new EmailWorker(redis),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable typescript/no-explicit-any
   } as const satisfies Record<string, IWorker<any, any>>;
 
   await Promise.all(

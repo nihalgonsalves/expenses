@@ -251,7 +251,7 @@ export const RootLoader = <TData,>({
   render: (data: TData) => ReactNode;
   result: {
     data: TData | undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // oxlint-disable typescript/no-explicit-any
     error: TRPCClientErrorLike<any> | null;
     isLoading: boolean;
     refetch: () => Promise<unknown>;

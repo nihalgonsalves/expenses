@@ -75,13 +75,13 @@ export const CategoryStats = ({
     getCategorySums(
       data.filter((t) => t.type !== "TRANSFER" && t.money.amount < 0),
     ),
-  ).sort(([, a], [, b]) => compareMoney(a, b));
+  ).toSorted(([, a], [, b]) => compareMoney(a, b));
 
   const categoryIncomeSumEntries = Object.entries(
     getCategorySums(
       data.filter((t) => t.type !== "TRANSFER" && t.money.amount > 0),
     ),
-  ).sort(([, a], [, b]) => compareMoney(a, b));
+  ).toSorted(([, a], [, b]) => compareMoney(a, b));
 
   return (
     <>

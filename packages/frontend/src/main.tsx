@@ -75,7 +75,7 @@ const router = await getRouter();
 const App = () => <RouterProvider router={router} context={{}} />;
 
 declare module "@tanstack/react-router" {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  // oxlint-disable typescript/consistent-type-definitions
   interface Register {
     router: Awaited<ReturnType<typeof getRouter>>;
   }

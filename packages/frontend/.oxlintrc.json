@@ -1,0 +1,37 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "extends": [
+    "../../.oxlintrc.json",
+    "../../node_modules/@nihalgonsalves/esconfig/.oxlintrc.react.json"
+  ],
+  "plugins": ["react", "vitest", "jsx-a11y", "node", "unicorn"],
+  "ignorePatterns": ["./src/routeTree.gen.ts"],
+  "rules": {
+    "typescript/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": {
+          "attributes": false
+        }
+      }
+    ],
+
+    "react/react-in-jsx-scope": "off",
+    "jsx-a11y/no-autofocus": "off",
+
+    // TODO
+    "react-hooks-js/error-boundaries": "warn",
+    "react-hooks-js/set-state-in-effect": "warn",
+    "jsx-a11y/prefer-tag-over-role": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["src/routes/**/*"],
+      "rules": {
+        "no-use-before-define": "off",
+        "func-style": "off",
+        "typescript/only-throw-error": "off"
+      }
+    }
+  ]
+}

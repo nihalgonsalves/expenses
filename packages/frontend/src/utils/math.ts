@@ -24,7 +24,7 @@ export const largestRemainderRound = (
         index,
       };
     })
-    .sort((a, b) => b.remainder - a.remainder);
+    .toSorted((a, b) => b.remainder - a.remainder);
 
   const lowerSum = sortedArray.reduce((a, b) => a + b.floor, 0);
 

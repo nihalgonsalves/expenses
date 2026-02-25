@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-
 declare module "react" {
   namespace JSX {
     interface IntrinsicElements extends JSX.IntrinsicElements {

@@ -32,7 +32,7 @@ const CommandInput = ({
 }: ComponentProps<typeof CommandPrimitive.Input>) => (
   <div
     className="flex items-center border-b px-3"
-    // eslint-disable-next-line react/no-unknown-property
+    // oxlint-disable-next-line react/no-unknown-property
     cmdk-input-wrapper=""
   >
     <SearchIcon className="mr-2 size-4 shrink-0 opacity-50" />

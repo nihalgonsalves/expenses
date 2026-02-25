@@ -7,8 +7,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "oxc.oxc-vscode",
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
         "vitest.explorer",
         "bradlc.vscode-tailwindcss",
         "prisma.prisma",

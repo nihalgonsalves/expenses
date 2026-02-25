@@ -408,7 +408,7 @@ export const transactionRouter = router({
       const summaries =
         await ctx.transactionService.getParticipantSummaries(sheet);
 
-      return summaries.sort(({ id }) => (id === ctx.user.id ? -1 : 1));
+      return summaries.toSorted(({ id }) => (id === ctx.user.id ? -1 : 1));
     }),
 
   getSimplifiedBalances: protectedProcedure

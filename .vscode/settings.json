@@ -2,8 +2,9 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.oxc": "explicit"
   },
+  "oxc.typeAware": true,
   "typescript.preferences.autoImportFileExcludePatterns": [
     "@types/node/test.d.ts"
   ],
@@ -13,9 +14,6 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "[sql]": {
-    "editor.defaultFormatter": "renesaarsoo.sql-formatter-vsc"
   },
   "files.associations": {
     "*.css": "tailwindcss"

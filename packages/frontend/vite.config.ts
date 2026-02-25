@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    target: "es2022",
+    target: "es2024",
     sourcemap: true,
     cssMinify: "lightningcss",
     rollupOptions: {
@@ -48,9 +48,14 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     process.env["ENABLE_BUNDLE_VISUALIZER"] &&
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
       (visualizer({ open: true }) as unknown as Plugin),
     tanstackRouter({ autoCodeSplitting: true }),
+    mode === "development" &&
+      codeInspectorPlugin({
+        bundler: "vite",
+        hideConsole: true,
+      }),
     react({
       babel: {
         plugins: [
@@ -79,11 +84,6 @@ export default defineConfig(({ mode }) => ({
         injectManifest: {
           globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
         },
-      }),
-    mode === "development" &&
-      codeInspectorPlugin({
-        bundler: "vite",
-        hideConsole: true,
       }),
     process.env["VITE_COVERAGE"] &&
       IstanbulPlugin({

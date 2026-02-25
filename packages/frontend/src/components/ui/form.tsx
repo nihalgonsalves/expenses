@@ -53,7 +53,7 @@ type FormFieldContextValue<
 };
 
 const FormFieldContext = createContext<FormFieldContextValue>(
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   {} as FormFieldContextValue,
 );
 
@@ -77,7 +77,7 @@ type FormItemContextValue = {
 };
 
 const FormItemContext = createContext<FormItemContextValue>(
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   {} as FormItemContextValue,
 );
 
@@ -89,7 +89,7 @@ const useFormField = () => {
 
   const fieldState = getFieldState(fieldContext.name, formState);
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/strict-boolean-expressions
+  // oxlint-disable typescript/no-unnecessary-condition, typescript/strict-boolean-expressions
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>");
   }
@@ -186,7 +186,7 @@ const FormMessage = ({
   const { error, formMessageId } = useFormField();
   const body = error ? String(error.message) : children;
 
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  // oxlint-disable typescript/strict-boolean-expressions
   if (!body) {
     return null;
   }

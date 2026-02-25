@@ -1,4 +1,4 @@
-import clsx, { type ClassValue } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import type { HTMLProps, ReactElement } from "react";
 import { createTwc } from "react-twc";
 import { twMerge } from "tailwind-merge";

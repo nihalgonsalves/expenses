@@ -15,10 +15,7 @@ export const Avatar = ({ name }: { name: string }) => (
       render={
         <UIAvatar
           className="border-primary border"
-          render={
-            // eslint-disable-next-line jsx-a11y/control-has-associated-label
-            <button type="button" />
-          }
+          render={<button type="button" />}
         >
           <AvatarFallback className="cursor-pointer">
             {getInitials(name)}

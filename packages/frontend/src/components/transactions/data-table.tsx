@@ -171,6 +171,7 @@ export const DataTable = ({
                   <Fragment key={row.id}>
                     <TableRow
                       key={row.id}
+                      // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
                       role="button"
                       className="cursor-pointer"
                       data-state={row.getIsSelected() && "selected"}

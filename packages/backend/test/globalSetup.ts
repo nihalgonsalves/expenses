@@ -1,4 +1,4 @@
-/* eslint-disable import/no-default-export */
+/* oxlint-disable import/no-default-export */
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { RedisContainer } from "@testcontainers/redis";
 import type { TestProject } from "vitest/node";
@@ -28,7 +28,7 @@ export default async function setup(project: TestProject) {
 }
 
 declare module "vitest" {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  // oxlint-disable typescript/consistent-type-definitions
   export interface ProvidedContext {
     postgresConnectionUri: string;
     redisConnectionUri: string;

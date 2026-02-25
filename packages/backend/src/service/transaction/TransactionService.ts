@@ -124,7 +124,7 @@ export const calculateBalances = (
       ({ balance: { actual, share } }) =>
         actual.amount !== 0 || share.amount !== 0,
     )
-    .sort((a, b) => a.balance.share.amount - b.balance.share.amount);
+    .toSorted((a, b) => a.balance.share.amount - b.balance.share.amount);
 };
 
 const verifyCurrencies = (
@@ -722,9 +722,9 @@ export class TransactionService {
 
     return simplifyBalances(groupSheet.currencyCode, balances).map(
       ({ from, to, money }) => ({
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable typescript/no-non-null-assertion
         from: participantById[from]!,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        // oxlint-disable typescript/no-non-null-assertion
         to: participantById[to]!,
         money,
       }),

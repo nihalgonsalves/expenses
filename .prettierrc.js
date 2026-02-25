@@ -1,4 +1,5 @@
 /** @type {import('prettier').Config} */
+// oxlint-disable-next-line import/no-default-export
 export default {
   plugins: [
     "prettier-plugin-prisma",

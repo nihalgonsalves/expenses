@@ -129,7 +129,7 @@ const parseAmount = (value: string, amountFormat: AmountFormat) => {
   }
 
   // unsure if this could actually be a non-string
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-template-expression
+  // oxlint-disable typescript/no-unnecessary-template-expression
   const scale = Math.min(`${value}`.split(".")[1]?.length ?? 0, MAX_PRECISION);
 
   const amount = Math.round(valueInt * Math.pow(10, scale));

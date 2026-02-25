@@ -18,7 +18,6 @@ import.meta.hot?.accept(() => {
 });
 
 if (import.meta.env.DEV && !config.VITE_INTEGRATION_TEST) {
-  // eslint-disable-next-line import/no-extraneous-dependencies
   const { scan } = await import("react-scan");
 
   scan();

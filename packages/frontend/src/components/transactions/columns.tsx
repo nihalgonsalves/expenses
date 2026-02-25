@@ -53,7 +53,7 @@ const SheetLink = ({
 );
 const columnHelper = createColumnHelper<ConvertedTransactionWithSheet>();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable typescript/no-explicit-any
 export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
   columnHelper.accessor("category", {
     id: "category",

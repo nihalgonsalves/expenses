@@ -23,7 +23,7 @@ export type Transfer = {
   money: Money;
 };
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* oxlint-disable typescript/no-non-null-assertion */
 
 export const simplifyBalances = (
   currencyCode: string,

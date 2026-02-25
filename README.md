@@ -44,7 +44,7 @@ descriptions, in my experience.
 - tRPC, React Query
 - Hono, BullMQ, Prisma, Postgres, Redis
 - Playwright, Vitest
-- Prettier, ESLint
+- oxlint, Prettier
 
 ## Initial dev setup
 

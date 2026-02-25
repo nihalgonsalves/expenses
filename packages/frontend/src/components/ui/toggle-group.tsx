@@ -49,7 +49,7 @@ const ToggleGroup = <T extends string>({
     {...props}
   >
     <ToggleGroupContext.Provider
-      // eslint-disable-next-line react/jsx-no-constructed-context-values
+      // oxlint-disable-next-line react/jsx-no-constructed-context-values
       value={{ variant, size, spacing, orientation }}
     >
       {children}

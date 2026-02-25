@@ -36,7 +36,7 @@ export const DataTableFacetedFilter = <TData, TValue>({
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) => {
   const facets = column?.getFacetedUniqueValues();
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   const breakpointLg = useBreakpoint("lg");

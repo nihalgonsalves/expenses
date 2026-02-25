@@ -1,0 +1,38 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": ["node_modules/@nihalgonsalves/esconfig/.oxlintrc.json"],
+  "plugins": ["vitest", "node", "unicorn"],
+  "ignorePatterns": [
+    "**/build",
+    "**/coverage",
+    "**/dist",
+    "packages/e2e/playwright-report",
+    "packages/e2e/test-results"
+  ],
+  "rules": {
+    "no-unused-vars": [
+      "error",
+      {
+        "args": "after-used",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "all",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "import/no-unassigned-import": "off",
+    "import/extensions": "off",
+    "vitest/no-conditional-tests": "off",
+    "vitest/warn-todo": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "packages/*/test/**/*", "packages/e2e/**/*"],
+      "rules": {
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-non-null-assertion": "off"
+      }
+    }
+  ]
+}
