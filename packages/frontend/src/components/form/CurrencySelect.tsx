@@ -19,7 +19,7 @@ import {
 
 type CurrencySelectProps = {
   id?: string;
-  value: string;
+  value: string | undefined;
   onChange: (newCode: string | null) => void;
   options?: string[];
   ref?: Ref<HTMLInputElement>;

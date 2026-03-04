@@ -90,7 +90,8 @@ const formSchema = ZCreatePersonalSheetTransactionInput.extend(
   })
   .extend({
     recurrenceRule: ZRecurrenceRule.partial().optional(),
-    currencyCode: z.string().min(1),
+    // can be blank when the user clears out the search box
+    currencyCode: z.string().min(1).optional(),
     amount: z.number().positive({ message: "Amount is required" }),
     dateTime: z.string().min(1, { message: "Date & Time is required" }),
   });
@@ -142,12 +143,14 @@ const CreatePersonalTransactionForm = ({
     control: form.control,
   });
 
-  const [, moneySnapshot] = toMoneyValues(amount, currencyCode);
+  const currencyCodeOrSheetDefault = currencyCode || personalSheet.currencyCode;
+
+  const [, moneySnapshot] = toMoneyValues(amount, currencyCodeOrSheetDefault);
 
   const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
     useCurrencyConversion(
       safeParseDateString(dateTime),
-      currencyCode,
+      currencyCodeOrSheetDefault,
       personalSheet.currencyCode,
       moneySnapshot,
     );
@@ -250,7 +253,7 @@ const CreatePersonalTransactionForm = ({
                     <MoneyField
                       className="grow"
                       autoFocus
-                      currencyCode={currencyCode}
+                      currencyCode={currencyCode || "EUR"}
                       {...field}
                     />
                   </FormControl>
