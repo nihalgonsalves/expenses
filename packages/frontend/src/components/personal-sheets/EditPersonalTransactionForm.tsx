@@ -43,7 +43,8 @@ const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
   personalSheetId: true,
   money: true,
 }).extend({
-  currencyCode: z.string().min(1),
+  // can be blank when the user clears out the search box
+  currencyCode: z.string().min(1).optional(),
   amount: z.number().positive({ message: "Amount is required" }),
 });
 
@@ -78,12 +79,14 @@ const EditPersonalTransactionForm = ({
   });
   const spentAt = useWatch({ name: "spentAt", control: form.control });
 
-  const [, moneySnapshot] = toMoneyValues(amount, currencyCode);
+  const currencyCodeOrSheetDefault = currencyCode || personalSheet.currencyCode;
+
+  const [, moneySnapshot] = toMoneyValues(amount, currencyCodeOrSheetDefault);
 
   const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
     useCurrencyConversion(
       Temporal.PlainDate.from(spentAt),
-      currencyCode,
+      currencyCodeOrSheetDefault,
       personalSheet.currencyCode,
       moneySnapshot,
     );
@@ -138,7 +141,7 @@ const EditPersonalTransactionForm = ({
                     <MoneyField
                       className="grow"
                       autoFocus
-                      currencyCode={currencyCode}
+                      currencyCode={currencyCodeOrSheetDefault}
                       {...field}
                     />
                   </FormControl>

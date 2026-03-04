@@ -256,7 +256,8 @@ const formSchema = ZCreateGroupSheetTransactionInput.omit({
   groupSheetId: true,
   splits: true,
 }).extend({
-  currencyCode: z.string().min(1),
+  // can be blank when the user clears out the search box
+  currencyCode: z.string().min(1).optional(),
   amount: z.number().positive({ message: "Amount is required" }),
   splitType: z.enum(GroupTransactionSplitType),
   ratios: z.array(ZRatio),
@@ -294,7 +295,9 @@ const SplitsFormSection = ({
   const splitType = useWatch({ name: "splitType", control: form.control });
   const ratios = useWatch({ name: "ratios", control: form.control });
 
-  const money = toDinero(amount, currencyCode);
+  const currencyCodeOrGroupDefault = currencyCode || groupSheet.currencyCode;
+
+  const money = toDinero(amount, currencyCodeOrGroupDefault);
 
   const { fields } = useFieldArray({
     name: "ratios",
@@ -307,7 +310,7 @@ const SplitsFormSection = ({
 
   const splits = calcSplits(
     groupSheet.participants,
-    currencyCode,
+    currencyCodeOrGroupDefault,
     money,
     ratios,
   );
@@ -332,11 +335,17 @@ const SplitsFormSection = ({
     const diff = splitConfig.expectedSum(amount) - totalSum;
 
     if (diff < 0) {
-      return splitConfig.formatErrorTooLow(Math.abs(diff), currencyCode);
+      return splitConfig.formatErrorTooLow(
+        Math.abs(diff),
+        currencyCodeOrGroupDefault,
+      );
     }
 
     if (diff > 0) {
-      return splitConfig.formatErrorTooHigh(Math.abs(diff), currencyCode);
+      return splitConfig.formatErrorTooHigh(
+        Math.abs(diff),
+        currencyCodeOrGroupDefault,
+      );
     }
 
     return undefined;
@@ -379,8 +388,8 @@ const SplitsFormSection = ({
       if (splitType === GroupTransactionSplitType.Amounts) {
         const newSplits = calcSplits(
           otherParticipants,
-          currencyCode,
-          toDinero(remainingRatio, currencyCode),
+          currencyCodeOrGroupDefault,
+          toDinero(remainingRatio, currencyCodeOrGroupDefault),
           getDefaultRatios(otherParticipants),
         );
 
@@ -592,7 +601,7 @@ const SplitsFormSection = ({
                                 ? "border-primary"
                                 : "",
                             )}
-                            currencyCode={currencyCode}
+                            currencyCode={currencyCodeOrGroupDefault}
                             {...field}
                             mode="onBlur"
                             value={value}
@@ -675,7 +684,12 @@ export const TransactionForm = ({
   });
   const spentAt = useWatch({ name: "spentAt", control: form.control });
 
-  const [dineroValue, moneySnapshot] = toMoneyValues(amount, currencyCode);
+  const currencyCodeOrGroupDefault = currencyCode || groupSheet.currencyCode;
+
+  const [dineroValue, moneySnapshot] = toMoneyValues(
+    amount,
+    currencyCodeOrGroupDefault,
+  );
 
   const {
     supportedCurrencies,
@@ -683,7 +697,7 @@ export const TransactionForm = ({
     targetSnapshot: convertedMoneySnapshot,
   } = useCurrencyConversion(
     Temporal.PlainDate.from(spentAt),
-    currencyCode,
+    currencyCodeOrGroupDefault,
     groupSheet.currencyCode,
     moneySnapshot,
   );
@@ -692,7 +706,7 @@ export const TransactionForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const splits = calcSplits(
       groupSheet.participants,
-      currencyCode,
+      currencyCodeOrGroupDefault,
       dineroValue,
       values.ratios,
     );
@@ -718,7 +732,7 @@ export const TransactionForm = ({
         money: convertedMoneySnapshot,
         splits: calcSplits(
           groupSheet.participants,
-          currencyCode,
+          currencyCodeOrGroupDefault,
           moneyToDinero(convertedMoneySnapshot),
           values.ratios,
         ),
@@ -756,7 +770,7 @@ export const TransactionForm = ({
                     <MoneyField
                       className="grow"
                       autoFocus
-                      currencyCode={currencyCode}
+                      currencyCode={currencyCodeOrGroupDefault}
                       {...field}
                     />
                   </FormControl>
