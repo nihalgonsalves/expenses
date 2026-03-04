@@ -11,6 +11,7 @@ import { Toaster } from "../components/ui/toaster";
 import { config } from "../config";
 import { useSwUpdateCheck } from "../registerSW";
 import { useThemeSync } from "../state/theme";
+import { PWAInstall } from "#/components/PWAInstall";
 
 const GlobalHookContainer = () => {
   useSwUpdateCheck();
@@ -43,6 +44,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       </MotionConfig>
       <TooltipRoot />
       <Toaster />
+      <PWAInstall />
       {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
         <TanStackRouterDevtools position="bottom-right" />
       ) : null}

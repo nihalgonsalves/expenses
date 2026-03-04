@@ -23,20 +23,24 @@ import {
   FormLabel,
 } from "../ui/form";
 import { Switch } from "../ui/switch";
-
-const IS_IOS_AND_NOT_STANDALONE = z.boolean().optional().parse(
-  // @ts-expect-error iOS only
-  globalThis.navigator.standalone,
-);
+import { useOs } from "@mantine/hooks";
+import { useAtomValue } from "jotai";
+import { pwaInstallElementAtom } from "../PWAInstall";
+import { useIsStandalone } from "#/utils/hooks/useIsStandalone";
 
 const formSchema = z.object({
   notificationsEnabled: z.boolean(),
 });
 
 export const NotificationPreferenceForm = () => {
+  const os = useOs();
+  const isStandalone = useIsStandalone();
+
   const { permission, request } = useNotificationPermission();
   const serviceWorkerRegistration = useServiceWorkerRegistration();
   const [endpoint, setEndpoint] = useSubscriptionEndpoint();
+
+  const pwaInstall = useAtomValue(pwaInstallElementAtom);
 
   const { trpc, invalidate } = useTRPC();
   const { data: applicationServerKey } = useQuery(
@@ -140,23 +144,35 @@ export const NotificationPreferenceForm = () => {
         )}
 
         {permission === "not_supported" && (
-          <Alert variant="destructive">
-            <AlertTriangleIcon className="size-4" />
-            <AlertTitle>
+          <Alert variant="default">
+            <AlertTitle className="flex items-center gap-2">
+              <AlertTriangleIcon className="size-4" />
               Push notifications are not supported in your browser or
               environment.
             </AlertTitle>
-            <AlertDescription>
+            <AlertDescription className="flex flex-col gap-2 py-4">
+              {os === "ios" && !isStandalone && (
+                <>
+                  On iPhone and iPad, you&rsquo;ll need to add Expenses to your
+                  Home Screen first
+                  {pwaInstall && (
+                    <Button
+                      onClick={() => {
+                        pwaInstall.showDialog();
+                      }}
+                    >
+                      Install to Home Screen
+                    </Button>
+                  )}
+                </>
+              )}
               Make sure that you&rsquo;re not using private browsing, and that
               you&rsquo;re accessing this page over https.
-              {IS_IOS_AND_NOT_STANDALONE === false &&
-                " On iOS 16.4 and above, click the share icon and Add to Home Screen for notification support."}
               {import.meta.env.DEV ? (
-                <b>
-                  <br />
+                <strong>
                   This is a development environment, you need ENABLE_DEV_PWA=1
                   for service worker support.
-                </b>
+                </strong>
               ) : null}
             </AlertDescription>
           </Alert>
