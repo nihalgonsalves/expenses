@@ -1,3 +1,6 @@
+// to investigate - weird bundling issue: this is imported right at the top of
+// main.tsx, but still fails if not imported here too
+import "temporal-polyfill/global";
 import { getUserLanguage } from "./utils";
 
 export const CURRENT_TIMEZONE =
