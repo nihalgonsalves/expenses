@@ -2,10 +2,10 @@ packages:
   - packages/*
 
 allowBuilds:
-  "@prisma/engines": true
-  "@sentry-internal/node-cpu-profiler": true
-  "@sentry/cli": true
-  "@swc/core": true
+  '@prisma/engines': true
+  '@sentry-internal/node-cpu-profiler': true
+  '@sentry/cli': true
+  '@swc/core': true
   bcrypt: true
   cpu-features: true
   esbuild: true

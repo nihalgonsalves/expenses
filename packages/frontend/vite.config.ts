@@ -7,7 +7,7 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { codeInspectorPlugin } from "code-inspector-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig } from "vite";
 import IstanbulPlugin from "vite-plugin-istanbul";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -47,9 +47,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [
-    process.env["ENABLE_BUNDLE_VISUALIZER"] &&
-      // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-      (visualizer({ open: true }) as unknown as Plugin),
+    process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
     tanstackRouter({ autoCodeSplitting: true }),
     mode === "development" &&
       codeInspectorPlugin({
