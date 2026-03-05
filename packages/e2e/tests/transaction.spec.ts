@@ -70,7 +70,6 @@ test(`creates a shared sheet transaction successfully`, async ({
   await serverTRPCClient.sheet.createGroupSheet.mutate({
     name: "Test Sheet",
     currencyCode: "EUR",
-    additionalParticipantEmailAddresses: [],
   });
 
   await page.getByRole("button", { name: "Add Transaction" }).first().click();

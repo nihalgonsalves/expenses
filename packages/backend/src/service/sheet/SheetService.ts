@@ -18,6 +18,7 @@ import {
 import { generateId } from "../../utils/nanoid.ts";
 import { getTRPCError } from "../../utils/trpcUtils.ts";
 import type { TransactionService } from "../transaction/TransactionService.ts";
+import type { UserService } from "../user/UserService.ts";
 
 class SheetServiceError extends TRPCError {}
 
@@ -39,21 +40,19 @@ export const nameFromEmail = (email: string) => {
     .join(" ");
 };
 
-const participantConnectOrCreate = (email: string) => ({
-  create: { id: generateId(), name: nameFromEmail(email), email },
-  where: { email },
-});
-
 export class SheetService {
   private prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">;
   private transactionService: TransactionService;
+  private userService: Pick<UserService, "findByEmail" | "inviteUser">;
 
   constructor(
-    prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">,
-    transactionService: TransactionService,
+    prismaClient: SheetService["prismaClient"],
+    transactionService: SheetService["transactionService"],
+    userService: SheetService["userService"],
   ) {
     this.prismaClient = prismaClient;
     this.transactionService = transactionService;
+    this.userService = userService;
   }
 
   async createPersonalSheet(input: CreatePersonalSheetInput, owner: User) {
@@ -104,12 +103,6 @@ export class SheetService {
                 role: SheetParticipantRole.ADMIN,
                 participant: { connect: { id: owner.id } },
               },
-              ...input.additionalParticipantEmailAddresses.map(({ email }) => ({
-                role: SheetParticipantRole.MEMBER,
-                participant: {
-                  connectOrCreate: participantConnectOrCreate(email),
-                },
-              })),
             ],
           },
         },
@@ -192,13 +185,25 @@ export class SheetService {
     });
   }
 
-  async addGroupSheetMember(groupSheet: Sheet, participantEmail: string) {
+  async addGroupSheetMember(input: {
+    participantEmail: string;
+    groupSheet: Sheet;
+    invitedBy: User;
+  }) {
+    const user =
+      (await this.userService.findByEmail(input.participantEmail)) ??
+      (await this.userService.inviteUser({
+        invitedUserEmail: input.participantEmail,
+        invitedBy: input.invitedBy,
+        groupSheet: input.groupSheet,
+      }));
+
     try {
       const member = await this.prismaClient.sheetMemberships.create({
         data: {
-          sheet: { connect: { id: groupSheet.id } },
+          sheet: { connect: { id: input.groupSheet.id } },
           participant: {
-            connectOrCreate: participantConnectOrCreate(participantEmail),
+            connect: { id: user.id },
           },
         },
         include: { participant: true },

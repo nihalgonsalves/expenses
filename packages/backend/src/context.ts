@@ -64,7 +64,11 @@ export const makeCreateContext = (
     prisma,
     workers.notificationDispatchService,
   );
-  const sheetService = new SheetService(prisma, transactionService);
+  const sheetService = new SheetService(
+    prisma,
+    transactionService,
+    userService,
+  );
 
   const frankfurterService = new FrankfurterService(
     config.FRANKFURTER_BASE_URL,

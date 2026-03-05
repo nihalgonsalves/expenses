@@ -37,7 +37,6 @@ import { expect, test } from "../utils/test";
         await serverTRPCClient.sheet.createGroupSheet.mutate({
           name: "Test Sheet",
           currencyCode: "EUR",
-          additionalParticipantEmailAddresses: [],
         });
 
         break;

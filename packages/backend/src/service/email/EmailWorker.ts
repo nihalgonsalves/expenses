@@ -53,8 +53,8 @@ export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
     this.recipientRateLimiter = new RateLimiterRedis({
       storeClient: redis,
       keyPrefix: "rl:email:recipient",
-      // one email per minute per recipient
-      points: 1,
+      // 3 emails per minute per recipient
+      points: 3,
       duration: durationSeconds({ minutes: 1 }),
     });
 
