@@ -11,6 +11,7 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { publicProcedure, protectedProcedure, router } from "../../trpc.ts";
+import { config } from "../../config.ts";
 
 export const userRouter = router({
   createUser: publicProcedure
@@ -35,7 +36,16 @@ export const userRouter = router({
     .input(z.email())
     .output(z.void())
     .mutation(async ({ ctx, input }) => {
-      await ctx.userService.requestPasswordReset(input);
+      await ctx.userService.requestPasswordReset(input, (link) => ({
+        subject: `Your reset password link for ${config.APP_NAME}`,
+        text: [
+          "Click here to reset your password:",
+          link.toString(),
+          "",
+          "---",
+          "If you did not request this reset, please ignore this email.",
+        ].join("\n"),
+      }));
     }),
 
   resetPassword: publicProcedure

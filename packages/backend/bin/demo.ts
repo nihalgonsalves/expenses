@@ -47,7 +47,11 @@ const { id: personalSheetId } = await clientA.sheet.createPersonalSheet.mutate({
 const { id: groupSheetId } = await clientA.sheet.createGroupSheet.mutate({
   name: "🌍 Berlin Trip",
   currencyCode: "EUR",
-  additionalParticipantEmailAddresses: [{ email: DEMO_B_EMAIL }],
+});
+
+await clientA.sheet.addGroupSheetMember.mutate({
+  groupSheetId,
+  email: DEMO_B_EMAIL,
 });
 
 const spentAt = Temporal.Now.zonedDateTimeISO("Europe/Berlin").toString();

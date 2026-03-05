@@ -15,7 +15,7 @@ import type {
 
 import { config } from "../../config.ts";
 import type { PrismaClientType } from "../../create-prisma.ts";
-import { Prisma } from "../../prisma/client.ts";
+import { Prisma, type Sheet } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 import { EmailWorkerError, type IEmailWorker } from "../email/EmailWorker.ts";
 
@@ -26,9 +26,11 @@ import {
   signJWT,
   verifyJWT,
 } from "./utils.ts";
+import { nameFromEmail } from "../sheet/SheetService.ts";
 
 const ZPasswordResetJWTPayload = z.object({
   purpose: z.literal("PASSWORD_RESET"),
+  email: z.email(),
   passwordResetToken: z.string(),
 });
 
@@ -154,6 +156,35 @@ export class UserService {
     }
   }
 
+  async inviteUser(input: {
+    invitedUserEmail: string;
+    groupSheet: Pick<Sheet, "name">;
+    invitedBy: User;
+  }) {
+    const user = await this.prismaClient.user.create({
+      data: {
+        id: generateId(),
+        name: nameFromEmail(input.invitedUserEmail),
+        email: input.invitedUserEmail,
+      },
+    });
+
+    await this.requestPasswordReset(user.email, (link) => ({
+      subject: `Share expenses for "${input.groupSheet.name}" with ${input.invitedBy.name}`,
+      text: [
+        `You've been invited by ${input.invitedBy.name} to join the "${input.groupSheet.name}" sheet on ${config.APP_NAME}.`,
+        "",
+        "Click here to set your password:",
+        link.toString(),
+        "",
+        "---",
+        `If you do not know ${input.invitedBy.name} <${input.invitedBy.email}>, please ignore this email.`,
+      ].join("\n"),
+    }));
+
+    return user;
+  }
+
   async updateUser(id: string, input: UpdateUserInput): Promise<User> {
     if (input.newPassword != null) {
       if (input.password == null) {
@@ -272,6 +303,7 @@ export class UserService {
     const user = await this.prismaClient.user.findUnique({
       where: {
         id: payload.sub,
+        email: parsedPayload.data.email,
         passwordResetToken: parsedPayload.data.passwordResetToken,
       },
     });
@@ -295,7 +327,10 @@ export class UserService {
     });
   }
 
-  async requestPasswordReset(emailAddress: string) {
+  async requestPasswordReset(
+    emailAddress: string,
+    getEmailText: (link: URL) => { subject: string; text: string },
+  ) {
     const user = await this.findByEmail(emailAddress);
     if (!user) {
       return;
@@ -306,6 +341,7 @@ export class UserService {
     const token = await signJWT(user, {
       payload: {
         purpose: "PASSWORD_RESET",
+        email: user.email,
         passwordResetToken,
       } satisfies z.infer<typeof ZPasswordResetJWTPayload>,
       expiry: { minutes: 15 },
@@ -319,20 +355,19 @@ export class UserService {
       data: { passwordResetToken },
     });
 
+    const { subject, text } = getEmailText(link);
+    await this.sendResetPasswordEmail(user, subject, text);
+  }
+
+  async sendResetPasswordEmail(user: User, subject: string, text: string) {
     try {
       await this.emailWorker.sendEmail({
         to: {
           name: user.name,
           address: user.email,
         },
-        subject: `Your reset password link for ${config.APP_NAME}`,
-        text: [
-          "Click here to reset your password:",
-          link.toString(),
-          "",
-          "---",
-          "If you did not request this reset, please ignore this email.",
-        ].join("\n"),
+        subject,
+        text,
       });
     } catch (error) {
       if (
@@ -390,17 +425,7 @@ export class UserService {
   }
 
   async requestEmailVerification(user: User) {
-    const token = await signJWT(user, {
-      payload: {
-        purpose: "VERIFY_EMAIL",
-        email: user.email,
-      } satisfies z.infer<typeof ZVerifyEmailJWTPayload>,
-      expiry: { hours: 24 },
-    });
-
-    const link = new URL(VERIFY_EMAIL_ROUTE, config.PUBLIC_ORIGIN);
-    link.searchParams.set("token", token);
-
+    const link = await UserService.getEmailVerificationLink(user);
     await this.emailWorker.sendEmail({
       to: {
         name: user.name,
@@ -417,7 +442,22 @@ export class UserService {
     });
   }
 
-  private async findByEmail(email: string) {
+  private static async getEmailVerificationLink(user: User) {
+    const token = await signJWT(user, {
+      payload: {
+        purpose: "VERIFY_EMAIL",
+        email: user.email,
+      } satisfies z.infer<typeof ZVerifyEmailJWTPayload>,
+      expiry: { hours: 24 },
+    });
+
+    const link = new URL(VERIFY_EMAIL_ROUTE, config.PUBLIC_ORIGIN);
+    link.searchParams.set("token", token);
+
+    return link;
+  }
+
+  async findByEmail(email: string) {
     try {
       return await this.prismaClient.user.findUnique({
         where: { email },

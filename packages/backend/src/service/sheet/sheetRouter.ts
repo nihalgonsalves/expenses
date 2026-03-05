@@ -175,10 +175,11 @@ export const sheetRouter = router({
         });
       }
 
-      const { participant, role } = await ctx.sheetService.addGroupSheetMember(
-        sheet,
-        email,
-      );
+      const { participant, role } = await ctx.sheetService.addGroupSheetMember({
+        groupSheet: sheet,
+        participantEmail: email,
+        invitedBy: ctx.user,
+      });
 
       return {
         id: participant.id,

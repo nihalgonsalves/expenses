@@ -38,12 +38,9 @@ describe("createGroupSheet", () => {
     const user = await userFactory(prisma);
     const caller = useProtectedCaller(user);
 
-    const otherMember = await userFactory(prisma);
-
     const groupSheet = await caller.sheet.createGroupSheet({
       name: "WG Expenses",
       currencyCode: "EUR",
-      additionalParticipantEmailAddresses: [{ email: otherMember.email }],
     });
 
     expect(groupSheet).toStrictEqual({
@@ -56,30 +53,7 @@ describe("createGroupSheet", () => {
         {
           id: user.id,
         },
-        {
-          id: otherMember.id,
-        },
       ]),
-    });
-  });
-
-  it("creates participants that don't exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
-    const otherEmail = "hello@example.com";
-
-    await caller.sheet.createGroupSheet({
-      name: "WG Expenses",
-      currencyCode: "EUR",
-      additionalParticipantEmailAddresses: [{ email: otherEmail }],
-    });
-
-    await expect(
-      prisma.user.findUnique({ where: { email: otherEmail } }),
-    ).resolves.toMatchObject({
-      name: "Hello",
-      email: "hello@example.com",
     });
   });
 });

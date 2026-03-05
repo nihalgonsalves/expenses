@@ -34,9 +34,6 @@ export type GroupSheetWithParticipants = z.infer<
 export const ZCreateGroupSheetInput = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   currencyCode: z.string().length(3, { message: "Currency code is required" }),
-  additionalParticipantEmailAddresses: z.array(
-    z.object({ email: z.email({ message: "Invalid email address" }) }),
-  ),
 });
 export type CreateGroupSheetInput = z.infer<typeof ZCreateGroupSheetInput>;
 
