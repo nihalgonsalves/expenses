@@ -36,7 +36,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
     return { user };
   },
-  component: () => (
+  component: RootComponent,
+});
+
+function RootComponent() {
+  const { user } = Route.useRouteContext();
+
+  return (
     <>
       <GlobalHookContainer />
       <MotionConfig reducedMotion="user">
@@ -44,10 +50,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       </MotionConfig>
       <TooltipRoot />
       <Toaster />
-      <PWAInstall />
+      {user != null && <PWAInstall />}
       {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
         <TanStackRouterDevtools position="bottom-right" />
       ) : null}
     </>
-  ),
-});
+  );
+}

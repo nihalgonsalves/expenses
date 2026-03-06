@@ -8,3 +8,10 @@ declare module "react" {
     [key: `--${string}`]: string | number;
   }
 }
+
+declare global {
+  interface Window {
+    // stored by index.html for use with <pwa-install>
+    promptEvent?: Event | undefined;
+  }
+}

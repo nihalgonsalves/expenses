@@ -29,9 +29,9 @@ export const PWAInstall = () => {
 
   return (
     <pwa-install
+      externalPromptEvent={globalThis.window.promptEvent}
       ref={(element) => {
         setPwaInstallElement(element);
-
         return () => {
           setPwaInstallElement(null);
         };

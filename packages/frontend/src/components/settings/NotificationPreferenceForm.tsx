@@ -40,7 +40,7 @@ export const NotificationPreferenceForm = () => {
   const serviceWorkerRegistration = useServiceWorkerRegistration();
   const [endpoint, setEndpoint] = useSubscriptionEndpoint();
 
-  const pwaInstall = useAtomValue(pwaInstallElementAtom);
+  const pwaInstallElement = useAtomValue(pwaInstallElementAtom);
 
   const { trpc, invalidate } = useTRPC();
   const { data: applicationServerKey } = useQuery(
@@ -155,10 +155,10 @@ export const NotificationPreferenceForm = () => {
                 <>
                   On iPhone and iPad, you&rsquo;ll need to add Expenses to your
                   Home Screen first
-                  {pwaInstall && (
+                  {pwaInstallElement && (
                     <Button
                       onClick={() => {
-                        pwaInstall.showDialog();
+                        pwaInstallElement.showDialog();
                       }}
                     >
                       Install to Home Screen

@@ -15,6 +15,12 @@
     />
     <link rel="icon" href="/assets/icon-monochrome.svg" sizes="any" />
     <title>expenses</title>
+    <script type="module">
+      window.addEventListener("beforeinstallprompt", (event) => {
+        event.preventDefault();
+        globalThis.window.promptEvent = event;
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
