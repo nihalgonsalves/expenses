@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { ChevronsUpDownIcon } from "lucide-react";
 import { useState, type Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
@@ -8,15 +7,9 @@ import { CategoryIcon } from "../CategoryAvatar";
 import {
   Combobox,
   ComboboxItem,
-  ComboboxList,
+  ComboboxContent,
   ComboboxInput,
-  ComboboxPopup,
-  ComboboxPositioner,
-  ComboboxIcon,
-  ComboboxTrigger,
-  ComboboxItemIndicator,
-  ComboboxPortal,
-  ComboboxClear,
+  ComboboxList,
 } from "../ui/combobox";
 
 export const OTHER_CATEGORY = "other";
@@ -61,41 +54,24 @@ export const CategorySelect = ({
       onValueChange={onChange}
       onInputValueChange={setSearchValue}
     >
-      <div className="relative">
-        <ComboboxInput placeholder={placeholder} {...controllerProps} />
+      <ComboboxInput placeholder={placeholder} showClear {...controllerProps} />
 
-        <div className="absolute top-0 right-2 flex">
-          <ComboboxClear />
-
-          <ComboboxTrigger className="p-2">
-            <ComboboxIcon>
-              <ChevronsUpDownIcon className="size-4" />
-            </ComboboxIcon>
-          </ComboboxTrigger>
-        </div>
-      </div>
-
-      <ComboboxPortal>
-        <ComboboxPositioner align="start" sideOffset={4}>
-          <ComboboxPopup className="w-full pt-0" aria-label="Select category">
-            <ComboboxList>
-              {(category: string) => (
-                <ComboboxItem key={category} value={category}>
-                  <ComboboxItemIndicator />
-                  <div className="col-start-2 flex gap-2">
-                    <div className="mr-2">
-                      <CategoryIcon category={category} />
-                    </div>
-                    {categoryIdsSet.has(category)
-                      ? category
-                      : `Create: "${category}"`}
-                  </div>
-                </ComboboxItem>
-              )}
-            </ComboboxList>
-          </ComboboxPopup>
-        </ComboboxPositioner>
-      </ComboboxPortal>
+      <ComboboxContent>
+        <ComboboxList>
+          {(category: string) => (
+            <ComboboxItem key={category} value={category}>
+              <div className="col-start-2 flex gap-2">
+                <div className="mr-2">
+                  <CategoryIcon category={category} />
+                </div>
+                {categoryIdsSet.has(category)
+                  ? category
+                  : `Create: "${category}"`}
+              </div>
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
     </Combobox>
   );
 };

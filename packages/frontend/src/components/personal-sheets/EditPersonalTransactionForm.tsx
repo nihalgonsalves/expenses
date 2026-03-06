@@ -44,7 +44,10 @@ const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
   money: true,
 }).extend({
   // can be blank when the user clears out the search box
-  currencyCode: z.string().min(1).optional(),
+  currencyCode: z
+    .string("Currency is required")
+    .min(1, "Currency is required")
+    .optional(),
   amount: z.number().positive({ message: "Amount is required" }),
 });
 

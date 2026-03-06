@@ -32,6 +32,13 @@
         "func-style": "off",
         "typescript/only-throw-error": "off"
       }
+    },
+    {
+      "files": ["src/components/**/*"],
+      "rules": {
+        // allow default shadcn style
+        "func-style": "off"
+      }
     }
   ]
 }
