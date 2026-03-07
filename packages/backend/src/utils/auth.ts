@@ -7,7 +7,7 @@ import { hashPassword, verifyPassword } from "better-auth/crypto";
 import { createAuthMiddleware } from "better-auth/api";
 import { z } from "zod";
 import type { IEmailWorker } from "../service/email/EmailWorker.ts";
-import { admin } from "better-auth/plugins";
+import { admin, genericOAuth } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 
 // HACK: fix for this error on the frontend:
@@ -95,7 +95,11 @@ export const createAuth = (
         generateId: false,
       },
     },
-    plugins: [admin(), passkey()],
+    plugins: [
+      admin(),
+      passkey(),
+      genericOAuth({ config: config.OAUTH_PROVIDER_CONFIG }),
+    ],
     hooks: {
       after: createAuthMiddleware(async (ctx) => {
         if (ctx.path !== "/sign-in/email" || !ctx.context.session) {

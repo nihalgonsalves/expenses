@@ -38,18 +38,22 @@ export type RouterContext = {
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
-    const user = await queryClient
+    const user = queryClient
       .fetchQuery({ ...trpc.user.me.queryOptions(), staleTime: Infinity })
       .catch(() => null);
 
-    return { user };
+    const configResult = queryClient
+      .fetchQuery({ ...trpc.config.queryOptions(), staleTime: Infinity })
+      .catch(() => null);
+
+    return { user: await user, config: await configResult };
   },
   component: RootComponent,
 });
 
 function RootComponent() {
   const router = useRouter();
-  const { user } = Route.useRouteContext();
+  const context = Route.useRouteContext();
 
   return (
     <>
@@ -59,6 +63,9 @@ function RootComponent() {
           <AuthUIProviderTanstack
             passkey
             authClient={authClient}
+            {...(context.config?.hasOauth && {
+              genericOAuth: { providers: context.config.oauthProviders },
+            })}
             navigate={async (href) => router.navigate({ href })}
             replace={async (href) => router.navigate({ href, replace: true })}
             Link={({ href, ...props }) => <Link to={href} {...props} />}
@@ -69,7 +76,7 @@ function RootComponent() {
       </MotionConfig>
       <TooltipRoot />
       <Toaster />
-      {user != null && <PWAInstall />}
+      {context.user != null && <PWAInstall />}
       {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
         <TanStackRouterDevtools position="bottom-right" />
       ) : null}

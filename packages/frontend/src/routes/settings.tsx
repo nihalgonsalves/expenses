@@ -11,6 +11,7 @@ import {
   ChangeEmailCard,
   ChangePasswordCard,
   PasskeysCard,
+  ProvidersCard,
   SessionsCard,
   UpdateNameCard,
 } from "@daveyplate/better-auth-ui";
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/settings")({
 });
 
 function RouteComponent() {
+  const { config } = Route.useRouteContext();
   const [selectedSection, setSelectedSection] = useState<Section>("Profile");
 
   const me = useCurrentUser();
@@ -65,6 +67,9 @@ function RouteComponent() {
     },
     { title: "Password", component: <ChangePasswordCard /> },
     { title: "Passkeys", component: <PasskeysCard /> },
+    ...(config?.hasOauth
+      ? [{ title: "Connected accounts" as const, component: <ProvidersCard /> }]
+      : []),
     { title: "Sessions", component: <SessionsCard /> },
     { title: "Privacy", component: <PrivacyForm /> },
     { title: "Troubleshooting", component: <TroubleshootingForm /> },

@@ -33,8 +33,23 @@ const health = publicProcedure.query(async ({ ctx }) => {
 
 const configProcedure = publicProcedure
   .input(z.void())
-  .output(z.object({ name: z.string() }))
-  .query(() => ({ name: config.APP_NAME }));
+  .output(
+    z.object({
+      name: z.string(),
+      hasOauth: z.boolean(),
+      oauthProviders: z.array(
+        z.object({ provider: z.string(), name: z.string() }),
+      ),
+    }),
+  )
+  .query(() => ({
+    name: config.APP_NAME,
+    hasOauth: config.OAUTH_PROVIDER_CONFIG.length > 0,
+    oauthProviders: config.OAUTH_PROVIDER_CONFIG.map((provider) => ({
+      provider: provider.providerId,
+      name: provider.name,
+    })),
+  }));
 
 export const appRouter = router({
   health,
