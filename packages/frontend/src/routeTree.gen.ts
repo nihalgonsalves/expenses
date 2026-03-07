@@ -15,6 +15,7 @@ import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
+import { Route as AuthAuthViewRouteImport } from './routes/auth/$authView'
 import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
 import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
 import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
@@ -49,6 +50,11 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/auth/reset-password',
   path: '/auth/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthAuthViewRoute = AuthAuthViewRouteImport.update({
+  id: '/auth/$authView',
+  path: '/auth/$authView',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthStatsRoute = AuthStatsRouteImport.update({
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
+  '/auth/$authView': typeof AuthAuthViewRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
+  '/auth/$authView': typeof AuthAuthViewRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/settings': typeof SettingsRoute
   '/_auth/stats': typeof AuthStatsRoute
+  '/auth/$authView': typeof AuthAuthViewRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/settings'
     | '/stats'
+    | '/auth/$authView'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
   to:
     | '/settings'
     | '/stats'
+    | '/auth/$authView'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/settings'
     | '/_auth/stats'
+    | '/auth/$authView'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
@@ -169,6 +181,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   SettingsRoute: typeof SettingsRoute
+  AuthAuthViewRoute: typeof AuthAuthViewRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
@@ -216,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/reset-password'
       fullPath: '/auth/reset-password'
       preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/$authView': {
+      id: '/auth/$authView'
+      path: '/auth/$authView'
+      fullPath: '/auth/$authView'
+      preLoaderRoute: typeof AuthAuthViewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/stats': {
@@ -297,6 +317,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   SettingsRoute: SettingsRoute,
+  AuthAuthViewRoute: AuthAuthViewRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,

@@ -7,6 +7,7 @@ allowBuilds:
   '@sentry/cli': true
   '@swc/core': true
   bcrypt: true
+  core-js: false
   cpu-features: true
   esbuild: true
   lefthook: true

@@ -1,9 +1,8 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { UserIcon } from "lucide-react";
 
 import { useCurrentUser } from "../api/useCurrentUser";
-import { useInvalidateRouter } from "../api/useInvalidateRouter";
 
 import { Button } from "./ui/button";
 import {
@@ -14,16 +13,10 @@ import {
 } from "./ui/dropdown-menu";
 import { Separator } from "./ui/separator";
 import { cn } from "./ui/utils";
-import { authClient } from "#/utils/auth";
+import { UserButton } from "@daveyplate/better-auth-ui";
 
-export const LoggedOutNavBarAvatar = ({
-  className,
-}: {
-  className?: string | undefined;
-}) => (
-  <div className={cn("flex place-items-center gap-4", className)}>
-    <Separator orientation="vertical">&nbsp;</Separator>
-
+export const LoggedOutNavBarAvatar = () => (
+  <>
     <Button
       variant="outline"
       className="text-primary-foreground bg-transparent"
@@ -38,7 +31,7 @@ export const LoggedOutNavBarAvatar = ({
       nativeButton={false}
       render={<Link to="/auth/sign-up">Sign up</Link>}
     />
-  </div>
+  </>
 );
 
 export const LoggedInNavBarAvatar = ({
@@ -65,36 +58,16 @@ export const LoggedInNavBarAvatar = ({
 );
 
 export const NavBarAvatar = ({ className }: { className?: string }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const invalidateRouter = useInvalidateRouter();
-
   const me = useCurrentUser();
 
-  const handleSignOut = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: async () => {
-          await navigate({
-            to: "/auth/sign-in",
-            params: { redirect: location.pathname },
-          });
-
-          await invalidateRouter();
-        },
-      },
-    });
-  };
-
-  if (me != null) {
-    return (
-      <LoggedInNavBarAvatar
-        className={className}
-        handleSignOut={handleSignOut}
-      />
-    );
-  }
-
-  return <LoggedOutNavBarAvatar className={className} />;
+  return (
+    <div className={cn("flex place-items-center gap-4", className)}>
+      <Separator orientation="vertical">&nbsp;</Separator>
+      {me != null ? (
+        <UserButton size="icon" disableDefaultLinks />
+      ) : (
+        <LoggedOutNavBarAvatar />
+      )}
+    </div>
+  );
 };

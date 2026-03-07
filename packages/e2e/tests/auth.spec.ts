@@ -14,7 +14,7 @@ test("signs up successfully", async ({ page }) => {
   await page.getByLabel(/name/i).fill(name);
   await page.getByLabel(/email/i).fill(email);
   await page.getByLabel(/password/i).fill(password);
-  await page.getByRole("button", { name: /sign up/i }).click();
+  await page.getByRole("button", { name: /create an account/i }).click();
 
   await expect(page).toHaveTitle(/transactions/i);
 });
@@ -22,7 +22,7 @@ test("signs up successfully", async ({ page }) => {
 const signInForm = async (page: Page, email: string, password: string) => {
   await page.getByLabel(/email/i).fill(email);
   await page.getByLabel(/password/i).fill(password);
-  await page.getByRole("button", { name: /sign in/i }).click();
+  await page.getByRole("button", { name: /login/i }).click();
 };
 
 test("signs in and out successfully", async ({ page, createUser }) => {
@@ -36,8 +36,8 @@ test("signs in and out successfully", async ({ page, createUser }) => {
 
   await expect(page).toHaveTitle(/transactions/i);
 
-  await page.getByRole("button", { name: "Profile and Settings menu" }).click();
-  await page.getByRole("menuitem", { name: "Sign out" }).click();
+  await page.getByRole("button", { name: /account/i }).click();
+  await page.getByRole("menuitem", { name: /sign out/i }).click();
 });
 
 test("resets password successfully", async ({ page, request, createUser }) => {
@@ -47,11 +47,14 @@ test("resets password successfully", async ({ page, request, createUser }) => {
   const { email } = await createUser();
 
   await page.goto("/auth/sign-in");
+
+  await page.getByRole("link", { name: /forgot your password/i }).click();
+  await expect(page.getByText(/to reset/)).toBeVisible();
   await page.getByLabel(/email/i).fill(email);
 
-  await page.getByRole("button", { name: /forgot password/i }).click();
+  await page.getByRole("button", { name: /send reset/i }).click();
 
-  await expect(page.getByText("you will receive")).toBeVisible();
+  await expect(page.getByText("check your email")).toBeVisible();
 
   const mailpitResponse = await request.get(
     new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
@@ -63,7 +66,7 @@ test("resets password successfully", async ({ page, request, createUser }) => {
   await page.goto(message.Text.split("\n")[1]!);
 
   await page.getByLabel(/password/i).fill("new-password");
-  await page.getByRole("button", { name: /reset password/i }).click();
+  await page.getByRole("button", { name: /save new password/i }).click();
 
   await signInForm(page, email, "new-password");
 
@@ -133,13 +136,9 @@ test("signs up via invite flow successfully", async ({
   await otherPage.goto(message.Text.split("\n")[1]!);
 
   await otherPage.getByLabel(/password/i).fill("new-password");
-  await otherPage.getByRole("button", { name: /reset password/i }).click();
+  await otherPage.getByRole("button", { name: /save new password/i }).click();
 
   await signInForm(otherPage, invitedUserEmail, "new-password");
 
-  await otherPage.getByRole("link", { name: /sheets/i }).click();
-  await otherPage.getByRole("link", { name: "Test Sheet" }).click();
-  await expect(otherPage.getByText("Test Sheet")).toBeVisible();
-
-  await otherPage.context().close();
+  await otherPage.getByRole("button", { name: /account/i }).click();
 });

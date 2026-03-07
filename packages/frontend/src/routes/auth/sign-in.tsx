@@ -1,8 +1,8 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { SignInForm } from "../../components/SignInForm";
 import { Root } from "../../pages/Root";
+import { AuthView } from "@daveyplate/better-auth-ui";
 
 export const Route = createFileRoute("/auth/sign-in")({
   component: RouteComponent,
@@ -19,10 +19,12 @@ export const Route = createFileRoute("/auth/sign-in")({
 });
 
 function RouteComponent() {
+  const { redirect: redirectParam } = Route.useSearch();
+
   return (
     <Root title="Sign in" className="p-0 sm:p-5">
       <div className="m-auto size-full sm:grid sm:max-w-xl sm:place-items-center">
-        <SignInForm />
+        <AuthView pathname="/sign-in" redirectTo={redirectParam ?? "/"} />
       </div>
     </Root>
   );
