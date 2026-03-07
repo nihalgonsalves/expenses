@@ -17,7 +17,6 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@dinero.js/currencies": "2.0.0-alpha.15",
     "dinero.js": "2.0.0",
     "fastpriorityqueue": "0.8.0",
     "zod": "4.3.6"
