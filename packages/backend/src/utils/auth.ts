@@ -8,6 +8,14 @@ import { createAuthMiddleware } from "better-auth/api";
 import { z } from "zod";
 import type { IEmailWorker } from "../service/email/EmailWorker.ts";
 import { admin } from "better-auth/plugins";
+import { passkey } from "@better-auth/passkey";
+
+// HACK: fix for this error on the frontend:
+//  The inferred type of 'useTRPC' cannot be named without a reference to
+//  '../../../../node_modules/@trpc/server/dist/unstable-core-do-not-import.d-BJCeJk5P.cjs'.
+//  This is likely not portable. A type annotation is necessary.
+// Note that this seems to be fixed in tsgo, it could be unnecessary when TypeScript v7 is out.
+export type * from "@simplewebauthn/server";
 
 export const createAuth = (
   prismaClient: PrismaClientType,
@@ -87,7 +95,7 @@ export const createAuth = (
         generateId: false,
       },
     },
-    plugins: [admin()],
+    plugins: [admin(), passkey()],
     hooks: {
       after: createAuthMiddleware(async (ctx) => {
         if (ctx.path !== "/sign-in/email" || !ctx.context.session) {

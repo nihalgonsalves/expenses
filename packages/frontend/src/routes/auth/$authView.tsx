@@ -11,8 +11,8 @@ function RouteComponent() {
 
   return (
     <Root title="Auth" className="p-0 sm:p-5">
-      <div className="m-auto size-full p-4 sm:grid sm:max-w-xl sm:place-items-center">
-        <AuthView pathname={authView} />
+      <div className="m-auto size-full place-items-center p-4">
+        <AuthView className="" pathname={authView} />
       </div>
     </Root>
   );

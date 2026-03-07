@@ -23,8 +23,12 @@ function RouteComponent() {
 
   return (
     <Root title="Sign in" className="p-0 sm:p-5">
-      <div className="m-auto size-full sm:grid sm:max-w-xl sm:place-items-center">
-        <AuthView pathname="/sign-in" redirectTo={redirectParam ?? "/"} />
+      <div className="m-auto size-full place-items-center p-4">
+        <AuthView
+          className=""
+          pathname="/sign-in"
+          redirectTo={redirectParam ?? "/"}
+        />
       </div>
     </Root>
   );

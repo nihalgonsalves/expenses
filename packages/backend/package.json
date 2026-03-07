@@ -20,6 +20,7 @@
     "prepare:demo": "node bin/demo.ts"
   },
   "dependencies": {
+    "@better-auth/passkey": "1.5.4",
     "@better-auth/prisma-adapter": "1.5.4",
     "@bull-board/api": "6.20.3",
     "@bull-board/hono": "6.20.3",
@@ -30,6 +31,7 @@
     "@prisma/client": "7.4.2",
     "@sentry/node": "10.42.0",
     "@sentry/profiling-node": "10.42.0",
+    "@simplewebauthn/server": "13.2.3",
     "@trpc/server": "11.11.0",
     "bcrypt": "6.0.0",
     "better-auth": "1.5.4",
@@ -59,7 +61,7 @@
     "auth": "1.5.4",
     "fetch-cookie": "3.2.0",
     "npm-run-all2": "8.0.4",
-    "pem": "1.15.1",
+    "pem": "1.14.8",
     "prisma": "7.4.2",
     "vitest": "4.0.18",
     "wait-on": "9.0.4"

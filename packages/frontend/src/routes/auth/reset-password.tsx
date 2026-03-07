@@ -18,12 +18,9 @@ function RouteComponent() {
   const { token } = Route.useSearch();
 
   return (
-    <Root
-      title="Reset Password"
-      className="m-auto p-0 sm:grid sm:max-w-xl sm:place-items-center sm:p-5"
-    >
+    <Root title="Reset Password" className="p-0 sm:p-5">
       {token ? (
-        <AuthView pathname="/reset-password" />
+        <AuthView className="" pathname="/reset-password" />
       ) : (
         <Alert variant="destructive">
           <AlertTitle>Token not found</AlertTitle>

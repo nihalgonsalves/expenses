@@ -57,6 +57,7 @@ function RootComponent() {
       <MotionConfig reducedMotion="user">
         <AuthQueryProvider>
           <AuthUIProviderTanstack
+            passkey
             authClient={authClient}
             navigate={async (href) => router.navigate({ href })}
             replace={async (href) => router.navigate({ href, replace: true })}
