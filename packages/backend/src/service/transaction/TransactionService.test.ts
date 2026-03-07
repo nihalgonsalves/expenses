@@ -5,7 +5,9 @@ import {
   notificationSubscriptionFactory,
   userFactory,
 } from "../../../test/factories.ts";
+import { FakeEmailWorker } from "../../../test/FakeEmailWorker.ts";
 import { getPrisma } from "../../../test/getPrisma.ts";
+import { createAuth } from "../../utils/auth.ts";
 import { createGroupSheetTransactionInput } from "../../../test/input.ts";
 import {
   FakeNotificationDispatchService,
@@ -15,11 +17,12 @@ import {
 import { TransactionService } from "./TransactionService.ts";
 
 const prisma = await getPrisma();
+const betterAuth = createAuth(prisma, new FakeEmailWorker());
 
 const currencyCode = "EUR";
 
 const subscribedUser = async () => {
-  const user = await userFactory(prisma);
+  const { user } = await userFactory(prisma, betterAuth);
   await notificationSubscriptionFactory(prisma, user);
   return user;
 };

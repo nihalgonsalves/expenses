@@ -1,10 +1,7 @@
-import { hostname } from "os";
-
-import { Temporal } from "temporal-polyfill";
 import { default as webPush } from "web-push";
 import { z } from "zod";
 
-const defaultSecret = "test-secret";
+const defaultSecret = "test-secret-hello-world-insecure";
 
 export const IS_PROD = process.env["NODE_ENV"] === "production";
 
@@ -26,6 +23,8 @@ const ZEnv = z.object({
   ),
   APP_NAME: z.string().default("Expenses"),
 
+  BETTER_AUTH_CLI: IS_PROD ? z.never() : z.coerce.boolean().default(false),
+
   SMTP_HOST: devOnlyDefault(z.string(), "localhost"),
   SMTP_PORT: devOnlyDefault(z.coerce.number(), 1025),
   SMTP_USER: z.string().optional(),
@@ -34,10 +33,6 @@ const ZEnv = z.object({
 
   SECURE: z.coerce.boolean().default(IS_PROD),
   JWT_SECRET: devOnlyDefault(z.string().min(1), defaultSecret),
-  JWT_IDENTITY: z.string().default(`expenses-backend-${hostname()}`),
-  JWT_EXPIRY_SECONDS: z.coerce
-    .number()
-    .default(Temporal.Duration.from({ days: 7 }).total("seconds")),
 
   VAPID_EMAIL: devOnlyDefault(z.email(), "nobody@example.com"),
   VAPID_PRIVATE_KEY: devOnlyDefault(

@@ -8,9 +8,6 @@ export const createPrisma = (connectionString = config.DATABASE_URL) =>
     adapter: new PrismaPg({
       connectionString,
     }),
-    omit: {
-      user: { passwordHash: true, passwordResetToken: true },
-    },
   });
 
 export type PrismaClientType = ReturnType<typeof createPrisma>;

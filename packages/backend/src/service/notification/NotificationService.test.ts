@@ -5,6 +5,7 @@ import {
   notificationSubscriptionFactory,
   userFactory,
 } from "../../../test/factories.ts";
+import { FakeEmailWorker } from "../../../test/FakeEmailWorker.ts";
 import { getPrisma } from "../../../test/getPrisma.ts";
 import { getRedis } from "../../../test/getRedis.ts";
 import {
@@ -13,10 +14,12 @@ import {
 } from "../../../test/webPushUtils.ts";
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
 import { closeWorker } from "../../startWorkers.ts";
+import { createAuth } from "../../utils/auth.ts";
 
 import { NotificationDispatchWorker } from "./NotificationDispatchWorker.ts";
 
 const prisma = await getPrisma();
+const betterAuth = createAuth(prisma, new FakeEmailWorker());
 const redis = await getRedis();
 const notificationDispatchService = new NotificationDispatchWorker(
   prisma,
@@ -53,7 +56,7 @@ describe("NotificationService", () => {
       // since assertions are within callbacks
       expect.assertions(2);
 
-      const user = await userFactory(prisma);
+      const { user } = await userFactory(prisma, betterAuth);
 
       const address = await createPushService((req, res) => {
         // don't bother reproducing the entire web push library test suite, just confirm that it was sent
@@ -90,7 +93,7 @@ describe("NotificationService", () => {
     });
 
     it("unsubscribes on failure (e.g. 410 Gone)", async () => {
-      const user = await userFactory(prisma);
+      const { user } = await userFactory(prisma, betterAuth);
 
       const address = await createPushService((_req, res) => {
         res.writeHead(410);

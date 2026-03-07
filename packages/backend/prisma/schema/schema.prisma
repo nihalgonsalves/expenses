@@ -2,34 +2,12 @@
 
 generator client {
   provider        = "prisma-client"
-  output          = "../src/prisma/"
+  output          = "../../src/prisma/"
   previewFeatures = ["nativeDistinct", "relationJoins"]
 }
 
 datasource db {
   provider = "postgresql"
-}
-
-model User {
-  id        String   @id
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
-
-  name          String
-  email         String  @unique
-  emailVerified Boolean @default(false) @map("email_verified")
-
-  passwordHash       String? @map("password_hash")
-  passwordResetToken String? @map("password_reset_token")
-
-  sheets                    SheetMemberships[]
-  transactionEntries        TransactionEntry[]
-  notificationSubscriptions NotificationSubscription[]
-  categories                Category[]
-
-  theme String?
-
-  @@map("users")
 }
 
 model NotificationSubscription {

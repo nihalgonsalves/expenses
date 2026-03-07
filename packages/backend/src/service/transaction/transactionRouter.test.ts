@@ -18,15 +18,16 @@ import {
 import { TransactionType } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
-const { prisma, useProtectedCaller } = await getTRPCCaller();
+const { prisma, betterAuth, useProtectedCaller } = await getTRPCCaller();
 
 describe("createPersonalSheetTransaction", () => {
   it.each([
     ["EXPENSE", -100_00],
     ["INCOME", 100_00],
   ] as const)("creates an %s transaction", async (type, amount) => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -59,8 +60,9 @@ describe("createPersonalSheetTransaction", () => {
   });
 
   it("returns 400 if the transaction currency doesn't match", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -79,8 +81,8 @@ describe("createPersonalSheetTransaction", () => {
   });
 
   it("returns 404 if the personalSheet does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(
       caller.transaction.createPersonalSheetTransaction(
@@ -94,8 +96,8 @@ describe("createPersonalSheetTransaction", () => {
   });
 
   it("returns 404 if the user is not the personalSheet owner", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma);
 
@@ -116,8 +118,9 @@ describe("updatePersonalSheetTransaction", () => {
     ["EXPENSE", -50_00],
     ["INCOME", 50_00],
   ] as const)("updates an %s transaction", async (type, amount) => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -166,8 +169,9 @@ describe("updatePersonalSheetTransaction", () => {
   });
 
   it("returns 400 if the transaction currency doesn't match", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -197,8 +201,9 @@ describe("updatePersonalSheetTransaction", () => {
   });
 
   it("returns 404 if the transaction does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -218,8 +223,8 @@ describe("updatePersonalSheetTransaction", () => {
   });
 
   it("returns 404 if the personalSheet does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(
       caller.transaction.updatePersonalSheetTransaction({
@@ -234,8 +239,8 @@ describe("updatePersonalSheetTransaction", () => {
   });
 
   it("returns 404 if the user is not the personalSheet owner", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma);
 
@@ -259,8 +264,9 @@ describe("createPersonalSheetTransactionSchedule", () => {
   ] as const)(
     "creates an %s transaction schedule",
     async (type, expectedAmount) => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const user = userAndCookie.user;
+      const caller = useProtectedCaller(userAndCookie);
 
       const personalSheet = await personalSheetFactory(prisma, {
         withOwnerId: user.id,
@@ -299,8 +305,9 @@ describe("createPersonalSheetTransactionSchedule", () => {
   );
 
   it("returns 400 if the transaction currency doesn't match", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -319,9 +326,8 @@ describe("createPersonalSheetTransactionSchedule", () => {
   });
 
   it("returns 404 if the personalSheet does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
     await expect(
       caller.transaction.createPersonalSheetTransactionSchedule(
         createPersonalSheetTransactionScheduleInput(
@@ -334,9 +340,8 @@ describe("createPersonalSheetTransactionSchedule", () => {
   });
 
   it("returns 404 if the user is not the personalSheet owner", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
     const personalSheet = await personalSheetFactory(prisma);
 
     await expect(
@@ -353,9 +358,9 @@ describe("createPersonalSheetTransactionSchedule", () => {
 
 describe("batchCreatePersonalSheetTransactions", () => {
   it("creates transactions", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
     });
@@ -385,9 +390,9 @@ describe("batchCreatePersonalSheetTransactions", () => {
   });
 
   it("returns 400 if the transactions currency doesn't match", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: "EUR",
@@ -408,9 +413,9 @@ describe("batchCreatePersonalSheetTransactions", () => {
   });
 
   it("returns 400 if the amount isn't absolute", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
     });
@@ -437,12 +442,14 @@ describe("batchCreatePersonalSheetTransactions", () => {
 
 describe("createGroupSheetTransaction", () => {
   it("creates an expense transaction", async () => {
-    const [user, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [userAndCookie, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const user = userAndCookie.user;
+    const member = memberWithToken.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -481,12 +488,14 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("creates an income transaction", async () => {
-    const [user, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [userAndCookie, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const user = userAndCookie.user;
+    const member = memberWithToken.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -528,9 +537,9 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("returns 400 if the amount is not absolute", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: "EUR",
@@ -553,9 +562,9 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("returns 400 if the transaction currency doesn't match", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: "EUR",
@@ -575,9 +584,9 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("returns 400 if the split currencies do doesn't match", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: "EUR",
@@ -599,9 +608,9 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("returns 400 if shares don't add up to the total amount", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
@@ -624,9 +633,10 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("returns 400 if split participants are not part of the groupSheet", async () => {
-    const user = await userFactory(prisma);
-    const otherUser = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const { user: otherUser } = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -646,9 +656,9 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("returns 404 if the groupSheet does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     await expect(
       caller.transaction.createGroupSheetTransaction(
         createGroupSheetTransactionInput(
@@ -663,9 +673,9 @@ describe("createGroupSheetTransaction", () => {
   });
 
   it("returns 404 if the user is not a member of the groupSheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
@@ -684,12 +694,14 @@ describe("createGroupSheetTransaction", () => {
 
 describe("createGroupSheetSettlement", () => {
   it("creates an settlement", async () => {
-    const [user, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [userAndCookie, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const user = userAndCookie.user;
+    const member = memberWithToken.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -727,9 +739,9 @@ describe("createGroupSheetSettlement", () => {
   });
 
   it("returns 400 if the transaction currency doesn't match", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
-
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       currencyCode: "EUR",
@@ -746,8 +758,10 @@ describe("createGroupSheetSettlement", () => {
   });
 
   it("returns 400 if the amount is negative", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -768,12 +782,14 @@ describe("createGroupSheetSettlement", () => {
   });
 
   it("returns 400 if participants are not part of the groupSheet", async () => {
-    const [user, otherUser] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [userAndCookie, otheruserAndCookie] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const user = userAndCookie.user;
+    const otherUser = otheruserAndCookie.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -794,12 +810,14 @@ describe("createGroupSheetSettlement", () => {
   });
 
   it("returns 404 if the groupSheet does not exist", async () => {
-    const [user, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [userAndCookie, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const user = userAndCookie.user;
+    const member = memberWithToken.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(
       caller.transaction.createGroupSheetSettlement({
@@ -812,8 +830,10 @@ describe("createGroupSheetSettlement", () => {
   });
 
   it("returns 404 if the user is not a member of the groupSheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma);
 
@@ -864,9 +884,9 @@ describe("deleteTransaction", () => {
     ],
   ])("%s", (_sheetType, factory, createTransaction) => {
     it("deletes an transaction", async () => {
-      const user = await userFactory(prisma);
-
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const user = userAndCookie.user;
+      const caller = useProtectedCaller(userAndCookie);
 
       const sheet = await factory(prisma, {
         withOwnerId: user.id,
@@ -885,11 +905,12 @@ describe("deleteTransaction", () => {
     });
 
     it("returns 404 if the user is not a member of the sheet", async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const caller = useProtectedCaller(userAndCookie);
 
-      const otherSheetUser = await userFactory(prisma);
-      const otherSheetCaller = useProtectedCaller(otherSheetUser);
+      const otherSheetuserAndCookie = await userFactory(prisma, betterAuth);
+      const otherSheetUser = otherSheetuserAndCookie.user;
+      const otherSheetCaller = useProtectedCaller(otherSheetuserAndCookie);
 
       const sheet = await factory(prisma, {
         withOwnerId: otherSheetUser.id,
@@ -910,8 +931,9 @@ describe("deleteTransaction", () => {
     });
 
     it("returns 404 if the transaction is from another sheet", async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const user = userAndCookie.user;
+      const caller = useProtectedCaller(userAndCookie);
 
       const sheet = await factory(prisma, {
         withOwnerId: user.id,
@@ -928,8 +950,9 @@ describe("deleteTransaction", () => {
     });
 
     it("returns 404 if the transaction does not exist", async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const user = userAndCookie.user;
+      const caller = useProtectedCaller(userAndCookie);
 
       const sheet = await factory(prisma, {
         withOwnerId: user.id,
@@ -947,9 +970,10 @@ describe("deleteTransaction", () => {
 
 describe("deleteTransactionSchedule", () => {
   it("deletes an transaction schedule", async () => {
-    const user = await userFactory(prisma);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     const sheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -977,11 +1001,13 @@ describe("deleteTransactionSchedule", () => {
   });
 
   it("returns 404 if the user is not a member of the sheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
 
-    const otherSheetUser = await userFactory(prisma);
-    const otherSheetCaller = useProtectedCaller(otherSheetUser);
+    const caller = useProtectedCaller(userAndCookie);
+
+    const otherSheetuserAndCookie = await userFactory(prisma, betterAuth);
+    const otherSheetUser = otherSheetuserAndCookie.user;
+    const otherSheetCaller = useProtectedCaller(otherSheetuserAndCookie);
 
     const sheet = await personalSheetFactory(prisma, {
       withOwnerId: otherSheetUser.id,
@@ -1005,8 +1031,10 @@ describe("deleteTransactionSchedule", () => {
   });
 
   it("returns 404 if the transaction is from another sheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const sheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1030,8 +1058,10 @@ describe("deleteTransactionSchedule", () => {
   });
 
   it("returns 404 if the transaction does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const sheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1048,8 +1078,10 @@ describe("deleteTransactionSchedule", () => {
 
 describe("getTransaction", () => {
   it("returns a transaction", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1074,8 +1106,10 @@ describe("getTransaction", () => {
   });
 
   it("returns 404 if the transaction does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1096,10 +1130,12 @@ describe("getTransaction", () => {
 
 describe("getAllUserTransactions", () => {
   it("returns transactions from all sheets", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
 
-    const member = await userFactory(prisma);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
+
+    const { user: member } = await userFactory(prisma, betterAuth);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1201,8 +1237,9 @@ describe("getAllUserTransactions", () => {
 
 describe("getPersonalSheetTransactions", () => {
   it("returns personal sheet transactions", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1246,8 +1283,9 @@ describe("getPersonalSheetTransactions", () => {
 
 describe("getPersonalSheetTransactionSchedules", () => {
   it("returns personal sheet transaction schedules", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1293,9 +1331,10 @@ describe("getPersonalSheetTransactionSchedules", () => {
 
 describe("getGroupSheetTransactions", () => {
   it("returns all transactions for the groupSheet", async () => {
-    const user = await userFactory(prisma);
-    const member = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const { user: member } = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1332,8 +1371,8 @@ describe("getGroupSheetTransactions", () => {
   });
 
   it("returns 404 if the groupSheet does not exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(
       caller.transaction.getGroupSheetTransactions({
@@ -1343,8 +1382,9 @@ describe("getGroupSheetTransactions", () => {
   });
 
   it("returns 404 if the user is not a member of the groupSheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma);
 
@@ -1358,12 +1398,14 @@ describe("getGroupSheetTransactions", () => {
 
 describe("getParticipantSummaries", () => {
   it("returns balance for each participant", async () => {
-    const [user, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [userAndCookie, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const user = userAndCookie.user;
+    const member = memberWithToken.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -1409,9 +1451,8 @@ describe("getParticipantSummaries", () => {
   });
 
   it("returns 404 if the groupSheet does not exist", async () => {
-    const user = await userFactory(prisma);
-
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(
       caller.transaction.getParticipantSummaries(generateId()),
@@ -1419,9 +1460,8 @@ describe("getParticipantSummaries", () => {
   });
 
   it("returns 404 if the user is not part of the groupSheet", async () => {
-    const user = await userFactory(prisma);
-
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
@@ -1432,8 +1472,10 @@ describe("getParticipantSummaries", () => {
 
 describe("getCategories / setCategoryEmojiShortCode", () => {
   it("returns all transaction categories with user-set emoji", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,

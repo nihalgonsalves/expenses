@@ -8,32 +8,58 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { showRoutes } from "hono/dev";
 import { Redis } from "ioredis";
 
 import { appRouter } from "./appRouter.ts";
 import { config, IS_PROD } from "./config.ts";
-import { makeCreateContext } from "./context.ts";
+import { makeCreateContext, type ContextObj } from "./context.ts";
 import { type PrismaClientType, createPrisma } from "./create-prisma.ts";
 import { makePWARouter } from "./pwaRouter.ts";
 import { startWorkers } from "./startWorkers.ts";
 
+export type HonoVariables = { context: ContextObj };
+
 export const createApp = async (prisma: PrismaClientType, redis: Redis) => {
-  const app = new Hono();
+  const app = new Hono<{ Variables: HonoVariables }>();
   const workers = await startWorkers(prisma, redis);
 
   const createContext = makeCreateContext(prisma, workers);
+
+  app.use("*", async (c, next) => {
+    const context = await createContext({
+      req: c.req.raw,
+      resHeaders: c.res.headers,
+    });
+
+    c.set("context", context);
+    return next();
+  });
 
   app.use(
     "/trpc/*",
     trpcServer({
       router: appRouter,
-      createContext,
+      createContext: (_, c: Context<{ Variables: HonoVariables }>) =>
+        c.get("context"),
     }),
   );
 
-  app.route("/", makePWARouter(createContext));
+  app.route("/", makePWARouter());
+
+  app.on(["POST", "GET"], "/auth/*", async (c) => {
+    const url = new URL(c.req.url);
+    url.pathname = `/api${url.pathname}`;
+
+    return c.get("context").betterAuth.handler(
+      new Request(url, {
+        method: c.req.method,
+        headers: c.req.raw.headers,
+        body: c.req.raw.body,
+      }),
+    );
+  });
 
   if (config.ENABLE_ADMIN) {
     const serverAdapter = new HonoAdapter(serveStatic);

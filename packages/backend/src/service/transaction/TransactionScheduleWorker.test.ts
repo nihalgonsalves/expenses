@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { makeWaitForQueueSuccess } from "../../../test/bullMQUtils.ts";
 import { personalSheetFactory, userFactory } from "../../../test/factories.ts";
+import { FakeEmailWorker } from "../../../test/FakeEmailWorker.ts";
 import { getPrisma } from "../../../test/getPrisma.ts";
 import { getRedis } from "../../../test/getRedis.ts";
+import { createAuth } from "../../utils/auth.ts";
 import { createPersonalSheetTransactionScheduleInput } from "../../../test/input.ts";
 import { closeWorker } from "../../startWorkers.ts";
 
@@ -11,6 +13,7 @@ import { TransactionScheduleWorker } from "./TransactionScheduleWorker.ts";
 import { mapInputToCreatePersonalTransactionSchedule } from "./prismaMappers.ts";
 
 const prisma = await getPrisma();
+const betterAuth = createAuth(prisma, new FakeEmailWorker());
 const redis = await getRedis();
 
 const getWorker = async () => {
@@ -34,7 +37,7 @@ describe("TransactionScheduleWorker", () => {
       redis,
     );
 
-    const user = await userFactory(prisma);
+    const { user } = await userFactory(prisma, betterAuth);
     const sheet = await personalSheetFactory(prisma, { withOwnerId: user.id });
 
     const { id } = await prisma.transactionSchedule.create({

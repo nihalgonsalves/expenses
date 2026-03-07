@@ -12,6 +12,8 @@ await writeFile(
     DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres",
     VAPID_PRIVATE_KEY: privateKey,
     VAPID_PUBLIC_KEY: publicKey,
+    BETTER_AUTH_SECRET: "",
+    BETTER_AUTH_URL: "",
   })
     .map(([key, value]) => `${key}=${value}`)
     .join("\n"),

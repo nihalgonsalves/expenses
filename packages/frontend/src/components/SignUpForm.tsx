@@ -1,11 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import type { z } from "zod";
 
 import { ZCreateUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { useTRPC } from "../api/trpc";
 import { useInvalidateRouter } from "../api/useInvalidateRouter";
 
 import { SingleScreenCard } from "./SignInForm";
@@ -20,13 +18,10 @@ import {
   FormMessage,
 } from "./ui/form";
 import { Input } from "./ui/input";
+import { authClient } from "#/utils/auth";
+import { toast } from "sonner";
 
 export const SignUpForm = () => {
-  const { trpc } = useTRPC();
-  const { mutateAsync: createUser, isPending } = useMutation(
-    trpc.user.createUser.mutationOptions(),
-  );
-
   const form = useForm({
     resolver: zodResolver(ZCreateUserInput),
     mode: "onTouched",
@@ -36,17 +31,29 @@ export const SignUpForm = () => {
       password: "",
     },
   });
+  const formState = useFormState({ control: form.control });
 
   const invalidateRouter = useInvalidateRouter();
 
   const onSubmit = async (values: z.infer<typeof ZCreateUserInput>) => {
-    await createUser({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-    });
-
-    await invalidateRouter();
+    await authClient.signUp.email(
+      {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: async () => {
+          await invalidateRouter();
+          await authClient.sendVerificationEmail({
+            email: values.email,
+          });
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      },
+    );
   };
 
   return (
@@ -100,7 +107,11 @@ export const SignUpForm = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit" isLoading={isPending}>
+            <Button
+              className="w-full"
+              type="submit"
+              isLoading={formState.isSubmitting}
+            >
               Sign Up
             </Button>
           </form>

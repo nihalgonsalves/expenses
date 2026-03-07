@@ -7,24 +7,19 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
 import { config } from "./config.ts";
-import type { makeCreateContext } from "./context.ts";
+import type { HonoVariables } from "./app.ts";
 
 /**
  * Server-side router that serves a themed manifest for the PWA
  */
 
-export const makePWARouter = (
-  createContext: ReturnType<typeof makeCreateContext>,
-) => {
-  const app = new Hono();
+export const makePWARouter = () => {
+  const app = new Hono<{ Variables: HonoVariables }>();
 
   app.get("/manifest.webmanifest", async (c) => {
-    const context = await createContext({
-      req: c.req.raw,
-      resHeaders: c.res.headers,
-    });
-
-    const theme = ZTheme.catch(THEME_DEFAULT).parse(context.user?.theme);
+    const theme = ZTheme.catch(THEME_DEFAULT).parse(
+      c.get("context").user?.theme,
+    );
     const { primary } = themeColors[theme];
 
     return c.json(

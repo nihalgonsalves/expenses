@@ -1,12 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
 
 import { ZAuthorizeUserInput } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { useTRPC } from "../api/trpc";
 import { useInvalidateRouter } from "../api/useInvalidateRouter";
 
 import { Button } from "./ui/button";
@@ -27,6 +25,8 @@ import {
 } from "./ui/form";
 import { Input } from "./ui/input";
 import { twx } from "./ui/utils";
+import { authClient } from "#/utils/auth";
+import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
 
 // collapse into underlying layer on narrow screens
 export const SingleScreenCard = twx(
@@ -34,16 +34,6 @@ export const SingleScreenCard = twx(
 )`w-full border-0 rounded-none bg-inherit sm:bg-card sm:border sm:rounded-md`;
 
 export const SignInForm = () => {
-  const { trpc } = useTRPC();
-
-  const { mutateAsync: authorizeUser, isPending } = useMutation(
-    trpc.user.authorizeUser.mutationOptions(),
-  );
-
-  const { mutateAsync: requestPasswordReset } = useMutation(
-    trpc.user.requestPasswordReset.mutationOptions(),
-  );
-
   const form = useForm({
     resolver: zodResolver(ZAuthorizeUserInput),
     mode: "onTouched",
@@ -52,6 +42,7 @@ export const SignInForm = () => {
       password: "",
     },
   });
+  const formState = useFormState({ control: form.control });
 
   const onForgotPassword = async () => {
     await form.trigger("email");
@@ -60,22 +51,41 @@ export const SignInForm = () => {
       return;
     }
 
-    await requestPasswordReset(form.getValues("email"));
-
-    toast.success(
-      "If the email matches a valid account, you will receive a link to reset your password.",
+    await authClient.requestPasswordReset(
+      {
+        email: form.getValues("email"),
+        redirectTo: RESET_PASSWORD_ROUTE,
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            "If the email matches a valid account, you will receive a link to reset your password.",
+          );
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      },
     );
   };
 
   const invalidateRouter = useInvalidateRouter();
 
   const onSubmit = async (values: z.infer<typeof ZAuthorizeUserInput>) => {
-    await authorizeUser({
-      email: values.email,
-      password: values.password,
-    });
-
-    await invalidateRouter();
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: async () => {
+          await invalidateRouter();
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      },
+    );
   };
 
   return (
@@ -116,7 +126,11 @@ export const SignInForm = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit" isLoading={isPending}>
+            <Button
+              className="w-full"
+              type="submit"
+              isLoading={formState.isSubmitting}
+            >
               Sign In
             </Button>
           </form>
