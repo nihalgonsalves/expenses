@@ -76,7 +76,7 @@ services:
     env_file:
       - .env.postgres
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql
   redis:
     restart: unless-stopped
     image: redis:7-alpine

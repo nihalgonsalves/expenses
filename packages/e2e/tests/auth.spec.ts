@@ -3,6 +3,7 @@ import type { Page } from "@playwright/test";
 import { MAILPIT_URL } from "../utils/env";
 import { ZEmail, getUserData } from "../utils/misc";
 import { test, expect } from "../utils/test";
+import { randomUUID } from "crypto";
 
 test("signs up successfully", async ({ page }) => {
   const { name, email, password } = getUserData();
@@ -50,9 +51,7 @@ test("resets password successfully", async ({ page, request, createUser }) => {
 
   await page.getByRole("button", { name: /forgot password/i }).click();
 
-  await expect(
-    page.getByRole("status").filter({ hasText: "you will receive" }),
-  ).toBeVisible();
+  await expect(page.getByText("you will receive")).toBeVisible();
 
   const mailpitResponse = await request.get(
     new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
@@ -80,9 +79,7 @@ test("verifies email successfully", async ({ page, request, signIn }) => {
   await page.goto("/settings");
   await page.getByRole("button", { name: "Not verified. Resend" }).click();
 
-  await expect(
-    page.getByRole("status").filter({ hasText: "check your email" }),
-  ).toBeVisible();
+  await expect(page.getByText("check your email")).toBeVisible();
 
   const mailpitResponse = await request.get(
     new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
@@ -93,7 +90,56 @@ test("verifies email successfully", async ({ page, request, signIn }) => {
   // HACK: depends on the message format
   await page.goto(message.Text.split("\n")[1]!);
 
-  await page.getByRole("button", { name: /confirm/i }).click();
+  await page.getByRole("link", { name: /settings/i }).click();
 
   await expect(page.getByText("Verified")).toBeVisible();
+});
+
+test("signs up via invite flow successfully", async ({
+  page,
+  request,
+  signIn,
+  serverTRPCClient,
+  browser,
+}) => {
+  // TODO: Enable on CI
+  test.skip(process.env["CI"] != null);
+
+  await signIn();
+  const { id } = await serverTRPCClient.sheet.createGroupSheet.mutate({
+    name: "Test Sheet",
+    currencyCode: "EUR",
+  });
+
+  await page.goto(`/groups/${id}`);
+
+  const invitedUserEmail = `${randomUUID()}@example.com`;
+
+  await page.getByRole("button", { name: /add participant/i }).click();
+  await page
+    .getByRole("textbox", { name: /email address/i })
+    .fill(invitedUserEmail);
+  await page.getByRole("button", { name: /add/i }).click();
+  await page.context().close();
+
+  const mailpitResponse = await request.get(
+    new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
+  );
+
+  const message = ZEmail.parse(await mailpitResponse.json());
+
+  const otherPage = await (await browser.newContext()).newPage();
+  // HACK: depends on the message format
+  await otherPage.goto(message.Text.split("\n")[1]!);
+
+  await otherPage.getByLabel(/password/i).fill("new-password");
+  await otherPage.getByRole("button", { name: /reset password/i }).click();
+
+  await signInForm(otherPage, invitedUserEmail, "new-password");
+
+  await otherPage.getByRole("link", { name: /sheets/i }).click();
+  await otherPage.getByRole("link", { name: "Test Sheet" }).click();
+  await expect(otherPage.getByText("Test Sheet")).toBeVisible();
+
+  await otherPage.context().close();
 });

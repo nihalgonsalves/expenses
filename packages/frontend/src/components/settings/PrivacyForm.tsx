@@ -22,14 +22,16 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 
+const ZPrivacyFormInput = ZAuthorizeUserInput.omit({ email: true });
+
 export const PrivacyForm = () => {
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
   const [isReconfirming, setIsReconfirming] = useState(false);
 
-  const form = useForm<z.infer<typeof ZAuthorizeUserInput>>({
-    resolver: zodResolver(ZAuthorizeUserInput),
+  const form = useForm<z.infer<typeof ZPrivacyFormInput>>({
+    resolver: zodResolver(ZPrivacyFormInput),
     mode: "onTouched",
   });
 
@@ -39,13 +41,13 @@ export const PrivacyForm = () => {
     trpc.user.anonymizeUser.mutationOptions(),
   );
 
-  const onSubmit = async (values: z.infer<typeof ZAuthorizeUserInput>) => {
+  const onSubmit = async (values: z.infer<typeof ZPrivacyFormInput>) => {
     if (!isReconfirming) {
       setIsReconfirming(true);
       return;
     }
 
-    await anonymizeUser({ email: values.email, password: values.password });
+    await anonymizeUser({ password: values.password });
 
     await invalidateRouter();
     await navigate({ to: "/" });
@@ -61,8 +63,8 @@ export const PrivacyForm = () => {
       <CardContent className="flex flex-col gap-5">
         <div className="flex flex-col gap-2 text-sm">
           <p>
-            Enter your current email and password to delete all personal sheets
-            and transactions, as well as anonymize your name and email address.
+            Enter your current password to delete all personal sheets and
+            transactions, as well as anonymize your name and email address.
           </p>
           <p>
             If you would like to delete or leave any groups, please do this{" "}
@@ -77,20 +79,6 @@ export const PrivacyForm = () => {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email address</FormLabel>
-                  <FormControl>
-                    <Input type="email" autoComplete="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="password"

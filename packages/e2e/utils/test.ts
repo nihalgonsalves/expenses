@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
-
-import { test as base } from "@playwright/test";
+import { createAuthClient } from "better-auth/client";
+import { test as base, type APIRequestContext } from "@playwright/test";
 export { expect } from "@playwright/test";
 import { type TRPCClient, createTRPCClient, httpBatchLink } from "@trpc/client";
 
@@ -13,14 +13,57 @@ import { getUserData } from "./misc";
 type Fixtures = {
   setup: () => void;
   serverTRPCClient: TRPCClient<AppRouter>;
-  createUser: () => Promise<User & { password: string }>;
-  signIn: () => Promise<User & { password: string }>;
+  createUser: () => Promise<Omit<User, "theme"> & { password: string }>;
+  signIn: () => Promise<Omit<User, "theme"> & { password: string }>;
 };
 
 declare global {
   var collectIstanbulCoverage: (coverageJSON: string) => void;
   var __coverage__: unknown;
 }
+
+const createCompatibleFetch =
+  (request: APIRequestContext): typeof fetch =>
+  async (...args) => {
+    let urlString: string;
+    let fetchInit: RequestInit | undefined;
+
+    if (args[0] instanceof Request) {
+      urlString = args[0].url;
+      fetchInit = args[1] ?? args[0];
+    } else if (typeof args[0] === "string" || args[0] instanceof URL) {
+      urlString = args[0].toString();
+      fetchInit = args[1];
+    } else {
+      throw new Error("Can only handle string, URL, or Request args.");
+    }
+
+    const { body, headers, method = "GET" } = fetchInit ?? {};
+
+    const response = await request.fetch(urlString, {
+      data: body,
+      method,
+      headers:
+        headers instanceof Headers
+          ? Object.fromEntries(headers.entries())
+          : Array.isArray(headers)
+            ? Object.fromEntries(headers)
+            : (headers ?? {}),
+    });
+
+    const responseBody = await response.body();
+    return new Response(
+      new Blob([
+        // @ts-expect-error minor type differences
+        responseBody,
+      ]),
+      {
+        status: response.status(),
+        statusText: response.statusText(),
+        headers: response.headers(),
+      },
+    );
+  };
 
 export const test = base.extend<Fixtures>({
   context: async ({ context }, use) => {
@@ -78,23 +121,8 @@ export const test = base.extend<Fixtures>({
       links: [
         httpBatchLink({
           url: new URL("/api/trpc", baseURL),
-          // @ts-expect-error we're not handling theunion member body: ... | () => Promise<Buffer>
-          fetch: async (input, { headers, body, ...init } = {}) => {
-            if (typeof input === "string") {
-              const response = await request.fetch(input, {
-                ...init,
-                data: body,
-                headers: Array.isArray(headers)
-                  ? Object.fromEntries(headers)
-                  : // oxlint-disable-next-line typescript/no-unsafe-type-assertion
-                    (headers as Record<string, string>),
-              });
-
-              return response;
-            }
-
-            throw new Error("Can't handle non-string input");
-          },
+          // @ts-expect-error minor type differences
+          fetch: createCompatibleFetch(request),
         }),
       ],
     });
@@ -102,29 +130,44 @@ export const test = base.extend<Fixtures>({
     await use(client);
   },
 
-  createUser: async ({ serverTRPCClient }, use) => {
+  createUser: async ({ request, baseURL }, use) => {
     await use(async () => {
       const { name, email, password } = getUserData();
 
-      const { id, emailVerified, theme } =
-        await serverTRPCClient.user.createUser.mutate({
+      const authClient = createAuthClient({
+        baseURL: new URL("/api/auth", baseURL).toString(),
+      });
+
+      const { data, error } = await authClient.signUp.email(
+        {
           name,
           email,
           password,
-        });
+        },
+        {
+          customFetchImpl: createCompatibleFetch(request),
+        },
+      );
 
-      return { id, name, email, emailVerified, password, theme };
+      if (error) {
+        throw new Error(`Failed to create user: ${error.message}`, {
+          cause: error,
+        });
+      }
+
+      const { id, emailVerified } = data.user;
+
+      return { id, name, email, emailVerified, password };
     });
   },
 
   signIn: async ({ context, request, createUser }, use) => {
     await use(async () => {
-      const { id, name, email, emailVerified, password, theme } =
-        await createUser();
+      const { id, name, email, emailVerified, password } = await createUser();
 
       await context.addCookies((await request.storageState()).cookies);
 
-      return { id, name, email, emailVerified, password, theme };
+      return { id, name, email, emailVerified, password };
     });
   },
 });

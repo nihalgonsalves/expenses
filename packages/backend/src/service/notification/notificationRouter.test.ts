@@ -3,12 +3,12 @@ import { describe, expect, it } from "vitest";
 import { userFactory } from "../../../test/factories.ts";
 import { getTRPCCaller } from "../../../test/getTRPCCaller.ts";
 
-const { prisma, useProtectedCaller } = await getTRPCCaller();
+const { prisma, betterAuth, useProtectedCaller } = await getTRPCCaller();
 
 describe("getPublicKey", () => {
   it("returns the server public key", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(caller.notification.getPublicKey()).resolves.toBe(
       "<public-key>",
@@ -34,8 +34,8 @@ const expected = {
 
 describe("getSubscriptions", () => {
   it("returns all user subscriptions", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await caller.notification.upsertSubscription(args);
     await expect(caller.notification.getSubscriptions()).resolves.toStrictEqual(
@@ -46,8 +46,8 @@ describe("getSubscriptions", () => {
 
 describe("upsertSubscription", () => {
   it("creates a subscription", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(
       caller.notification.upsertSubscription(args),
@@ -55,8 +55,8 @@ describe("upsertSubscription", () => {
   });
 
   it("updates an existing subscription", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const firstResult = await caller.notification.upsertSubscription(args);
     expect(firstResult).toStrictEqual(expected);
@@ -70,8 +70,8 @@ describe("upsertSubscription", () => {
 
 describe("deleteSubscription", () => {
   it("deletes a subscription", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const { id } = await caller.notification.upsertSubscription(args);
 

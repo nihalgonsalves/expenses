@@ -5,7 +5,7 @@ import type { TestProject } from "vitest/node";
 
 export default async function setup(project: TestProject) {
   const [postgresContainer, redisContainer] = await Promise.all([
-    new PostgreSqlContainer("postgres:17-alpine")
+    new PostgreSqlContainer("postgres:18-alpine")
       .withName(`vitest-expenses-backend-postgres`)
       .withReuse()
       .start(),

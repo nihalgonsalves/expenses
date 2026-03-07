@@ -1,12 +1,5 @@
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
-import cookie from "cookie";
 import { UAParser } from "ua-parser-js";
-
-import {
-  type JWTToken,
-  ZJWTToken,
-} from "@nihalgonsalves/expenses-shared/types/user";
-
 import { config } from "./config.ts";
 import type { PrismaClientType } from "./create-prisma.ts";
 import { FrankfurterService } from "./service/frankfurter/FrankfurterService.ts";
@@ -14,49 +7,17 @@ import { NotificationService } from "./service/notification/NotificationService.
 import { SheetService } from "./service/sheet/SheetService.ts";
 import { TransactionService } from "./service/transaction/TransactionService.ts";
 import { UserService } from "./service/user/UserService.ts";
-import { UserServiceError } from "./service/user/utils.ts";
 import type { Workers } from "./startWorkers.ts";
-
-export const AUTH_COOKIE_NAME = "auth";
-
-export const getMaybeUser = async (
-  cookieHeader: string | null,
-  setJwtToken: (value: JWTToken | null) => Promise<void>,
-  userServiceImpl: Pick<UserService, "exchangeToken">,
-) => {
-  if (!cookieHeader) {
-    return undefined;
-  }
-
-  const token = cookie.parse(cookieHeader)[AUTH_COOKIE_NAME];
-
-  if (!token) {
-    return undefined;
-  }
-
-  try {
-    const { user, newToken } = await userServiceImpl.exchangeToken(
-      ZJWTToken.parse(token),
-    );
-
-    if (newToken) {
-      await setJwtToken(newToken);
-    }
-
-    return user;
-  } catch (e) {
-    if (e instanceof UserServiceError && e.code === "FORBIDDEN") {
-      await setJwtToken(null);
-    }
-    throw e;
-  }
-};
+import { createAuth } from "./utils/auth.ts";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 export const makeCreateContext = (
   prisma: PrismaClientType,
   workers: Workers,
 ) => {
-  const userService = new UserService(prisma, workers.emailWorker);
+  const betterAuth = createAuth(prisma, workers.emailWorker);
+
+  const userService = new UserService(prisma, betterAuth);
 
   const notificationSubscriptionService = new NotificationService(prisma);
 
@@ -78,30 +39,29 @@ export const makeCreateContext = (
     req,
     resHeaders,
   }: Pick<FetchCreateContextFnOptions, "req" | "resHeaders">) => {
-    const setJwtToken = async (value: JWTToken | null) => {
-      if (!value) {
-        resHeaders.set("clear-site-data", '"*"');
+    const appendHeaders = (headers: Headers) => {
+      for (const [key, value] of headers.entries()) {
+        resHeaders.append(key, value);
       }
-
-      resHeaders.append(
-        "Set-Cookie",
-        cookie.serialize(AUTH_COOKIE_NAME, value ?? "", {
-          path: "/",
-          httpOnly: true,
-          secure: config.SECURE,
-          sameSite: "strict",
-          maxAge: value ? config.JWT_EXPIRY_SECONDS : -1,
-        }),
-      );
     };
 
+    const clearSiteData = () => {
+      resHeaders.set("clear-site-data", '"*"');
+    };
+
+    const session = await betterAuth.api.getSession({
+      headers: req.headers,
+    });
+
+    // TODO: not return full user; use ID and not email
+    const user: User | null = session
+      ? await userService.findByEmail(session.user.email)
+      : null;
+
     return {
+      betterAuth,
       prisma,
-      user: await getMaybeUser(
-        req.headers.get("cookie"),
-        setJwtToken,
-        userService,
-      ),
+      user,
       get userAgent() {
         return new UAParser(
           req.headers.get("user-agent") ?? undefined,
@@ -112,7 +72,9 @@ export const makeCreateContext = (
       transactionService,
       frankfurterService,
       notificationSubscriptionService,
-      setJwtToken,
+      headers: req.headers,
+      appendHeaders,
+      clearSiteData,
     };
   };
 };

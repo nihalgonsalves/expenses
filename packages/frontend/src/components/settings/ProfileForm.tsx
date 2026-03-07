@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { CheckCircle2Icon } from "lucide-react";
 import { useForm, useFormState } from "react-hook-form";
 import { toast } from "sonner";
@@ -12,7 +11,6 @@ import {
 
 import { useInvalidateRouter } from "#/api/useInvalidateRouter";
 
-import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -26,17 +24,11 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { authClient } from "#/utils/auth";
 
 export const ProfileForm = ({ me }: { me: User }) => {
   const onLine = useNavigatorOnLine();
-  const { trpc } = useTRPC();
   const invalidateRouter = useInvalidateRouter();
-  const { mutateAsync: updateUser, isPending } = useMutation(
-    trpc.user.updateUser.mutationOptions(),
-  );
-  const { mutateAsync: requestEmailVerification } = useMutation(
-    trpc.user.requestEmailVerification.mutationOptions(),
-  );
 
   const form = useForm({
     resolver: zodResolver(ZUpdateUserInput),
@@ -53,27 +45,78 @@ export const ProfileForm = ({ me }: { me: User }) => {
   const disabled = !onLine || !formState.isDirty;
 
   const onSubmit = async (values: z.infer<typeof ZUpdateUserInput>) => {
-    const { name: newName, email: newEmail } = await updateUser({
-      name: values.name,
-      email: values.email,
-      password: values.password ? values.password : undefined,
-      newPassword: values.newPassword ? values.newPassword : undefined,
-    });
+    try {
+      if (me.email !== values.email) {
+        await authClient.changeEmail(
+          {
+            newEmail: values.email,
+          },
+          {
+            throw: true,
+            onError: (ctx) => {
+              toast.error(ctx.error.message);
+            },
+          },
+        );
 
-    toast.success("Saved!");
+        toast.success("Please check your new email for a verification link.");
+      }
 
-    await invalidateRouter();
+      if (me.name !== values.name) {
+        await authClient.updateUser(
+          {
+            name: values.name,
+          },
+          {
+            throw: true,
+            onError: (ctx) => {
+              toast.error(ctx.error.message);
+            },
+          },
+        );
+      }
 
-    form.reset({
-      name: newName,
-      email: newEmail,
-    });
+      if (values.password && values.newPassword) {
+        await authClient.changePassword(
+          {
+            currentPassword: values.password,
+            newPassword: values.newPassword,
+          },
+          {
+            throw: true,
+            onError: (ctx) => {
+              toast.error(ctx.error.message);
+            },
+          },
+        );
+      }
+
+      await invalidateRouter();
+      form.reset({
+        name: values.name,
+        email: values.email,
+        password: "",
+        newPassword: "",
+      });
+    } catch {
+      // errors reported above onError
+    }
   };
 
   const onVerifyEmail = async () => {
-    await requestEmailVerification();
-
-    toast.success("Please check your email for a verification link.");
+    await authClient.sendVerificationEmail(
+      {
+        email: me.email,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Please check your email for a verification link.");
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      },
+    );
   };
 
   return (
@@ -111,7 +154,8 @@ export const ProfileForm = ({ me }: { me: User }) => {
                   <FormDescription className="flex items-center gap-1.5">
                     {me.emailVerified ? (
                       <>
-                        <CheckCircle2Icon /> Verified
+                        <CheckCircle2Icon className="text-md size-[1em]" />{" "}
+                        Verified
                       </>
                     ) : (
                       <Button
@@ -165,7 +209,7 @@ export const ProfileForm = ({ me }: { me: User }) => {
 
             <Button
               type="submit"
-              isLoading={isPending}
+              isLoading={formState.isSubmitting}
               disabled={disabled}
               className="w-full"
             >

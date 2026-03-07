@@ -8,6 +8,7 @@ if (existsSync(new URL("./.env", import.meta.url))) {
 }
 
 export default defineConfig({
+  schema: "prisma/",
   datasource: process.env["DATABASE_URL"]
     ? {
         url: process.env["DATABASE_URL"],

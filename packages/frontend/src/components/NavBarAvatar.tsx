@@ -1,9 +1,7 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
-import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { UserIcon } from "lucide-react";
 
-import { useTRPC } from "../api/trpc";
 import { useCurrentUser } from "../api/useCurrentUser";
 import { useInvalidateRouter } from "../api/useInvalidateRouter";
 
@@ -16,6 +14,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Separator } from "./ui/separator";
 import { cn } from "./ui/utils";
+import { authClient } from "#/utils/auth";
 
 export const LoggedOutNavBarAvatar = ({
   className,
@@ -69,21 +68,23 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { trpc } = useTRPC();
   const invalidateRouter = useInvalidateRouter();
 
   const me = useCurrentUser();
-  const signOut = useMutation(trpc.user.signOut.mutationOptions());
 
   const handleSignOut = async () => {
-    await signOut.mutateAsync();
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: async () => {
+          await navigate({
+            to: "/auth/sign-in",
+            params: { redirect: location.pathname },
+          });
 
-    await navigate({
-      to: "/auth/sign-in",
-      params: { redirect: location.pathname },
+          await invalidateRouter();
+        },
+      },
     });
-
-    await invalidateRouter();
   };
 
   if (me != null) {

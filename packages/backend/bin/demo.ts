@@ -2,6 +2,7 @@ import "temporal-polyfill/global";
 import { faker } from "@faker-js/faker";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import fetchCookie from "fetch-cookie";
+import { createAuthClient } from "better-auth/react";
 
 import type { AppRouter } from "../src/appRouter.ts";
 
@@ -10,33 +11,56 @@ const DEMO_B_EMAIL = "other-user@example.com";
 
 const DEMO_PASSWORD = "password1234";
 
-const getClient = () =>
+const authClient = createAuthClient({
+  baseURL: "http://localhost:5174/auth",
+  fetchOptions: {
+    headers: {
+      Origin: "http://localhost:5173",
+    },
+  },
+});
+
+const fetchA = fetchCookie(fetch);
+const fetchB = fetchCookie(fetch);
+
+const getClient = (fetchFn: typeof fetch) =>
   createTRPCClient<AppRouter>({
     links: [
       httpBatchLink({
         url: "http://localhost:5174/trpc",
         // @ts-expect-error slightly divering fetch types
-        fetch: fetchCookie(fetch),
+        fetch: fetchFn,
       }),
     ],
   });
 
-const clientA = getClient();
-const clientB = getClient();
-
+const clientA = getClient(fetchA);
 await clientA.health.query();
 
-const [{ id: idA }, { id: idB }] = await Promise.all([
-  clientA.user.createUser.mutate({
-    name: `${faker.person.firstName()} ${faker.person.lastName()}`,
-    email: DEMO_A_EMAIL,
-    password: DEMO_PASSWORD,
-  }),
-  clientB.user.createUser.mutate({
-    name: `${faker.person.firstName()} ${faker.person.lastName()}`,
-    email: DEMO_B_EMAIL,
-    password: DEMO_PASSWORD,
-  }),
+const [
+  {
+    user: { id: idA },
+  },
+  {
+    user: { id: idB },
+  },
+] = await Promise.all([
+  authClient.signUp.email(
+    {
+      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
+      email: DEMO_A_EMAIL,
+      password: DEMO_PASSWORD,
+    },
+    { throw: true, customFetchImpl: fetchA },
+  ),
+  authClient.signUp.email(
+    {
+      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
+      email: DEMO_B_EMAIL,
+      password: DEMO_PASSWORD,
+    },
+    { throw: true, customFetchImpl: fetchB },
+  ),
 ]);
 
 const { id: personalSheetId } = await clientA.sheet.createPersonalSheet.mutate({

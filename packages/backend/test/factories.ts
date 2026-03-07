@@ -4,14 +4,11 @@ import { CURRENCY_CODES } from "@nihalgonsalves/expenses-shared/money";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import type { PrismaClientType } from "../src/create-prisma.ts";
-import {
-  type Prisma,
-  SheetParticipantRole,
-  SheetType,
-} from "../src/prisma/client.ts";
+import { SheetParticipantRole, SheetType } from "../src/prisma/client.ts";
 import { generateId } from "../src/utils/nanoid.ts";
 
 import { getUserKeys } from "./webPushUtils.ts";
+import type { BetterAuthInstance } from "../src/utils/auth.ts";
 
 const randomItem = <T>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]!;
@@ -20,17 +17,33 @@ export const currencyCodeFactory = () => randomItem(CURRENCY_CODES);
 
 export const userFactory = async (
   prisma: PrismaClientType,
-  overrides: Partial<Prisma.UserCreateInput> = {},
-) =>
-  prisma.user.create({
-    data: {
-      id: generateId(),
+  betterAuth: BetterAuthInstance,
+  overrides: Partial<{ name: string; email: string; password: string }> = {},
+) => {
+  const {
+    response: { user: betterAuthUser },
+    headers,
+  } = await betterAuth.api.signUpEmail({
+    body: {
       name: faker.person.fullName(),
       email: faker.internet.email(),
+      password: faker.internet.password(),
       ...overrides,
     },
-    omit: { passwordHash: false, passwordResetToken: false },
+    returnHeaders: true,
   });
+
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id: betterAuthUser.id },
+  });
+
+  const cookieHeader = headers.getSetCookie().at(0)?.split(";").at(0);
+  if (!cookieHeader) {
+    throw new Error("No Set-Cookie header found in signUpEmail response");
+  }
+
+  return { user, cookieHeader };
+};
 
 export const groupSheetFactory = async (
   prisma: PrismaClientType,

@@ -15,7 +15,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - postgresql:/var/lib/postgresql/data
+      - postgresql:/var/lib/postgresql
       - ./infra/postgres-init.local.sql:/docker-entrypoint-initdb.d/init.sql
     expose:
       - 5432

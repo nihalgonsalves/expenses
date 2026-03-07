@@ -11,12 +11,12 @@ import { createGroupSheetTransactionInput } from "../../../test/input.ts";
 import { SheetParticipantRole } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
-const { prisma, useProtectedCaller } = await getTRPCCaller();
+const { prisma, betterAuth, useProtectedCaller } = await getTRPCCaller();
 
 describe("createPersonalSheet", () => {
   it("creates a sheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await caller.sheet.createPersonalSheet({
       name: "Personal Expenses",
@@ -35,8 +35,9 @@ describe("createPersonalSheet", () => {
 
 describe("createGroupSheet", () => {
   it("creates a groupSheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await caller.sheet.createGroupSheet({
       name: "WG Expenses",
@@ -60,8 +61,9 @@ describe("createGroupSheet", () => {
 
 describe("personalSheetById", () => {
   it("returns a sheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -79,8 +81,8 @@ describe("personalSheetById", () => {
   });
 
   it("returns a 404 if it doesn't exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(caller.sheet.personalSheetById(generateId())).rejects.toThrow(
       "Sheet not found",
@@ -88,8 +90,8 @@ describe("personalSheetById", () => {
   });
 
   it("returns a 404 if it is not the user's sheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma);
 
@@ -99,8 +101,8 @@ describe("personalSheetById", () => {
   });
 
   it("returns a 404 for a groupSheet ID", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma);
 
@@ -112,8 +114,9 @@ describe("personalSheetById", () => {
 
 describe("groupSheetById", () => {
   it("returns a groupSheet", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -139,8 +142,8 @@ describe("groupSheetById", () => {
   });
 
   it("returns a 404 if it doesn't exist", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     await expect(caller.sheet.groupSheetById(generateId())).rejects.toThrow(
       "Sheet not found",
@@ -148,8 +151,8 @@ describe("groupSheetById", () => {
   });
 
   it("returns a 404 if the participant has no access", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma);
 
@@ -159,8 +162,8 @@ describe("groupSheetById", () => {
   });
 
   it("returns a 404 for a personal sheet ID", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
 
     const personalSheet = await personalSheetFactory(prisma);
 
@@ -172,9 +175,10 @@ describe("groupSheetById", () => {
 
 describe("mySheets", () => {
   it("returns all personal sheets", async () => {
-    const user = await userFactory(prisma);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
     const personalSheet = await personalSheetFactory(prisma, {
       withOwnerId: user.id,
     });
@@ -191,9 +195,10 @@ describe("mySheets", () => {
   });
 
   it("hides archived sheets when includeArchived is false", async () => {
-    const user = await userFactory(prisma);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
 
     await Promise.all([
       personalSheetFactory(prisma, {
@@ -214,9 +219,10 @@ describe("mySheets", () => {
   });
 
   it("returns all groups where the user is a participant", async () => {
-    const user = await userFactory(prisma);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
     const ownedGroupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
@@ -245,8 +251,9 @@ describe("updateSheet", () => {
     ["groupSheet", groupSheetFactory],
   ])("%s", (sheetType, factory) => {
     it(`updates a ${sheetType}`, async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const user = userAndCookie.user;
+      const caller = useProtectedCaller(userAndCookie);
       const sheet = await factory(prisma, {
         withOwnerId: user.id,
       });
@@ -259,8 +266,8 @@ describe("updateSheet", () => {
     });
 
     it("returns a 404 if the participant has no access", async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const caller = useProtectedCaller(userAndCookie);
       const sheet = await factory(prisma);
 
       await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
@@ -270,8 +277,9 @@ describe("updateSheet", () => {
 
     if (sheetType === "groupSheet") {
       it("returns a 403 if the participant is not an admin", async () => {
-        const user = await userFactory(prisma);
-        const caller = useProtectedCaller(user);
+        const userAndCookie = await userFactory(prisma, betterAuth);
+        const user = userAndCookie.user;
+        const caller = useProtectedCaller(userAndCookie);
         const sheet = await factory(prisma, {
           withParticipantIds: [user.id],
         });
@@ -290,8 +298,9 @@ describe("deleteSheet", () => {
     ["groupSheet", groupSheetFactory],
   ])("%s", (sheetType, factory) => {
     it(`deletes a ${sheetType}`, async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const user = userAndCookie.user;
+      const caller = useProtectedCaller(userAndCookie);
       const sheet = await factory(prisma, {
         withOwnerId: user.id,
       });
@@ -306,8 +315,8 @@ describe("deleteSheet", () => {
     it.todo(`deletes a ${sheetType} with transactions`);
 
     it("returns a 404 if the participant has no access", async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const caller = useProtectedCaller(userAndCookie);
       const sheet = await factory(prisma);
 
       await expect(caller.sheet.deleteSheet(sheet.id)).rejects.toThrow(
@@ -317,8 +326,9 @@ describe("deleteSheet", () => {
 
     if (sheetType === "groupSheet") {
       it("returns a 403 if the participant is not an admin", async () => {
-        const user = await userFactory(prisma);
-        const caller = useProtectedCaller(user);
+        const userAndCookie = await userFactory(prisma, betterAuth);
+        const user = userAndCookie.user;
+        const caller = useProtectedCaller(userAndCookie);
         const sheet = await factory(prisma, {
           withParticipantIds: [user.id],
         });
@@ -337,8 +347,9 @@ describe("archiveSheet", () => {
     ["groupSheet", groupSheetFactory],
   ])("%s", (sheetType, factory) => {
     it(`archives and unarchives a ${sheetType}`, async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const user = userAndCookie.user;
+      const caller = useProtectedCaller(userAndCookie);
       const sheet = await factory(prisma, {
         withOwnerId: user.id,
       });
@@ -355,8 +366,8 @@ describe("archiveSheet", () => {
     it.todo(`archives and unarchives a ${sheetType} with transactions`);
 
     it("returns a 404 if the participant has no access", async () => {
-      const user = await userFactory(prisma);
-      const caller = useProtectedCaller(user);
+      const userAndCookie = await userFactory(prisma, betterAuth);
+      const caller = useProtectedCaller(userAndCookie);
       const sheet = await factory(prisma);
 
       await expect(
@@ -366,8 +377,9 @@ describe("archiveSheet", () => {
 
     if (sheetType === "groupSheet") {
       it("returns a 403 if the participant is not an admin", async () => {
-        const user = await userFactory(prisma);
-        const caller = useProtectedCaller(user);
+        const userAndCookie = await userFactory(prisma, betterAuth);
+        const user = userAndCookie.user;
+        const caller = useProtectedCaller(userAndCookie);
         const sheet = await factory(prisma, {
           withParticipantIds: [user.id],
         });
@@ -382,13 +394,14 @@ describe("archiveSheet", () => {
 
 describe("addGroupSheetMember", () => {
   it("adds a member", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
     });
-    const otherUser = await userFactory(prisma);
+    const { user: otherUser } = await userFactory(prisma, betterAuth);
 
     await expect(
       caller.sheet.addGroupSheetMember({
@@ -404,8 +417,9 @@ describe("addGroupSheetMember", () => {
   });
 
   it("creates a new user if the member is not signed up", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
@@ -427,10 +441,11 @@ describe("addGroupSheetMember", () => {
   });
 
   it("returns a 409 for an existing participant", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
 
-    const otherUser = await userFactory(prisma);
+    const { user: otherUser } = await userFactory(prisma, betterAuth);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [otherUser.id],
@@ -445,8 +460,8 @@ describe("addGroupSheetMember", () => {
   });
 
   it("returns a 404 if the participant has no access", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma);
 
     await expect(
@@ -458,8 +473,9 @@ describe("addGroupSheetMember", () => {
   });
 
   it("returns a 403 if the participant is not an admin", async () => {
-    const user = await userFactory(prisma);
-    const caller = useProtectedCaller(user);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [user.id],
     });
@@ -475,12 +491,14 @@ describe("addGroupSheetMember", () => {
 
 describe("deleteParticipant", () => {
   it("deletes a participant as admin", async () => {
-    const [user, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [userAndCookie, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const user = userAndCookie.user;
+    const member = memberWithToken.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: user.id,
       withParticipantIds: [member.id],
@@ -504,9 +522,10 @@ describe("deleteParticipant", () => {
   });
 
   it("leaves as a participant", async () => {
-    const user = await userFactory(prisma);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [user.id],
     });
@@ -529,9 +548,10 @@ describe("deleteParticipant", () => {
   });
 
   it("leaves as a participant with settled balance", async () => {
-    const user = await userFactory(prisma);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [user.id],
     });
@@ -565,9 +585,10 @@ describe("deleteParticipant", () => {
   });
 
   it("returns a 400 if the admin tries to remove themselves", async () => {
-    const admin = await userFactory(prisma);
+    const adminWithToken = await userFactory(prisma, betterAuth);
+    const admin = adminWithToken.user;
 
-    const caller = useProtectedCaller(admin);
+    const caller = useProtectedCaller(adminWithToken);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: admin.id,
     });
@@ -581,12 +602,14 @@ describe("deleteParticipant", () => {
   });
 
   it("returns a 400 if the participant's balance is non zero", async () => {
-    const [admin, member] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [adminWithToken, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const admin = adminWithToken.user;
+    const member = memberWithToken.user;
 
-    const caller = useProtectedCaller(admin);
+    const caller = useProtectedCaller(adminWithToken);
     const groupSheet = await groupSheetFactory(prisma, {
       withOwnerId: admin.id,
       withParticipantIds: [member.id],
@@ -611,10 +634,10 @@ describe("deleteParticipant", () => {
   });
 
   it("returns a 404 if the participant has no access", async () => {
-    const user = await userFactory(prisma);
-    const member = await userFactory(prisma);
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const { user: member } = await userFactory(prisma, betterAuth);
 
-    const caller = useProtectedCaller(user);
+    const caller = useProtectedCaller(userAndCookie);
     const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [member.id],
     });
@@ -628,12 +651,14 @@ describe("deleteParticipant", () => {
   });
 
   it("returns a 403 if the participant is not an admin", async () => {
-    const [member, otherMember] = await Promise.all([
-      userFactory(prisma),
-      userFactory(prisma),
+    const [memberWithToken, otherMemberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
     ]);
+    const member = memberWithToken.user;
+    const otherMember = otherMemberWithToken.user;
 
-    const caller = useProtectedCaller(member);
+    const caller = useProtectedCaller(memberWithToken);
     const groupSheet = await groupSheetFactory(prisma, {
       withParticipantIds: [member.id],
     });
