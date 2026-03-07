@@ -39,25 +39,11 @@ export const MoneyField = ({
   onChange: setAmount,
   currencyCode,
   mode = "onChange",
-  autoFocus,
   ...textFieldProps
 }: MoneyFieldProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [localAmount, setLocalAmount] = useState(value);
-
-  const inputMountRef = (element: HTMLInputElement | null) => {
-    inputRef.current = element;
-
-    // Hack for autoFocus not actually working within dialogs or drawers in
-    // this case. I'm unsure what went wrong, but this started happening with
-    // React 19
-    if (autoFocus && element) {
-      setTimeout(() => {
-        element.focus();
-      }, 100);
-    }
-  };
 
   useEffect(() => {
     setLocalAmount(value);
@@ -141,7 +127,7 @@ export const MoneyField = ({
   return (
     <Input
       {...textFieldProps}
-      ref={inputMountRef}
+      ref={inputRef}
       className="tabular-nums"
       inputMode="numeric"
       value={formatCurrency(moneySnapshot)}

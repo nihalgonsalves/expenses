@@ -255,7 +255,6 @@ const CreatePersonalTransactionForm = ({
                   <FormControl>
                     <MoneyField
                       className="grow"
-                      autoFocus
                       currencyCode={currencyCode || "EUR"}
                       {...field}
                     />

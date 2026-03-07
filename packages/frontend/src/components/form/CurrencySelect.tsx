@@ -34,7 +34,7 @@ export const CurrencySelect = ({
       <ComboboxList>
         {(code: string) => (
           <ComboboxItem key={code} value={code}>
-            <div className="col-start-2">{code}</div>
+            {code}
           </ComboboxItem>
         )}
       </ComboboxList>

@@ -72,7 +72,6 @@ export const CreateGroupForm = ({
               <FormLabel>Group sheet name</FormLabel>
               <FormControl>
                 <Input
-                  autoFocus
                   autoComplete="off"
                   data-1p-ignore
                   placeholder="e.g.: Flat Expenses"

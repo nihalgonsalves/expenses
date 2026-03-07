@@ -74,7 +74,6 @@ export const CreateSheetForm = ({
               <FormLabel>Sheet name</FormLabel>
               <FormControl>
                 <Input
-                  autoFocus
                   autoComplete="off"
                   data-1p-ignore
                   placeholder="Personal Expenses"

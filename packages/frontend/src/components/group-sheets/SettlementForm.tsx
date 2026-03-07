@@ -94,7 +94,6 @@ export const SettlementForm = ({
               <FormControl>
                 <MoneyField
                   className="grow"
-                  autoFocus
                   currencyCode={groupSheet.currencyCode}
                   {...field}
                 />

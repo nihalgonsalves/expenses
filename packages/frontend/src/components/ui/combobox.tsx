@@ -13,7 +13,13 @@ import {
 import { ChevronDownIcon, XIcon, CheckIcon } from "lucide-react";
 import { useRef, type ComponentPropsWithRef } from "react";
 
-const Combobox = ComboboxPrimitive.Root;
+function Combobox<Value, Multiple extends boolean | undefined = false>(
+  props: ComboboxPrimitive.Root.Props<Value, Multiple>,
+): React.JSX.Element {
+  return (
+    <ComboboxPrimitive.Root {...props}>{/* ... */}</ComboboxPrimitive.Root>
+  );
+}
 
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />;

@@ -11,7 +11,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "dev": "pnpm run \"/^dev:.*/\"",
+    "dev": "pnpm run --stream \"/^dev:.*/\"",
     "build": "pnpm run \"/^build:.*/\"",
     "build:tsc": "tsgo --build",
     "build:fe": "pnpm fe build:vite",

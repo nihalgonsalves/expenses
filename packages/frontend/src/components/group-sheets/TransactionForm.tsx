@@ -510,18 +510,18 @@ const SplitsFormSection = ({
             <ParticipantListItem
               key={participantId}
               avatar={<Avatar name={participantName} />}
+              className="min-h-14"
             >
               <FormField
                 key={id}
                 control={form.control}
                 name={`ratios.${i}.ratio`}
                 render={({ field: { value, ...field } }) => (
-                  <FormItem className="flex grow items-center justify-between gap-2">
-                    <div className="grow">
+                  <FormItem className="flex grow items-center gap-2">
+                    <div className="flex grow flex-col gap-2">
                       <FormLabel>
                         {participantNameById[participantId]}
                       </FormLabel>
-                      <br />
                       <span className="text-gray-500 tabular-nums">
                         {splitValid ? (
                           <>
@@ -772,7 +772,6 @@ export const TransactionForm = ({
                   <FormControl>
                     <MoneyField
                       className="grow"
-                      autoFocus
                       currencyCode={currencyCodeOrGroupDefault}
                       {...field}
                     />

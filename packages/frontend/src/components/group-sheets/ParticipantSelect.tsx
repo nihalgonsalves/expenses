@@ -3,13 +3,20 @@ import type { ControllerRenderProps } from "react-hook-form";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { Select } from "../form/Select";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "../ui/combobox";
 
 type ParticipantSelectProps = {
   id?: string;
   groupSheet: GroupSheetByIdResponse;
-  value: string | undefined;
-  onChange: (newValue: string | undefined) => void;
+  value: string | null;
+  onChange: (newValue: string | null) => void;
   ref?: Ref<HTMLInputElement> | undefined;
 } & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
@@ -21,20 +28,44 @@ export const ParticipantSelect = ({
   onChange,
   ...controllerProps
 }: ParticipantSelectProps) => {
-  const options = Object.values(groupSheet.participants);
+  const options = groupSheet.participants.map((participant) => participant.id);
+  const labelById = new Map(
+    groupSheet.participants.map((participant) => [
+      participant.id,
+      participant.name,
+    ]),
+  );
 
   return (
-    <Select
-      {...controllerProps}
-      id={id}
-      ref={ref}
-      placeholder="Please select…"
+    <Combobox<string>
+      items={options}
       value={value}
-      onChange={onChange}
-      options={options.map(({ id: optValue, name: label }) => ({
-        value: optValue,
-        label,
-      }))}
-    />
+      onValueChange={onChange}
+      itemToStringLabel={(item) => labelById.get(item) ?? item}
+      filter={(item, query) =>
+        labelById
+          .get(item)
+          ?.toLocaleLowerCase()
+          .includes(query.toLocaleLowerCase()) ?? false
+      }
+    >
+      <ComboboxInput
+        id={id}
+        placeholder="Please select…"
+        ref={ref}
+        {...controllerProps}
+      />
+
+      <ComboboxContent>
+        <ComboboxEmpty>No participants found.</ComboboxEmpty>
+        <ComboboxList>
+          {(option: string) => (
+            <ComboboxItem key={option} value={option}>
+              {labelById.get(option)}
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
   );
 };

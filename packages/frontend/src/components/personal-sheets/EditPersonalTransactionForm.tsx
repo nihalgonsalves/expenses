@@ -143,7 +143,6 @@ const EditPersonalTransactionForm = ({
                   <FormControl>
                     <MoneyField
                       className="grow"
-                      autoFocus
                       currencyCode={currencyCodeOrSheetDefault}
                       {...field}
                     />
