@@ -91,6 +91,8 @@ export const createAuth = (
       joins: true,
     },
     advanced: {
+      trustedProxyHeaders: config.TRUSTED_PROXY_HEADERS,
+      trustedOrigins: config.TRUSTED_ORIGINS,
       database: {
         generateId: false,
       },

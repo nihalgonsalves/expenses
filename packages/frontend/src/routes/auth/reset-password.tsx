@@ -19,13 +19,15 @@ function RouteComponent() {
 
   return (
     <Root title="Reset Password" className="p-0 sm:p-5">
-      {token ? (
-        <AuthView className="" pathname="/reset-password" />
-      ) : (
-        <Alert variant="destructive">
-          <AlertTitle>Token not found</AlertTitle>
-        </Alert>
-      )}
+      <div className="grid place-items-center p-4">
+        {token ? (
+          <AuthView className="" pathname="/reset-password" />
+        ) : (
+          <Alert variant="destructive">
+            <AlertTitle>Token not found</AlertTitle>
+          </Alert>
+        )}
+      </div>
     </Root>
   );
 }

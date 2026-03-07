@@ -170,6 +170,8 @@ const ZEnv = z.object({
 
   SECURE: z.coerce.boolean().default(IS_PROD),
   JWT_SECRET: devOnlyDefault(z.string().min(1), defaultSecret),
+  TRUSTED_ORIGINS: z.array(z.string()).optional(),
+  TRUSTED_PROXY_HEADERS: z.boolean().default(false),
   OAUTH_PROVIDER_CONFIG: z
     .string()
     .pipe(
