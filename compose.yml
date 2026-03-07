@@ -66,7 +66,7 @@ services:
 
   postgres:
     restart: unless-stopped
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
