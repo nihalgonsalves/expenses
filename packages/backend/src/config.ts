@@ -23,7 +23,7 @@ const ZEnv = z.object({
   ),
   APP_NAME: z.string().default("Expenses"),
 
-  BETTER_AUTH_CLI: IS_PROD ? z.never() : z.coerce.boolean().default(false),
+  BETTER_AUTH_CLI: IS_PROD ? z.undefined() : z.coerce.boolean().default(false),
 
   SMTP_HOST: devOnlyDefault(z.string(), "localhost"),
   SMTP_PORT: devOnlyDefault(z.coerce.number(), 1025),
