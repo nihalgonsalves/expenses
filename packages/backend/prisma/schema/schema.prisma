@@ -94,7 +94,7 @@ model Transaction {
   description String
   amount      Int
   scale       Int      @db.SmallInt()
-  spentAt     DateTime @map("spent_at")
+  spentAt     DateTime @map("spent_at") @db.Timestamptz()
 
   transactionEntries TransactionEntry[]
 

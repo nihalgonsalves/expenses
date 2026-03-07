@@ -20,8 +20,8 @@ model User {
 
   role       String?
   banned     Boolean?  @default(false)
-  banReason  String?
-  banExpires DateTime?
+  banReason  String?   @map("ban_reason")
+  banExpires DateTime? @map("ban_expires") @db.Timestamptz
 
   @@unique([email])
   @@map("users")
