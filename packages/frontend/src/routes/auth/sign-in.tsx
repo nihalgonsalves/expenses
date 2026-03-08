@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import { Root } from "../../pages/Root";
 import { AuthView } from "@daveyplate/better-auth-ui";
+import { useEffect } from "react";
+import { authClient } from "#/utils/auth";
 
 export const Route = createFileRoute("/auth/sign-in")({
   component: RouteComponent,
@@ -20,6 +22,18 @@ export const Route = createFileRoute("/auth/sign-in")({
 
 function RouteComponent() {
   const { redirect: redirectParam } = Route.useSearch();
+
+  useEffect(() => {
+    void (async () => {
+      if (
+        // browser / context (HTTPS) check
+        // oxlint-disable-next-line typescript/no-unnecessary-condition
+        await globalThis.PublicKeyCredential?.isConditionalMediationAvailable?.()
+      ) {
+        void authClient.signIn.passkey({ autoFill: true });
+      }
+    })();
+  }, []);
 
   return (
     <Root title="Sign in" className="p-0 sm:p-5">
