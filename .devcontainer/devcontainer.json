@@ -13,7 +13,6 @@
         "bradlc.vscode-tailwindcss",
         "prisma.prisma",
         "ms-playwright.playwright",
-        "renesaarsoo.sql-formatter-vsc",
         "tekumara.typos-vscode"
       ]
     }
