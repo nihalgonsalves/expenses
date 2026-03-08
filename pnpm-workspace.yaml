@@ -23,6 +23,7 @@ blockExoticSubdeps: true
 engineStrict: true
 
 patchedDependencies:
+  '@daveyplate/better-auth-ui': patches/@daveyplate__better-auth-ui.patch
   sonner: patches/sonner.patch
 
 saveExact: true

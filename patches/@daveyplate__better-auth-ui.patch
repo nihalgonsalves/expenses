@@ -1,0 +1,32 @@
+diff --git a/dist/index.js b/dist/index.js
+index 1a6c70fe0d530188a44735cff3e13b14f31c0203..98703929ac9270299b5583e6d4668da905253e69 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -8276,7 +8276,8 @@ function SignInForm({
+     toast,
+     Link,
+     localizeErrors,
+-    emailVerification
++    emailVerification,
++    passkey
+   } = useContext56(AuthUIContext);
+   const rememberMeEnabled = credentials == null ? void 0 : credentials.rememberMe;
+   const usernameEnabled = credentials == null ? void 0 : credentials.username;
+@@ -8380,7 +8381,7 @@ function SignInForm({
+               /* @__PURE__ */ jsx75(FormControl, { children: /* @__PURE__ */ jsx75(
+                 Input,
+                 {
+-                  autoComplete: usernameEnabled ? "username" : "email",
++                  autoComplete: `${usernameEnabled ? "username" : "email"}${passkey ? " webauthn" : ""}`,
+                   className: classNames == null ? void 0 : classNames.input,
+                   type: usernameEnabled ? "text" : "email",
+                   placeholder: usernameEnabled ? localization.SIGN_IN_USERNAME_PLACEHOLDER : localization.EMAIL_PLACEHOLDER,
+@@ -8415,7 +8416,7 @@ function SignInForm({
+               /* @__PURE__ */ jsx75(FormControl, { children: /* @__PURE__ */ jsx75(
+                 PasswordInput,
+                 {
+-                  autoComplete: "current-password",
++                  autoComplete: `current-password${passkey ? " webauthn" : ""}`,
+                   className: classNames == null ? void 0 : classNames.input,
+                   placeholder: localization.PASSWORD_PLACEHOLDER,
+                   disabled: isSubmitting,
