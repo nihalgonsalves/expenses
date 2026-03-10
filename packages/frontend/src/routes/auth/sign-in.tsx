@@ -3,8 +3,9 @@ import { z } from "zod";
 
 import { Root } from "../../pages/Root";
 import { AuthView } from "@daveyplate/better-auth-ui";
-import { useEffect } from "react";
+import { useEffect, useEffectEvent } from "react";
 import { authClient } from "#/utils/auth";
+import { useInvalidateRouter } from "#/api/useInvalidateRouter";
 
 export const Route = createFileRoute("/auth/sign-in")({
   component: RouteComponent,
@@ -22,17 +23,21 @@ export const Route = createFileRoute("/auth/sign-in")({
 
 function RouteComponent() {
   const { redirect: redirectParam } = Route.useSearch();
+  const invalidateRouter = useInvalidateRouter();
+
+  const signInPasskey = useEffectEvent(async () => {
+    if (
+      // browser / context (HTTPS) check
+      // oxlint-disable-next-line typescript/no-unnecessary-condition
+      await globalThis.PublicKeyCredential?.isConditionalMediationAvailable?.()
+    ) {
+      await authClient.signIn.passkey({ autoFill: true });
+      await invalidateRouter();
+    }
+  });
 
   useEffect(() => {
-    void (async () => {
-      if (
-        // browser / context (HTTPS) check
-        // oxlint-disable-next-line typescript/no-unnecessary-condition
-        await globalThis.PublicKeyCredential?.isConditionalMediationAvailable?.()
-      ) {
-        void authClient.signIn.passkey({ autoFill: true });
-      }
-    })();
+    void signInPasskey();
   }, []);
 
   return (
