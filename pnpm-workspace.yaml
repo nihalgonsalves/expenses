@@ -6,7 +6,6 @@ allowBuilds:
   '@sentry-internal/node-cpu-profiler': true
   '@sentry/cli': true
   '@swc/core': true
-  bcrypt: true
   core-js: false
   cpu-features: true
   esbuild: true

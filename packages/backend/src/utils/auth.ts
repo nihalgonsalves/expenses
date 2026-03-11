@@ -1,14 +1,11 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { createPrisma, type PrismaClientType } from "../create-prisma.ts";
-import { config } from "../config.ts";
-import { comparePassword } from "../service/user/utils.ts";
-import { hashPassword, verifyPassword } from "better-auth/crypto";
-import { createAuthMiddleware } from "better-auth/api";
-import { z } from "zod";
+import { config, IS_PROD } from "../config.ts";
 import type { IEmailWorker } from "../service/email/EmailWorker.ts";
 import { admin, genericOAuth } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
+import crypto from "node:crypto";
 
 // HACK: fix for this error on the frontend:
 //  The inferred type of 'useTRPC' cannot be named without a reference to
@@ -36,22 +33,17 @@ export const createAuth = (
     },
     emailAndPassword: {
       enabled: true,
-      password: {
-        verify: async ({ password, hash }) => {
-          try {
-            if (await verifyPassword({ password, hash })) {
-              return true;
+      password:
+        config.VITEST_WORKER_ID && !IS_PROD
+          ? {
+              // scrypt is _really_ slow and slows down each test
+              hash: async (password) =>
+                crypto.createHash("sha256").update(password).digest("hex"),
+              verify: async ({ password, hash }) =>
+                crypto.createHash("sha256").update(password).digest("hex") ===
+                hash,
             }
-          } catch {
-            // invalid hash, try old bcrypt hash
-            if (await comparePassword(password, hash)) {
-              return true;
-            }
-          }
-
-          return false;
-        },
-      },
+          : {},
       sendResetPassword: async ({ user, url }) => {
         void emailWorker.sendEmail({
           to: {
@@ -102,46 +94,6 @@ export const createAuth = (
       passkey(),
       genericOAuth({ config: config.OAUTH_PROVIDER_CONFIG }),
     ],
-    hooks: {
-      after: createAuthMiddleware(async (ctx) => {
-        if (ctx.path !== "/sign-in/email" || !ctx.context.session) {
-          return;
-        }
-
-        const { email, password } = z
-          .object({ email: z.email(), password: z.string() })
-          .parse(ctx.body);
-
-        if (email !== ctx.context.session.user.email) {
-          // should not be possible, we just signed in with this email
-          throw new Error();
-        }
-
-        const user = await prismaClient.user.findUniqueOrThrow({
-          where: { email: ctx.context.session.user.email },
-          include: { accounts: { where: { providerId: "credential" } } },
-        });
-
-        const account = user.accounts.at(0);
-        if (!account) {
-          // should not be possible, we just signed in with one
-          throw new Error();
-        }
-
-        if (!account.password?.startsWith("$2b$")) {
-          // already in the new format
-          return;
-        }
-
-        // update hash
-        await prismaClient.account.update({
-          where: { id: account.id },
-          data: {
-            password: await hashPassword(password),
-          },
-        });
-      }),
-    },
   });
 
 /** @lintignore for the CLI - should not be used in the app */
