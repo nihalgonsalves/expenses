@@ -7,13 +7,6 @@ import { admin, genericOAuth } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import crypto from "node:crypto";
 
-// HACK: fix for this error on the frontend:
-//  The inferred type of 'useTRPC' cannot be named without a reference to
-//  '../../../../node_modules/@trpc/server/dist/unstable-core-do-not-import.d-BJCeJk5P.cjs'.
-//  This is likely not portable. A type annotation is necessary.
-// Note that this seems to be fixed in tsgo, it could be unnecessary when TypeScript v7 is out.
-export type * from "@simplewebauthn/server";
-
 export const createAuth = (
   prismaClient: PrismaClientType,
   emailWorker: IEmailWorker,

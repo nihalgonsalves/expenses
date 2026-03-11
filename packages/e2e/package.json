@@ -13,8 +13,8 @@
     "@nihalgonsalves/expenses-backend": "workspace:*",
     "@nihalgonsalves/expenses-shared": "workspace:*",
     "@playwright/test": "1.58.2",
-    "@trpc/client": "11.11.0",
-    "better-auth": "1.5.4",
+    "@trpc/client": "11.12.0",
+    "better-auth": "1.5.5",
     "chromatic": "15.2.0",
     "zod": "4.3.6"
   }
