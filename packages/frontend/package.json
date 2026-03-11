@@ -103,7 +103,6 @@
     "vite": "8.0.0-beta.16",
     "vite-plugin-istanbul": "7.2.1",
     "vite-plugin-pwa": "1.2.0",
-    "vitest": "4.0.18",
-    "wait-on": "9.0.4"
+    "vitest": "4.0.18"
   }
 }

@@ -14,15 +14,9 @@
   },
   "ignoreExportsUsedInFile": true,
   "ignore": [
-    "packages/backend/prisma/schema.prisma",
     // extra files in shadcn components
     "packages/frontend/src/components/ui/**/*",
   ],
-  "ignoreDependencies": [
-    "chromatic",
-    "wait-on",
-    "@prisma/client",
-    "@vitest/coverage-v8",
-  ],
+  "ignoreDependencies": ["chromatic", "@vitest/coverage-v8"],
   "ignoreBinaries": [],
 }
