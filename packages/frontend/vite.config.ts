@@ -4,7 +4,9 @@ import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import react from "@vitejs/plugin-react";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import babel from "@rolldown/plugin-babel";
+
 import { codeInspectorPlugin } from "code-inspector-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
@@ -54,15 +56,12 @@ export default defineConfig(({ mode }) => ({
         bundler: "vite",
         hideConsole: true,
       }),
-    react({
-      babel: {
-        plugins: [
-          [
-            import.meta.resolve("babel-plugin-react-compiler"),
-            { target: "19" },
-          ],
-        ],
-      },
+    react(),
+    babel({
+      presets: [
+        reactCompilerPreset(),
+        ["@babel/preset-typescript", { allExtensions: true, isTSX: true }],
+      ],
     }),
     tailwindcss(),
     !process.env["VITE_STORYBOOK"] &&
