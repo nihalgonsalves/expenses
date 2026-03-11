@@ -64,7 +64,7 @@ export const DataTableToolbar = <TData,>({
       />
 
       <Collapsible
-        className="flex flex-col gap-2 lg:flex-row"
+        className="flex grow flex-col gap-2 lg:flex-row"
         open={breakpointMd || isOpen}
       >
         {!breakpointMd && (
@@ -149,10 +149,9 @@ export const DataTableToolbar = <TData,>({
               <XIcon className="ml-2 size-4" />
             </Button>
           ) : null}
-          <div className="grow" />
           <DataTableViewOptions
             table={table}
-            className="justify-start md:justify-center"
+            className="h-8 justify-start border-dashed md:justify-center lg:justify-center"
           />
         </CollapsibleContent>
       </Collapsible>
