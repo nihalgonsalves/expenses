@@ -4,12 +4,17 @@ import * as Sentry from "@sentry/react";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
+import { persistQueryClientRestore } from "@tanstack/react-query-persist-client";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 
 import type { AppRouter } from "@nihalgonsalves/expenses-backend/build";
 
-import { getQueryClient, TrpcProvider } from "./api/TrpcProvider";
+import {
+  asyncStoragePersister,
+  getQueryClient,
+  TrpcProvider,
+} from "./api/TrpcProvider";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { NotFoundPage } from "./components/NotFoundPage";
 import { config } from "./config";
@@ -27,6 +32,12 @@ const getRouter = async () => {
   });
 
   const queryClient = getQueryClient();
+
+  await persistQueryClientRestore({
+    queryClient,
+    persister: asyncStoragePersister,
+    buster: config.VITE_GIT_COMMIT_SHA,
+  });
 
   const trpc = createTRPCOptionsProxy({
     client: trpcClient,

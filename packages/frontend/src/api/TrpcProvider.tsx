@@ -25,7 +25,7 @@ const ZData = z.object({
     .nullish(),
 });
 
-const asyncStoragePersister = createAsyncStoragePersister({
+export const asyncStoragePersister = createAsyncStoragePersister({
   storage: {
     getItem: async (key) => queryCache.getItem(key),
     removeItem: async (key) => queryCache.removeItem(key),
