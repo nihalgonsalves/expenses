@@ -17,6 +17,10 @@
     // extra files in shadcn components
     "packages/frontend/src/components/ui/**/*",
   ],
-  "ignoreDependencies": ["chromatic", "@vitest/coverage-v8"],
+  "ignoreDependencies": [
+    "chromatic",
+    "@vitest/coverage-v8",
+    "@babel/preset-typescript",
+  ],
   "ignoreBinaries": [],
 }
