@@ -73,6 +73,7 @@ import { cn } from "../ui/utils";
 
 import { ParticipantListItem } from "./ParticipantListItem";
 import { ParticipantSelect } from "./ParticipantSelect";
+import { usePreferredCurrencyCode } from "#/state/preferences";
 
 const ZRatio = z.object({
   participantId: z.string().min(1),
@@ -656,6 +657,7 @@ export const TransactionForm = ({
   type: Exclude<TransactionType, "TRANSFER">;
 }) => {
   const dialog = useDialog();
+  const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
   const { trpc, invalidate } = useTRPC();
   const { mutateAsync: createGroupSheetTransaction, isPending } = useMutation(
@@ -669,7 +671,7 @@ export const TransactionForm = ({
     mode: "onTouched",
     defaultValues: {
       type,
-      currencyCode: groupSheet.currencyCode,
+      currencyCode: preferredCurrencyCode,
       category: OTHER_CATEGORY,
       amount: 0,
       description: "",

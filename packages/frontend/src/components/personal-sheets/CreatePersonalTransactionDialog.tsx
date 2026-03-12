@@ -15,6 +15,7 @@ import {
 
 import { useCurrencyConversion } from "../../api/currencyConversion";
 import { useTRPC } from "../../api/trpc";
+import { usePreferredCurrencyCode } from "../../state/preferences";
 import { useNavigatorOnLine } from "../../state/useNavigatorOnLine";
 import { toMoneyValues } from "../../utils/money";
 import {
@@ -116,6 +117,7 @@ const CreatePersonalTransactionForm = ({
   personalSheet: Sheet;
 }) => {
   const dialog = useDialog();
+  const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
@@ -125,7 +127,7 @@ const CreatePersonalTransactionForm = ({
     mode: "onTouched",
     defaultValues: {
       type: "EXPENSE",
-      currencyCode: personalSheet.currencyCode,
+      currencyCode: preferredCurrencyCode,
       category: OTHER_CATEGORY,
       amount: 0,
       description: "",
