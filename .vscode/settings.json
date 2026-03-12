@@ -4,14 +4,11 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "explicit"
   },
-  "oxc.typeAware": true,
-  "typescript.preferences.autoImportFileExcludePatterns": [
-    "@types/node/test.d.ts"
-  ],
-  "typescript.preferences.autoImportSpecifierExcludeRegexes": [
+  "js/ts.preferences.autoImportFileExcludePatterns": ["@types/node/test.d.ts"],
+  "js/ts.preferences.autoImportSpecifierExcludeRegexes": [
     "^storybook\/internal\/.*$"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "js/ts.tsdk.path": "node_modules/typescript/lib",
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },

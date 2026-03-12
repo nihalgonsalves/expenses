@@ -22,7 +22,7 @@
     "clean": "git clean -Xdf --exclude='!packages/backend/.env'",
     "test": "vitest",
     "lint": "pnpm run \"/^lint:.*/\"",
-    "lint:oxlint": "oxlint --type-aware --report-unused-disable-directives-severity=error",
+    "lint:oxlint": "oxlint",
     "lint:sherif": "sherif",
     "lint:knip": "knip",
     "lint:format": "prettier . --check",
@@ -36,7 +36,7 @@
     "validate": "run-p --continue-on-error build 'lint:oxlint --fix' 'lint:sherif' 'lint:knip' 'test --no-watch --reporter=dot' 'format --log-level=warn'"
   },
   "devDependencies": {
-    "@nihalgonsalves/esconfig": "0.16.3",
+    "@nihalgonsalves/esconfig": "0.16.4",
     "@types/node": "24",
     "@typescript/native-preview": "7.0.0-dev.20260312.1",
     "@vitest/coverage-v8": "4.1.0",
