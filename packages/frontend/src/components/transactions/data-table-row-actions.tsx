@@ -59,11 +59,13 @@ const PersonalTransactionDropdownContent = ({
 
   return (
     <>
-      <EditPersonalTransactionDialog
-        sheetId={sheetId}
-        transactionId={transactionId}
-        dialogProps={editDialogControls}
-      />
+      {editDialogControls.open && (
+        <EditPersonalTransactionDialog
+          sheetId={sheetId}
+          transactionId={transactionId}
+          dialogProps={editDialogControls}
+        />
+      )}
 
       <ConfirmDialog
         confirmLabel="Confirm Delete"
@@ -123,11 +125,13 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
 
   return (
     <>
-      <EditTransactionDialog
-        transactionId={transactionId}
-        sheetId={sheetId}
-        dialogProps={editDialogControls}
-      />
+      {editDialogControls.open && (
+        <EditTransactionDialog
+          transactionId={transactionId}
+          sheetId={sheetId}
+          dialogProps={editDialogControls}
+        />
+      )}
 
       <DropdownMenuContent align="end">
         <DropdownMenuItem

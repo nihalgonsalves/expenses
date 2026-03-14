@@ -117,6 +117,10 @@ const EditPersonalTransactionForm = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getTransaction.queryKey({
+        sheetId: data.sheet.id,
+        transactionId: transaction.id,
+      }),
       trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),
@@ -247,13 +251,10 @@ export const EditPersonalTransactionDialog = ({
 }) => {
   const { trpc } = useTRPC();
   const { data } = useQuery(
-    trpc.transaction.getTransaction.queryOptions(
-      {
-        sheetId,
-        transactionId,
-      },
-      { enabled: dialogProps.open },
-    ),
+    trpc.transaction.getTransaction.queryOptions({
+      sheetId,
+      transactionId,
+    }),
   );
 
   return (

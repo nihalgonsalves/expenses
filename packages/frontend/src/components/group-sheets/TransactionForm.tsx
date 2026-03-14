@@ -441,6 +441,10 @@ export const EditTransactionForm = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getTransaction.queryKey({
+        sheetId: groupSheet.id,
+        transactionId: transaction.id,
+      }),
       trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId: groupSheet.id,
       }),
@@ -539,15 +543,10 @@ export const EditTransactionDialog = ({
   const { trpc } = useTRPC();
 
   const { data, isLoading } = useQuery(
-    trpc.transaction.getTransaction.queryOptions(
-      {
-        sheetId,
-        transactionId,
-      },
-      {
-        enabled: dialogProps.open,
-      },
-    ),
+    trpc.transaction.getTransaction.queryOptions({
+      sheetId,
+      transactionId,
+    }),
   );
   const { data: groupSheetData } = useQuery(
     trpc.sheet.groupSheetById.queryOptions(sheetId),
