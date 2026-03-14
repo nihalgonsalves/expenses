@@ -107,12 +107,13 @@ test(`creates and edits a shared sheet transaction successfully`, async ({
 
   await page.getByLabel(/how much/i).clear();
   await page.getByLabel(/how much/i).pressSequentially("20000");
-  await page.getByRole("button", { name: /update/i }).click();
 
   // we're in "Enter Amounts" mode because the type is lost,
   // if we change the values, we need to update the splits as well
   // TODO: also test updating various splits
   await page.getByRole("button", { name: "Split Evenly" }).click();
+
+  await page.getByRole("button", { name: /update/i }).click();
 
   // list again
 
