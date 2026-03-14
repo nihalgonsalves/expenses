@@ -417,8 +417,10 @@ export class TransactionService {
     input: Omit<CreateGroupSheetTransactionInput, "groupSheetId">,
     groupSheet: Sheet,
     prismaClient = this.prismaClient,
-    transactionId = generateId(),
+    existingTransactionId: string | null = null,
   ) {
+    const transactionId = existingTransactionId ?? generateId();
+
     verifyCurrencies(
       groupSheet.currencyCode,
       input.money.currencyCode,
@@ -512,6 +514,7 @@ export class TransactionService {
               { ...transaction, type: input.type },
               groupSheet,
               balance.share,
+              existingTransactionId ? "updated" : "created",
             ),
           ]),
       ),

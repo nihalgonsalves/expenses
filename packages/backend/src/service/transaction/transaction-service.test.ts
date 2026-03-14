@@ -86,6 +86,7 @@ describe("TransactionService", () => {
           userId: otherParticipant.id,
           payload: {
             type: "EXPENSE",
+            action: "created",
             transaction: {
               id,
               category: "other",

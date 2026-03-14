@@ -8,8 +8,10 @@ export const transactionToNotificationPayload = (
   transaction: Omit<Transaction, "type"> & { type: "INCOME" | "EXPENSE" },
   groupSheet: Sheet,
   yourShare: Omit<Money, "currencyCode">,
+  action: "created" | "updated" | "deleted",
 ): NotificationPayload => ({
   type: transaction.type,
+  action,
   groupSheet,
   transaction: {
     ...transaction,

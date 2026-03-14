@@ -29,6 +29,17 @@ if (!import.meta.env.DEV) {
   );
 }
 
+const getActionText = (action: "created" | "updated" | "deleted") => {
+  switch (action) {
+    case "created":
+      return "New";
+    case "updated":
+      return "Updated";
+    case "deleted":
+      return "Deleted";
+  }
+};
+
 const getNotificationPresentation = (payload: NotificationPayload) => {
   if (payload.type === "TEST") {
     return { title: "Test Notification", body: payload.message };
@@ -55,14 +66,14 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
   if (payload.type === "EXPENSE") {
     return {
       title,
-      body: `New expense: ${description} – your share is ${formattedShare}`,
+      body: `${getActionText(payload.action)} expense: ${description} – your share is ${formattedShare}`,
     };
   }
 
   // (payload.type === 'INCOME')
   return {
     title,
-    body: `New income: ${description} – your share is ${formattedShare}`,
+    body: `${getActionText(payload.action)} income: ${description} – your share is ${formattedShare}`,
   };
 };
 

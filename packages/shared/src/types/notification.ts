@@ -11,6 +11,10 @@ const ZNotificationTransaction = z.object({
 
 const ZExpenseNotificationPayload = z.object({
   type: z.literal("EXPENSE"),
+  action: z
+    .enum(["created", "updated", "deleted"])
+    .optional()
+    .default("created"),
   groupSheet: z.object({
     id: z.string().min(1),
     name: z.string().min(1),
@@ -22,6 +26,10 @@ const ZExpenseNotificationPayload = z.object({
 
 const ZIncomeNotificationPayload = z.object({
   type: z.literal("INCOME"),
+  action: z
+    .enum(["created", "updated", "deleted"])
+    .optional()
+    .default("created"),
   groupSheet: z.object({
     id: z.string().min(1),
     name: z.string().min(1),
