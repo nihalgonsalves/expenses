@@ -1,0 +1,99 @@
+import { useQuery } from "@tanstack/react-query";
+import { CheckIcon, ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+import { useState } from "react";
+
+import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
+import type { TransactionType } from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
+
+import { useTRPC } from "../../api/trpc";
+import { useCurrentUser } from "../../api/use-current-user";
+import { ResponsiveDialog } from "../form/responsive-dialog";
+import { ToggleButtonGroup } from "../form/toggle-button-group";
+import type { RenderProp } from "../ui/utils";
+
+import { SettlementForm } from "./settlement-form";
+import { TransactionForm } from "./transaction-form";
+
+const TYPE_OPTIONS = [
+  {
+    value: "EXPENSE",
+    label: (
+      <>
+        <ArrowUpIcon className="mr-2 size-4" />
+        Expense
+      </>
+    ),
+  },
+  {
+    value: "INCOME",
+    label: (
+      <>
+        <ArrowDownIcon className="mr-2 size-4" />
+        Income
+      </>
+    ),
+  },
+  {
+    value: "TRANSFER",
+    label: (
+      <>
+        <CheckIcon className="mr-2 size-4" />
+        Settlement
+      </>
+    ),
+  },
+] as const;
+
+const CreateGroupSheetTransactionForm = ({
+  groupSheet,
+  me,
+}: {
+  groupSheet: GroupSheetByIdResponse;
+  me: User;
+}) => {
+  const [type, setType] = useState<TransactionType>("EXPENSE");
+
+  return (
+    <div className="flex flex-col gap-4">
+      <ToggleButtonGroup
+        className="grid w-full grid-cols-3"
+        value={type}
+        setValue={setType}
+        options={TYPE_OPTIONS}
+      />
+      {type === "TRANSFER" ? (
+        <SettlementForm groupSheet={groupSheet} me={me} />
+      ) : (
+        <TransactionForm type={type} groupSheet={groupSheet} me={me} />
+      )}
+    </div>
+  );
+};
+
+export const CreateGroupSheetTransactionDialog = ({
+  sheetId,
+  render,
+}: {
+  sheetId: string;
+  render: RenderProp;
+}) => {
+  const { trpc } = useTRPC();
+  const { data: groupSheet } = useQuery(
+    trpc.sheet.groupSheetById.queryOptions(sheetId),
+  );
+
+  const me = useCurrentUser();
+
+  return (
+    <ResponsiveDialog
+      triggerType="trigger"
+      render={render}
+      title="Add Transaction"
+    >
+      {groupSheet && me ? (
+        <CreateGroupSheetTransactionForm groupSheet={groupSheet} me={me} />
+      ) : null}
+    </ResponsiveDialog>
+  );
+};

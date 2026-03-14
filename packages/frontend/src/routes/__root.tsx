@@ -14,14 +14,14 @@ import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
 import { AuthUIProviderTanstack } from "@daveyplate/better-auth-ui/tanstack";
 
 import type { TRPCClient, TRPCOptionsProxy } from "../api/trpc";
-import { useOffLineToaster } from "../api/useOffLineToaster";
-import { usePrefetchQueries } from "../api/usePrefetchQueries";
-import { TooltipRoot } from "../components/TooltipRoot";
+import { useOffLineToaster } from "../api/use-off-line-toaster";
+import { usePrefetchQueries } from "../api/use-prefetch-queries";
+import { TooltipRoot } from "../components/tooltip-root";
 import { Toaster } from "../components/ui/toaster";
 import { config } from "../config";
-import { useSwUpdateCheck } from "../registerSW";
+import { useSwUpdateCheck } from "../register-sw";
 import { useThemeSync } from "../state/theme";
-import { PWAInstall } from "#/components/PWAInstall";
+import { PWAInstall } from "#/components/pwa-install";
 import { authClient } from "#/utils/auth";
 
 const GlobalHookContainer = () => {

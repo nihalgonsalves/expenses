@@ -3,9 +3,9 @@ import { endOfMonth, startOfMonth } from "date-fns";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 
-import { useAllUserTransactions } from "../../api/useAllUserTransactions";
-import { CategoryStats } from "../../components/CategoryStats";
-import { RootLoader } from "../../pages/Root";
+import { useAllUserTransactions } from "../../api/use-all-user-transactions";
+import { CategoryStats } from "../../components/category-stats";
+import { RootLoader } from "../../pages/root";
 
 export const Route = createFileRoute("/_auth/stats")({
   component: RouteComponent,

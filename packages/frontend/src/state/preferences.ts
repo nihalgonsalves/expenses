@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
 
-import { prefsDb } from "./prefsDb";
+import { prefsDb } from "./prefs-db";
 
 const createUsePreference = <T>(key: string, parse: (value: unknown) => T) => {
   const getPreference = async () => {

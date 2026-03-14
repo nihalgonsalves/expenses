@@ -13,7 +13,7 @@
     "build": "pnpm run --stream \"/^build:.*/\"",
     "build:vite": "vite build",
     "build:storybook": "VITE_STORYBOOK=1 storybook build --output-dir=./build/storybook",
-    "gen:assets": "tsx bin/generateAssets.tsx",
+    "gen:assets": "tsx bin/generate-assets.tsx",
     "chromatic": "chromatic --build-script-name='build:storybook'",
     "preview:vite": "vite preview --port 5173",
     "test": "vitest --project=unit",

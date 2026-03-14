@@ -12,7 +12,7 @@ import {
   type NotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
-import { prefsDb } from "./state/prefsDb";
+import { prefsDb } from "./state/prefs-db";
 import { formatCurrency } from "./utils/money";
 import { getTransactionDescription } from "./utils/utils";
 

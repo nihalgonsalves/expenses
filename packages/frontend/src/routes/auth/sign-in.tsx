@@ -1,11 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { Root } from "../../pages/Root";
+import { Root } from "../../pages/root";
 import { AuthView } from "@daveyplate/better-auth-ui";
 import { useEffect, useEffectEvent } from "react";
 import { authClient } from "#/utils/auth";
-import { useInvalidateRouter } from "#/api/useInvalidateRouter";
+import { useInvalidateRouter } from "#/api/use-invalidate-router";
 
 export const Route = createFileRoute("/auth/sign-in")({
   component: RouteComponent,

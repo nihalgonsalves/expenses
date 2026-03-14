@@ -26,11 +26,12 @@
   },
   "overrides": [
     {
-      "files": ["src/routes/**/*"],
+      "files": ["src/routes/**/*", "src/routeTree.gen.ts"],
       "rules": {
         "no-use-before-define": "off",
         "func-style": "off",
-        "typescript/only-throw-error": "off"
+        "typescript/only-throw-error": "off",
+        "unicorn/filename-case": "off"
       }
     },
     {

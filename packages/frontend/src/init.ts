@@ -6,7 +6,7 @@ import emojiMartData from "@emoji-mart/data";
 import { init as initEmojiMart } from "emoji-mart";
 
 import { config } from "./config";
-import { registerSW } from "./registerSW";
+import { registerSW } from "./register-sw";
 
 await registerSW();
 

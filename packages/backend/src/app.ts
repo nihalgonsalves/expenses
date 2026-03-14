@@ -12,12 +12,12 @@ import { Hono, type Context } from "hono";
 import { showRoutes } from "hono/dev";
 import { Redis } from "ioredis";
 
-import { appRouter } from "./appRouter.ts";
+import { appRouter } from "./app-router.ts";
 import { config, IS_PROD } from "./config.ts";
 import { makeCreateContext, type ContextObj } from "./context.ts";
 import { type PrismaClientType, createPrisma } from "./create-prisma.ts";
-import { makePWARouter } from "./pwaRouter.ts";
-import { startWorkers } from "./startWorkers.ts";
+import { makePWARouter } from "./pwa-router.ts";
+import { startWorkers } from "./start-workers.ts";
 
 export type HonoVariables = { context: ContextObj };
 

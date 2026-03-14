@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AuthView } from "@daveyplate/better-auth-ui";
-import { Root } from "#/pages/Root";
+import { Root } from "#/pages/root";
 
 export const Route = createFileRoute("/auth/$authView")({
   component: RouteComponent,

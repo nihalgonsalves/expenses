@@ -7,7 +7,7 @@ import type { PrismaClientType } from "../src/create-prisma.ts";
 import { SheetParticipantRole, SheetType } from "../src/prisma/client.ts";
 import { generateId } from "../src/utils/nanoid.ts";
 
-import { getUserKeys } from "./webPushUtils.ts";
+import { getUserKeys } from "./web-push-utils.ts";
 import type { BetterAuthInstance } from "../src/utils/auth.ts";
 
 const randomItem = <T>(items: T[]): T =>

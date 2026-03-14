@@ -10,15 +10,15 @@ import {
   ZTheme,
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
-import { useInvalidateRouter } from "#/api/useInvalidateRouter";
+import { useInvalidateRouter } from "#/api/use-invalidate-router";
 
 import { useTRPC } from "../api/trpc";
-import { useCurrentUser } from "../api/useCurrentUser";
-import { useDialog } from "../components/form/ResponsiveDialog";
-import { isOldDataAtom } from "../pages/Root";
+import { useCurrentUser } from "../api/use-current-user";
+import { useDialog } from "../components/form/responsive-dialog";
+import { isOldDataAtom } from "../pages/root";
 
 import { createPreferenceWithDefault } from "./preferences";
-import { useNavigatorOnLine } from "./useNavigatorOnLine";
+import { useNavigatorOnLine } from "./use-navigator-on-line";
 
 const ZThemePreference = z.enum(["system", "light", "dark"]);
 

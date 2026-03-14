@@ -4,7 +4,7 @@
 import type { Table } from "@tanstack/react-table";
 import { EyeIcon } from "lucide-react";
 
-import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
+import { useBreakpoint } from "../../utils/hooks/use-breakpoint";
 
 import { Button } from "./button";
 import {

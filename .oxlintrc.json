@@ -24,7 +24,13 @@
     "import/no-unassigned-import": "off",
     "import/extensions": "off",
     "vitest/no-conditional-tests": "off",
-    "vitest/warn-todo": "off"
+    "vitest/warn-todo": "off",
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "kebabCase"
+      }
+    ]
   },
   "overrides": [
     {

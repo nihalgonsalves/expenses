@@ -6,7 +6,7 @@
   "exports": {
     "./money": "./src/money.ts",
     "./routes": "./src/routes.ts",
-    "./simplifyBalances": "./src/simplifyBalances.ts",
+    "./simplify-balances": "./src/simplify-balances.ts",
     "./types/transaction": "./src/types/transaction.ts",
     "./types/notification": "./src/types/notification.ts",
     "./types/sheet": "./src/types/sheet.ts",

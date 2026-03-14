@@ -2,11 +2,11 @@
 
 import type { Row } from "@tanstack/react-table";
 
-import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
+import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
 import { getGroupSheetTransactionSummaryText } from "../../utils/utils";
-import { Avatar } from "../Avatar";
-import { CurrencySpan } from "../CurrencySpan";
-import { ParticipantListItem } from "../group-sheets/ParticipantListItem";
+import { Avatar } from "../avatar";
+import { CurrencySpan } from "../currency-span";
+import { ParticipantListItem } from "../group-sheets/participant-list-item";
 import { Badge } from "../ui/badge";
 
 type DataTableExpandedRowProps = {

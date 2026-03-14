@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 
 import { useTRPC } from "../../api/trpc";
-import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
-import { ConfirmDialog } from "../form/ConfirmDialog";
-import { useDialogControls } from "../form/ResponsiveDialog";
-import { EditPersonalTransactionDialog } from "../personal-sheets/EditPersonalTransactionForm";
+import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
+import { ConfirmDialog } from "../form/confirm-dialog";
+import { useDialogControls } from "../form/responsive-dialog";
+import { EditPersonalTransactionDialog } from "../personal-sheets/edit-personal-transaction-form";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { EditTransactionDialog } from "../group-sheets/TransactionForm";
+import { EditTransactionDialog } from "../group-sheets/transaction-form";
 
 type DataTableRowActionsProps = {
   row: Row<ConvertedTransactionWithSheet>;

@@ -3,14 +3,14 @@ import { endOfMonth, startOfMonth } from "date-fns";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 
-import { useAllUserTransactions } from "../../api/useAllUserTransactions";
-import { QuickCreateTransactionFAB } from "../../components/expenses/QuickCreateTransactionFAB";
+import { useAllUserTransactions } from "../../api/use-all-user-transactions";
+import { QuickCreateTransactionFAB } from "../../components/expenses/quick-create-transaction-fab";
 import { columns } from "../../components/transactions/columns";
 import {
   DataTable,
   ZTransactionFilters,
 } from "../../components/transactions/data-table";
-import { RootLoader } from "../../pages/Root";
+import { RootLoader } from "../../pages/root";
 
 export const Route = createFileRoute("/_auth/")({
   component: RouteComponent,

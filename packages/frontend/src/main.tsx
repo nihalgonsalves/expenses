@@ -14,9 +14,9 @@ import {
   asyncStoragePersister,
   getQueryClient,
   TrpcProvider,
-} from "./api/TrpcProvider";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import { NotFoundPage } from "./components/NotFoundPage";
+} from "./api/trpc-provider";
+import { ErrorBoundary } from "./components/error-boundary";
+import { NotFoundPage } from "./components/not-found-page";
 import { config } from "./config";
 import { routeTree } from "./routeTree.gen";
 

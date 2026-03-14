@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { createPrisma, type PrismaClientType } from "../create-prisma.ts";
 import { config, IS_PROD } from "../config.ts";
-import type { IEmailWorker } from "../service/email/EmailWorker.ts";
+import type { IEmailWorker } from "../service/email/email-worker.ts";
 import { admin, genericOAuth } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 import crypto from "node:crypto";

@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 
-import { Root } from "../../pages/Root";
+import { Root } from "../../pages/root";
 import { AuthView } from "@daveyplate/better-auth-ui";
 
 export const Route = createFileRoute("/auth/sign-up")({

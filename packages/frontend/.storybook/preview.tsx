@@ -8,7 +8,7 @@ import {
   RouterProvider,
 } from "@tanstack/react-router";
 
-import { TooltipRoot } from "#/components/TooltipRoot";
+import { TooltipRoot } from "#/components/tooltip-root";
 
 const rootRoute = createRootRoute();
 const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/" });

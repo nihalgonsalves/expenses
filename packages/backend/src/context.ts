@@ -2,12 +2,12 @@ import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import { UAParser } from "ua-parser-js";
 import { config } from "./config.ts";
 import type { PrismaClientType } from "./create-prisma.ts";
-import { FrankfurterService } from "./service/frankfurter/FrankfurterService.ts";
-import { NotificationService } from "./service/notification/NotificationService.ts";
-import { SheetService } from "./service/sheet/SheetService.ts";
-import { TransactionService } from "./service/transaction/TransactionService.ts";
-import { UserService } from "./service/user/UserService.ts";
-import type { Workers } from "./startWorkers.ts";
+import { FrankfurterService } from "./service/frankfurter/frankfurter-service.ts";
+import { NotificationService } from "./service/notification/notification-service.ts";
+import { SheetService } from "./service/sheet/sheet-service.ts";
+import { TransactionService } from "./service/transaction/transaction-service.ts";
+import { UserService } from "./service/user/user-service.ts";
+import type { Workers } from "./start-workers.ts";
 import { createAuth } from "./utils/auth.ts";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 

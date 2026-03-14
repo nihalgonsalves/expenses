@@ -4,16 +4,16 @@
 import { Link } from "@tanstack/react-router";
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 
-import type { ConvertedTransactionWithSheet } from "../../api/useAllUserTransactions";
-import { useCurrentUser } from "../../api/useCurrentUser";
+import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
+import { useCurrentUser } from "../../api/use-current-user";
 import {
   formatDateRelative,
   formatDateTimeRelative,
 } from "../../utils/temporal";
 import { getTransactionDescription } from "../../utils/utils";
-import { AvatarGroup } from "../Avatar";
-import { CategoryAvatar, CategoryIcon } from "../CategoryAvatar";
-import { CurrencySpan } from "../CurrencySpan";
+import { AvatarGroup } from "../avatar";
+import { CategoryAvatar, CategoryIcon } from "../category-avatar";
+import { CurrencySpan } from "../currency-span";
 import { Button } from "../ui/button";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
 

@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { useTRPC, type QueryOptionsContext } from "../../../api/trpc";
-import { PersonalTransactionsImporter } from "../../../components/personal-sheets/PersonalTransactionsImporter";
-import { Root } from "../../../pages/Root";
+import { PersonalTransactionsImporter } from "../../../components/personal-sheets/personal-transactions-importer";
+import { Root } from "../../../pages/root";
 
 const queryOptions = (context: QueryOptionsContext, sheetId: string) =>
   context.trpc.sheet.personalSheetById.queryOptions(sheetId);

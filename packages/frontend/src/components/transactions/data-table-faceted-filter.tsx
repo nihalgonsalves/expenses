@@ -4,7 +4,7 @@ import type { Column } from "@tanstack/react-table";
 import { CheckIcon, PlusCircleIcon } from "lucide-react";
 import type { ComponentType } from "react";
 
-import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
+import { useBreakpoint } from "../../utils/hooks/use-breakpoint";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import {

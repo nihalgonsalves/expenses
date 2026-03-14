@@ -4,7 +4,7 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import fetchCookie from "fetch-cookie";
 import { createAuthClient } from "better-auth/react";
 
-import type { AppRouter } from "../src/appRouter.ts";
+import type { AppRouter } from "../src/app-router.ts";
 
 const DEMO_A_EMAIL = "user@example.com";
 const DEMO_B_EMAIL = "other-user@example.com";

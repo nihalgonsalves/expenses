@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
-import { usePrefetchQueries } from "#/api/usePrefetchQueries";
+import { usePrefetchQueries } from "#/api/use-prefetch-queries";
 
 export const Route = createFileRoute("/_auth")({
   component: RouteComponent,

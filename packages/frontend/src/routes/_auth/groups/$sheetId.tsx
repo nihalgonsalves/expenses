@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { useTRPC, type QueryOptionsContext } from "../../../api/trpc";
-import { useCurrentUser } from "../../../api/useCurrentUser";
-import type { ActorInfo } from "../../../components/group-sheets/BalanceSummary";
-import { GroupSheet } from "../../../components/group-sheets/GroupSheet";
-import { RootLoader } from "../../../pages/Root";
+import { useCurrentUser } from "../../../api/use-current-user";
+import type { ActorInfo } from "../../../components/group-sheets/balance-summary";
+import { GroupSheet } from "../../../components/group-sheets/group-sheet";
+import { RootLoader } from "../../../pages/root";
 
 const queryOptions = (context: QueryOptionsContext, sheetId: string) =>
   context.trpc.sheet.groupSheetById.queryOptions(sheetId);

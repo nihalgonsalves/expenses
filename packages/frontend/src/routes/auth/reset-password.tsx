@@ -4,7 +4,7 @@ import { z } from "zod";
 import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
 
 import { Alert, AlertTitle } from "../../components/ui/alert";
-import { Root } from "../../pages/Root";
+import { Root } from "../../pages/root";
 import { AuthView } from "@daveyplate/better-auth-ui";
 
 export const Route = createFileRoute(RESET_PASSWORD_ROUTE)({

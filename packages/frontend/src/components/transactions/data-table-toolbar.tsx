@@ -9,8 +9,8 @@ import type { DateRange } from "react-day-picker";
 import { z } from "zod";
 
 import { useTRPC } from "../../api/trpc";
-import { useBreakpoint } from "../../utils/hooks/useBreakpoint";
-import { CategoryIcon } from "../CategoryAvatar";
+import { useBreakpoint } from "../../utils/hooks/use-breakpoint";
+import { CategoryIcon } from "../category-avatar";
 import { Button } from "../ui/button";
 import {
   Collapsible,

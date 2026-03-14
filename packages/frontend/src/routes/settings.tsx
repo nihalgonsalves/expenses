@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useCurrentUser } from "../api/useCurrentUser";
-import { AppearanceForm } from "../components/settings/AppearanceForm";
-import { CategoryForm } from "../components/settings/CategoryForm";
-import { NotificationPreferenceForm } from "../components/settings/NotificationPreferenceForm";
-import { PrivacyForm } from "../components/settings/PrivacyForm";
-import { TroubleshootingForm } from "../components/settings/TroubleshootingForm";
-import { Root } from "../pages/Root";
+import { useCurrentUser } from "../api/use-current-user";
+import { AppearanceForm } from "../components/settings/appearance-form";
+import { CategoryForm } from "../components/settings/category-form";
+import { NotificationPreferenceForm } from "../components/settings/notification-preference-form";
+import { PrivacyForm } from "../components/settings/privacy-form";
+import { TroubleshootingForm } from "../components/settings/troubleshooting-form";
+import { Root } from "../pages/root";
 import {
   ChangeEmailCard,
   ChangePasswordCard,
@@ -20,7 +20,7 @@ import {
   NativeSelectOption,
 } from "#/components/ui/native-select";
 import { useState } from "react";
-import { VerifyEmailCard } from "#/components/settings/VerifyEmailCard";
+import { VerifyEmailCard } from "#/components/settings/verify-email-card";
 
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
