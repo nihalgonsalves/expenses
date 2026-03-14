@@ -1077,7 +1077,7 @@ describe("deleteTransactionSchedule", () => {
 });
 
 describe("getTransaction", () => {
-  it("returns a transaction", async () => {
+  it("returns a personal transaction", async () => {
     const userAndCookie = await userFactory(prisma, betterAuth);
 
     const user = userAndCookie.user;
@@ -1102,6 +1102,47 @@ describe("getTransaction", () => {
       }),
     ).resolves.toMatchObject({
       id,
+    });
+  });
+
+  it("returns a group transaction", async () => {
+    const [userAndCookie, memberWithToken] = await Promise.all([
+      userFactory(prisma, betterAuth),
+      userFactory(prisma, betterAuth),
+    ]);
+    const user = userAndCookie.user;
+    const member = memberWithToken.user;
+
+    const caller = useProtectedCaller(userAndCookie);
+
+    const groupSheet = await groupSheetFactory(prisma, {
+      withOwnerId: user.id,
+      withParticipantIds: [member.id],
+    });
+
+    const { id, description } =
+      await caller.transaction.createGroupSheetTransaction(
+        createGroupSheetTransactionInput(
+          "EXPENSE",
+          groupSheet.id,
+          groupSheet.currencyCode,
+          user.id,
+          member.id,
+        ),
+      );
+
+    await expect(
+      caller.transaction.getTransaction({
+        sheetId: groupSheet.id,
+        transactionId: id,
+      }),
+    ).resolves.toMatchObject({
+      id,
+      description,
+      participants: [
+        { id: member.id, balance: { share: { amount: -75_00, scale: 2 } } },
+        { id: user.id, balance: { share: { amount: -25_00, scale: 2 } } },
+      ],
     });
   });
 

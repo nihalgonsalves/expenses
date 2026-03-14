@@ -23,6 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { EditTransactionDialog } from "../group-sheets/TransactionForm";
 
 type DataTableRowActionsProps = {
   row: Row<ConvertedTransactionWithSheet>;
@@ -94,6 +95,7 @@ const PersonalTransactionDropdownContent = ({
 
 const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
   const deleteDialogControls = useDialogControls();
+  const editDialogControls = useDialogControls();
 
   const { trpc, invalidate } = useTRPC();
   const { mutateAsync: deleteTransaction } = useMutation(
@@ -121,7 +123,20 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
 
   return (
     <>
+      <EditTransactionDialog
+        transactionId={transactionId}
+        sheetId={sheetId}
+        dialogProps={editDialogControls}
+      />
+
       <DropdownMenuContent align="end">
+        <DropdownMenuItem
+          onClick={() => {
+            editDialogControls.handleSetOpen(true);
+          }}
+        >
+          <PencilIcon className="mr-3 size-3" /> Edit
+        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
             deleteDialogControls.handleSetOpen(true);

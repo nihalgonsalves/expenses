@@ -22,6 +22,7 @@ import {
   ZGetAllUserTransactionsInput,
   ZBalanceSimplificationResponse,
   type TransactionWithSheet,
+  ZReplaceGroupSheetTransactionInput,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import { ZCategoryEmoji } from "@nihalgonsalves/expenses-shared/types/user";
 
@@ -136,6 +137,35 @@ export const transactionRouter = router({
       );
     }),
 
+  replaceGroupSheetTransaction: protectedProcedure
+    .input(ZReplaceGroupSheetTransactionInput)
+    .output(ZCreateSheetTransactionResponse)
+    .mutation(async ({ input, ctx }) => {
+      const { sheet } = await ctx.sheetService.ensureGroupSheetMembership(
+        input.groupSheetId,
+        ctx.user.id,
+      );
+
+      const groupParticipants = new Set(sheet.participants.map(({ id }) => id));
+      const transactionParticipants = [
+        input.paidOrReceivedById,
+        ...input.splits.map(({ participantId }) => participantId),
+      ];
+
+      if (transactionParticipants.some((id) => !groupParticipants.has(id))) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid participants",
+        });
+      }
+
+      return ctx.transactionService.replaceGroupSheetTransaction(
+        ctx.user,
+        input,
+        sheet,
+      );
+    }),
+
   createGroupSheetSettlement: protectedProcedure
     .input(ZCreateGroupSheetSettlementInput)
     .output(ZCreateGroupSheetSettlementResponse)
@@ -211,16 +241,6 @@ export const transactionRouter = router({
         ctx.user.id,
       );
 
-      const sheetType = sheet.type;
-
-      // TODO
-      if (sheetType === "GROUP") {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Cannot getTransaction for a group sheet",
-        });
-      }
-
       const transaction = await ctx.transactionService.getTransaction(
         transactionId,
         sheet,
@@ -233,11 +253,34 @@ export const transactionRouter = router({
         });
       }
 
-      return {
-        ...mapTransaction(transaction, sheet),
-        sheet,
-        sheetType,
-      };
+      const sheetType = sheet.type;
+      switch (sheetType) {
+        case "PERSONAL": {
+          return {
+            ...mapTransaction(transaction, sheet),
+            sheet,
+            sheetType,
+          };
+        }
+
+        case "GROUP": {
+          const participantBalances = calculateBalances(
+            sheet,
+            transaction.type,
+            transaction.transactionEntries,
+          );
+
+          return {
+            ...mapTransaction(transaction, sheet),
+            sheet,
+            sheetType,
+            participants: participantBalances,
+            yourBalance: participantBalances.find(
+              ({ id }) => id === ctx.user.id,
+            )?.balance,
+          };
+        }
+      }
     }),
 
   getAllUserTransactions: protectedProcedure

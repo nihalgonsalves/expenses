@@ -23,7 +23,7 @@ import { MoneyField } from "../form/MoneyField";
 import {
   ResponsiveDialog,
   useDialog,
-  type DialogControlsOrRender,
+  type DialogControls,
 } from "../form/ResponsiveDialog";
 import { Button } from "../ui/button";
 import {
@@ -243,14 +243,17 @@ export const EditPersonalTransactionDialog = ({
 }: {
   sheetId: string;
   transactionId: string;
-  dialogProps: DialogControlsOrRender;
+  dialogProps: DialogControls;
 }) => {
   const { trpc } = useTRPC();
   const { data } = useQuery(
-    trpc.transaction.getTransaction.queryOptions({
-      sheetId,
-      transactionId,
-    }),
+    trpc.transaction.getTransaction.queryOptions(
+      {
+        sheetId,
+        transactionId,
+      },
+      { enabled: dialogProps.open },
+    ),
   );
 
   return (

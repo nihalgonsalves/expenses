@@ -45,7 +45,7 @@ export const ErrorBoundary = ({ children }: { children: ReactNode }) => (
           : "Unknown Error";
 
       return (
-        <Collapsible>
+        <Collapsible className="bg-background">
           <Alert variant="destructive" className="flex flex-col gap-2">
             <AlertTitle>Something went wrong</AlertTitle>
             <AlertDescription className="flex gap-2">

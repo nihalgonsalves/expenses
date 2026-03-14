@@ -59,7 +59,7 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
   await expect(updatedListItem).toBeVisible();
 });
 
-test(`creates a shared sheet transaction successfully`, async ({
+test(`creates and edits a shared sheet transaction successfully`, async ({
   page,
   serverTRPCClient,
   signIn,
@@ -99,4 +99,27 @@ test(`creates a shared sheet transaction successfully`, async ({
     .filter({ hasText: "-€100.00" });
 
   await expect(row).toBeVisible();
+
+  // edit
+
+  await row.getByRole("button", { name: /open menu/i, exact: true }).click();
+  await page.getByRole("menuitem", { name: "Edit" }).click();
+
+  await page.getByLabel(/how much/i).clear();
+  await page.getByLabel(/how much/i).pressSequentially("20000");
+  await page.getByRole("button", { name: /update/i }).click();
+
+  // we're in "Enter Amounts" mode because the type is lost,
+  // if we change the values, we need to update the splits as well
+  // TODO: also test updating various splits
+  await page.getByRole("button", { name: "Split Evenly" }).click();
+
+  // list again
+
+  const updatedListItem = page
+    .getByRole("button")
+    .filter({ hasText: "-€200.00" })
+    .first();
+
+  await expect(updatedListItem).toBeVisible();
 });

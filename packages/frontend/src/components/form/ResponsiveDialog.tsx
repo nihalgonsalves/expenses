@@ -24,7 +24,7 @@ import {
 } from "../ui/dialog";
 import type { RenderProp } from "../ui/utils";
 
-type DialogControls = {
+export type DialogControls = {
   triggerType: "controlled";
   open: boolean;
   handleSetOpen: (value: boolean) => void;
@@ -91,7 +91,7 @@ export const ResponsiveDialog = ({
   description,
   children,
   ...props
-}: ResponsiveDialogProps & DialogControlsOrRender) => {
+}: ResponsiveDialogProps) => {
   const uncontrolledControls = useDialogControls();
 
   const { open, handleSetOpen } =

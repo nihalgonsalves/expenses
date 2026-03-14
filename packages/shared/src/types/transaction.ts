@@ -83,6 +83,15 @@ export type CreateGroupSheetTransactionInput = z.infer<
   typeof ZCreateGroupSheetTransactionInput
 >;
 
+export const ZReplaceGroupSheetTransactionInput =
+  ZCreateGroupSheetTransactionInput.extend({
+    transactionId: z.string().min(1),
+  });
+
+export type ReplaceGroupSheetTransactionInput = z.infer<
+  typeof ZReplaceGroupSheetTransactionInput
+>;
+
 export const ZCreateSheetTransactionResponse = z.object({
   id: z.string().min(1),
   description: z.string(),

@@ -23,6 +23,7 @@ import type {
   CreatePersonalSheetTransactionScheduleInput,
   UpdatePersonalSheetTransactionInput,
   BalanceSimplificationResponse,
+  ReplaceGroupSheetTransactionInput,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
@@ -415,6 +416,8 @@ export class TransactionService {
     user: User,
     input: Omit<CreateGroupSheetTransactionInput, "groupSheetId">,
     groupSheet: Sheet,
+    prismaClient = this.prismaClient,
+    transactionId = generateId(),
   ) {
     verifyCurrencies(
       groupSheet.currencyCode,
@@ -436,7 +439,7 @@ export class TransactionService {
       });
     }
 
-    const transaction = await this.prismaClient.transaction.create({
+    const transaction = await prismaClient.transaction.create({
       include: {
         transactionEntries: {
           include: {
@@ -445,7 +448,7 @@ export class TransactionService {
         },
       },
       data: {
-        id: generateId(),
+        id: transactionId,
         sheet: { connect: { id: groupSheet.id } },
         amount: input.money.amount,
         scale: input.money.scale,
@@ -517,6 +520,27 @@ export class TransactionService {
     return transaction;
   }
 
+  async replaceGroupSheetTransaction(
+    user: User,
+    input: Omit<ReplaceGroupSheetTransactionInput, "groupSheetId">,
+    groupSheet: Sheet,
+  ) {
+    return this.prismaClient.$transaction(async (prismaClient) => {
+      const [_deleteOp, createOp] = await Promise.all([
+        this.deleteTransaction(input.transactionId, groupSheet, prismaClient),
+        this.createGroupSheetTransaction(
+          user,
+          input,
+          groupSheet,
+          prismaClient,
+          input.transactionId,
+        ),
+      ]);
+
+      return createOp;
+    });
+  }
+
   async createSettlement(
     user: User,
     input: Omit<CreateGroupSheetSettlementInput, "groupSheetId">,
@@ -578,13 +602,24 @@ export class TransactionService {
       where: { id, sheetId: sheet.id },
       include: {
         sheet: true,
+        transactionEntries: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
 
-  async deleteTransaction(id: string, groupSheet: Sheet) {
+  // this is in the parameter defaults
+  // oxlint-disable-next-line class-methods-use-this
+  async deleteTransaction(
+    id: string,
+    groupSheet: Sheet,
+    prismaClient = this.prismaClient,
+  ) {
     try {
-      await this.prismaClient.transaction.delete({
+      await prismaClient.transaction.delete({
         where: { id, sheetId: groupSheet.id },
       });
     } catch (error) {
