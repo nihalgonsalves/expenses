@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm run --stream \"/^dev:.*/\"",
-    "dev:vite": "VITE_GIT_COMMIT_SHA=\"$(git rev-parse HEAD)$(git diff --quiet || echo '-dirty')\" VITE_ENV_NAME=local vite --clearScreen=false --host --port 5173",
+    "dev:vite": "VITE_ROOT=$(pwd) VITE_GIT_COMMIT_SHA=\"$(git rev-parse HEAD)$(git diff --quiet || echo '-dirty')\" VITE_ENV_NAME=local vite --clearScreen=false --host --port 5173",
     "dev:storybook": "storybook dev --port 6006 --no-open",
     "build": "pnpm run --stream \"/^build:.*/\"",
     "build:vite": "vite build",
@@ -79,6 +79,9 @@
   "devDependencies": {
     "@babel/preset-typescript": "7.28.5",
     "@codecov/vite-plugin": "1.9.1",
+    "@react-trace/core": "0.0.5",
+    "@react-trace/plugin-copy-to-clipboard": "0.0.5",
+    "@react-trace/plugin-open-editor": "0.0.5",
     "@rolldown/plugin-babel": "0.2.0",
     "@storybook/addon-docs": "10.2.17",
     "@storybook/addon-links": "10.2.17",
@@ -95,7 +98,6 @@
     "@vitest/coverage-v8": "4.1.0",
     "babel-plugin-react-compiler": "1.0.0",
     "chromatic": "15.2.0",
-    "code-inspector-plugin": "1.4.4",
     "happy-dom": "20.8.3",
     "playwright": "1.58.2",
     "react-scan": "0.5.3",

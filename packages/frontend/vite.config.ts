@@ -7,7 +7,6 @@ import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 
-import { codeInspectorPlugin } from "code-inspector-plugin";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import IstanbulPlugin from "vite-plugin-istanbul";
@@ -51,11 +50,6 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
     tanstackRouter({ autoCodeSplitting: true }),
-    mode === "development" &&
-      codeInspectorPlugin({
-        bundler: "vite",
-        hideConsole: true,
-      }),
     react(),
     babel({
       presets: [

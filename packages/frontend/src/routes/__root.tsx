@@ -6,6 +6,9 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { Trace } from "@react-trace/core";
+import { CopyToClipboardPlugin } from "@react-trace/plugin-copy-to-clipboard";
+import { OpenEditorPlugin } from "@react-trace/plugin-open-editor";
 import { MotionConfig } from "motion/react";
 import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
 import { AuthUIProviderTanstack } from "@daveyplate/better-auth-ui/tanstack";
@@ -78,7 +81,14 @@ function RootComponent() {
       <Toaster />
       {context.user != null && <PWAInstall />}
       {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
-        <TanStackRouterDevtools position="bottom-right" />
+        <>
+          <TanStackRouterDevtools position="bottom-right" />
+          <Trace
+            // oxlint-disable-next-line typescript/no-unsafe-assignment
+            root={import.meta.env["VITE_ROOT"]}
+            plugins={[CopyToClipboardPlugin(), OpenEditorPlugin()]}
+          />
+        </>
       ) : null}
     </>
   );
