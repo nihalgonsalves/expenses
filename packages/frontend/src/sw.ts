@@ -42,7 +42,11 @@ const getActionText = (action: "created" | "updated" | "deleted") => {
 
 const getNotificationPresentation = (payload: NotificationPayload) => {
   if (payload.type === "TEST") {
-    return { title: "Test Notification", body: payload.message };
+    return {
+      tag: "test",
+      title: "Test Notification",
+      body: payload.message,
+    };
   }
 
   const formattedMoney = formatCurrency(payload.transaction.money, {
@@ -54,6 +58,7 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
 
   if (payload.type === "TRANSFER") {
     return {
+      tag: payload.transaction.id,
       title,
       body: `You ${payload.transaction.type} ${formattedMoney} for ${description}`,
     };
@@ -65,6 +70,7 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
 
   if (payload.type === "EXPENSE") {
     return {
+      tag: payload.transaction.id,
       title,
       body: `${getActionText(payload.action)} expense: ${description} – your share is ${formattedShare}`,
     };
@@ -72,6 +78,7 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
 
   // (payload.type === 'INCOME')
   return {
+    tag: payload.transaction.id,
     title,
     body: `${getActionText(payload.action)} income: ${description} – your share is ${formattedShare}`,
   };
@@ -80,12 +87,17 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
 const handlePush = async (event: PushEvent) => {
   const result = ZNotificationPayload.safeParse(event.data?.json());
 
-  const { title, body } = result.success
+  const { tag, title, body } = result.success
     ? getNotificationPresentation(result.data)
-    : { title: "Unknown Notification", body: "Open the app to see more" };
+    : {
+        tag: "unknown",
+        title: "Unknown Notification",
+        body: "Open the app to see more",
+      };
 
   await self.registration.showNotification(title, {
     body,
+    tag,
   });
 };
 
