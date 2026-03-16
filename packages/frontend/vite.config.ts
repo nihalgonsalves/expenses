@@ -25,7 +25,6 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2024",
     sourcemap: true,
-    cssMinify: "lightningcss",
     rollupOptions: {
       onwarn(warning, warn) {
         // Suppress "Module level directives cause errors when bundled" warnings
