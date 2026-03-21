@@ -7,6 +7,7 @@ import { ResponsiveDialog } from "../form/responsive-dialog";
 import { CreateGroupSheetTransactionDialog } from "../group-sheets/create-group-sheet-transaction-dialog";
 import { CreatePersonalTransactionDialog } from "../personal-sheets/create-personal-transaction-dialog";
 import { Button } from "../ui/button";
+import { haptics } from "bzzz";
 
 export const QuickCreateTransactionFAB = () => {
   const { trpc } = useTRPC();
@@ -31,7 +32,13 @@ export const QuickCreateTransactionFAB = () => {
               key={sheet.id}
               sheetId={sheet.id}
               render={
-                <Button className="w-full" variant="outline">
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => {
+                    haptics.selection();
+                  }}
+                >
                   {sheet.name}
                 </Button>
               }
@@ -41,7 +48,13 @@ export const QuickCreateTransactionFAB = () => {
               key={sheet.id}
               sheetId={sheet.id}
               render={
-                <Button className="w-full" variant="outline">
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => {
+                    haptics.selection();
+                  }}
+                >
                   {sheet.name}
                 </Button>
               }

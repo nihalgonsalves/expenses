@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { haptics } from "bzzz";
 
 export const CreateSheetForm = ({
   defaultCurrencyCode,
@@ -49,23 +50,35 @@ export const CreateSheetForm = ({
   const onSubmit = async (
     values: z.infer<typeof ZCreatePersonalSheetInput>,
   ) => {
-    const { id } = await createSheet(values);
+    try {
+      const { id } = await createSheet(values);
 
-    dialog.dismiss();
-    await navigate({
-      to: `/sheets/$sheetId`,
-      params: { sheetId: id },
-      replace: true,
-    });
+      haptics.success();
+      dialog.dismiss();
 
-    await invalidate(trpc.sheet.mySheets.queryKey());
+      await navigate({
+        to: `/sheets/$sheetId`,
+        params: { sheetId: id },
+        replace: true,
+      });
+
+      await invalidate(trpc.sheet.mySheets.queryKey());
+    } catch (e) {
+      haptics.error();
+      throw e;
+    }
   };
 
   const disabled = !onLine;
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, () => {
+          haptics.error();
+        })}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="name"

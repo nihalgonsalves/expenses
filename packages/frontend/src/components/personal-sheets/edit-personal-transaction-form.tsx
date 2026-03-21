@@ -36,6 +36,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { haptics } from "bzzz";
 
 const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
   id: true,
@@ -103,16 +104,23 @@ const EditPersonalTransactionForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const money = convertedMoneySnapshot ?? moneySnapshot;
 
-    await updatePersonalSheetTransaction({
-      id: transaction.id,
-      // this should not be required, but the returned type has an extraneous 'TRANSFER' value
-      type: z.enum(["EXPENSE", "INCOME"]).parse(transaction.type),
-      personalSheetId: personalSheet.id,
-      money,
-      category: values.category,
-      description: values.description,
-      spentAt: dateTimeLocalToZonedISOString(values.spentAt),
-    });
+    try {
+      await updatePersonalSheetTransaction({
+        id: transaction.id,
+        // this should not be required, but the returned type has an extraneous 'TRANSFER' value
+        type: z.enum(["EXPENSE", "INCOME"]).parse(transaction.type),
+        personalSheetId: personalSheet.id,
+        money,
+        category: values.category,
+        description: values.description,
+        spentAt: dateTimeLocalToZonedISOString(values.spentAt),
+      });
+    } catch (e) {
+      haptics.error();
+      throw e;
+    }
+
+    haptics.success();
     dialog.dismiss();
 
     await invalidate(
@@ -135,7 +143,12 @@ const EditPersonalTransactionForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, () => {
+          haptics.error();
+        })}
+        className="space-y-4"
+      >
         <div className="flex gap-4">
           <div className="grow">
             <FormField

@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { haptics } from "bzzz";
 
 export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const dialog = useDialog();
@@ -43,22 +44,35 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const onSubmit = async (
     values: z.infer<typeof ZAddGroupSheetMemberInput>,
   ) => {
-    await addGroupSheetMember(values);
+    try {
+      await addGroupSheetMember(values);
+    } catch (e) {
+      haptics.error();
+      throw e;
+    }
+
+    haptics.success();
+    dialog.dismiss();
 
     await invalidate(
       trpc.sheet.groupSheetById.queryKey(groupSheetId),
       trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
       trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
     );
-
-    dialog.dismiss();
   };
 
   return (
     <ResponsiveDialog
       triggerType="trigger"
       render={
-        <Button variant="outline" size="icon" disabled={!onLine}>
+        <Button
+          variant="outline"
+          size="icon"
+          disabled={!onLine}
+          onClick={() => {
+            haptics.selection();
+          }}
+        >
           <AccessibleIcon label="Add Participant">
             <PlusIcon />
           </AccessibleIcon>
@@ -69,7 +83,9 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
       <Form {...form}>
         <form
           className="flex flex-col gap-2"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, () => {
+            haptics.error();
+          })}
         >
           <FormField
             control={form.control}

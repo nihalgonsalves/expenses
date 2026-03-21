@@ -37,6 +37,7 @@ import {
 import { cn } from "../ui/utils";
 
 import { ParticipantListItem } from "./participant-list-item";
+import { haptics } from "bzzz";
 
 export type ActorInfo = { id: string; isAdmin: boolean };
 
@@ -208,7 +209,14 @@ const TransferItem = ({
         onConfirm={handleSettleUp}
         triggerType="trigger"
         render={
-          <Button isLoading={isPending} type="button" variant="outline">
+          <Button
+            isLoading={isPending}
+            type="button"
+            variant="outline"
+            onClick={() => {
+              haptics.selection();
+            }}
+          >
             <CheckIcon className="mr-2" /> Settled?
           </Button>
         }

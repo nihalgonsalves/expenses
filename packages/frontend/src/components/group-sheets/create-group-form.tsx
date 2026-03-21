@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { haptics } from "bzzz";
 
 export const CreateGroupForm = ({
   defaultCurrencyCode,
@@ -47,23 +48,35 @@ export const CreateGroupForm = ({
   });
 
   const onSubmit = async (values: z.infer<typeof ZCreateGroupSheetInput>) => {
-    const { id } = await createGroupSheet(values);
+    try {
+      const { id } = await createGroupSheet(values);
 
-    dialog.dismiss();
-    await navigate({
-      to: `/groups/$sheetId`,
-      params: { sheetId: id },
-      replace: true,
-    });
+      haptics.success();
+      dialog.dismiss();
 
-    await invalidate(trpc.sheet.mySheets.queryKey());
+      await navigate({
+        to: `/groups/$sheetId`,
+        params: { sheetId: id },
+        replace: true,
+      });
+
+      await invalidate(trpc.sheet.mySheets.queryKey());
+    } catch (error) {
+      haptics.error();
+      throw error;
+    }
   };
 
   const disabled = !onLine;
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, () => {
+          haptics.error();
+        })}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="name"

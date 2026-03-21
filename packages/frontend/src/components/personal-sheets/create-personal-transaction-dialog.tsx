@@ -42,6 +42,7 @@ import {
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 import type { RenderProp } from "../ui/utils";
+import { haptics } from "bzzz";
 
 const TYPE_OPTIONS = [
   {
@@ -186,26 +187,32 @@ const CreatePersonalTransactionForm = ({
       description: values.description,
     };
 
-    if (values.recurrenceRule?.freq) {
-      await createPersonalSheetTransactionSchedule({
-        ...commonValues,
-        firstOccurrenceAt: dateTimeLocalToZonedISOString(dateTime),
-        recurrenceRule: {
-          freq: values.recurrenceRule.freq,
-        },
-      });
-      await navigate({
-        to: `/sheets/$sheetId`,
-        params: { sheetId: personalSheet.id },
-        replace: true,
-      });
-    } else {
-      await createPersonalSheetTransaction({
-        ...commonValues,
-        spentAt: dateTimeLocalToZonedISOString(dateTime),
-      });
+    try {
+      if (values.recurrenceRule?.freq) {
+        await createPersonalSheetTransactionSchedule({
+          ...commonValues,
+          firstOccurrenceAt: dateTimeLocalToZonedISOString(dateTime),
+          recurrenceRule: {
+            freq: values.recurrenceRule.freq,
+          },
+        });
+        await navigate({
+          to: `/sheets/$sheetId`,
+          params: { sheetId: personalSheet.id },
+          replace: true,
+        });
+      } else {
+        await createPersonalSheetTransaction({
+          ...commonValues,
+          spentAt: dateTimeLocalToZonedISOString(dateTime),
+        });
+      }
+    } catch (e) {
+      haptics.error();
+      throw e;
     }
 
+    haptics.success();
     dialog.dismiss();
 
     await invalidate(
@@ -223,7 +230,12 @@ const CreatePersonalTransactionForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, () => {
+          haptics.error();
+        })}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="type"

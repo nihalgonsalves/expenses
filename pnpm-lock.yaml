@@ -320,6 +320,9 @@ importers:
       better-auth:
         specifier: 1.5.5
         version: 1.5.5(@prisma/client@7.5.0(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3))(typescript@5.9.3))(drizzle-orm@0.45.1(@electric-sql/pglite@0.3.15)(@opentelemetry/api@1.9.0)(@prisma/client@7.5.0(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3))(typescript@5.9.3))(@types/pg@8.18.0)(kysely@0.28.11)(mysql2@3.15.3)(pg@8.20.0)(postgres@3.4.7)(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)))(mongodb@7.1.0)(mysql2@3.15.3)(pg@8.20.0)(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.1.0)(vue@3.5.30(typescript@5.9.3))
+      bzzz:
+        specifier: 0.1.1
+        version: 0.1.1(react@19.2.4)
       class-variance-authority:
         specifier: 0.7.1
         version: 0.7.1
@@ -5111,6 +5114,15 @@ packages:
   bytes@3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
+
+  bzzz@0.1.1:
+    resolution: {integrity: sha512-s8BFaeN4zIohFxv892B/t/BpXaHlWVKBWiJbys2wBqoAze6tgYA1xHF9niTlMBvFrQujyV8/XltZbIppXPPV4w==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: '>=18'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   c12@3.1.0:
     resolution: {integrity: sha512-uWoS8OU1MEIsOv8p/5a82c3H31LsWVR5qiyXVfBNOzfffjUWtPnhAb4BYI2uG2HfGmZmFjCtui5XNWaps+iFuw==}
@@ -13681,62 +13693,6 @@ snapshots:
       - vue
     optional: true
 
-  '@vitejs/devtools-rolldown@0.0.0-alpha.34(@pnpm/logger@1001.0.1)(ioredis@5.9.3)(typescript@5.9.3)(vite@8.0.0)(vue@3.5.30(typescript@5.9.3))':
-    dependencies:
-      '@floating-ui/dom': 1.7.6
-      '@pnpm/read-project-manifest': 1001.2.5(@pnpm/logger@1001.0.1)
-      '@rolldown/debug': 1.0.0-rc.9
-      '@vitejs/devtools-kit': 0.0.0-alpha.34(typescript@5.9.3)(vite@8.0.0)(ws@8.19.0)
-      '@vitejs/devtools-rpc': 0.0.0-alpha.34(typescript@5.9.3)(ws@8.19.0)
-      ansis: 4.2.0
-      birpc: 4.0.0
-      cac: 7.0.0
-      d3-shape: 3.2.0
-      diff: 8.0.3
-      get-port-please: 3.2.0
-      h3: 1.15.6
-      mlly: 1.8.1
-      mrmime: 2.0.1
-      ohash: 2.0.11
-      p-limit: 7.3.0
-      pathe: 2.0.3
-      publint: 0.3.18
-      sirv: 3.0.2
-      split2: 4.2.0
-      structured-clone-es: 1.0.0
-      tinyglobby: 0.2.15
-      unconfig: 7.5.0
-      unstorage: 1.17.4(ioredis@5.9.3)
-      vue-virtual-scroller: 2.0.0-beta.10(vue@3.5.30(typescript@5.9.3))
-      ws: 8.19.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@pnpm/logger'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/functions'
-      - '@vercel/kv'
-      - aws4fetch
-      - bufferutil
-      - db0
-      - idb-keyval
-      - ioredis
-      - typescript
-      - uploadthing
-      - utf-8-validate
-      - vite
-      - vue
-    optional: true
-
   '@vitejs/devtools-rolldown@0.1.1(@pnpm/logger@1001.0.1)(ioredis@5.10.0)(typescript@5.9.3)(vite@8.0.0)(vue@3.5.30(typescript@5.9.3))':
     dependencies:
       '@floating-ui/dom': 1.7.6
@@ -13835,52 +13791,6 @@ snapshots:
       sirv: 3.0.2
       tinyexec: 1.0.4
       vite: 8.0.0(@types/node@24.12.0)(@vitejs/devtools@0.0.0-alpha.34)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
-      ws: 8.19.0
-    transitivePeerDependencies:
-      - '@azure/app-configuration'
-      - '@azure/cosmos'
-      - '@azure/data-tables'
-      - '@azure/identity'
-      - '@azure/keyvault-secrets'
-      - '@azure/storage-blob'
-      - '@capacitor/preferences'
-      - '@deno/kv'
-      - '@netlify/blobs'
-      - '@planetscale/database'
-      - '@pnpm/logger'
-      - '@upstash/redis'
-      - '@vercel/blob'
-      - '@vercel/functions'
-      - '@vercel/kv'
-      - aws4fetch
-      - bufferutil
-      - db0
-      - idb-keyval
-      - ioredis
-      - typescript
-      - uploadthing
-      - utf-8-validate
-      - vue
-    optional: true
-
-  '@vitejs/devtools@0.0.0-alpha.34(@pnpm/logger@1001.0.1)(ioredis@5.9.3)(typescript@5.9.3)(vite@8.0.0)(vue@3.5.30(typescript@5.9.3))':
-    dependencies:
-      '@vitejs/devtools-kit': 0.0.0-alpha.34(typescript@5.9.3)(vite@8.0.0)(ws@8.19.0)
-      '@vitejs/devtools-rolldown': 0.0.0-alpha.34(@pnpm/logger@1001.0.1)(ioredis@5.9.3)(typescript@5.9.3)(vite@8.0.0)(vue@3.5.30(typescript@5.9.3))
-      '@vitejs/devtools-rpc': 0.0.0-alpha.34(typescript@5.9.3)(ws@8.19.0)
-      birpc: 4.0.0
-      cac: 7.0.0
-      h3: 1.15.6
-      immer: 11.1.4
-      launch-editor: 2.13.1
-      mlly: 1.8.1
-      obug: 2.1.1
-      open: 11.0.0
-      pathe: 2.0.3
-      perfect-debounce: 2.1.0
-      sirv: 3.0.2
-      tinyexec: 1.0.4
-      vite: 8.0.0(@types/node@25.5.0)(@vitejs/devtools@0.0.0-alpha.34)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
       ws: 8.19.0
     transitivePeerDependencies:
       - '@azure/app-configuration'
@@ -14089,7 +13999,7 @@ snapshots:
       magic-string: 0.30.21
     optionalDependencies:
       msw: 2.12.11(@types/node@25.5.0)(typescript@5.9.3)
-      vite: 8.0.0(@types/node@25.5.0)(@vitejs/devtools@0.0.0-alpha.34)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 8.0.0(@types/node@25.5.0)(@vitejs/devtools@0.1.1)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
 
   '@vitest/pretty-format@3.2.4':
     dependencies:
@@ -14126,7 +14036,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.1.0(@opentelemetry/api@1.9.0)(@types/node@24.12.0)(@vitest/browser-playwright@4.1.0)(@vitest/ui@4.1.0)(happy-dom@20.8.4)(msw@2.12.11(@types/node@24.12.0)(typescript@5.9.3))(vite@8.0.0)
+      vitest: 4.1.0(@opentelemetry/api@1.9.0)(@types/node@25.5.0)(@vitest/browser-playwright@4.1.0)(@vitest/ui@4.1.0)(happy-dom@20.8.4)(msw@2.12.11(@types/node@25.5.0)(typescript@5.9.3))(vite@8.0.0)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -14708,6 +14618,10 @@ snapshots:
   byline@5.0.0: {}
 
   bytes@3.1.2: {}
+
+  bzzz@0.1.1(react@19.2.4):
+    optionalDependencies:
+      react: 19.2.4
 
   c12@3.1.0:
     dependencies:
@@ -18604,20 +18518,6 @@ snapshots:
     optionalDependencies:
       ioredis: 5.10.0
 
-  unstorage@1.17.4(ioredis@5.9.3):
-    dependencies:
-      anymatch: 3.1.3
-      chokidar: 5.0.0
-      destr: 2.0.5
-      h3: 1.15.6
-      lru-cache: 11.2.7
-      node-fetch-native: 1.6.7
-      ofetch: 1.5.1
-      ufo: 1.6.3
-    optionalDependencies:
-      ioredis: 5.9.3
-    optional: true
-
   until-async@3.0.2: {}
 
   upath@1.2.0: {}
@@ -18717,24 +18617,6 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.2
 
-  vite@8.0.0(@types/node@25.5.0)(@vitejs/devtools@0.0.0-alpha.34)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
-    dependencies:
-      '@oxc-project/runtime': 0.115.0
-      lightningcss: 1.32.0
-      picomatch: 4.0.3
-      postcss: 8.5.8
-      rolldown: 1.0.0-rc.9
-      tinyglobby: 0.2.15
-    optionalDependencies:
-      '@types/node': 25.5.0
-      '@vitejs/devtools': 0.0.0-alpha.34(@pnpm/logger@1001.0.1)(ioredis@5.9.3)(typescript@5.9.3)(vite@8.0.0)(vue@3.5.30(typescript@5.9.3))
-      esbuild: 0.27.4
-      fsevents: 2.3.3
-      jiti: 2.6.1
-      terser: 5.44.1
-      tsx: 4.21.0
-      yaml: 2.8.2
-
   vite@8.0.0(@types/node@25.5.0)(@vitejs/devtools@0.1.1)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
       '@oxc-project/runtime': 0.115.0
@@ -18804,7 +18686,7 @@ snapshots:
       tinyexec: 1.0.4
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 8.0.0(@types/node@25.5.0)(@vitejs/devtools@0.0.0-alpha.34)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vite: 8.0.0(@types/node@25.5.0)(@vitejs/devtools@0.1.1)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@opentelemetry/api': 1.9.0

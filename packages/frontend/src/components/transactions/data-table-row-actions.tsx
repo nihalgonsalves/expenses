@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { EditTransactionDialog } from "../group-sheets/transaction-form";
+import { haptics } from "bzzz";
 
 type DataTableRowActionsProps = {
   row: Row<ConvertedTransactionWithSheet>;
@@ -78,6 +79,7 @@ const PersonalTransactionDropdownContent = ({
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => {
+            haptics.selection();
             editDialogControls.handleSetOpen(true);
           }}
         >
@@ -85,6 +87,7 @@ const PersonalTransactionDropdownContent = ({
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
+            haptics.selection();
             deleteDialogControls.handleSetOpen(true);
           }}
         >
@@ -136,6 +139,7 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => {
+            haptics.selection();
             editDialogControls.handleSetOpen(true);
           }}
         >
@@ -143,6 +147,7 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
+            haptics.selection();
             deleteDialogControls.handleSetOpen(true);
           }}
         >

@@ -19,6 +19,7 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { cn, twx } from "./ui/utils";
+import { haptics } from "bzzz";
 
 const partitionSheets = (sheets: SheetsResponse) => {
   const personal: SheetsResponse = [];
@@ -79,7 +80,13 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
             Personal Sheets
             <NewPersonalSheetDialog
               render={
-                <Button size="icon" variant="outline">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => {
+                    haptics.selection();
+                  }}
+                >
                   <AccessibleIcon label="New personal sheet">
                     <PlusIcon />
                   </AccessibleIcon>
@@ -101,7 +108,13 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
             Group Sheets
             <NewGroupSheetDialog
               render={
-                <Button size="icon" variant="outline">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => {
+                    haptics.selection();
+                  }}
+                >
                   <AccessibleIcon label="New group sheet">
                     <PlusIcon />
                   </AccessibleIcon>

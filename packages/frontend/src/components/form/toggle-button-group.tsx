@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { haptics } from "bzzz";
 
 export const ToggleButtonGroup = <T extends string>({
   className,
@@ -29,6 +30,9 @@ export const ToggleButtonGroup = <T extends string>({
       <ToggleGroupItem
         key={option.value}
         value={option.value}
+        onClick={() => {
+          haptics.selection();
+        }}
         {...(disabled && { disabled })}
       >
         {option.label}

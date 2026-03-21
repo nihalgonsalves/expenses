@@ -1,7 +1,9 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { haptics } from "bzzz";
+
 import { Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import type { ReactNode, Ref } from "react";
+import type { MouseEventHandler, ReactNode, Ref } from "react";
 
 import { Button } from "./ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
@@ -19,7 +21,7 @@ type FloatingActionButtonProps = {
     }
   | {
       to?: undefined;
-      onClick: () => void;
+      onClick: MouseEventHandler<HTMLButtonElement>;
     }
   | {
       to?: undefined;
@@ -42,6 +44,9 @@ export const FloatingActionButton = ({
             <MotionButton
               role="link"
               nativeButton={false}
+              onClick={() => {
+                haptics.selection();
+              }}
               render={
                 <Link to={to}>
                   <AccessibleIcon label={label}>{icon}</AccessibleIcon>
@@ -56,7 +61,10 @@ export const FloatingActionButton = ({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.8 }}
               className="absolute right-4 bottom-4 size-12 rounded-full text-2xl"
-              onClick={onClick}
+              onClick={(e) => {
+                haptics.selection();
+                onClick?.(e);
+              }}
             >
               <AccessibleIcon label={label}>{icon}</AccessibleIcon>
             </MotionButton>

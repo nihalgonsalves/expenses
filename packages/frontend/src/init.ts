@@ -7,11 +7,15 @@ import { init as initEmojiMart } from "emoji-mart";
 
 import { config } from "./config";
 import { registerSW } from "./register-sw";
+import { haptics } from "bzzz";
 
 await registerSW();
 
 // TODO: Use a react-query client instead of baked-in data
 await initEmojiMart({ data: emojiMartData });
+
+// only haptics, no audio
+haptics.setOutput("haptics");
 
 import.meta.hot?.accept(() => {
   void registerSW();

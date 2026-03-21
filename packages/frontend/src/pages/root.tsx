@@ -38,6 +38,7 @@ import {
   formatDateTimeRelative,
   intervalGreaterThan,
 } from "../utils/temporal";
+import { haptics } from "bzzz";
 
 type RootProps = {
   title: string | undefined;
@@ -202,6 +203,9 @@ export const Root = ({
               aria-label={text}
               title={text}
               className="flex grow flex-col"
+              onClick={() => {
+                haptics.selection();
+              }}
             >
               {({ isActive }) => (
                 <>

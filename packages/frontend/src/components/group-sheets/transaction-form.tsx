@@ -54,6 +54,7 @@ import {
   GroupTransactionSplitType,
 } from "./transaction-form/form-schema";
 import { LoadingSpinner } from "../ui/loading-spinner";
+import { haptics } from "bzzz";
 
 const MetadataFormSection = ({
   groupSheet,
@@ -217,25 +218,31 @@ export const TransactionForm = ({
       spentAt: dateTimeLocalToZonedISOString(values.spentAt),
     };
 
-    if (groupSheet.currencyCode === currencyCode) {
-      await createGroupSheetTransaction({
-        ...basePayload,
-        money: moneySnapshot,
-        splits,
-      });
-    } else if (convertedMoneySnapshot) {
-      await createGroupSheetTransaction({
-        ...basePayload,
-        money: convertedMoneySnapshot,
-        splits: calcSplits(
-          groupSheet.participants,
-          currencyCodeOrGroupDefault,
-          moneyToDinero(convertedMoneySnapshot),
-          values.ratios,
-        ),
-      });
+    try {
+      if (groupSheet.currencyCode === currencyCode) {
+        await createGroupSheetTransaction({
+          ...basePayload,
+          money: moneySnapshot,
+          splits,
+        });
+      } else if (convertedMoneySnapshot) {
+        await createGroupSheetTransaction({
+          ...basePayload,
+          money: convertedMoneySnapshot,
+          splits: calcSplits(
+            groupSheet.participants,
+            currencyCodeOrGroupDefault,
+            moneyToDinero(convertedMoneySnapshot),
+            values.ratios,
+          ),
+        });
+      }
+    } catch (e) {
+      haptics.error();
+      throw e;
     }
 
+    haptics.success();
     dialog.dismiss();
 
     await invalidate(
@@ -250,7 +257,12 @@ export const TransactionForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, () => {
+          haptics.error();
+        })}
+        className="space-y-4"
+      >
         <div className="flex gap-4">
           <div className="grow">
             <FormField
@@ -416,27 +428,33 @@ export const EditTransactionForm = ({
       spentAt: dateTimeLocalToZonedISOString(values.spentAt),
     };
 
-    if (groupSheet.currencyCode === currencyCode) {
-      await replaceGroupSheetTransaction({
-        ...basePayload,
-        transactionId: transaction.id,
-        money: moneySnapshot,
-        splits,
-      });
-    } else if (convertedMoneySnapshot) {
-      await replaceGroupSheetTransaction({
-        ...basePayload,
-        transactionId: transaction.id,
-        money: convertedMoneySnapshot,
-        splits: calcSplits(
-          groupSheet.participants,
-          currencyCodeOrOriginal,
-          moneyToDinero(convertedMoneySnapshot),
-          values.ratios,
-        ),
-      });
+    try {
+      if (groupSheet.currencyCode === currencyCode) {
+        await replaceGroupSheetTransaction({
+          ...basePayload,
+          transactionId: transaction.id,
+          money: moneySnapshot,
+          splits,
+        });
+      } else if (convertedMoneySnapshot) {
+        await replaceGroupSheetTransaction({
+          ...basePayload,
+          transactionId: transaction.id,
+          money: convertedMoneySnapshot,
+          splits: calcSplits(
+            groupSheet.participants,
+            currencyCodeOrOriginal,
+            moneyToDinero(convertedMoneySnapshot),
+            values.ratios,
+          ),
+        });
+      }
+    } catch (e) {
+      haptics.error();
+      throw e;
     }
 
+    haptics.success();
     dialog.dismiss();
 
     await invalidate(
@@ -455,7 +473,12 @@ export const EditTransactionForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit, () => {
+          haptics.error();
+        })}
+        className="space-y-4"
+      >
         <div className="flex gap-4">
           <div className="grow">
             <FormField

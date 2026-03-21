@@ -7,6 +7,7 @@ import {
   ResponsiveDialog,
   type DialogControlsOrRender,
 } from "./responsive-dialog";
+import { haptics } from "bzzz";
 
 export const ConfirmDialog = ({
   description,
@@ -28,7 +29,9 @@ export const ConfirmDialog = ({
 
     try {
       await onConfirmProp();
+      haptics.success();
     } catch {
+      haptics.error();
       setIsLoading(false);
     }
   };
