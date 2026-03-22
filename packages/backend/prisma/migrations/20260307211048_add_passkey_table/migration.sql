@@ -2,7 +2,7 @@ BEGIN;
 
 -- CreateTable
 CREATE TABLE "passkey" (
-  "id" UUID NOT NULL DEFAULT uuidv7 (),
+  "id" UUID NOT NULL DEFAULT uuidv7(),
   "name" TEXT,
   "public_key" TEXT NOT NULL,
   "user_id" TEXT NOT NULL,

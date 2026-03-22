@@ -9,7 +9,7 @@ BEGIN;
 
 -- CreateTable
 CREATE TABLE "sessions" (
-  "id" UUID NOT NULL DEFAULT uuidv7 (),
+  "id" UUID NOT NULL DEFAULT uuidv7(),
   "expires_at" TIMESTAMPTZ NOT NULL,
   "token" TEXT NOT NULL,
   "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -22,7 +22,7 @@ CREATE TABLE "sessions" (
 
 -- CreateTable
 CREATE TABLE "accounts" (
-  "id" UUID NOT NULL DEFAULT uuidv7 (),
+  "id" UUID NOT NULL DEFAULT uuidv7(),
   "account_id" TEXT NOT NULL,
   "provider_id" TEXT NOT NULL,
   "user_id" TEXT NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE "accounts" (
 
 -- CreateTable
 CREATE TABLE "verifications" (
-  "id" UUID NOT NULL DEFAULT uuidv7 (),
+  "id" UUID NOT NULL DEFAULT uuidv7(),
   "identifier" TEXT NOT NULL,
   "value" TEXT NOT NULL,
   "expires_at" TIMESTAMPTZ NOT NULL,
@@ -72,7 +72,7 @@ INSERT INTO
     "updated_at"
   )
 SELECT
-  uuidv7 (),
+  uuidv7(),
   'credential',
   id,
   password_hash,
@@ -87,7 +87,7 @@ DROP COLUMN "password_hash",
 DROP COLUMN "password_reset_token",
 ADD COLUMN "image" TEXT,
 ALTER COLUMN "id"
-SET DEFAULT uuidv7 ();
+SET DEFAULT uuidv7();
 
 -- AddForeignKey
 ALTER TABLE "sessions"
