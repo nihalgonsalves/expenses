@@ -1,12 +1,12 @@
 /// <reference lib="webworker" />
-
+import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
+import { registerRoute, NavigationRoute } from "workbox-routing";
+import { NetworkFirst, CacheFirst } from "workbox-strategies";
 import {
-  cleanupOutdatedCaches,
-  createHandlerBoundToURL,
-  precacheAndRoute,
-} from "workbox-precaching";
-import { NavigationRoute, registerRoute } from "workbox-routing";
-
+  ExpirationPlugin,
+  type ExpirationPluginOptions,
+} from "workbox-expiration";
+import type { WorkboxPlugin } from "workbox-core";
 import {
   ZNotificationPayload,
   type NotificationPayload,
@@ -20,14 +20,84 @@ declare let self: ServiceWorkerGlobalScope;
 
 cleanupOutdatedCaches();
 
+// workbox stuff adapted from original vite-plugin-pwa implementation
+// and https://robelest.com/journal/pwa-tanstack-start
+
+const getExpirationPlugin = (options: ExpirationPluginOptions) =>
+  // TODO: exact optional property type issue with WorkboxPlugin
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+  new ExpirationPlugin(options) as WorkboxPlugin;
+
 if (!import.meta.env.DEV) {
+  // Precache static assets (injected by workbox-build)
   precacheAndRoute(self.__WB_MANIFEST);
+  // Navigation requests: NetworkFirst with offline fallback
+  // Caches SSR-rendered HTML pages for offline access
   registerRoute(
-    new NavigationRoute(createHandlerBoundToURL("/index.html"), {
-      denylist: [/\/api\/.*/, /\/admin\/.*/, /\/assets\/.*/],
-    }),
+    new NavigationRoute(
+      new NetworkFirst({
+        cacheName: "pages-cache",
+        networkTimeoutSeconds: 3,
+        // denylist: [/\/api\/.*/, /\/admin\/.*/, /\/assets\/.*/],
+        plugins: [
+          getExpirationPlugin({
+            maxEntries: 50,
+            maxAgeSeconds: 24 * 60 * 60, // 24 hours
+          }),
+        ],
+      }),
+    ),
   );
 }
+
+// Example from https://robelest.com/journal/pwa-tanstack-start
+// We currently use react-query-async-persist-client
+// API requests: NetworkFirst with timeout
+// Replace with your API pattern (e.g., Convex)
+// registerRoute(
+//   ({ url }) => url.hostname.includes(".convex.cloud"),
+//   new NetworkFirst({
+//     cacheName: "api-cache",
+//     networkTimeoutSeconds: 3,
+//     plugins: [
+//       new ExpirationPlugin({
+//         maxEntries: 100,
+//         maxAgeSeconds: 24 * 60 * 60,
+//       }),
+//     ],
+//   }),
+// );
+
+// Static assets: CacheFirst for performance
+registerRoute(
+  ({ request }) =>
+    request.destination === "style" ||
+    request.destination === "script" ||
+    request.destination === "font",
+  new CacheFirst({
+    cacheName: "static-assets",
+    plugins: [
+      getExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+      }),
+    ],
+  }),
+);
+
+// Images: CacheFirst
+registerRoute(
+  ({ request }) => request.destination === "image",
+  new CacheFirst({
+    cacheName: "images-cache",
+    plugins: [
+      getExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
+    ],
+  }),
+);
 
 const getActionText = (action: "created" | "updated" | "deleted") => {
   switch (action) {

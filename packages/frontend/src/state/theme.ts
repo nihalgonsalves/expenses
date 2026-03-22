@@ -19,6 +19,7 @@ import { isOldDataAtom } from "../pages/root";
 
 import { createPreferenceWithDefault } from "./preferences";
 import { useNavigatorOnLine } from "./use-navigator-on-line";
+import { createIsomorphicFn } from "@tanstack/react-start";
 
 const ZThemePreference = z.enum(["system", "light", "dark"]);
 
@@ -42,16 +43,7 @@ export const useTheme = () => {
     trpc.user.updateTheme.mutationOptions(),
   );
 
-  const parsedTheme = ZTheme.safeParse(
-    me?.theme ?? localStorage.getItem("theme"),
-  );
-
-  // cache preference locally to avoid flickering on load
-  useEffect(() => {
-    if (parsedTheme.success) {
-      localStorage.setItem("theme", parsedTheme.data);
-    }
-  }, [parsedTheme]);
+  const parsedTheme = ZTheme.safeParse(me?.theme);
 
   const setTheme = async (theme: Theme) => {
     await updateTheme(theme);
@@ -67,7 +59,9 @@ export const useTheme = () => {
 
 const isDarkMode = (pref: ThemePreference) => {
   if (pref === "system") {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return createIsomorphicFn().client(
+      () => globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
+    )();
   }
 
   return pref === "dark";

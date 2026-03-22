@@ -1,14 +1,8 @@
 import { z } from "zod";
 
-import { ZCurrencyCode } from "../money.ts";
+import { ZMoney } from "../money.ts";
 
 import { ZParticipant, ZSheet, type SheetType } from "./sheet.ts";
-
-export const ZMoney = z.object({
-  amount: z.number().int(),
-  scale: z.number().int().nonnegative(),
-  currencyCode: ZCurrencyCode,
-});
 
 const ZCreateSheetTransactionInput = z.object({
   type: z.enum(["EXPENSE", "INCOME"]),

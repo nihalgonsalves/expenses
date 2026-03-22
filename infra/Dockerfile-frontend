@@ -1,13 +1,6 @@
 # NODE_VERSION
 FROM node:24-slim AS builder
 
-# "Pin versions in apt-get install"
-# hadolint ignore=DL3008
-RUN apt-get update -y && \
-  apt-get install -y --no-install-recommends \
-    ca-certificates openssl \
-  && rm -rf /var/lib/apt/lists/*
-
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 
@@ -26,7 +19,6 @@ COPY ./pnpm-lock.yaml .
 COPY ./pnpm-workspace.yaml .
 COPY ./patches/ ./patches/
 
-# hadolint ignore=DL3060
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY ./tsconfig.json ./tsconfig.base.json ./
@@ -51,8 +43,15 @@ ENV SENTRY_PROJECT=${SENTRY_PROJECT}
 
 RUN pnpm fe build:vite
 
-FROM caddy:2.8-alpine
+# the image itself is 24 pinned to LTS
+# hadolint ignore=DL3007
+FROM gcr.io/distroless/nodejs24:latest
+# NODE_VERSION
 
-COPY ./infra/Caddyfile /etc/caddy/Caddyfile
-COPY --from=builder /opt/app/packages/frontend/dist /var/www
+WORKDIR /app
 
+COPY --from=builder /opt/app/packages/frontend/.output/ ./
+
+EXPOSE 3000
+
+CMD ["--enable-source-maps", "./server/index.mjs"]

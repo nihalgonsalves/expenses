@@ -1,45 +1,53 @@
-import "./init";
-
 import * as Sentry from "@sentry/react";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { createRouter } from "@tanstack/react-router";
+import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
+import { createIsomorphicFn } from "@tanstack/react-start";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import { persistQueryClientRestore } from "@tanstack/react-query-persist-client";
-import { StrictMode } from "react";
-import ReactDOM from "react-dom/client";
-
 import type { AppRouter } from "@nihalgonsalves/expenses-backend/build";
-
 import {
-  asyncStoragePersister,
   getQueryClient,
   TrpcProvider,
+  asyncStoragePersister,
 } from "./api/trpc-provider";
 import { ErrorBoundary } from "./components/error-boundary";
 import { NotFoundPage } from "./components/not-found-page";
 import { config } from "./config";
 import { routeTree } from "./routeTree.gen";
+import { getRequestHeaders } from "@tanstack/react-start/server";
 
-const getRouter = async () => {
-  const url = config.VITE_API_BASE_URL;
+import { persistQueryClientRestore } from "@tanstack/react-query-persist-client";
+import { getTrpcBaseUrl } from "./utils/get-api-base-url";
+
+export const getRouter = async () => {
+  const getIncomingHeaders = () =>
+    createIsomorphicFn()
+      .client(() => ({}))
+      // 🤷🏽‍♂️ probably tsc/tsgo differences
+      // oxlint-disable-next-line typescript/no-unsafe-return
+      .server(() => getRequestHeaders());
 
   const trpcClient = createTRPCClient<AppRouter>({
     links: [
       httpBatchLink({
-        url,
+        headers: getIncomingHeaders(),
+        url: getTrpcBaseUrl(),
       }),
     ],
   });
 
   const queryClient = getQueryClient();
 
-  await persistQueryClientRestore({
-    queryClient,
-    persister: asyncStoragePersister,
-    buster: config.VITE_GIT_COMMIT_SHA,
-  });
+  const persistClientRestore = createIsomorphicFn().client(async () =>
+    persistQueryClientRestore({
+      queryClient,
+      persister: asyncStoragePersister,
+      buster: config.VITE_GIT_COMMIT_SHA,
+    }),
+  );
+  await persistClientRestore();
 
-  const trpc = createTRPCOptionsProxy({
+  const trpc = createTRPCOptionsProxy<AppRouter>({
     client: trpcClient,
     queryClient,
   });
@@ -67,7 +75,7 @@ const getRouter = async () => {
       }),
       Sentry.httpClientIntegration(),
       Sentry.reportingObserverIntegration(),
-      Sentry.tanstackRouterBrowserTracingIntegration(router),
+      // Sentry.tanstackRouterBrowserTracingIntegration(router),
       Sentry.replayIntegration({
         maskAllText: true,
         blockAllMedia: false,
@@ -78,32 +86,11 @@ const getRouter = async () => {
     replaysOnErrorSampleRate: 1.0,
   });
 
+  setupRouterSsrQueryIntegration({
+    router,
+    queryClient,
+    wrapQueryClient: false,
+  });
+
   return router;
 };
-
-const router = await getRouter();
-
-const App = () => <RouterProvider router={router} context={{}} />;
-
-declare module "@tanstack/react-router" {
-  // oxlint-disable typescript/consistent-type-definitions
-  interface Register {
-    router: Awaited<ReturnType<typeof getRouter>>;
-  }
-}
-
-const rootElement = document.getElementById("root");
-
-if (!rootElement) {
-  throw new Error('div[id="root"] not found');
-}
-
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-
-  root.render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
-  );
-}

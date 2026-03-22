@@ -3,7 +3,7 @@
   "workspaces": {
     "packages/backend": {},
     "packages/frontend": {
-      "entry": ["src/sw.ts!"],
+      "entry": ["src/client.tsx!", "src/server.ts!", "src/sw.ts!"],
     },
   },
   "tags": ["-lintignore"],

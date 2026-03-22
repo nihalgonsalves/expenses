@@ -3,17 +3,18 @@ FROM node:24-slim
 
 # "Pin versions in apt-get install"
 # hadolint ignore=DL3008
-RUN apt-get update -y && \
+RUN --mount=type=cache,target=/var/log \
+    --mount=type=cache,target=/var/cache,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+  apt-get update -y && \
   apt-get install -y --no-install-recommends \
-    ca-certificates openssl \
-  && rm -rf /var/lib/apt/lists/*
+    ca-certificates openssl
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 RUN corepack enable
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-
 
 RUN mkdir -p /opt/app
 WORKDIR /opt/app
@@ -27,7 +28,6 @@ COPY ./pnpm-lock.yaml .
 COPY ./pnpm-workspace.yaml .
 COPY ./patches/ ./patches/
 
-# hadolint ignore=DL3060
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY ./tsconfig.json ./tsconfig.base.json ./

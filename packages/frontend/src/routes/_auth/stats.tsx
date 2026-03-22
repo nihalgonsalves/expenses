@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { ClientOnly, createFileRoute } from "@tanstack/react-router";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
@@ -8,7 +8,12 @@ import { CategoryStats } from "../../components/category-stats";
 import { RootLoader } from "../../pages/root";
 
 export const Route = createFileRoute("/_auth/stats")({
-  component: RouteComponent,
+  // TODO: date hydration mismatch
+  component: () => (
+    <ClientOnly>
+      <RouteComponent />
+    </ClientOnly>
+  ),
 });
 
 function RouteComponent() {

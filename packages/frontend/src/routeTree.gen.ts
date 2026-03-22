@@ -16,6 +16,7 @@ import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthAuthViewRouteImport } from './routes/auth/$authView'
+import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
 import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
 import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
@@ -57,6 +58,11 @@ const AuthAuthViewRoute = AuthAuthViewRouteImport.update({
   path: '/auth/$authView',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSplatRoute = ApiSplatRouteImport.update({
+  id: '/api/$',
+  path: '/api/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthStatsRoute = AuthStatsRouteImport.update({
   id: '/stats',
   path: '/stats',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
+  '/api/$': typeof ApiSplatRoute
   '/auth/$authView': typeof AuthAuthViewRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
+  '/api/$': typeof ApiSplatRoute
   '/auth/$authView': typeof AuthAuthViewRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/settings': typeof SettingsRoute
   '/_auth/stats': typeof AuthStatsRoute
+  '/api/$': typeof ApiSplatRoute
   '/auth/$authView': typeof AuthAuthViewRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/'
     | '/settings'
     | '/stats'
+    | '/api/$'
     | '/auth/$authView'
     | '/auth/reset-password'
     | '/auth/sign-in'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
   to:
     | '/settings'
     | '/stats'
+    | '/api/$'
     | '/auth/$authView'
     | '/auth/reset-password'
     | '/auth/sign-in'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/settings'
     | '/_auth/stats'
+    | '/api/$'
     | '/auth/$authView'
     | '/auth/reset-password'
     | '/auth/sign-in'
@@ -181,6 +193,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   SettingsRoute: typeof SettingsRoute
+  ApiSplatRoute: typeof ApiSplatRoute
   AuthAuthViewRoute: typeof AuthAuthViewRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
@@ -236,6 +249,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/$authView'
       fullPath: '/auth/$authView'
       preLoaderRoute: typeof AuthAuthViewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/$': {
+      id: '/api/$'
+      path: '/api/$'
+      fullPath: '/api/$'
+      preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/stats': {
@@ -317,6 +337,7 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   SettingsRoute: SettingsRoute,
+  ApiSplatRoute: ApiSplatRoute,
   AuthAuthViewRoute: AuthAuthViewRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
@@ -325,3 +346,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

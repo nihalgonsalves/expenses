@@ -6,13 +6,13 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
   signIn,
 }) => {
   await signIn();
-  await page.goto("/");
 
   await serverTRPCClient.sheet.createPersonalSheet.mutate({
     name: "Test Sheet",
     currencyCode: "EUR",
   });
 
+  await page.goto("/");
   await page.getByRole("button", { name: "Add Transaction" }).first().click();
   await page.getByRole("button", { name: "Test Sheet" }).click();
 
@@ -65,13 +65,13 @@ test(`creates and edits a shared sheet transaction successfully`, async ({
   signIn,
 }) => {
   await signIn();
-  await page.goto("/");
 
   await serverTRPCClient.sheet.createGroupSheet.mutate({
     name: "Test Sheet",
     currencyCode: "EUR",
   });
 
+  await page.goto("/");
   await page.getByRole("button", { name: "Add Transaction" }).first().click();
   await page.getByRole("button", { name: "Test Sheet" }).click();
 

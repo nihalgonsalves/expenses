@@ -15,7 +15,7 @@
     "build:storybook": "VITE_STORYBOOK=1 storybook build --output-dir=./build/storybook",
     "gen:assets": "tsx bin/generate-assets.tsx",
     "chromatic": "chromatic --build-script-name='build:storybook'",
-    "preview:vite": "vite preview --port 5173",
+    "start": "vite preview",
     "test": "vitest --project=unit",
     "test:storybook": "vitest --project=storybook"
   },
@@ -43,8 +43,9 @@
     "@tanstack/react-query-persist-client": "5.94.5",
     "@tanstack/react-router": "1.168.2",
     "@tanstack/react-router-devtools": "1.166.11",
+    "@tanstack/react-router-ssr-query": "1.166.10",
+    "@tanstack/react-start": "1.167.3",
     "@tanstack/react-table": "8.21.3",
-    "@tanstack/router-plugin": "1.167.3",
     "@trpc/client": "11.14.1",
     "@trpc/tanstack-react-query": "11.14.1",
     "better-auth": "1.5.5",
@@ -60,6 +61,7 @@
     "localspace": "1.1.1",
     "lucide-react": "0.577.0",
     "motion": "12.38.0",
+    "nitro": "3.0.260311-beta",
     "papaparse": "5.5.3",
     "react": "19.2.4",
     "react-day-picker": "9.14.0",
@@ -67,14 +69,17 @@
     "react-hook-form": "7.72.0",
     "react-twc": "1.5.1",
     "sonner": "2.0.7",
+    "srvx": "0.11.12",
     "tailwind-merge": "3.5.0",
     "tailwindcss": "4.2.2",
     "temporal-polyfill": "0.3.2",
     "tw-animate-css": "1.4.0",
     "workbox-build": "7.4.0",
+    "workbox-core": "7.4.0",
+    "workbox-expiration": "7.4.0",
     "workbox-precaching": "7.4.0",
     "workbox-routing": "7.4.0",
-    "workbox-window": "7.4.0",
+    "workbox-strategies": "7.4.0",
     "zod": "4.3.6"
   },
   "devDependencies": {
@@ -108,7 +113,6 @@
     "tsx": "4.21.0",
     "vite": "8.0.1",
     "vite-plugin-istanbul": "8.0.0",
-    "vite-plugin-pwa": "1.2.0",
     "vitest": "4.1.0"
   }
 }

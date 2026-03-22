@@ -13,7 +13,8 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "files.associations": {
-    "*.css": "tailwindcss"
+    "*.css": "tailwindcss",
+    "Dockerfile*": "dockerfile"
   },
   "tailwindCSS.experimental.classRegex": [
     "twx\\.[^`]+`([^`]*)`",

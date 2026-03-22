@@ -1,26 +1,4 @@
 services:
-  traefik:
-    depends_on:
-      - backend
-      - frontend
-    restart: unless-stopped
-    image: "traefik:v3.1"
-    command:
-      - --log.level=DEBUG
-      - --accesslog=true
-      - --providers.docker=true
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:8080
-      - --entrypoints.websecure-public.http.middlewares=default-headers@file
-      - --providers.file.directory=/config
-      - --providers.file.watch=true
-    ports:
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - ".env.htpasswd:/etc/traefik/.htpasswd"
-      - ./infra/traefik:/config
-
   backend:
     restart: unless-stopped
     depends_on:
@@ -39,30 +17,16 @@ services:
       PORT: 5174
       FRANKFURTER_BASE_URL: https://api.frankfurter.app/
       REDIS_URL: redis://redis:6379/
-    expose:
-      - 5174
-    labels:
-      traefik.enable: true
-
-      traefik.http.routers.backend.rule: Host(`localhost`) && PathPrefix(`/api`)
-      traefik.http.routers.backend.entrypoints: web
-      traefik.http.routers.backend.middlewares: backend-stripprefix
-      traefik.http.middlewares.backend-stripprefix.stripprefix.prefixes: /api
-
-      traefik.http.routers.admin.rule: Host(`localhost`) && PathPrefix(`/admin`)
-      traefik.http.routers.admin.entrypoints: web
-      traefik.http.routers.admin.middlewares: admin-auth
-      traefik.http.middlewares.admin-auth.basicauth.usersfile: /etc/traefik/.htpasswd
 
   frontend:
     restart: unless-stopped
     build:
       context: .
       dockerfile: ./infra/Dockerfile-frontend
-    labels:
-      traefik.enable: true
-      traefik.http.routers.frontend.rule: Host(`localhost`)
-      traefik.http.routers.frontend.entrypoints: web
+    environment:
+      API_BASE_URL: http://backend:5174/
+    ports:
+      - 3000:3000
 
   postgres:
     restart: unless-stopped

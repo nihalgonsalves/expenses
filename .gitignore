@@ -96,6 +96,8 @@ typings/
 # Output directory
 build
 dist
+.output
+.tanstack
 
 # lefthook local-only file
 lefthook-local.yml

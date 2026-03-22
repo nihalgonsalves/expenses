@@ -23,7 +23,7 @@ declare global {
 }
 
 const createCompatibleFetch =
-  (request: APIRequestContext): typeof fetch =>
+  (origin: string, request: APIRequestContext): typeof fetch =>
   async (...args) => {
     let urlString: string;
     let fetchInit: RequestInit | undefined;
@@ -40,15 +40,17 @@ const createCompatibleFetch =
 
     const { body, headers, method = "GET" } = fetchInit ?? {};
 
+    const headersObject =
+      headers instanceof Headers
+        ? Object.fromEntries(headers.entries())
+        : Array.isArray(headers)
+          ? Object.fromEntries(headers)
+          : (headers ?? {});
+
     const response = await request.fetch(urlString, {
       data: body,
       method,
-      headers:
-        headers instanceof Headers
-          ? Object.fromEntries(headers.entries())
-          : Array.isArray(headers)
-            ? Object.fromEntries(headers)
-            : (headers ?? {}),
+      headers: { ...headersObject, origin },
     });
 
     const responseBody = await response.body();
@@ -66,6 +68,16 @@ const createCompatibleFetch =
   };
 
 export const test = base.extend<Fixtures>({
+  page: async ({ page }, use) => {
+    const originalGoto = page.goto.bind(page);
+    page.goto = async (...args) =>
+      originalGoto(...args).then(async (result) => {
+        await page.waitForSelector("body[data-hydrated]");
+        return result;
+      });
+    await use(page);
+  },
+
   context: async ({ context }, use) => {
     await context.addInitScript(() => {
       window.addEventListener("beforeunload", () => {
@@ -122,7 +134,7 @@ export const test = base.extend<Fixtures>({
         httpBatchLink({
           url: new URL("/api/trpc", baseURL),
           // @ts-expect-error minor type differences
-          fetch: createCompatibleFetch(request),
+          fetch: createCompatibleFetch(baseURL!, request),
         }),
       ],
     });
@@ -145,7 +157,7 @@ export const test = base.extend<Fixtures>({
           password,
         },
         {
-          customFetchImpl: createCompatibleFetch(request),
+          customFetchImpl: createCompatibleFetch(baseURL!, request),
         },
       );
 

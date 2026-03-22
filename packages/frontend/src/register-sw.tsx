@@ -9,20 +9,19 @@ import { durationMilliseconds } from "./utils/temporal";
 // https://whatwebcando.today/articles/handling-service-worker-updates/
 // https://vite-pwa-org.netlify.app/guide/periodic-sw-updates.html
 
-const { url, type } = import.meta.env.PROD
-  ? ({ url: "/sw.js", type: "classic" } as const)
-  : ({ url: "/dev-sw.js?dev-sw", type: "module" } as const);
+const SW_URL = "/sw.js";
 
 export const useSwUpdateCheck = () => {
   const registration = useServiceWorkerRegistration();
 
   useQuery({
-    queryKey: [url],
+    queryKey: [SW_URL],
     queryFn: async () => {
       await registration?.update();
       return null;
     },
-    enabled: "serviceWorker" in globalThis.navigator,
+    // TODO: re-enable dev sw
+    enabled: import.meta.env.PROD && "serviceWorker" in globalThis.navigator,
     networkMode: "online",
     gcTime: 0,
     staleTime: 0,
@@ -40,11 +39,14 @@ const reload = async () => {
 };
 
 export const registerSW = async () => {
-  if (!("serviceWorker" in navigator)) {
+  // TODO: re-enable dev sw
+  if (!import.meta.env.PROD || !("serviceWorker" in navigator)) {
     return;
   }
 
-  const registration = await navigator.serviceWorker.register(url, { type });
+  const registration = await navigator.serviceWorker.register(SW_URL, {
+    type: "module",
+  });
 
   const update = () => {
     if (registration.waiting) {

@@ -3,17 +3,20 @@ import { fileURLToPath } from "url";
 import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { nitro } from "nitro/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import IstanbulPlugin from "vite-plugin-istanbul";
-import { VitePWA } from "vite-plugin-pwa";
+import { generateSw } from "./bin/generate-sw";
 
 const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
+
+let swGenerated = false;
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -39,16 +42,26 @@ export default defineConfig(({ mode }) => ({
   css: { transformer: "lightningcss" },
   server: {
     host: true,
-    proxy: {
-      "/api": {
-        target: "http://localhost:5174",
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
   },
   plugins: [
     process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
-    tanstackRouter({ autoCodeSplitting: true }),
+    tailwindcss(),
+    !process.env["VITE_STORYBOOK"] && tanstackStart(),
+    !process.env["VITE_STORYBOOK"] &&
+      mode === "production" && {
+        name: "generate-sw-on-build",
+        async closeBundle() {
+          // Vite runs in three steps: Client, SSR, Nitro output.
+          // We only want to run after the client bundle.
+          // Running it later results in a race condition
+          if (swGenerated) {
+            return;
+          }
+          swGenerated = true;
+          await generateSw();
+        },
+      },
+    !process.env["VITE_STORYBOOK"] && nitro({}),
     react(),
     babel({
       presets: [
@@ -56,26 +69,8 @@ export default defineConfig(({ mode }) => ({
         ["@babel/preset-typescript", { allExtensions: true, isTSX: true }],
       ],
     }),
-    tailwindcss(),
     !process.env["VITE_STORYBOOK"] &&
-      VitePWA({
-        srcDir: "src",
-        filename: "sw.ts",
-        injectRegister: null,
-        strategies: "injectManifest",
-        selfDestroying:
-          mode === "development" && process.env["ENABLE_DEV_PWA"] == null,
-        devOptions: {
-          enabled: true,
-          type: "module",
-          resolveTempFolder: () => relativePath("./dist/vite-pwa-dev/"),
-        },
-        manifest: false,
-        injectManifest: {
-          globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
-        },
-      }),
-    process.env["VITE_COVERAGE"] &&
+      process.env["VITE_COVERAGE"] &&
       IstanbulPlugin({
         include: "src/*",
         exclude: ["node_modules", "test/"],

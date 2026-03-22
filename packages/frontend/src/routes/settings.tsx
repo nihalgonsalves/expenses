@@ -66,11 +66,22 @@ function RouteComponent() {
       ),
     },
     { title: "Password", component: <ChangePasswordCard /> },
-    { title: "Passkeys", component: <PasskeysCard /> },
+    {
+      title: "Passkeys",
+      component: <PasskeysCard />,
+    },
     ...(config?.hasOauth
-      ? [{ title: "Connected accounts" as const, component: <ProvidersCard /> }]
+      ? [
+          {
+            title: "Connected accounts" as const,
+            component: <ProvidersCard />,
+          },
+        ]
       : []),
-    { title: "Sessions", component: <SessionsCard /> },
+    {
+      title: "Sessions",
+      component: <SessionsCard />,
+    },
     { title: "Privacy", component: <PrivacyForm /> },
     { title: "Troubleshooting", component: <TroubleshootingForm /> },
   ] as const;
