@@ -37,6 +37,7 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
     mode: "onSubmit",
     defaultValues: {
       groupSheetId,
+      name: "",
       email: "",
     },
   });
@@ -87,6 +88,20 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
             haptics.error();
           })}
         >
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input type="text" autoComplete="name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="email"

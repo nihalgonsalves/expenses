@@ -119,6 +119,7 @@ test("signs up via invite flow successfully", async ({
   const invitedUserEmail = `${randomUUID()}@example.com`;
 
   await page.getByRole("button", { name: /add participant/i }).click();
+  await page.getByRole("textbox", { name: /name/i }).fill("Invited User");
   await page
     .getByRole("textbox", { name: /email address/i })
     .fill(invitedUserEmail);
@@ -131,9 +132,12 @@ test("signs up via invite flow successfully", async ({
 
   const message = ZEmail.parse(await mailpitResponse.json());
 
+  expect(message.Text).toContain("You've been invited by");
+
   const otherPage = await (await browser.newContext()).newPage();
   // HACK: depends on the message format
-  await otherPage.goto(message.Text.split("\n")[1]!);
+  await otherPage.goto(message.Text.split(/[\n\r]+/)[2]!);
+  await otherPage.waitForSelector("body[data-hydrated]");
 
   await otherPage.getByLabel(/password/i).fill("new-password");
   await otherPage.getByRole("button", { name: /save new password/i }).click();

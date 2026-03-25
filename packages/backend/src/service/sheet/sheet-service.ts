@@ -22,24 +22,6 @@ import type { UserService } from "../user/user-service.ts";
 
 class SheetServiceError extends TRPCError {}
 
-export const nameFromEmail = (email: string) => {
-  const firstPart = email.split("@")[0];
-
-  if (!firstPart) {
-    return "No Name";
-  }
-
-  return firstPart
-    .replace(/[^A-Za-z]/gu, " ")
-    .replace(/\s+/g, " ")
-    .split(" ")
-    .map((part) => {
-      const lowerCase = part.toLowerCase();
-      return lowerCase.charAt(0).toUpperCase() + lowerCase.slice(1);
-    })
-    .join(" ");
-};
-
 export class SheetService {
   private prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">;
   private transactionService: TransactionService;
@@ -186,6 +168,7 @@ export class SheetService {
   }
 
   async addGroupSheetMember(input: {
+    participantName: string;
     participantEmail: string;
     groupSheet: Sheet;
     invitedBy: User;
@@ -193,6 +176,7 @@ export class SheetService {
     const user =
       (await this.userService.findByEmail(input.participantEmail)) ??
       (await this.userService.inviteUser({
+        invitedUserName: input.participantName,
         invitedUserEmail: input.participantEmail,
         invitedBy: input.invitedBy,
         groupSheet: input.groupSheet,

@@ -38,19 +38,71 @@ export const createAuth = (
             }
           : {},
       sendResetPassword: async ({ user, url }) => {
-        void emailWorker.sendEmail({
-          to: {
-            name: user.name,
-            address: user.email,
-          },
-          subject: `Your reset password link for ${config.APP_NAME}`,
-          text: [
-            "Click here to reset your password:",
-            url,
-            "",
-            "---",
-            "If you did not request this reset, please ignore this email.",
-          ].join("\n"),
+        const fn = async () => {
+          const pendingInvitation =
+            await prismaClient.pendingInvitation.findFirst({
+              where: {
+                invitedUserId: user.id,
+              },
+              include: {
+                invitedToSheet: {
+                  select: {
+                    name: true,
+                  },
+                },
+                invitedByUser: {
+                  select: {
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            });
+
+          if (pendingInvitation) {
+            await emailWorker.sendEmail({
+              to: {
+                name: user.name,
+                address: user.email,
+              },
+              subject: `Share expenses for "${pendingInvitation.invitedToSheet.name}" with ${pendingInvitation.invitedByUser.name}`,
+              text: [
+                `You've been invited by ${pendingInvitation.invitedByUser.name} to join the "${pendingInvitation.invitedToSheet.name}" sheet on ${config.APP_NAME}.`,
+                "",
+                "Click here to set your password:",
+                url,
+                "",
+                "---",
+                `If you do not know ${pendingInvitation.invitedByUser.name} <${pendingInvitation.invitedByUser.email}>, please ignore this email.`,
+              ].join("\n"),
+            });
+
+            await prismaClient.pendingInvitation.delete({
+              where: {
+                id: pendingInvitation.id,
+              },
+            });
+          } else {
+            await emailWorker.sendEmail({
+              to: {
+                name: user.name,
+                address: user.email,
+              },
+              subject: `Your reset password link for ${config.APP_NAME}`,
+              text: [
+                "Click here to reset your password:",
+                url,
+                "",
+                "---",
+                "If you did not request this reset, please ignore this email.",
+              ].join("\n"),
+            });
+          }
+        };
+
+        // don't await because of timing issues
+        void fn().catch((error) => {
+          console.error("Error sending invite or reset password email:", error);
         });
       },
     },

@@ -42,7 +42,7 @@ const [
     user: { id: idA },
   },
   {
-    user: { id: idB },
+    user: { id: idB, name: nameB },
   },
 ] = await Promise.all([
   authClient.signUp.email(
@@ -75,6 +75,7 @@ const { id: groupSheetId } = await clientA.sheet.createGroupSheet.mutate({
 
 await clientA.sheet.addGroupSheetMember.mutate({
   groupSheetId,
+  name: nameB,
   email: DEMO_B_EMAIL,
 });
 

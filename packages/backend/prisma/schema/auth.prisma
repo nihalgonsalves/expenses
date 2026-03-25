@@ -25,8 +25,22 @@ model User {
 
   passkeys Passkey[]
 
+  sentPendingInvites         PendingInvitation[] @relation("InvitesSent")
+  receivedPendingInvitations PendingInvitation[] @relation("InvitesReceived")
+
   @@unique([email])
   @@map("users")
+}
+
+model PendingInvitation {
+  id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+
+  invitedByUserId  String @map("invited_by_user_id")
+  invitedByUser    User   @relation("InvitesSent", fields: [invitedByUserId], references: [id], onDelete: Cascade)
+  invitedUserId    String @map("invited_user_id")
+  invitedUser      User   @relation("InvitesReceived", fields: [invitedUserId], references: [id], onDelete: Cascade)
+  invitedToSheetId String @map("invited_to_sheet_id")
+  invitedToSheet   Sheet  @relation(fields: [invitedToSheetId], references: [id], onDelete: Cascade)
 }
 
 model Session {

@@ -8,7 +8,6 @@ import type { Sheet } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
 import { UserServiceError } from "./utils.ts";
-import { nameFromEmail } from "../sheet/sheet-service.ts";
 import type { BetterAuthInstance } from "../../utils/auth.ts";
 import { APIError } from "better-auth";
 import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
@@ -16,7 +15,12 @@ import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
 export class UserService {
   private prismaClient: Pick<
     PrismaClientType,
-    "$transaction" | "user" | "account" | "sheet" | "category"
+    | "$transaction"
+    | "user"
+    | "account"
+    | "sheet"
+    | "category"
+    | "pendingInvitation"
   >;
   private betterAuth: BetterAuthInstance;
 
@@ -29,14 +33,25 @@ export class UserService {
   }
 
   async inviteUser(input: {
+    invitedUserName: string;
     invitedUserEmail: string;
     groupSheet: Pick<Sheet, "id" | "name">;
     invitedBy: User;
   }) {
     const { user } = await this.betterAuth.api.createUser({
       body: {
-        name: nameFromEmail(input.invitedUserEmail),
+        name: input.invitedUserName,
         email: input.invitedUserEmail,
+      },
+    });
+
+    // better-auth doesn't really expose an API for this, so we just check this
+    // when sending the reset password (or future magic) link
+    await this.prismaClient.pendingInvitation.create({
+      data: {
+        invitedUserId: user.id,
+        invitedToSheetId: input.groupSheet.id,
+        invitedByUserId: input.invitedBy.id,
       },
     });
 
@@ -46,20 +61,6 @@ export class UserService {
         redirectTo: RESET_PASSWORD_ROUTE,
       },
     });
-
-    // TODO: sendOnSignUp is true but will send the regular one..
-    // await this.requestPasswordReset(user.email, (link) => ({
-    //   subject: `Share expenses for "${input.groupSheet.name}" with ${input.invitedBy.name}`,
-    //   text: [
-    //     `You've been invited by ${input.invitedBy.name} to join the "${input.groupSheet.name}" sheet on ${config.APP_NAME}.`,
-    //     "",
-    //     "Click here to set your password:",
-    //     link.toString(),
-    //     "",
-    //     "---",
-    //     `If you do not know ${input.invitedBy.name} <${input.invitedBy.email}>, please ignore this email.`,
-    //   ].join("\n"),
-    // }));
 
     return user;
   }

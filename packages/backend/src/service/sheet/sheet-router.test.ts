@@ -406,6 +406,7 @@ describe("addGroupSheetMember", () => {
     await expect(
       caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
+        name: otherUser.name,
         email: otherUser.email,
       }),
     ).resolves.toMatchObject({
@@ -430,6 +431,7 @@ describe("addGroupSheetMember", () => {
     await expect(
       caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
+        name: "Jessica",
         email: participantEmail,
       }),
     ).resolves.toMatchObject({
@@ -454,6 +456,7 @@ describe("addGroupSheetMember", () => {
     await expect(
       caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
+        name: otherUser.name,
         email: otherUser.email,
       }),
     ).rejects.toThrow("Participant already exists");
@@ -467,6 +470,7 @@ describe("addGroupSheetMember", () => {
     await expect(
       caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
+        name: faker.person.fullName(),
         email: faker.internet.email(),
       }),
     ).rejects.toThrow("Sheet not found");
@@ -483,6 +487,7 @@ describe("addGroupSheetMember", () => {
     await expect(
       caller.sheet.addGroupSheetMember({
         groupSheetId: groupSheet.id,
+        name: faker.person.fullName(),
         email: faker.internet.email(),
       }),
     ).rejects.toThrow("Only admins can add participants");

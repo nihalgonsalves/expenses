@@ -161,7 +161,7 @@ export const sheetRouter = router({
   addGroupSheetMember: protectedProcedure
     .input(ZAddGroupSheetMemberInput)
     .output(ZFullParticipant)
-    .mutation(async ({ input: { groupSheetId, email }, ctx }) => {
+    .mutation(async ({ input: { groupSheetId, name, email }, ctx }) => {
       const { sheet, role: actorRole } =
         await ctx.sheetService.ensureGroupSheetMembership(
           groupSheetId,
@@ -177,6 +177,7 @@ export const sheetRouter = router({
 
       const { participant, role } = await ctx.sheetService.addGroupSheetMember({
         groupSheet: sheet,
+        participantName: name,
         participantEmail: email,
         invitedBy: ctx.user,
       });

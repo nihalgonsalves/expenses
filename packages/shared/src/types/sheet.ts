@@ -45,6 +45,7 @@ export type UpdateSheetInput = z.infer<typeof ZUpdateSheetInput>;
 
 export const ZAddGroupSheetMemberInput = z.object({
   groupSheetId: z.string().min(1),
+  name: z.string().min(1, { message: "Name is required" }),
   email: z.email({ message: "Invalid email address" }),
 });
 export type AddGroupSheetMemberInput = z.infer<
