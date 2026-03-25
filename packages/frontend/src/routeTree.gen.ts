@@ -12,10 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
-import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
-import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
-import { Route as AuthAuthViewRouteImport } from './routes/auth/$authView'
 import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
 import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
@@ -38,24 +35,9 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthSignUpRoute = AuthSignUpRouteImport.update({
-  id: '/auth/sign-up',
-  path: '/auth/sign-up',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/auth/sign-in',
   path: '/auth/sign-in',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/auth/reset-password',
-  path: '/auth/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthAuthViewRoute = AuthAuthViewRouteImport.update({
-  id: '/auth/$authView',
-  path: '/auth/$authView',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
@@ -99,10 +81,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
   '/api/$': typeof ApiSplatRoute
-  '/auth/$authView': typeof AuthAuthViewRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/sign-up': typeof AuthSignUpRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
   '/groups/': typeof AuthGroupsIndexRoute
@@ -113,10 +92,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
   '/api/$': typeof ApiSplatRoute
-  '/auth/$authView': typeof AuthAuthViewRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/sign-up': typeof AuthSignUpRoute
   '/': typeof AuthIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
@@ -130,10 +106,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/_auth/stats': typeof AuthStatsRoute
   '/api/$': typeof ApiSplatRoute
-  '/auth/$authView': typeof AuthAuthViewRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
-  '/auth/sign-up': typeof AuthSignUpRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/_auth/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
@@ -148,10 +121,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stats'
     | '/api/$'
-    | '/auth/$authView'
-    | '/auth/reset-password'
     | '/auth/sign-in'
-    | '/auth/sign-up'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
     | '/groups/'
@@ -162,10 +132,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stats'
     | '/api/$'
-    | '/auth/$authView'
-    | '/auth/reset-password'
     | '/auth/sign-in'
-    | '/auth/sign-up'
     | '/'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
@@ -178,10 +145,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/_auth/stats'
     | '/api/$'
-    | '/auth/$authView'
-    | '/auth/reset-password'
     | '/auth/sign-in'
-    | '/auth/sign-up'
     | '/_auth/'
     | '/_auth/groups/$sheetId'
     | '/_auth/sheets/$sheetId'
@@ -194,10 +158,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   ApiSplatRoute: typeof ApiSplatRoute
-  AuthAuthViewRoute: typeof AuthAuthViewRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
-  AuthSignUpRoute: typeof AuthSignUpRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -223,32 +184,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/auth/sign-up': {
-      id: '/auth/sign-up'
-      path: '/auth/sign-up'
-      fullPath: '/auth/sign-up'
-      preLoaderRoute: typeof AuthSignUpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth/sign-in': {
       id: '/auth/sign-in'
       path: '/auth/sign-in'
       fullPath: '/auth/sign-in'
       preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/reset-password': {
-      id: '/auth/reset-password'
-      path: '/auth/reset-password'
-      fullPath: '/auth/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/$authView': {
-      id: '/auth/$authView'
-      path: '/auth/$authView'
-      fullPath: '/auth/$authView'
-      preLoaderRoute: typeof AuthAuthViewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/$': {
@@ -338,10 +278,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   SettingsRoute: SettingsRoute,
   ApiSplatRoute: ApiSplatRoute,
-  AuthAuthViewRoute: AuthAuthViewRoute,
-  AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
-  AuthSignUpRoute: AuthSignUpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,6 @@
 import { test, expect } from "../utils/test";
 
-test("web manifest loads", async ({ page, request }) => {
+test("web manifest loads", async ({ page }) => {
   await page.goto("/");
 
   const manifestHref = await page
@@ -9,7 +9,7 @@ test("web manifest loads", async ({ page, request }) => {
 
   expect(manifestHref).toBe("/api/manifest.webmanifest");
 
-  const manifest = await request.get(manifestHref!);
+  const manifest = await page.request.get(manifestHref!);
 
   expect(manifest.status()).toBe(200);
   expect(manifest.headers()).toMatchObject({

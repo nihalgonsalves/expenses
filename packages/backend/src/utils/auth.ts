@@ -1,11 +1,10 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthPlugin } from "better-auth";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { createPrisma, type PrismaClientType } from "../create-prisma.ts";
 import { config, IS_PROD } from "../config.ts";
 import type { IEmailWorker } from "../service/email/email-worker.ts";
-import { admin, genericOAuth } from "better-auth/plugins";
+import { admin, genericOAuth, magicLink, testUtils } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
-import crypto from "node:crypto";
 
 export const createAuth = (
   prismaClient: PrismaClientType,
@@ -22,88 +21,6 @@ export const createAuth = (
     user: {
       changeEmail: {
         enabled: true,
-      },
-    },
-    emailAndPassword: {
-      enabled: true,
-      password:
-        config.VITEST_WORKER_ID && !IS_PROD
-          ? {
-              // scrypt is _really_ slow and slows down each test
-              hash: async (password) =>
-                crypto.createHash("sha256").update(password).digest("hex"),
-              verify: async ({ password, hash }) =>
-                crypto.createHash("sha256").update(password).digest("hex") ===
-                hash,
-            }
-          : {},
-      sendResetPassword: async ({ user, url }) => {
-        const fn = async () => {
-          const pendingInvitation =
-            await prismaClient.pendingInvitation.findFirst({
-              where: {
-                invitedUserId: user.id,
-              },
-              include: {
-                invitedToSheet: {
-                  select: {
-                    name: true,
-                  },
-                },
-                invitedByUser: {
-                  select: {
-                    name: true,
-                    email: true,
-                  },
-                },
-              },
-            });
-
-          if (pendingInvitation) {
-            await emailWorker.sendEmail({
-              to: {
-                name: user.name,
-                address: user.email,
-              },
-              subject: `Share expenses for "${pendingInvitation.invitedToSheet.name}" with ${pendingInvitation.invitedByUser.name}`,
-              text: [
-                `You've been invited by ${pendingInvitation.invitedByUser.name} to join the "${pendingInvitation.invitedToSheet.name}" sheet on ${config.APP_NAME}.`,
-                "",
-                "Click here to set your password:",
-                url,
-                "",
-                "---",
-                `If you do not know ${pendingInvitation.invitedByUser.name} <${pendingInvitation.invitedByUser.email}>, please ignore this email.`,
-              ].join("\n"),
-            });
-
-            await prismaClient.pendingInvitation.delete({
-              where: {
-                id: pendingInvitation.id,
-              },
-            });
-          } else {
-            await emailWorker.sendEmail({
-              to: {
-                name: user.name,
-                address: user.email,
-              },
-              subject: `Your reset password link for ${config.APP_NAME}`,
-              text: [
-                "Click here to reset your password:",
-                url,
-                "",
-                "---",
-                "If you did not request this reset, please ignore this email.",
-              ].join("\n"),
-            });
-          }
-        };
-
-        // don't await because of timing issues
-        void fn().catch((error) => {
-          console.error("Error sending invite or reset password email:", error);
-        });
       },
     },
     emailVerification: {
@@ -136,8 +53,77 @@ export const createAuth = (
     },
     plugins: [
       admin(),
+      magicLink({
+        sendMagicLink: async ({ email, url }) => {
+          const fn = async () => {
+            const pendingInvitation =
+              await prismaClient.pendingInvitation.findFirst({
+                where: {
+                  invitedUser: {
+                    email,
+                  },
+                },
+                include: {
+                  invitedUser: true,
+                  invitedToSheet: true,
+                  invitedByUser: true,
+                },
+              });
+
+            if (pendingInvitation) {
+              await emailWorker.sendEmail({
+                to: {
+                  name: pendingInvitation.invitedUser.name,
+                  address: pendingInvitation.invitedUser.email,
+                },
+                subject: `Share expenses for "${pendingInvitation.invitedToSheet.name}" with ${pendingInvitation.invitedByUser.name}`,
+                text: [
+                  `You've been invited by ${pendingInvitation.invitedByUser.name} to join the "${pendingInvitation.invitedToSheet.name}" sheet on ${config.APP_NAME}.`,
+                  "",
+                  "Click here to sign in:",
+                  url,
+                  "",
+                  "---",
+                  `If you do not know ${pendingInvitation.invitedByUser.name} <${pendingInvitation.invitedByUser.email}>, please ignore this email.`,
+                ].join("\n"),
+              });
+
+              await prismaClient.pendingInvitation.delete({
+                where: {
+                  id: pendingInvitation.id,
+                },
+              });
+            } else {
+              await emailWorker.sendEmail({
+                to: {
+                  name: email,
+                  address: email,
+                },
+                subject: `Your sign in link for ${config.APP_NAME}`,
+                text: [
+                  "Click here to sign in:",
+                  url,
+                  "",
+                  "---",
+                  `If you did not request this link and do not have an account on ${config.APP_NAME}, please ignore this email.`,
+                ].join("\n"),
+              });
+            }
+          };
+
+          // don't await because of timing issues
+          void fn().catch((error) => {
+            console.error("Error sending invite or magic link email:", error);
+          });
+        },
+      }),
       passkey(),
       genericOAuth({ config: config.OAUTH_PROVIDER_CONFIG }),
+      ...((config.VITEST_WORKER_ID || config.VITE_INTEGRATION_TEST) && !IS_PROD
+        ? // causes various issues with exact optional property types
+          // oxlint-disable-next-line typescript/no-unsafe-type-assertion
+          ([testUtils()] as unknown as BetterAuthPlugin[])
+        : []),
     ],
   });
 

@@ -4,7 +4,6 @@ export const ZUser = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   email: z.email(),
-  emailVerified: z.boolean(),
   theme: z.string().nullable(),
 });
 
@@ -68,14 +67,6 @@ export const ZUpdateUserInput = z
     };
   });
 export type UpdateUserInput = z.infer<typeof ZUpdateUserInput>;
-
-export const ZAuthorizeUserInput = z.object({
-  email: z.email({
-    message: "Invalid email",
-  }),
-  password: z.string().min(1, { message: "Password is required" }),
-});
-export type AuthorizeUserInput = z.infer<typeof ZAuthorizeUserInput>;
 
 export const ZCategoryEmoji = z.object({
   id: z.string(),

@@ -13,25 +13,18 @@ import {
 } from "./ui/dropdown-menu";
 import { Separator } from "./ui/separator";
 import { cn } from "./ui/utils";
-import { UserButton } from "@daveyplate/better-auth-ui";
+import { useInvalidateRouter } from "#/api/use-invalidate-router";
+import { useMutation } from "@tanstack/react-query";
+import { useTRPC } from "#/api/trpc";
 
 export const LoggedOutNavBarAvatar = () => (
-  <>
-    <Button
-      variant="outline"
-      className="text-primary-foreground bg-transparent"
-      role="link"
-      nativeButton={false}
-      render={<Link to="/auth/sign-in">Sign in</Link>}
-    />
-    <Button
-      variant="outline"
-      className="text-primary-foreground bg-transparent"
-      role="link"
-      nativeButton={false}
-      render={<Link to="/auth/sign-up">Sign up</Link>}
-    />
-  </>
+  <Button
+    variant="outline"
+    className="text-primary-foreground bg-transparent"
+    role="link"
+    nativeButton={false}
+    render={<Link to="/auth/sign-in">Sign in</Link>}
+  />
 );
 
 export const LoggedInNavBarAvatar = ({
@@ -59,12 +52,22 @@ export const LoggedInNavBarAvatar = ({
 
 export const NavBarAvatar = ({ className }: { className?: string }) => {
   const me = useCurrentUser();
+  const { trpc } = useTRPC();
+  const { mutateAsync: signOut } = useMutation(
+    trpc.user.signOut.mutationOptions(),
+  );
+  const invalidateRouter = useInvalidateRouter();
 
   return (
     <div className={cn("flex place-items-center gap-4", className)}>
       <Separator orientation="vertical">&nbsp;</Separator>
       {me != null ? (
-        <UserButton size="icon" disableDefaultLinks />
+        <LoggedInNavBarAvatar
+          handleSignOut={async () => {
+            await signOut();
+            await invalidateRouter();
+          }}
+        />
       ) : (
         <LoggedOutNavBarAvatar />
       )}

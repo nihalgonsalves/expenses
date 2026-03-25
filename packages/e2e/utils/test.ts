@@ -1,6 +1,5 @@
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
-import { createAuthClient } from "better-auth/client";
 import { test as base, type APIRequestContext } from "@playwright/test";
 export { expect } from "@playwright/test";
 import { type TRPCClient, createTRPCClient, httpLink } from "@trpc/client";
@@ -13,8 +12,8 @@ import { getUserData } from "./misc";
 type Fixtures = {
   setup: () => void;
   serverTRPCClient: TRPCClient<AppRouter>;
-  createUser: () => Promise<Omit<User, "theme"> & { password: string }>;
-  signIn: () => Promise<Omit<User, "theme"> & { password: string }>;
+  createUser: () => Promise<Omit<User, "theme">>;
+  signIn: () => Promise<Omit<User, "theme">>;
 };
 
 declare global {
@@ -128,13 +127,13 @@ export const test = base.extend<Fixtures>({
     { auto: true },
   ],
 
-  serverTRPCClient: async ({ request, baseURL }, use) => {
+  serverTRPCClient: async ({ page, baseURL }, use) => {
     const client = createTRPCClient<AppRouter>({
       links: [
         httpLink({
           url: new URL("/api/trpc", baseURL),
           // @ts-expect-error minor type differences
-          fetch: createCompatibleFetch(baseURL!, request),
+          fetch: createCompatibleFetch(baseURL!, page.request),
         }),
       ],
     });
@@ -142,44 +141,32 @@ export const test = base.extend<Fixtures>({
     await use(client);
   },
 
-  createUser: async ({ request, baseURL }, use) => {
+  createUser: async ({ serverTRPCClient }, use) => {
     await use(async () => {
-      const { name, email, password } = getUserData();
+      const { name, email } = getUserData();
 
-      const authClient = createAuthClient({
-        baseURL: new URL("/api/auth", baseURL).toString(),
+      const { user } = await serverTRPCClient.user.createTestUser.mutate({
+        name,
+        email,
       });
 
-      const { data, error } = await authClient.signUp.email(
-        {
-          name,
-          email,
-          password,
-        },
-        {
-          customFetchImpl: createCompatibleFetch(baseURL!, request),
-        },
-      );
-
-      if (error) {
-        throw new Error(`Failed to create user: ${error.message}`, {
-          cause: error,
-        });
-      }
-
-      const { id, emailVerified } = data.user;
-
-      return { id, name, email, emailVerified, password };
+      return user;
     });
   },
 
-  signIn: async ({ context, request, createUser }, use) => {
+  signIn: async ({ page, serverTRPCClient }, use) => {
     await use(async () => {
-      const { id, name, email, emailVerified, password } = await createUser();
+      const { name, email } = getUserData();
 
-      await context.addCookies((await request.storageState()).cookies);
+      const { user, cookies } =
+        await serverTRPCClient.user.createTestUser.mutate({
+          name,
+          email,
+        });
 
-      return { id, name, email, emailVerified, password };
+      await page.context().addCookies(cookies);
+
+      return user;
     });
   },
 });

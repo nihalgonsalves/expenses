@@ -4,15 +4,11 @@ import {
   ClientOnly,
   createRootRouteWithContext,
   HeadContent,
-  Link,
   Outlet,
   Scripts,
-  useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { MotionConfig } from "motion/react";
-import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
-import { AuthUIProviderTanstack } from "@daveyplate/better-auth-ui/tanstack";
 
 import {
   THEME_DEFAULT,
@@ -28,7 +24,6 @@ import { config } from "../config";
 import mainCss from "../main.css?url";
 import { useSwUpdateCheck } from "../register-sw";
 import { getThemeDataAttribute, useThemeSync } from "../state/theme";
-import { authClient } from "#/utils/auth";
 import { PWAInstall } from "#/components/pwa-install";
 import { ReactTrace } from "#/components/react-trace";
 
@@ -91,11 +86,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     <>
       <GlobalHookContainer />
       <MotionConfig reducedMotion="user">
-        <AuthQueryProvider>
-          <AuthUIProvider>
-            <Outlet />
-          </AuthUIProvider>
-        </AuthQueryProvider>
+        <Outlet />
       </MotionConfig>
       <TooltipRoot />
       <Toaster />
@@ -104,28 +95,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   ),
   shellComponent: RootDocument,
 });
-
-const AuthUIProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
-  const context = Route.useRouteContext();
-
-  return (
-    <AuthQueryProvider>
-      <AuthUIProviderTanstack
-        passkey
-        authClient={authClient}
-        {...(context.config?.hasOauth && {
-          genericOAuth: { providers: context.config.oauthProviders },
-        })}
-        navigate={async (href) => router.navigate({ href })}
-        replace={async (href) => router.navigate({ href, replace: true })}
-        Link={({ href, ...props }) => <Link to={href} {...props} />}
-      >
-        {children}
-      </AuthUIProviderTanstack>
-    </AuthQueryProvider>
-  );
-};
 
 const ConditionalPWAInstall = () => {
   const { user } = Route.useRouteContext();

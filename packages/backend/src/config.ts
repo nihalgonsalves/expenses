@@ -207,6 +207,7 @@ const ZEnv = z.object({
   SENTRY_DSN: z.string().optional(),
 
   VITEST_WORKER_ID: IS_PROD ? z.undefined() : z.string().optional(),
+  VITE_INTEGRATION_TEST: IS_PROD ? z.undefined() : z.string().optional(),
 });
 
 export const NOTIFICATION_BULLMQ_QUEUE = "notifications";

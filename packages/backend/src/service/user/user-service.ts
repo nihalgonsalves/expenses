@@ -1,7 +1,4 @@
-import type {
-  AuthorizeUserInput,
-  User,
-} from "@nihalgonsalves/expenses-shared/types/user";
+import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import type { PrismaClientType } from "../../create-prisma.ts";
 import type { Sheet } from "../../prisma/client.ts";
@@ -9,8 +6,6 @@ import { generateId } from "../../utils/nanoid.ts";
 
 import { UserServiceError } from "./utils.ts";
 import type { BetterAuthInstance } from "../../utils/auth.ts";
-import { APIError } from "better-auth";
-import { RESET_PASSWORD_ROUTE } from "@nihalgonsalves/expenses-shared/routes";
 
 export class UserService {
   private prismaClient: Pick<
@@ -55,11 +50,11 @@ export class UserService {
       },
     });
 
-    await this.betterAuth.api.requestPasswordReset({
+    await this.betterAuth.api.signInMagicLink({
       body: {
         email: input.invitedUserEmail,
-        redirectTo: RESET_PASSWORD_ROUTE,
       },
+      headers: new Headers(),
     });
 
     return user;
@@ -74,30 +69,7 @@ export class UserService {
     });
   }
 
-  async anonymizeUser(
-    id: string,
-    input: Omit<AuthorizeUserInput, "email">,
-    headers: Headers,
-  ): Promise<string> {
-    try {
-      await this.betterAuth.api.verifyPassword({
-        body: {
-          password: input.password,
-        },
-        headers,
-      });
-    } catch (error) {
-      if (error instanceof APIError) {
-        throw new UserServiceError({
-          code: "UNAUTHORIZED",
-          message: error.message,
-          cause: error,
-        });
-      }
-
-      throw error;
-    }
-
+  async anonymizeUser(id: string, headers: Headers): Promise<string> {
     await this.betterAuth.api.revokeSessions({ headers });
 
     const [{ id: deletedId }] = await this.prismaClient.$transaction([

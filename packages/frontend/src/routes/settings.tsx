@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 
 import { useCurrentUser } from "../api/use-current-user";
 import { AppearanceForm } from "../components/settings/appearance-form";
@@ -6,10 +6,11 @@ import { CategoryForm } from "../components/settings/category-form";
 import { NotificationPreferenceForm } from "../components/settings/notification-preference-form";
 import { PrivacyForm } from "../components/settings/privacy-form";
 import { TroubleshootingForm } from "../components/settings/troubleshooting-form";
+import { AuthQueryProvider } from "@daveyplate/better-auth-tanstack";
+import { AuthUIProviderTanstack } from "@daveyplate/better-auth-ui/tanstack";
 import { Root } from "../pages/root";
 import {
   ChangeEmailCard,
-  ChangePasswordCard,
   PasskeysCard,
   ProvidersCard,
   SessionsCard,
@@ -20,13 +21,14 @@ import {
   NativeSelectOption,
 } from "#/components/ui/native-select";
 import { useState } from "react";
-import { VerifyEmailCard } from "#/components/settings/verify-email-card";
+import { authClient } from "#/utils/auth";
 
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const router = useRouter();
   const { config } = Route.useRouteContext();
   const [selectedSection, setSelectedSection] = useState<Section>("Profile");
 
@@ -46,7 +48,7 @@ function RouteComponent() {
       component: (
         <>
           <UpdateNameCard />
-          <VerifyEmailCard me={me} />
+          <ChangeEmailCard />
         </>
       ),
     },
@@ -57,30 +59,14 @@ function RouteComponent() {
       component: <NotificationPreferenceForm />,
     },
     {
-      title: "Email",
+      title: "Security",
       component: (
         <>
-          <ChangeEmailCard />
-          <VerifyEmailCard me={me} />
+          <PasskeysCard />
+          {config?.hasOauth && <ProvidersCard />}
+          <SessionsCard />
         </>
       ),
-    },
-    { title: "Password", component: <ChangePasswordCard /> },
-    {
-      title: "Passkeys",
-      component: <PasskeysCard />,
-    },
-    ...(config?.hasOauth
-      ? [
-          {
-            title: "Connected accounts" as const,
-            component: <ProvidersCard />,
-          },
-        ]
-      : []),
-    {
-      title: "Sessions",
-      component: <SessionsCard />,
     },
     { title: "Privacy", component: <PrivacyForm /> },
     { title: "Troubleshooting", component: <TroubleshootingForm /> },
@@ -115,7 +101,21 @@ function RouteComponent() {
             </NativeSelectOption>
           ))}
         </NativeSelect>
-        {sectionById.get(selectedSection)?.component ?? null}
+        <AuthQueryProvider>
+          <AuthUIProviderTanstack
+            passkey
+            magicLink
+            authClient={authClient}
+            {...(config?.hasOauth && {
+              genericOAuth: { providers: config.oauthProviders },
+            })}
+            navigate={async (href) => router.navigate({ href })}
+            replace={async (href) => router.navigate({ href, replace: true })}
+            Link={({ href, ...props }) => <Link to={href} {...props} />}
+          >
+            {sectionById.get(selectedSection)?.component ?? null}
+          </AuthUIProviderTanstack>
+        </AuthQueryProvider>
       </div>
     </Root>
   );

@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  '@daveyplate/better-auth-ui':
-    hash: 7a3613846ee45d0655229983dd0b959074e4cdbd620dd3fb0e604df5b9b5522a
-    path: patches/@daveyplate__better-auth-ui.patch
   sonner:
     hash: ce66d03136d754eed56e9dd7abd777a2edd4da5fb688e1e4d089bc65a0a6831f
     path: patches/sonner.patch
@@ -224,9 +221,6 @@ importers:
       '@trpc/client':
         specifier: 11.15.0
         version: 11.15.0(@trpc/server@11.15.0(typescript@6.0.2))(typescript@6.0.2)
-      better-auth:
-        specifier: 1.5.6
-        version: 1.5.6(@opentelemetry/api@1.9.0)(@prisma/client@7.5.0(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.2))(typescript@6.0.2))(@tanstack/react-start@1.167.7(crossws@0.4.4(srvx@0.11.13))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vite@8.0.2))(drizzle-orm@0.45.1(@electric-sql/pglite@0.3.15)(@opentelemetry/api@1.9.0)(@prisma/client@7.5.0(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.2))(typescript@6.0.2))(@types/pg@8.20.0)(kysely@0.28.14)(mysql2@3.15.3)(pg@8.20.0)(postgres@3.4.7)(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.2)))(mongodb@7.1.0)(mysql2@3.15.3)(pg@8.20.0)(prisma@7.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@6.0.2))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.1.1)(vue@3.5.30(typescript@6.0.2))
       chromatic:
         specifier: 16.0.0
         version: 16.0.0
@@ -247,7 +241,7 @@ importers:
         version: 1.3.6(90ba059abe86b267d9e61b4d76589a4b)
       '@daveyplate/better-auth-ui':
         specifier: 3.4.0
-        version: 3.4.0(patch_hash=7a3613846ee45d0655229983dd0b959074e4cdbd620dd3fb0e604df5b9b5522a)(9fd9e156e753db9cffdab21e16a40ed7)
+        version: 3.4.0(9fd9e156e753db9cffdab21e16a40ed7)
       '@emoji-mart/data':
         specifier: 1.2.1
         version: 1.2.1
@@ -10844,7 +10838,7 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  '@daveyplate/better-auth-ui@3.4.0(patch_hash=7a3613846ee45d0655229983dd0b959074e4cdbd620dd3fb0e604df5b9b5522a)(9fd9e156e753db9cffdab21e16a40ed7)':
+  '@daveyplate/better-auth-ui@3.4.0(9fd9e156e753db9cffdab21e16a40ed7)':
     dependencies:
       '@better-auth/api-key': 1.5.6(9d906eadcf9ff85bda925b01398ae3ea)
       '@better-auth/passkey': 1.5.6(f01bdbad1fe5ca841ff782addbf6b07a)

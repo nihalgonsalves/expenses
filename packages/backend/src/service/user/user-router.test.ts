@@ -20,16 +20,12 @@ describe("signOut", () => {
 
 describe("anonymizeUser", () => {
   it("anonymizes a user", async () => {
-    const userAndCookie = await userFactory(prisma, betterAuth, {
-      password: "password",
-    });
+    const userAndCookie = await userFactory(prisma, betterAuth);
     const user = userAndCookie.user;
 
     const caller = useProtectedCaller(userAndCookie, {});
 
-    const deletedUserId = await caller.user.anonymizeUser({
-      password: "password",
-    });
+    const deletedUserId = await caller.user.anonymizeUser();
 
     expect(deletedUserId).toBe(user.id);
 
@@ -44,24 +40,18 @@ describe("anonymizeUser", () => {
   });
 
   it("clears site data", async () => {
-    const userAndCookie = await userFactory(prisma, betterAuth, {
-      password: "password",
-    });
+    const userAndCookie = await userFactory(prisma, betterAuth);
 
     const clearSiteData = vi.fn();
     const caller = useProtectedCaller(userAndCookie, { clearSiteData });
 
-    await caller.user.anonymizeUser({
-      password: "password",
-    });
+    await caller.user.anonymizeUser();
 
     expect(clearSiteData).toHaveBeenCalledExactlyOnceWith();
   });
 
   it("deletes personal sheets and transactions", async () => {
-    const userAndCookie = await userFactory(prisma, betterAuth, {
-      password: "password",
-    });
+    const userAndCookie = await userFactory(prisma, betterAuth);
     const user = userAndCookie.user;
 
     const personalSheet = await personalSheetFactory(prisma, {
@@ -78,9 +68,7 @@ describe("anonymizeUser", () => {
       ),
     );
 
-    await caller.user.anonymizeUser({
-      password: "password",
-    });
+    await caller.user.anonymizeUser();
 
     await expect(
       prisma.sheet.findFirst({
@@ -91,18 +79,5 @@ describe("anonymizeUser", () => {
     await expect(
       prisma.transaction.findFirst({ where: { id: transaction.id } }),
     ).resolves.toBeNull();
-  });
-
-  it("returns 403 if the password is wrong", async () => {
-    const userAndCookie = await userFactory(prisma, betterAuth, {
-      password: "password",
-    });
-    const caller = useProtectedCaller(userAndCookie, {});
-
-    await expect(
-      caller.user.anonymizeUser({
-        password: "wrong-password",
-      }),
-    ).rejects.toThrow("Invalid password");
   });
 });

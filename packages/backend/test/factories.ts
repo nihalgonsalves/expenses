@@ -9,6 +9,7 @@ import { generateId } from "../src/utils/nanoid.ts";
 
 import { getUserKeys } from "./web-push-utils.ts";
 import type { BetterAuthInstance } from "../src/utils/auth.ts";
+import type { TestHelpers } from "better-auth/plugins";
 
 const randomItem = <T>(items: T[]): T =>
   items[Math.floor(Math.random() * items.length)]!;
@@ -18,28 +19,26 @@ export const currencyCodeFactory = () => randomItem(CURRENCY_CODES);
 export const userFactory = async (
   prisma: PrismaClientType,
   betterAuth: BetterAuthInstance,
-  overrides: Partial<{ name: string; email: string; password: string }> = {},
+  overrides: Partial<{ name: string; email: string }> = {},
 ) => {
-  const {
-    response: { user: betterAuthUser },
-    headers,
-  } = await betterAuth.api.signUpEmail({
-    body: {
-      name: faker.person.fullName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-      ...overrides,
-    },
-    returnHeaders: true,
-  });
+  // @ts-expect-error bad BetterAuth types, see plugins array.
+  const testUtils: TestHelpers = (await betterAuth.$context).test;
+
+  const betterAuthUser = await testUtils.saveUser(
+    testUtils.createUser({
+      name: overrides.name ?? faker.person.fullName(),
+      email: overrides.email ?? faker.internet.email(),
+    }),
+  );
 
   const user = await prisma.user.findUniqueOrThrow({
     where: { id: betterAuthUser.id },
   });
 
-  const cookieHeader = headers.getSetCookie().at(0)?.split(";").at(0);
+  const { headers } = await testUtils.login({ userId: user.id });
+  const cookieHeader = headers.get("cookie");
   if (!cookieHeader) {
-    throw new Error("No Set-Cookie header found in signUpEmail response");
+    throw new Error("No Cookie header found in BetterAuth test utils response");
   }
 
   return { user, cookieHeader };
