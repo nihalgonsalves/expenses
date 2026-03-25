@@ -3,7 +3,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import type { Table } from "@tanstack/react-table";
-import { XIcon, SlidersHorizontalIcon } from "lucide-react";
+import { XIcon, SlidersHorizontalIcon, CalendarClockIcon } from "lucide-react";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { z } from "zod";
@@ -173,35 +173,31 @@ export const DataTableToolbar = <TData,>({
             table={table}
             className="h-8 justify-start border-dashed lg:justify-center"
           />
-
-          {futureTransactions?.count != null &&
-            futureTransactions.count > 0 && (
-              <Button
-                onClick={() => {
-                  setHasCustomDateRange(true);
-                  setDateRange({
-                    from: new Date(),
-                    to: futureTransactions.last
-                      ? new Date(
-                          Temporal.Instant.from(futureTransactions.last)
-                            .epochMilliseconds,
-                        )
-                      : undefined,
-                  });
-                }}
-                variant="outline"
-                className="border-primary h-8 justify-start lg:justify-center"
-              >
-                {futureTransactions.count} upcoming{" "}
-                {pluralise(
-                  futureTransactions.count,
-                  "transaction",
-                  "transactions",
-                )}
-              </Button>
-            )}
         </CollapsibleContent>
       </Collapsible>
+
+      {futureTransactions?.count != null && futureTransactions.count > 0 && (
+        <Button
+          onClick={() => {
+            setHasCustomDateRange(true);
+            setDateRange({
+              from: new Date(),
+              to: futureTransactions.last
+                ? new Date(
+                    Temporal.Instant.from(futureTransactions.last)
+                      .epochMilliseconds,
+                  )
+                : undefined,
+            });
+          }}
+          variant="outline"
+          className="border-primary h-8 justify-start lg:justify-center"
+        >
+          <CalendarClockIcon className="mr-0.5 size-[1em]" />
+          {futureTransactions.count} upcoming{" "}
+          {pluralise(futureTransactions.count, "transaction", "transactions")}
+        </Button>
+      )}
     </div>
   );
 };
