@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import { createAuthClient } from "better-auth/client";
 import { test as base, type APIRequestContext } from "@playwright/test";
 export { expect } from "@playwright/test";
-import { type TRPCClient, createTRPCClient, httpBatchLink } from "@trpc/client";
+import { type TRPCClient, createTRPCClient, httpLink } from "@trpc/client";
 
 import type { AppRouter } from "@nihalgonsalves/expenses-backend";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
@@ -131,7 +131,7 @@ export const test = base.extend<Fixtures>({
   serverTRPCClient: async ({ request, baseURL }, use) => {
     const client = createTRPCClient<AppRouter>({
       links: [
-        httpBatchLink({
+        httpLink({
           url: new URL("/api/trpc", baseURL),
           // @ts-expect-error minor type differences
           fetch: createCompatibleFetch(baseURL!, request),

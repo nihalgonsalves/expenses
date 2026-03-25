@@ -1,6 +1,6 @@
 import "temporal-polyfill/global";
 import { faker } from "@faker-js/faker";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { createTRPCClient, httpLink } from "@trpc/client";
 import fetchCookie from "fetch-cookie";
 import { createAuthClient } from "better-auth/react";
 
@@ -26,7 +26,7 @@ const fetchB = fetchCookie(fetch);
 const getClient = (fetchFn: typeof fetch) =>
   createTRPCClient<AppRouter>({
     links: [
-      httpBatchLink({
+      httpLink({
         url: "http://localhost:5174/trpc",
         // @ts-expect-error slightly divering fetch types
         fetch: fetchFn,

@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/react";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { createTRPCClient, httpLink } from "@trpc/client";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import type { AppRouter } from "@nihalgonsalves/expenses-backend/build";
 import {
@@ -29,7 +29,7 @@ export const getRouter = async () => {
 
   const trpcClient = createTRPCClient<AppRouter>({
     links: [
-      httpBatchLink({
+      httpLink({
         headers: getIncomingHeaders(),
         url: getTrpcBaseUrl(),
       }),
