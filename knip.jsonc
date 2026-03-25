@@ -9,7 +9,6 @@
   "tags": ["-lintignore"],
   "rules": {
     "files": "warn",
-    "classMembers": "off",
     "duplicates": "off",
   },
   "ignoreExportsUsedInFile": true,
