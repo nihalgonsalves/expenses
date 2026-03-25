@@ -58,6 +58,12 @@ export const getGroupSheetTransactionSummaryText = ({
   })}`;
 };
 
+export const pluralise = (count: number, singular: string, plural: string) => {
+  const formatter = new Intl.PluralRules(DEFAULT_LOCALE);
+
+  return formatter.select(count) === "one" ? singular : plural;
+};
+
 export const noop = () => {
   // do nothing
 };

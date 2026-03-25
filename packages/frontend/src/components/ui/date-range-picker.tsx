@@ -114,6 +114,14 @@ const PresetButton = ({
   </Button>
 );
 
+const getAdjustedRange = (
+  from: string | Date,
+  to: string | Date | undefined,
+): DateRange => ({
+  from: getDateAdjustedForTimezone(from),
+  to: to != null ? getDateAdjustedForTimezone(to) : undefined,
+});
+
 /** The DateRangePicker component allows a user to select a range of dates */
 export const DateRangePicker: FC<DateRangePickerProps> = ({
   initialDateFrom = new Date(new Date().setHours(0, 0, 0, 0)),
@@ -123,13 +131,14 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
 }): ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [range, setRange] = useState<DateRange>({
-    from: getDateAdjustedForTimezone(initialDateFrom),
-    to:
-      initialDateTo != null
-        ? getDateAdjustedForTimezone(initialDateTo)
-        : getDateAdjustedForTimezone(initialDateFrom),
-  });
+  const [range, setRange] = useState<DateRange>(() =>
+    getAdjustedRange(initialDateFrom, initialDateTo),
+  );
+
+  // TODO: this is a hack, this component needs to be rewritten in Temporal + properly handle controlled state
+  useEffect(() => {
+    setRange(getAdjustedRange(initialDateFrom, initialDateTo));
+  }, [initialDateFrom, initialDateTo]);
 
   const [selectedPreset, setSelectedPreset] = useState<string | undefined>(
     undefined,

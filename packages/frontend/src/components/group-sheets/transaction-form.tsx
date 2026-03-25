@@ -247,6 +247,7 @@ export const TransactionForm = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getFutureTransactions.queryKey(),
       trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId: groupSheet.id,
       }),
@@ -459,6 +460,7 @@ export const EditTransactionForm = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getFutureTransactions.queryKey(),
       trpc.transaction.getTransaction.queryKey({
         sheetId: groupSheet.id,
         transactionId: transaction.id,

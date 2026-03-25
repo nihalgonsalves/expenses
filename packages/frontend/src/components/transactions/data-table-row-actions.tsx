@@ -52,6 +52,7 @@ const PersonalTransactionDropdownContent = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getFutureTransactions.queryKey(),
       trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: sheetId,
       }),
@@ -118,6 +119,7 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getFutureTransactions.queryKey(),
       trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId: sheetId,
       }),

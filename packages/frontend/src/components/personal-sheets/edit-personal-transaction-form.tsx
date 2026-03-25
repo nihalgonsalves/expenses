@@ -125,6 +125,7 @@ const EditPersonalTransactionForm = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getFutureTransactions.queryKey(),
       trpc.transaction.getTransaction.queryKey({
         sheetId: data.sheet.id,
         transactionId: transaction.id,

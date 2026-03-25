@@ -217,6 +217,7 @@ const CreatePersonalTransactionForm = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getFutureTransactions.queryKey(),
       trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),

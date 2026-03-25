@@ -328,6 +328,23 @@ export const transactionRouter = router({
       );
     }),
 
+  getFutureTransactions: protectedProcedure
+    .output(
+      z.object({
+        count: z.number(),
+        last: z.iso.datetime().optional(),
+      }),
+    )
+    .query(async ({ ctx }) => {
+      const { count, last } =
+        await ctx.transactionService.getFutureTransactions(ctx.user);
+
+      return {
+        count,
+        last: last?.toISOString(),
+      };
+    }),
+
   getPersonalSheetTransactions: protectedProcedure
     .input(
       z.object({

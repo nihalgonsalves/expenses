@@ -178,6 +178,7 @@ const TransferItem = ({
 
     await invalidate(
       trpc.transaction.getAllUserTransactions.queryKey(),
+      trpc.transaction.getFutureTransactions.queryKey(),
       trpc.transaction.getGroupSheetTransactions.queryKey({
         groupSheetId,
       }),

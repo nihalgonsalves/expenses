@@ -211,7 +211,6 @@ export class TransactionService {
 
     return data.map(({ amount: _amount, scale: _scale, ...transaction }) => ({
       ...transaction,
-
       money: sumTransactions(
         transaction.sheet.currencyCode,
         transaction.transactionEntries.filter(({ amount, userId }) => {
@@ -227,6 +226,41 @@ export class TransactionService {
         }),
       ),
     }));
+  }
+
+  async getFutureTransactions(user: User) {
+    const [count, last] = await Promise.all([
+      this.prismaClient.transaction.count({
+        where: {
+          sheet: {
+            participants: {
+              some: { participantId: user.id },
+            },
+          },
+          spentAt: {
+            gte: Temporal.Now.instant().toString(),
+          },
+        },
+      }),
+      this.prismaClient.transaction.findFirst({
+        where: {
+          sheet: {
+            participants: {
+              some: { participantId: user.id },
+            },
+          },
+          spentAt: {
+            gte: Temporal.Now.instant().toString(),
+          },
+        },
+        orderBy: { spentAt: "desc" },
+      }),
+    ]);
+
+    return {
+      count,
+      last: last?.spentAt,
+    };
   }
 
   async getPersonalSheetTransactions({

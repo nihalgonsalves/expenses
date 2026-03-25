@@ -22,6 +22,8 @@ import { DateRangePicker } from "../ui/date-range-picker";
 import { Input } from "../ui/input";
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { pluralise } from "#/utils/utils";
+import { startOfMonth, endOfMonth } from "date-fns";
 
 type DataTableToolbarProps<TData> = {
   table: Table<TData>;
@@ -34,19 +36,25 @@ export const DataTableToolbar = <TData,>({
   dateRange,
   setDateRange,
 }: DataTableToolbarProps<TData>) => {
-  const breakpointMd = useBreakpoint("md");
-  const [isOpen, setIsOpen] = useState(breakpointMd);
+  const breakpointLg = useBreakpoint("lg");
+  const [isOpen, setIsOpen] = useState(breakpointLg);
+  // TODO: make these part of the filters, encapsulate reset / default date logic
+  const [hasCustomDateRange, setHasCustomDateRange] = useState(false);
 
   const { trpc } = useTRPC();
   const { data: sheets } = useQuery(
     trpc.sheet.mySheets.queryOptions({ includeArchived: false }),
+  );
+  const { data: futureTransactions } = useQuery(
+    trpc.transaction.getFutureTransactions.queryOptions(),
   );
 
   const { data: categories } = useQuery(
     trpc.transaction.getCategories.queryOptions(),
   );
 
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const isFiltered =
+    table.getState().columnFilters.length > 0 || hasCustomDateRange;
 
   const typeColumn = table.getColumn("type");
   const sheetColumn = table.getColumn("sheetId");
@@ -59,15 +67,16 @@ export const DataTableToolbar = <TData,>({
         initialDateFrom={dateRange?.from}
         initialDateTo={dateRange?.to}
         onUpdate={({ range }) => {
+          setHasCustomDateRange(true);
           setDateRange(range);
         }}
       />
 
       <Collapsible
         className="flex grow flex-col gap-2 lg:flex-row"
-        open={breakpointMd || isOpen}
+        open={breakpointLg || isOpen}
       >
-        {!breakpointMd && (
+        {!breakpointLg && (
           <CollapsibleTrigger
             render={
               <Button
@@ -83,9 +92,9 @@ export const DataTableToolbar = <TData,>({
             }
           />
         )}
-        <CollapsibleContent className="flex flex-col gap-2 lg:flex-row">
+        <CollapsibleContent className="contents lg:flex lg:grow lg:flex-row lg:gap-2">
           <Input
-            placeholder="Filter description..."
+            placeholder="Filter description…"
             value={
               z
                 .string()
@@ -137,11 +146,19 @@ export const DataTableToolbar = <TData,>({
               }
             />
           ) : null}
+
+          <div className="hidden grow lg:block" />
+
           {isFiltered ? (
             <Button
-              variant="ghost"
+              variant="secondary"
               onClick={() => {
                 table.resetColumnFilters();
+                setDateRange({
+                  from: startOfMonth(new Date()),
+                  to: endOfMonth(new Date()),
+                });
+                setHasCustomDateRange(false);
               }}
               className="h-8"
             >
@@ -149,10 +166,40 @@ export const DataTableToolbar = <TData,>({
               <XIcon className="ml-2 size-4" />
             </Button>
           ) : null}
+
+          <div className="hidden grow lg:block" />
+
           <DataTableViewOptions
             table={table}
-            className="h-8 justify-start border-dashed md:justify-center lg:justify-center"
+            className="h-8 justify-start border-dashed lg:justify-center"
           />
+
+          {futureTransactions?.count != null &&
+            futureTransactions.count > 0 && (
+              <Button
+                onClick={() => {
+                  setHasCustomDateRange(true);
+                  setDateRange({
+                    from: new Date(),
+                    to: futureTransactions.last
+                      ? new Date(
+                          Temporal.Instant.from(futureTransactions.last)
+                            .epochMilliseconds,
+                        )
+                      : undefined,
+                  });
+                }}
+                variant="outline"
+                className="border-primary h-8 justify-start lg:justify-center"
+              >
+                {futureTransactions.count} upcoming{" "}
+                {pluralise(
+                  futureTransactions.count,
+                  "transaction",
+                  "transactions",
+                )}
+              </Button>
+            )}
         </CollapsibleContent>
       </Collapsible>
     </div>
