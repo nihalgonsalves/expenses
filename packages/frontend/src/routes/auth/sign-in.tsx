@@ -81,7 +81,7 @@ const EmailForm = ({
   });
 
   return (
-    <Card className="mx-auto max-w-md">
+    <Card>
       <CardHeader>
         <CardTitle>Continue with email</CardTitle>
         <CardDescription>
@@ -202,7 +202,7 @@ const OTPForm = ({
   const invalidateRouter = useInvalidateRouter();
 
   return (
-    <Card className="mx-auto max-w-md">
+    <Card>
       <CardHeader>
         <CardTitle>Verify your login</CardTitle>
         <CardDescription>
@@ -297,7 +297,7 @@ function RouteComponent() {
   }, []);
 
   return (
-    <Root title="Sign in" className="p-0 sm:p-5">
+    <Root title="Sign in">
       {emailSentTo ? (
         <OTPForm
           email={emailSentTo}

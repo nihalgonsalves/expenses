@@ -26,7 +26,6 @@ function RouteComponent() {
       result={result}
       showBackButton
       getTitle={(sheet) => sheet.name}
-      className="p-2 md:p-5"
       render={(sheet) => <PersonalSheet personalSheet={sheet} />}
     />
   );

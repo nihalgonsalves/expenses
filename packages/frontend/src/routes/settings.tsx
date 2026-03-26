@@ -13,7 +13,6 @@ import {
   ChangeEmailCard,
   PasskeysCard,
   ProvidersCard,
-  SessionsCard,
   UpdateNameCard,
 } from "@daveyplate/better-auth-ui";
 import {
@@ -36,7 +35,7 @@ function RouteComponent() {
 
   if (!me) {
     return (
-      <Root title="Settings" className="p-2 md:p-5" showBackButton>
+      <Root title="Settings" showBackButton>
         <TroubleshootingForm />
       </Root>
     );
@@ -64,7 +63,6 @@ function RouteComponent() {
         <>
           <PasskeysCard />
           {config?.hasOauth && <ProvidersCard />}
-          <SessionsCard />
         </>
       ),
     },
@@ -79,7 +77,7 @@ function RouteComponent() {
   type Section = (typeof sections)[number]["title"];
 
   return (
-    <Root title="Settings" className="p-2 md:p-5" showBackButton>
+    <Root title="Settings" showBackButton>
       <div className="flex flex-col gap-4">
         <NativeSelect
           className="w-full"

@@ -22,7 +22,6 @@ function RouteComponent() {
     <RootLoader
       result={result}
       title="Sheets"
-      className="p-2"
       render={(sheets) => <SheetsList sheets={sheets} />}
     />
   );

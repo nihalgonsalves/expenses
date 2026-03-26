@@ -37,7 +37,6 @@ function RouteComponent() {
     <RootLoader
       getTitle={(groupSheet) => groupSheet.name}
       result={result}
-      className="p-2 md:p-5"
       render={(groupSheet) => (
         <GroupSheet actorInfo={actorInfo} groupSheet={groupSheet} />
       )}
