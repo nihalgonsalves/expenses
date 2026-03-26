@@ -7,7 +7,6 @@ import { init as initEmojiMart } from "emoji-mart";
 import { StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 
-import { config } from "./config";
 import { registerSW } from "./register-sw";
 import { haptics } from "bzzz";
 
@@ -27,12 +26,6 @@ haptics.setOutput("haptics");
 import.meta.hot?.accept(() => {
   void registerSW();
 });
-
-if (import.meta.env.DEV && !config.VITE_INTEGRATION_TEST) {
-  const { scan } = await import("react-scan");
-
-  scan();
-}
 
 hydrateRoot(
   document,
