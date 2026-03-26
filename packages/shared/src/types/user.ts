@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const ZUser = z.object({
   id: z.string().min(1),
-  name: z.string().min(1),
+  name: z.string(),
   email: z.email(),
   theme: z.string().nullable(),
 });

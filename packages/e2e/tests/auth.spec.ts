@@ -7,10 +7,13 @@ import { randomUUID } from "crypto";
 
 const signInForm = async (page: Page, email: string) => {
   await page.getByLabel(/email/i).fill(email);
-  await page.getByRole("button", { name: /send link/i }).click();
+  await page.getByRole("button", { name: /send code/i }).click();
 };
 
 test("signs in and out successfully", async ({ page, request, createUser }) => {
+  // TODO: Enable on CI (mailpit issues)
+  test.skip(process.env["CI"] != null);
+
   const { email } = await createUser();
 
   await page.goto("/auth/sign-in");
@@ -22,11 +25,12 @@ test("signs in and out successfully", async ({ page, request, createUser }) => {
   const mailpitResponse = await request.get(
     new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
   );
-
   const message = ZEmail.parse(await mailpitResponse.json());
-
   // HACK: depends on the message format
-  await page.goto(message.Text.split("\n")[1]!);
+  await page
+    .getByLabel(/verification/i)
+    .fill(message.Text.split(/[\n\r]+/)[0]!.split(" ")[3]!);
+  await page.getByRole("button", { name: /verify/i }).click();
 
   await expect(page).toHaveTitle(/transactions/i);
 
@@ -41,7 +45,7 @@ test("signs up via invite flow successfully", async ({
   serverTRPCClient,
   browser,
 }) => {
-  // TODO: Enable on CI
+  // TODO: Enable on CI (mailpit issues)
   test.skip(process.env["CI"] != null);
 
   await signIn();
@@ -62,18 +66,30 @@ test("signs up via invite flow successfully", async ({
   await page.getByRole("button", { name: /add/i }).click();
   await page.context().close();
 
-  const mailpitResponse = await request.get(
+  const inviteMailpitResponse = await request.get(
     new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
   );
 
-  const message = ZEmail.parse(await mailpitResponse.json());
+  const inviteMessage = ZEmail.parse(await inviteMailpitResponse.json());
 
-  expect(message.Text).toContain("You've been invited by");
+  expect(inviteMessage.Text).toContain("You've been invited by");
 
   const otherPage = await (await browser.newContext()).newPage();
   // HACK: depends on the message format
-  await otherPage.goto(message.Text.split(/[\n\r]+/)[2]!);
+  await otherPage.goto(inviteMessage.Text.split(/[\n\r]+/)[2]!);
   await otherPage.waitForSelector("body[data-hydrated]");
+
+  await signInForm(otherPage, invitedUserEmail);
+
+  const otpMailpitResponse = await request.get(
+    new URL("/api/v1/message/latest", MAILPIT_URL).toString(),
+  );
+  const otpMessage = ZEmail.parse(await otpMailpitResponse.json());
+  // HACK: depends on the message format
+  await otherPage
+    .getByLabel(/verification/i)
+    .fill(otpMessage.Text.split(/[\n\r]+/)[0]!.split(" ")[3]!);
+  await otherPage.getByRole("button", { name: /verify/i }).click();
 
   await otherPage.getByRole("link", { name: /sheets/i }).click();
   await expect(otherPage.getByText("Test Sheet")).toBeVisible();

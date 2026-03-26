@@ -41,8 +41,6 @@ model Sheet {
   transactions         Transaction[]
   transactionSchedules TransactionSchedule[]
 
-  pendingInvitations PendingInvitation[]
-
   @@map("sheets")
 }
 

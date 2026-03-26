@@ -17,7 +17,7 @@ export const makeCreateContext = (
 ) => {
   const betterAuth = createAuth(prisma, workers.emailWorker);
 
-  const userService = new UserService(prisma, betterAuth);
+  const userService = new UserService(prisma, betterAuth, workers.emailWorker);
 
   const notificationSubscriptionService = new NotificationService(prisma);
 

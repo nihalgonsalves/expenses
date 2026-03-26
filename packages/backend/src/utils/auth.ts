@@ -3,7 +3,7 @@ import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { createPrisma, type PrismaClientType } from "../create-prisma.ts";
 import { config, IS_PROD } from "../config.ts";
 import type { IEmailWorker } from "../service/email/email-worker.ts";
-import { admin, genericOAuth, magicLink, testUtils } from "better-auth/plugins";
+import { admin, genericOAuth, emailOTP, testUtils } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
 
 export const createAuth = (
@@ -53,68 +53,30 @@ export const createAuth = (
     },
     plugins: [
       admin(),
-      magicLink({
-        sendMagicLink: async ({ email, url }) => {
-          const fn = async () => {
-            const pendingInvitation =
-              await prismaClient.pendingInvitation.findFirst({
-                where: {
-                  invitedUser: {
-                    email,
-                  },
-                },
-                include: {
-                  invitedUser: true,
-                  invitedToSheet: true,
-                  invitedByUser: true,
-                },
-              });
-
-            if (pendingInvitation) {
-              await emailWorker.sendEmail({
-                to: {
-                  name: pendingInvitation.invitedUser.name,
-                  address: pendingInvitation.invitedUser.email,
-                },
-                subject: `Share expenses for "${pendingInvitation.invitedToSheet.name}" with ${pendingInvitation.invitedByUser.name}`,
-                text: [
-                  `You've been invited by ${pendingInvitation.invitedByUser.name} to join the "${pendingInvitation.invitedToSheet.name}" sheet on ${config.APP_NAME}.`,
-                  "",
-                  "Click here to sign in:",
-                  url,
-                  "",
-                  "---",
-                  `If you do not know ${pendingInvitation.invitedByUser.name} <${pendingInvitation.invitedByUser.email}>, please ignore this email.`,
-                ].join("\n"),
-              });
-
-              await prismaClient.pendingInvitation.delete({
-                where: {
-                  id: pendingInvitation.id,
-                },
-              });
-            } else {
-              await emailWorker.sendEmail({
+      emailOTP({
+        async sendVerificationOTP({ email, otp, type }) {
+          if (type === "sign-in") {
+            void emailWorker
+              .sendEmail({
                 to: {
                   name: email,
                   address: email,
                 },
-                subject: `Your sign in link for ${config.APP_NAME}`,
+                subject: `Your ${config.APP_NAME} verification code: ${otp}`,
                 text: [
-                  "Click here to sign in:",
-                  url,
-                  "",
+                  `Enter the code ${otp} to sign in to your account on ${config.PUBLIC_ORIGIN}.`,
                   "---",
                   `If you did not request this link and do not have an account on ${config.APP_NAME}, please ignore this email.`,
                 ].join("\n"),
+              })
+              .catch((err) => {
+                console.error(`Error sending OTP email to ${email}:`, err);
               });
-            }
-          };
-
-          // don't await because of timing issues
-          void fn().catch((error) => {
-            console.error("Error sending invite or magic link email:", error);
-          });
+          } else if (type === "email-verification") {
+            // currently unused
+          } else {
+            // currently unused
+          }
         },
       }),
       passkey(),

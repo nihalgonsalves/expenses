@@ -40,7 +40,7 @@ export const getTRPCCaller = async () => {
       "user" | "headers" | "appendHeaders" | "clearSiteData"
     >,
   ) => {
-    const userService = new UserService(prisma, betterAuth);
+    const userService = new UserService(prisma, betterAuth, emailWorker);
     const notificationSubscriptionService = new NotificationService(prisma);
     const transactionService = new TransactionService(
       prisma,

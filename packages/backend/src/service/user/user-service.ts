@@ -6,25 +6,25 @@ import { generateId } from "../../utils/nanoid.ts";
 
 import { UserServiceError } from "./utils.ts";
 import type { BetterAuthInstance } from "../../utils/auth.ts";
+import type { IEmailWorker } from "../email/email-worker.ts";
+import { config } from "../../config.ts";
 
 export class UserService {
   private prismaClient: Pick<
     PrismaClientType,
-    | "$transaction"
-    | "user"
-    | "account"
-    | "sheet"
-    | "category"
-    | "pendingInvitation"
+    "$transaction" | "user" | "account" | "sheet" | "category"
   >;
   private betterAuth: BetterAuthInstance;
+  private emailWorker: IEmailWorker;
 
   constructor(
     prismaClient: UserService["prismaClient"],
     betterAuth: UserService["betterAuth"],
+    emailWorker: IEmailWorker,
   ) {
     this.prismaClient = prismaClient;
     this.betterAuth = betterAuth;
+    this.emailWorker = emailWorker;
   }
 
   async inviteUser(input: {
@@ -40,21 +40,24 @@ export class UserService {
       },
     });
 
-    // better-auth doesn't really expose an API for this, so we just check this
-    // when sending the reset password (or future magic) link
-    await this.prismaClient.pendingInvitation.create({
-      data: {
-        invitedUserId: user.id,
-        invitedToSheetId: input.groupSheet.id,
-        invitedByUserId: input.invitedBy.id,
-      },
-    });
+    const url = new URL(`/auth/sign-in`, config.PUBLIC_ORIGIN);
+    url.searchParams.set("redirect", `/groups/${input.groupSheet.id}`);
 
-    await this.betterAuth.api.signInMagicLink({
-      body: {
-        email: input.invitedUserEmail,
+    await this.emailWorker.sendEmail({
+      to: {
+        name: input.invitedUserName,
+        address: input.invitedUserEmail,
       },
-      headers: new Headers(),
+      subject: `Share expenses for "${input.groupSheet.name}" with ${input.invitedBy.name}`,
+      text: [
+        `You've been invited by ${input.invitedBy.name} to join the "${input.groupSheet.name}" sheet on ${config.APP_NAME}.`,
+        "",
+        `To get started, click the link below and sign-in with your email address ${input.invitedUserEmail}:`,
+        url.toString(),
+        "",
+        "---",
+        `If you do not know ${input.invitedBy.name} <${input.invitedBy.email}>, please ignore this email.`,
+      ].join("\n"),
     });
 
     return user;
