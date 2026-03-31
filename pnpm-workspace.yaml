@@ -27,3 +27,5 @@ patchedDependencies:
 saveExact: true
 
 strictDepBuilds: true
+
+minimumReleaseAge: 1440
