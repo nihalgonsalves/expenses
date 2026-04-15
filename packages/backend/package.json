@@ -25,7 +25,7 @@
     "@better-auth/prisma-adapter": "1.5.6",
     "@bull-board/api": "6.20.6",
     "@bull-board/hono": "6.20.6",
-    "@hono/node-server": "1.19.13",
+    "@hono/node-server": "1.19.14",
     "@hono/trpc-server": "0.4.2",
     "@nihalgonsalves/expenses-shared": "workspace:*",
     "@prisma/adapter-pg": "7.6.0",
