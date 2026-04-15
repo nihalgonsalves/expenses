@@ -39,7 +39,7 @@
     "hono": "4.12.12",
     "ioredis": "5.10.1",
     "nanoid": "5.1.7",
-    "nodemailer": "8.0.4",
+    "nodemailer": "8.0.5",
     "rate-limiter-flexible": "10.0.1",
     "rrule": "2.8.1",
     "temporal-polyfill": "0.3.2",

@@ -140,8 +140,8 @@ importers:
         specifier: 5.1.7
         version: 5.1.7
       nodemailer:
-        specifier: 8.0.4
-        version: 8.0.4
+        specifier: 8.0.5
+        version: 8.0.5
       rate-limiter-flexible:
         specifier: 10.0.1
         version: 10.0.1
@@ -7546,8 +7546,8 @@ packages:
     resolution: {integrity: sha512-cf+iXXJ9Foz4hBIu+eNNeg207ac6XruA9I9DXEs+jCxeS9t/k9T0GZK8NZngPwkv+P26i3zNFj9jxJU2v3pJnw==}
     engines: {node: '>=8'}
 
-  nodemailer@8.0.4:
-    resolution: {integrity: sha512-k+jf6N8PfQJ0Fe8ZhJlgqU5qJU44Lpvp2yvidH3vp1lPnVQMgi4yEEMPXg5eJS1gFIJTVq1NHBk7Ia9ARdSBdQ==}
+  nodemailer@8.0.5:
+    resolution: {integrity: sha512-0PF8Yb1yZuQfQbq+5/pZJrtF6WQcjTd5/S4JOHs9PGFxuTqoB/icwuB44pOdURHJbRKX1PPoJZtY7R4VUoCC8w==}
     engines: {node: '>=6.0.0'}
 
   normalize-path@3.0.0:
@@ -17162,7 +17162,7 @@ snapshots:
       '@types/pegjs': 0.10.6
       big-integer: 1.6.52
 
-  nodemailer@8.0.4: {}
+  nodemailer@8.0.5: {}
 
   normalize-path@3.0.0: {}
 
