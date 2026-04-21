@@ -98,7 +98,7 @@ export const MoneyField = ({
         } else {
           return amountAsString;
         }
-      } else if (selectionEnd !== length) {
+      } else if (selectionEnd !== length && localAmount !== 0) {
         // Don't allow editing the value in the middle of the string
         element.setSelectionRange(length, length);
         return amountAsString;

@@ -4,7 +4,6 @@ import {
   PieChartIcon,
   RotateCcwIcon,
   SplitIcon,
-  ListChecksIcon,
   CalculatorIcon,
   CirclePercentIcon,
 } from "lucide-react";
@@ -120,15 +119,6 @@ const SPLIT_OPTIONS: {
   },
 
   {
-    value: GroupTransactionSplitType.Selected,
-    label: (
-      <>
-        <ListChecksIcon className="mr-2" /> Select Participants
-      </>
-    ),
-  },
-
-  {
     value: GroupTransactionSplitType.Shares,
     label: (
       <>
@@ -158,10 +148,6 @@ const SPLIT_OPTIONS: {
 
 const SPLIT_CONFIG: Record<GroupTransactionSplitType, SplitConfig> = {
   [GroupTransactionSplitType.Evenly]: {
-    expectedSum: undefined,
-    hasInput: false,
-  },
-  [GroupTransactionSplitType.Selected]: {
     expectedSum: undefined,
     hasInput: false,
   },
@@ -372,7 +358,6 @@ export const SplitsFormSection = ({
     switch (newType) {
       case GroupTransactionSplitType.Evenly:
       case GroupTransactionSplitType.Shares:
-      case GroupTransactionSplitType.Selected:
         getDefaultRatios(groupSheet.participants).forEach((ratio, i) => {
           form.resetField(`ratios.${i}.ratio`, {
             defaultValue: ratio.ratio,
@@ -423,7 +408,7 @@ export const SplitsFormSection = ({
             <FormItem className="flex flex-col">
               <FormControl>
                 <ToggleButtonGroup<GroupTransactionSplitType>
-                  className="grid w-full grid-cols-1 grid-rows-5 lg:grid-cols-5 lg:grid-rows-1"
+                  className="grid w-full grid-cols-1 grid-rows-4 sm:grid-cols-4 sm:grid-rows-1"
                   options={SPLIT_OPTIONS}
                   {...field}
                   setValue={(value) => {
@@ -557,7 +542,7 @@ export const SplitsFormSection = ({
                         </FormControl>
                       </div>
                     )}
-                    {splitType === GroupTransactionSplitType.Selected && (
+                    {splitType === GroupTransactionSplitType.Evenly && (
                       <FormControl>
                         <Switch
                           {...field}

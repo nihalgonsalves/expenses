@@ -16,7 +16,6 @@ export type GroupTransactionShare = {
 
 export const GroupTransactionSplitType = {
   Evenly: "evenly",
-  Selected: "selected",
   Shares: "shares",
   Percentage: "percentage",
   Amounts: "amounts",
