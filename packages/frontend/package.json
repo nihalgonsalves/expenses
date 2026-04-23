@@ -84,7 +84,7 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "7.28.5",
-    "@codecov/vite-plugin": "1.9.1",
+    "@codecov/vite-plugin": "2.0.1",
     "@react-trace/core": "0.0.6",
     "@react-trace/plugin-copy-to-clipboard": "0.0.6",
     "@react-trace/plugin-open-editor": "0.0.7",

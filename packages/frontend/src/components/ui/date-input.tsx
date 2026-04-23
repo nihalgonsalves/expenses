@@ -37,6 +37,7 @@ export const DateInput: FC<DateInputProps> = ({ value, onChange }) => {
 
   useEffect(() => {
     const d = value ? new Date(value) : new Date();
+
     setDate({
       day: d.getDate(),
       month: d.getMonth() + 1,
@@ -81,132 +82,135 @@ export const DateInput: FC<DateInputProps> = ({ value, onChange }) => {
 
   const initialDate = useRef<DateParts>(date);
 
-  const handleBlur =
-    (field: keyof DateParts) =>
-    (e: FocusEvent<HTMLInputElement>): void => {
-      if (!e.target.value) {
-        setDate(initialDate.current);
-        return;
+  const handleBlur = (
+    field: keyof DateParts,
+    e: FocusEvent<HTMLInputElement>,
+  ): void => {
+    if (!e.target.value) {
+      setDate(initialDate.current);
+      return;
+    }
+
+    const newValue = Number(e.target.value);
+    const isValid = validateDate(field, newValue);
+
+    if (!isValid) {
+      setDate(initialDate.current);
+    } else {
+      // If the new value is valid, update the initial value
+      initialDate.current = { ...date, [field]: newValue };
+    }
+  };
+
+  const handleKeyDown = (
+    field: keyof DateParts,
+    e: KeyboardEvent<HTMLInputElement>,
+  ) => {
+    // Allow command (or control) combinations
+    if (e.metaKey || e.ctrlKey) {
+      return;
+    }
+
+    // Prevent non-numeric characters, excluding allowed keys
+    if (
+      !/^[0-9]$/.test(e.key) &&
+      ![
+        "ArrowUp",
+        "ArrowDown",
+        "ArrowLeft",
+        "ArrowRight",
+        "Delete",
+        "Tab",
+        "Backspace",
+        "Enter",
+      ].includes(e.key)
+    ) {
+      e.preventDefault();
+      return;
+    }
+
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      let newDate = { ...date };
+
+      if (field === "day") {
+        if (date[field] === new Date(date.year, date.month, 0).getDate()) {
+          newDate = { ...newDate, day: 1, month: (date.month % 12) + 1 };
+          if (newDate.month === 1) newDate.year += 1;
+        } else {
+          newDate.day += 1;
+        }
       }
 
-      const newValue = Number(e.target.value);
-      const isValid = validateDate(field, newValue);
-
-      if (!isValid) {
-        setDate(initialDate.current);
-      } else {
-        // If the new value is valid, update the initial value
-        initialDate.current = { ...date, [field]: newValue };
-      }
-    };
-
-  const handleKeyDown =
-    (field: keyof DateParts) => (e: KeyboardEvent<HTMLInputElement>) => {
-      // Allow command (or control) combinations
-      if (e.metaKey || e.ctrlKey) {
-        return;
+      if (field === "month") {
+        if (date[field] === 12) {
+          newDate = { ...newDate, month: 1, year: date.year + 1 };
+        } else {
+          newDate.month += 1;
+        }
       }
 
-      // Prevent non-numeric characters, excluding allowed keys
+      if (field === "year") {
+        newDate.year += 1;
+      }
+
+      setDate(newDate);
+      onChange(new Date(newDate.year, newDate.month - 1, newDate.day));
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      let newDate = { ...date };
+
+      if (field === "day") {
+        if (date[field] === 1) {
+          newDate.month -= 1;
+          if (newDate.month === 0) {
+            newDate.month = 12;
+            newDate.year -= 1;
+          }
+          newDate.day = new Date(newDate.year, newDate.month, 0).getDate();
+        } else {
+          newDate.day -= 1;
+        }
+      }
+
+      if (field === "month") {
+        if (date[field] === 1) {
+          newDate = { ...newDate, month: 12, year: date.year - 1 };
+        } else {
+          newDate.month -= 1;
+        }
+      }
+
+      if (field === "year") {
+        newDate.year -= 1;
+      }
+
+      setDate(newDate);
+      onChange(new Date(newDate.year, newDate.month - 1, newDate.day));
+    }
+
+    if (e.key === "ArrowRight") {
       if (
-        !/^[0-9]$/.test(e.key) &&
-        ![
-          "ArrowUp",
-          "ArrowDown",
-          "ArrowLeft",
-          "ArrowRight",
-          "Delete",
-          "Tab",
-          "Backspace",
-          "Enter",
-        ].includes(e.key)
+        e.currentTarget.selectionStart === e.currentTarget.value.length ||
+        (e.currentTarget.selectionStart === 0 &&
+          e.currentTarget.selectionEnd === e.currentTarget.value.length)
       ) {
         e.preventDefault();
-        return;
+        if (field === "month") dayRef.current?.focus();
+        if (field === "day") yearRef.current?.focus();
       }
-
-      if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowLeft") {
+      if (
+        e.currentTarget.selectionStart === 0 ||
+        (e.currentTarget.selectionStart === 0 &&
+          e.currentTarget.selectionEnd === e.currentTarget.value.length)
+      ) {
         e.preventDefault();
-        let newDate = { ...date };
-
-        if (field === "day") {
-          if (date[field] === new Date(date.year, date.month, 0).getDate()) {
-            newDate = { ...newDate, day: 1, month: (date.month % 12) + 1 };
-            if (newDate.month === 1) newDate.year += 1;
-          } else {
-            newDate.day += 1;
-          }
-        }
-
-        if (field === "month") {
-          if (date[field] === 12) {
-            newDate = { ...newDate, month: 1, year: date.year + 1 };
-          } else {
-            newDate.month += 1;
-          }
-        }
-
-        if (field === "year") {
-          newDate.year += 1;
-        }
-
-        setDate(newDate);
-        onChange(new Date(newDate.year, newDate.month - 1, newDate.day));
-      } else if (e.key === "ArrowDown") {
-        e.preventDefault();
-        let newDate = { ...date };
-
-        if (field === "day") {
-          if (date[field] === 1) {
-            newDate.month -= 1;
-            if (newDate.month === 0) {
-              newDate.month = 12;
-              newDate.year -= 1;
-            }
-            newDate.day = new Date(newDate.year, newDate.month, 0).getDate();
-          } else {
-            newDate.day -= 1;
-          }
-        }
-
-        if (field === "month") {
-          if (date[field] === 1) {
-            newDate = { ...newDate, month: 12, year: date.year - 1 };
-          } else {
-            newDate.month -= 1;
-          }
-        }
-
-        if (field === "year") {
-          newDate.year -= 1;
-        }
-
-        setDate(newDate);
-        onChange(new Date(newDate.year, newDate.month - 1, newDate.day));
+        if (field === "day") monthRef.current?.focus();
+        if (field === "year") dayRef.current?.focus();
       }
-
-      if (e.key === "ArrowRight") {
-        if (
-          e.currentTarget.selectionStart === e.currentTarget.value.length ||
-          (e.currentTarget.selectionStart === 0 &&
-            e.currentTarget.selectionEnd === e.currentTarget.value.length)
-        ) {
-          e.preventDefault();
-          if (field === "month") dayRef.current?.focus();
-          if (field === "day") yearRef.current?.focus();
-        }
-      } else if (e.key === "ArrowLeft") {
-        if (
-          e.currentTarget.selectionStart === 0 ||
-          (e.currentTarget.selectionStart === 0 &&
-            e.currentTarget.selectionEnd === e.currentTarget.value.length)
-        ) {
-          e.preventDefault();
-          if (field === "day") monthRef.current?.focus();
-          if (field === "year") dayRef.current?.focus();
-        }
-      }
-    };
+    }
+  };
 
   return (
     <div className="flex items-center rounded-lg border px-1 text-sm">
@@ -217,13 +221,17 @@ export const DateInput: FC<DateInputProps> = ({ value, onChange }) => {
         maxLength={2}
         value={date.day.toString()}
         onChange={handleInputChange("day")}
-        onKeyDown={handleKeyDown("day")}
+        onKeyDown={(e) => {
+          handleKeyDown("day", e);
+        }}
         onFocus={(e) => {
           if (window.innerWidth > 1024) {
             e.target.select();
           }
         }}
-        onBlur={handleBlur("day")}
+        onBlur={(e) => {
+          handleBlur("day", e);
+        }}
         className="w-7 border-none bg-transparent p-0 text-center outline-hidden"
         placeholder="D"
       />
@@ -235,13 +243,17 @@ export const DateInput: FC<DateInputProps> = ({ value, onChange }) => {
         maxLength={2}
         value={date.month.toString()}
         onChange={handleInputChange("month")}
-        onKeyDown={handleKeyDown("month")}
+        onKeyDown={(e) => {
+          handleKeyDown("month", e);
+        }}
         onFocus={(e) => {
           if (window.innerWidth > 1024) {
             e.target.select();
           }
         }}
-        onBlur={handleBlur("month")}
+        onBlur={(e) => {
+          handleBlur("month", e);
+        }}
         className="w-6 border-none bg-transparent p-0 text-center outline-hidden"
         placeholder="M"
       />
@@ -253,13 +265,17 @@ export const DateInput: FC<DateInputProps> = ({ value, onChange }) => {
         maxLength={4}
         value={date.year.toString()}
         onChange={handleInputChange("year")}
-        onKeyDown={handleKeyDown("year")}
+        onKeyDown={(e) => {
+          handleKeyDown("year", e);
+        }}
         onFocus={(e) => {
           if (window.innerWidth > 1024) {
             e.target.select();
           }
         }}
-        onBlur={handleBlur("year")}
+        onBlur={(e) => {
+          handleBlur("year", e);
+        }}
         className="w-12 border-none bg-transparent p-0 text-center outline-hidden"
         placeholder="YYYY"
       />

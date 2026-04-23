@@ -42,7 +42,7 @@
     "@vitest/coverage-v8": "4.1.5",
     "@vitest/ui": "4.1.5",
     "eslint-plugin-jest-dom": "5.5.0",
-    "eslint-plugin-react-hooks": "7.0.1",
+    "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-storybook": "10.3.5",
     "eslint-plugin-testing-library": "7.16.2",
     "knip": "6.1.1",
