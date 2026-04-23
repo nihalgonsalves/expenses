@@ -29,3 +29,5 @@ saveExact: true
 strictDepBuilds: true
 
 minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - "@nihalgonsalves/*"

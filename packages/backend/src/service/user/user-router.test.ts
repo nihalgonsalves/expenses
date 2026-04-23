@@ -9,7 +9,7 @@ const { usePublicCaller, useProtectedCaller, prisma, betterAuth } =
 
 describe("signOut", () => {
   it("signs a user out", async () => {
-    const clearSiteData = vi.fn();
+    const clearSiteData = vi.fn<() => void>();
 
     const caller = usePublicCaller({ clearSiteData });
 
@@ -42,7 +42,7 @@ describe("anonymizeUser", () => {
   it("clears site data", async () => {
     const userAndCookie = await userFactory(prisma, betterAuth);
 
-    const clearSiteData = vi.fn();
+    const clearSiteData = vi.fn<() => void>();
     const caller = useProtectedCaller(userAndCookie, { clearSiteData });
 
     await caller.user.anonymizeUser();

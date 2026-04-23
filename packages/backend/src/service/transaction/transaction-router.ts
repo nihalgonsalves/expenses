@@ -235,6 +235,8 @@ export const transactionRouter = router({
       }),
     )
     .output(ZTransactionWithSheet)
+    // false positive with unreachable switch case match
+    // oxlint-disable-next-line typescript/consistent-return
     .query(async ({ input: { sheetId, transactionId }, ctx }) => {
       const { sheet } = await ctx.sheetService.ensureSheetMembership(
         sheetId,

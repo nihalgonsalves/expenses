@@ -107,6 +107,8 @@ const getActionText = (action: "created" | "updated" | "deleted") => {
       return "Updated";
     case "deleted":
       return "Deleted";
+    default:
+      return "Updated";
   }
 };
 
