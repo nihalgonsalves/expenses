@@ -17,16 +17,12 @@ allowBuilds:
   ssh2: false
   unrs-resolver: false
 
-blockExoticSubdeps: true
-
 engineStrict: true
 
 patchedDependencies:
   sonner: patches/sonner.patch
 
 saveExact: true
-
-strictDepBuilds: true
 
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
