@@ -23,6 +23,7 @@ export const createAuth = (
         enabled: true,
       },
     },
+    emailAndPassword: { enabled: !IS_PROD },
     emailVerification: {
       sendVerificationEmail: async ({ user, url }) => {
         void emailWorker.sendEmail({
