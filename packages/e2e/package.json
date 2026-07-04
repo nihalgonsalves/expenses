@@ -12,9 +12,9 @@
   "devDependencies": {
     "@nihalgonsalves/expenses-backend": "workspace:*",
     "@nihalgonsalves/expenses-shared": "workspace:*",
-    "@playwright/test": "1.59.1",
-    "@trpc/client": "11.17.0",
-    "chromatic": "16.6.2",
-    "zod": "4.3.6"
+    "@playwright/test": "1.61.1",
+    "@trpc/client": "11.18.0",
+    "chromatic": "18.0.1",
+    "zod": "4.4.3"
   }
 }

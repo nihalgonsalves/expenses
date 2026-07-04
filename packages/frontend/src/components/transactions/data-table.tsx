@@ -82,8 +82,7 @@ export const DataTable = ({
 
   const onColumnFiltersChange = (
     updaterOrValue:
-      | ColumnFiltersState
-      | ((prev: ColumnFiltersState) => ColumnFiltersState),
+      ColumnFiltersState | ((prev: ColumnFiltersState) => ColumnFiltersState),
   ) => {
     const next =
       typeof updaterOrValue === "function"

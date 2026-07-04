@@ -23,8 +23,6 @@ export const getRouter = async () => {
   const getIncomingHeaders = () =>
     createIsomorphicFn()
       .client(() => ({}))
-      // 🤷🏽‍♂️ probably tsc/tsgo differences
-      // oxlint-disable-next-line typescript/no-unsafe-return
       .server(() => getRequestHeaders());
 
   const trpcClient = createTRPCClient<AppRouter>({
