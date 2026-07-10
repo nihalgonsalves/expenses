@@ -719,13 +719,11 @@ export class TransactionService {
             sumMoney(
               summary
                 .filter(({ userId }) => userId === id)
-                .map(
-                  ({ scale, _sum }): Money => ({
-                    scale,
-                    amount: _sum.amount ?? 0,
-                    currencyCode: groupSheet.currencyCode,
-                  }),
-                ),
+                .map(({ scale, _sum }): Money => ({
+                  scale,
+                  amount: _sum.amount ?? 0,
+                  currencyCode: groupSheet.currencyCode,
+                })),
               groupSheet.currencyCode,
             ),
           ),

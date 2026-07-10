@@ -352,7 +352,7 @@ export const SplitsFormSection = ({
     const newType = z.enum(GroupTransactionSplitType).parse(value);
 
     const isCurrentlyDirty = form.formState.dirtyFields.ratios?.some(
-      ({ ratio }) => ratio === true,
+      (ratio) => ratio?.ratio === true,
     );
 
     switch (newType) {

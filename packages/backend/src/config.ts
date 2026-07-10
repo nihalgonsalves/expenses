@@ -95,6 +95,13 @@ const ZOAuthConfig = z.array(
      */
     accessType: z.string().optional(),
     /**
+     * Fallback access-token lifetime, in seconds, used only when the provider's
+     * token response omits `expires_in`. Set this so `getAccessToken` can track
+     * expiry and refresh the token; leave unset if the provider returns
+     * `expires_in`.
+     */
+    accessTokenExpiresIn: z.number().optional(),
+    /**
      * Disable implicit sign up for new users. When set to true for the provider,
      * sign-in need to be called with with requestSignUp as true to create new users.
      */
@@ -149,17 +156,24 @@ const devOnlyDefault = <T extends z.ZodType>(
 
 const DEV_VAPID_KEYS = webPush.generateVAPIDKeys();
 
-const jsonString = <T extends z.ZodType>(schema: T) =>
-  z.string().pipe(
-    z.preprocess((input, ctx) => {
+const jsonCodec = <T extends z.core.$ZodType>(schema: T) =>
+  z.codec(z.string(), schema, {
+    decode: (jsonString, ctx) => {
       try {
-        return JSON.parse(input);
-      } catch (_) {
-        ctx.issues.push({ code: "custom", message: "Invalid JSON", input });
+        // oxlint-disable-next-line typescript/no-explicit-any, typescript/no-unsafe-return, typescript/no-unsafe-type-assertion
+        return JSON.parse(jsonString) as any;
+      } catch (err) {
+        ctx.issues.push({
+          code: "invalid_format",
+          format: "json",
+          input: jsonString,
+          message: err instanceof Error ? err.message : "",
+        });
         return z.NEVER;
       }
-    }, schema),
-  );
+    },
+    encode: (value) => JSON.stringify(value),
+  });
 
 const ZEnv = z.object({
   GIT_COMMIT_SHA: z.string().default("unknown"),
@@ -182,9 +196,9 @@ const ZEnv = z.object({
 
   SECURE: z.coerce.boolean().default(IS_PROD),
   JWT_SECRET: devOnlyDefault(z.string().min(1), defaultSecret),
-  TRUSTED_ORIGINS: jsonString(z.array(z.string()).optional()),
+  TRUSTED_ORIGINS: jsonCodec(z.array(z.string())).optional(),
   TRUSTED_PROXY_HEADERS: z.coerce.boolean().default(false),
-  OAUTH_PROVIDER_CONFIG: jsonString(ZOAuthConfig).default([]),
+  OAUTH_PROVIDER_CONFIG: jsonCodec(ZOAuthConfig).default([]),
   VAPID_EMAIL: devOnlyDefault(z.email(), "nobody@example.com"),
   VAPID_PRIVATE_KEY: devOnlyDefault(
     z.string().min(1),

@@ -50,16 +50,14 @@ const getDateAdjustedForTimezone = (dateInput: Date | string): Date => {
   const [year, month, day] = dateInput
     .split("-")
     .map((part) => parseInt(part, 10));
-  if (
-    !(
-      year != null &&
-      month != null &&
-      day != null &&
-      Number.isFinite(year) &&
-      Number.isFinite(month) &&
-      Number.isFinite(day)
-    )
-  ) {
+  if (!(
+    year != null &&
+    month != null &&
+    day != null &&
+    Number.isFinite(year) &&
+    Number.isFinite(month) &&
+    Number.isFinite(day)
+  )) {
     throw new Error(`Invalid date string: ${dateInput}`);
   }
 
