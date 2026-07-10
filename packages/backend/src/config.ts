@@ -186,7 +186,9 @@ const ZEnv = z.object({
   ),
   APP_NAME: z.string().default("Expenses"),
 
-  BETTER_AUTH_CLI: IS_PROD ? z.undefined() : z.coerce.boolean().default(false),
+  BETTER_AUTH_CLI: IS_PROD
+    ? z.undefined().optional()
+    : z.coerce.boolean().default(false),
 
   SMTP_HOST: devOnlyDefault(z.string(), "localhost"),
   SMTP_PORT: devOnlyDefault(z.coerce.number(), 1025),
@@ -220,8 +222,10 @@ const ZEnv = z.object({
 
   SENTRY_DSN: z.string().optional(),
 
-  VITEST_WORKER_ID: IS_PROD ? z.undefined() : z.string().optional(),
-  VITE_INTEGRATION_TEST: IS_PROD ? z.undefined() : z.string().optional(),
+  VITEST_WORKER_ID: IS_PROD ? z.undefined().optional() : z.string().optional(),
+  VITE_INTEGRATION_TEST: IS_PROD
+    ? z.undefined().optional()
+    : z.string().optional(),
 });
 
 export const NOTIFICATION_BULLMQ_QUEUE = "notifications";
