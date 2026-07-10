@@ -2,6 +2,7 @@
   "extends": "@nihalgonsalves/esconfig/tsconfig.shared.json",
   "compilerOptions": {
     "composite": true,
+    "target": "esnext",
     "rootDir": "${configDir}/",
     "outDir": "${configDir}/build/"
   }

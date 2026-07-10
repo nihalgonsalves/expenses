@@ -28,7 +28,9 @@ export default defineConfig(({ mode }) => ({
   build: {
     target: "es2024",
     sourcemap: true,
-    rollupOptions: {
+    rolldownOptions: {
+      // TODO use onLog
+      // oxlint-disable-next-line typescript/no-deprecated
       onwarn(warning, warn) {
         // Suppress "Module level directives cause errors when bundled" warnings
         if (warning.code === "MODULE_LEVEL_DIRECTIVE") {

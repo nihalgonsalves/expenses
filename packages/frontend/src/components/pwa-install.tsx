@@ -1,4 +1,3 @@
-// oxlint-disable-next-line import/no-duplicates
 import "@khmyznikov/pwa-install";
 import type { PWAInstallElement } from "@khmyznikov/pwa-install";
 import { useOs, type UseOSReturnValue } from "@mantine/hooks";

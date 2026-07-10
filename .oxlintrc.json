@@ -21,6 +21,7 @@
         "varsIgnorePattern": "^_"
       }
     ],
+    "no-underscore-dangle": "off",
     "import/no-unassigned-import": "off",
     "import/extensions": "off",
     "vitest/no-conditional-tests": "off",

@@ -168,6 +168,7 @@ export const DataTable = ({
 
                 return (
                   <Fragment key={row.id}>
+                    {/* oxlint-disable-next-line jsx-a11y/interactive-supports-focus */}
                     <TableRow
                       key={row.id}
                       // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role

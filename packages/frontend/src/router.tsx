@@ -19,12 +19,12 @@ import { getRequestHeaders } from "@tanstack/react-start/server";
 import { persistQueryClientRestore } from "@tanstack/react-query-persist-client";
 import { getTrpcBaseUrl } from "./utils/get-api-base-url";
 
-export const getRouter = async () => {
-  const getIncomingHeaders = () =>
-    createIsomorphicFn()
-      .client(() => ({}))
-      .server(() => getRequestHeaders());
+const getIncomingHeaders = () =>
+  createIsomorphicFn()
+    .client(() => ({}))
+    .server(() => getRequestHeaders());
 
+export const getRouter = async () => {
   const trpcClient = createTRPCClient<AppRouter>({
     links: [
       httpLink({

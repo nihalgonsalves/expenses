@@ -42,7 +42,7 @@
     "nodemailer": "9.0.3",
     "rate-limiter-flexible": "11.2.0",
     "rrule": "2.8.1",
-    "temporal-polyfill": "0.3.2",
+    "temporal-polyfill": "1.0.1",
     "ua-parser-js": "2.0.10",
     "web-push": "3.6.7",
     "zod": "4.4.3"

@@ -91,6 +91,8 @@ const EmailCard = ({ email }: { email: string }) => {
     defaultValues: { email },
   });
 
+  // false positive, depends on `schema`'s type
+  // oxlint-disable-next-line unicorn/consistent-function-scoping
   const onSubmit = async (values: z.infer<typeof schema>) => {
     const result = await authClient.changeEmail({ newEmail: values.email });
 

@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "lib": ["ES2024", "DOM", "WebWorker"],
+    "lib": ["ESNext", "DOM", "WebWorker"],
     "outDir": "./build/tsc/",
     "paths": {
       "#/*": ["./src/*"]

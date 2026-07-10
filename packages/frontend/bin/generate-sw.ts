@@ -11,7 +11,7 @@ export const generateSw = async () => {
     configFile: false,
     build: {
       outDir: swBuildDir,
-      rollupOptions: {
+      rolldownOptions: {
         input: "src/sw.ts",
         output: {
           format: "es",

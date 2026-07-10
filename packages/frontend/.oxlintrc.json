@@ -18,11 +18,11 @@
     ],
 
     "react/react-in-jsx-scope": "off",
-
     // TODO
-    "react-hooks-js/error-boundaries": "warn",
-    "react-hooks-js/set-state-in-effect": "warn",
-    "jsx-a11y/prefer-tag-over-role": "warn"
+    "react/react-compiler": "warn",
+    "react/no-unstable-nested-components": "warn",
+    "jsx-a11y/prefer-tag-over-role": "warn",
+    "jsx-a11y/control-has-associated-label": "warn"
   },
   "overrides": [
     {

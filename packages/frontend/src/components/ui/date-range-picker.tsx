@@ -120,9 +120,11 @@ const getAdjustedRange = (
   to: to != null ? getDateAdjustedForTimezone(to) : undefined,
 });
 
+const DEFAULT_INITIAL_DATE = new Date(new Date().setHours(0, 0, 0, 0));
+
 /** The DateRangePicker component allows a user to select a range of dates */
 export const DateRangePicker: FC<DateRangePickerProps> = ({
-  initialDateFrom = new Date(new Date().setHours(0, 0, 0, 0)),
+  initialDateFrom = DEFAULT_INITIAL_DATE,
   initialDateTo,
   onUpdate,
   align = "end",
