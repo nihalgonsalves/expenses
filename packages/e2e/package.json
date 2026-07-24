@@ -14,7 +14,7 @@
     "@nihalgonsalves/expenses-shared": "workspace:*",
     "@playwright/test": "1.61.1",
     "@trpc/client": "11.18.0",
-    "chromatic": "18.0.1",
+    "chromatic": "18.1.0",
     "zod": "4.4.3"
   }
 }
