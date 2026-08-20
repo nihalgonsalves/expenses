@@ -9,25 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
-import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
-import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
-import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
+import { Route as ApiSplatRouteImport } from './routes/api/$'
+import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
-import { Route as AuthSheetsSheetIdRouteImport } from './routes/_auth/sheets/$sheetId'
 import { Route as AuthGroupsSheetIdRouteImport } from './routes/_auth/groups/$sheetId'
+import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
+import { Route as AuthSheetsSheetIdRouteImport } from './routes/_auth/sheets/$sheetId'
 import { Route as AuthSheetsSheetIdImportRouteImport } from './routes/_auth/sheets/$sheetId.import'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
@@ -35,19 +35,29 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: '/auth/sign-in',
-  path: '/auth/sign-in',
-  getParentRoute: () => rootRouteImport,
+const AuthStatsRoute = AuthStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => AuthRoute,
 } as any)
 const ApiSplatRoute = ApiSplatRouteImport.update({
   id: '/api/$',
   path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthStatsRoute = AuthStatsRouteImport.update({
-  id: '/stats',
-  path: '/stats',
+const AuthSignInRoute = AuthSignInRouteImport.update({
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthGroupsIndexRoute = AuthGroupsIndexRouteImport.update({
+  id: '/groups/',
+  path: '/groups/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthGroupsSheetIdRoute = AuthGroupsSheetIdRouteImport.update({
+  id: '/groups/$sheetId',
+  path: '/groups/$sheetId',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthSheetsIndexRoute = AuthSheetsIndexRouteImport.update({
@@ -55,19 +65,9 @@ const AuthSheetsIndexRoute = AuthSheetsIndexRouteImport.update({
   path: '/sheets/',
   getParentRoute: () => AuthRoute,
 } as any)
-const AuthGroupsIndexRoute = AuthGroupsIndexRouteImport.update({
-  id: '/groups/',
-  path: '/groups/',
-  getParentRoute: () => AuthRoute,
-} as any)
 const AuthSheetsSheetIdRoute = AuthSheetsSheetIdRouteImport.update({
   id: '/sheets/$sheetId',
   path: '/sheets/$sheetId',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthGroupsSheetIdRoute = AuthGroupsSheetIdRouteImport.update({
-  id: '/groups/$sheetId',
-  path: '/groups/$sheetId',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthSheetsSheetIdImportRoute = AuthSheetsSheetIdImportRouteImport.update({
@@ -163,18 +163,18 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/': {
@@ -184,12 +184,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/auth/sign-in': {
-      id: '/auth/sign-in'
-      path: '/auth/sign-in'
-      fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthSignInRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_auth/stats': {
+      id: '/_auth/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof AuthStatsRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/api/$': {
       id: '/api/$'
@@ -198,11 +198,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/stats': {
-      id: '/_auth/stats'
-      path: '/stats'
-      fullPath: '/stats'
-      preLoaderRoute: typeof AuthStatsRouteImport
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/groups/': {
+      id: '/_auth/groups/'
+      path: '/groups'
+      fullPath: '/groups/'
+      preLoaderRoute: typeof AuthGroupsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/groups/$sheetId': {
+      id: '/_auth/groups/$sheetId'
+      path: '/groups/$sheetId'
+      fullPath: '/groups/$sheetId'
+      preLoaderRoute: typeof AuthGroupsSheetIdRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/sheets/': {
@@ -212,25 +226,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSheetsIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/_auth/groups/': {
-      id: '/_auth/groups/'
-      path: '/groups'
-      fullPath: '/groups/'
-      preLoaderRoute: typeof AuthGroupsIndexRouteImport
-      parentRoute: typeof AuthRoute
-    }
     '/_auth/sheets/$sheetId': {
       id: '/_auth/sheets/$sheetId'
       path: '/sheets/$sheetId'
       fullPath: '/sheets/$sheetId'
       preLoaderRoute: typeof AuthSheetsSheetIdRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_auth/groups/$sheetId': {
-      id: '/_auth/groups/$sheetId'
-      path: '/groups/$sheetId'
-      fullPath: '/groups/$sheetId'
-      preLoaderRoute: typeof AuthGroupsSheetIdRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/sheets/$sheetId/import': {
