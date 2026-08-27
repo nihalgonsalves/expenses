@@ -16,6 +16,6 @@
     // extra files in shadcn components
     "packages/frontend/src/components/ui/**/*",
   ],
-  "ignoreDependencies": ["@vitest/coverage-v8", "@babel/preset-typescript"],
+  "ignoreDependencies": ["@vitest/coverage-v8"],
   "ignoreBinaries": [],
 }

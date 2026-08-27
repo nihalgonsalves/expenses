@@ -80,12 +80,10 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "7.28.5",
     "@codecov/vite-plugin": "2.0.1",
     "@react-trace/core": "0.0.6",
     "@react-trace/plugin-copy-to-clipboard": "0.0.6",
     "@react-trace/plugin-open-editor": "0.0.7",
-    "@rolldown/plugin-babel": "0.2.3",
     "@storybook/addon-docs": "10.5.10",
     "@storybook/addon-links": "10.5.10",
     "@storybook/addon-vitest": "10.5.10",
@@ -100,6 +98,7 @@
     "@vitest/browser-playwright": "4.1.11",
     "@vitest/coverage-v8": "4.1.11",
     "happy-dom": "20.11.6",
+    "oxc-transform-react": "0.147.0",
     "playwright": "1.62.1",
     "rollup-plugin-visualizer": "7.1.1",
     "shadcn": "4.19.0",

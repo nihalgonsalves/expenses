@@ -3,15 +3,16 @@ import { fileURLToPath } from "url";
 import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
-import react, { reactCompilerPreset } from "@vitejs/plugin-react";
-import babel from "@rolldown/plugin-babel";
+import react from "@vitejs/plugin-react";
 
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { nitro } from "nitro/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import IstanbulPlugin from "vite-plugin-istanbul";
-import { generateSw } from "./bin/generate-sw";
+// We only need this for Vite's native loader, nowhere else
+// @ts-expect-error An import path can only end with a .ts extension when allowImportingTsExtensions is enabled.
+import { generateSw } from "./bin/generate-sw.ts";
 
 const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
@@ -26,7 +27,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    target: "es2024",
+    target: "es2025",
     sourcemap: true,
     rolldownOptions: {
       // TODO use onLog
@@ -64,13 +65,7 @@ export default defineConfig(({ mode }) => ({
         },
       },
     !process.env["VITE_STORYBOOK"] && nitro({}),
-    react(),
-    babel({
-      presets: [
-        reactCompilerPreset(),
-        ["@babel/preset-typescript", { allExtensions: true, isTSX: true }],
-      ],
-    }),
+    react({ compiler: true }),
     !process.env["VITE_STORYBOOK"] &&
       process.env["VITE_COVERAGE"] &&
       IstanbulPlugin({
