@@ -42,9 +42,6 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.62.1
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          # https://www.chromatic.com/docs/github-actions/
-          fetch-depth: 0
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
       - run: chown -R $(id -u):$(id -g) $PWD
       # waiting on: https://github.com/actions/setup-node/issues/531
@@ -62,15 +59,6 @@ jobs:
 
       - run: pnpm build:storybook
         working-directory: ./packages/frontend/
-
-      - id: chromatic
-        name: Publish to Chromatic
-        uses: chromaui/action@14cfaef73576e69f95f47f60058063f46ca38719 # v18.1.0
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          storybookBuildDir: ./packages/frontend/build/storybook/
-          autoAcceptChanges: main
-          exitOnceUploaded: true
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -140,9 +128,6 @@ jobs:
         image: axllent/mailpit
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          # https://www.chromatic.com/docs/github-actions/
-          fetch-depth: 0
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
       - run: chown -R $(id -u):$(id -g) $PWD
       # waiting on: https://github.com/actions/setup-node/issues/531

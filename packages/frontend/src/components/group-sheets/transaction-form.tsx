@@ -128,7 +128,6 @@ const MetadataFormSection = ({
               <Input
                 type="datetime-local"
                 className="appearance-none"
-                data-chromatic="ignore"
                 {...field}
               />
             </FormControl>

@@ -14,7 +14,6 @@
     "build:vite": "vite build",
     "build:storybook": "VITE_STORYBOOK=1 storybook build --output-dir=./build/storybook",
     "gen:assets": "tsx bin/generate-assets.tsx",
-    "chromatic": "chromatic --build-script-name='build:storybook'",
     "start": "vite preview",
     "test": "vitest --project=unit",
     "test:storybook": "vitest --project=storybook"
@@ -100,7 +99,6 @@
     "@vitejs/plugin-react": "6.1.0",
     "@vitest/browser-playwright": "4.1.11",
     "@vitest/coverage-v8": "4.1.11",
-    "chromatic": "18.6.0",
     "happy-dom": "20.11.6",
     "playwright": "1.62.1",
     "rollup-plugin-visualizer": "7.1.1",
