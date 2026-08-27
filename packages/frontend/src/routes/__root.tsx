@@ -49,11 +49,11 @@ export type RouterContext = {
 export const Route = createRootRouteWithContext<RouterContext>()({
   beforeLoad: async ({ context: { queryClient, trpc } }) => {
     const user = queryClient
-      .fetchQuery({ ...trpc.user.me.queryOptions(), staleTime: Infinity })
+      .query({ ...trpc.user.me.queryOptions(), staleTime: Infinity })
       .catch(() => null);
 
     const configResult = queryClient
-      .fetchQuery({ ...trpc.config.queryOptions(), staleTime: Infinity })
+      .query({ ...trpc.config.queryOptions(), staleTime: Infinity })
       .catch(() => null);
 
     return { user: await user, config: await configResult };

@@ -11,7 +11,10 @@ const queryOptions = (context: QueryOptionsContext, sheetId: string) =>
 export const Route = createFileRoute("/_auth/sheets/$sheetId")({
   component: RouteComponent,
   loader: async ({ context: { queryClient, trpc }, params: { sheetId } }) =>
-    queryClient.ensureQueryData(queryOptions({ trpc }, sheetId)),
+    queryClient.query({
+      ...queryOptions({ trpc }, sheetId),
+      staleTime: "static",
+    }),
 });
 
 function RouteComponent() {
