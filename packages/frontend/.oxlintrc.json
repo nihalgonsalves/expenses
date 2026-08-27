@@ -19,8 +19,14 @@
 
     "react/react-in-jsx-scope": "off",
     // TODO
-    "react/react-compiler": "warn",
+    "react/error-boundaries": "warn",
+    "react/exhaustive-effect-dependencies": "warn",
+    "react/incompatible-library": "warn",
+    "react/memo-dependencies": "warn",
+    "react/no-deriving-state-in-effects": "warn",
     "react/no-unstable-nested-components": "warn",
+    "react/set-state-in-effect": "warn",
+    "react/capitalized-calls": "warn",
     "jsx-a11y/prefer-tag-over-role": "warn",
     "jsx-a11y/control-has-associated-label": "warn"
   },

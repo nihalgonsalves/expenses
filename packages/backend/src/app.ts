@@ -93,7 +93,7 @@ void (async () => {
     release: config.GIT_COMMIT_SHA,
     integrations: [nodeProfilingIntegration(), Sentry.prismaIntegration()],
     tracesSampleRate: 1.0,
-    profilesSampleRate: 1.0,
+    profileSessionSampleRate: 1.0,
   });
 
   const prisma = createPrisma();

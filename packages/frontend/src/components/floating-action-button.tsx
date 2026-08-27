@@ -41,10 +41,7 @@ export const FloatingActionButton = ({
       <TooltipTrigger
         render={
           to ? (
-            // This _is_ a native <a> underneath, see render={<Link />}
-            // oxlint-disable-next-line jsx-a11y/interactive-supports-focus
             <MotionButton
-              // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role
               role="link"
               nativeButton={false}
               onClick={() => {
