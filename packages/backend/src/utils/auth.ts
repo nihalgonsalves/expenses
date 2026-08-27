@@ -5,6 +5,7 @@ import { config, IS_PROD } from "../config.ts";
 import type { IEmailWorker } from "../service/email/email-worker.ts";
 import { admin, genericOAuth, emailOTP, testUtils } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
+import { durationSeconds } from "./temporal.ts";
 
 export const createAuth = (
   prismaClient: PrismaClientType,
@@ -18,6 +19,10 @@ export const createAuth = (
     baseURL: config.PUBLIC_ORIGIN,
     basePath: "/api/auth",
     secret: config.JWT_SECRET,
+    session: {
+      expiresIn: durationSeconds({ days: 30 }),
+      updateAge: durationSeconds({ days: 1 }),
+    },
     user: {
       changeEmail: {
         enabled: true,

@@ -41,7 +41,12 @@ export const makeCreateContext = (
   }: Pick<FetchCreateContextFnOptions, "req" | "resHeaders">) => {
     const appendHeaders = (headers: Headers) => {
       for (const [key, value] of headers.entries()) {
+        if (key === "set-cookie") continue;
         resHeaders.append(key, value);
+      }
+
+      for (const cookie of headers.getSetCookie()) {
+        resHeaders.append("set-cookie", cookie);
       }
     };
 
@@ -49,9 +54,13 @@ export const makeCreateContext = (
       resHeaders.set("clear-site-data", '"*"');
     };
 
-    const session = await betterAuth.api.getSession({
-      headers: req.headers,
-    });
+    const { response: session, headers: sessionHeaders } =
+      await betterAuth.api.getSession({
+        headers: req.headers,
+        returnHeaders: true,
+      });
+
+    appendHeaders(sessionHeaders);
 
     // TODO: not return full user; use ID and not email
     const user: User | null = session
