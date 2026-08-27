@@ -160,8 +160,8 @@ const EmailForm = ({
               type="button"
               onClick={async () => {
                 try {
-                  await authClient.signIn.oauth2({
-                    providerId: provider,
+                  await authClient.signIn.social({
+                    provider,
                     callbackURL: redirectParam,
                   });
                 } catch {

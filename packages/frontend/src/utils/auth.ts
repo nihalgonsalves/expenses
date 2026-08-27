@@ -1,6 +1,5 @@
 import { createAuthClient } from "better-auth/react";
 import {
-  genericOAuthClient,
   inferAdditionalFields,
   emailOTPClient,
 } from "better-auth/client/plugins";
@@ -12,6 +11,5 @@ export const authClient = createAuthClient({
     inferAdditionalFields<ReturnType<typeof createAuth>>(),
     passkeyClient(),
     emailOTPClient(),
-    genericOAuthClient(),
   ],
 });

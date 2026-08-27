@@ -17,20 +17,10 @@ const ZOAuthConfig = z.array(
      * If provided, the authorization and token endpoints will be fetched from this URL.
      */
     discoveryUrl: z.string().optional(),
-    /**
-     * The expected issuer identifier for validation.
-     * If not provided but discoveryUrl is set, it will be fetched from the discovery document.
-     * When set, the callback validates that the `iss` parameter matches this value.
-     * @see https://datatracker.ietf.org/doc/html/rfc9207
-     */
-    issuer: z.string().optional(),
-    /**
-     * When true, requires the `iss` parameter in callbacks if an issuer is configured.
-     * This provides stricter security but may break with older OAuth servers
-     * that don't support issuer identification.
-     * @default false
-     */
-    requireIssuerValidation: z.boolean().optional(),
+    /** Stable issuer namespace for providers that do not supply one. */
+    accountIssuer: z.string().optional(),
+    /** Require discovery metadata capable of verifying ID tokens. */
+    requireIdTokenVerification: z.boolean().optional(),
     /**
      * URL for the authorization endpoint.
      * Optional if using discoveryUrl.
@@ -46,6 +36,12 @@ const ZOAuthConfig = z.array(
      * Optional if using discoveryUrl.
      */
     userInfoUrl: z.string().optional(),
+    /** OIDC RP-Initiated Logout endpoint. */
+    endSessionEndpoint: z.string().optional(),
+    /** Redirect URI used after provider logout. */
+    postLogoutRedirectURI: z.string().optional(),
+    /** Clear only the Better Auth session when signing out. */
+    disableProviderLogout: z.boolean().optional(),
     /** OAuth client ID */
     clientId: z.string(),
     /** OAuth client secret */
@@ -86,7 +82,7 @@ const ZOAuthConfig = z.array(
       .optional(),
     /**
      * Whether to use PKCE (Proof Key for Code Exchange)
-     * @default false
+     * @default true
      */
     pkce: z.boolean().optional(),
     /**
@@ -101,6 +97,8 @@ const ZOAuthConfig = z.array(
      * `expires_in`.
      */
     accessTokenExpiresIn: z.number().optional(),
+    /** Extra string parameters sent when refreshing an access token. */
+    refreshTokenParams: z.record(z.string(), z.string()).optional(),
     /**
      * Disable implicit sign up for new users. When set to true for the provider,
      * sign-in need to be called with with requestSignUp as true to create new users.
@@ -133,6 +131,12 @@ const ZOAuthConfig = z.array(
      * @default false
      */
     overrideUserInfo: z.boolean().optional(),
+    /** Require a trustworthy verified-email signal before issuing a session. */
+    requireEmailVerification: z.boolean().optional(),
+    /** Allow an IdP-initiated callback to restart a protected OAuth flow. */
+    allowIdpInitiated: z.boolean().optional(),
+    /** Disable OIDC nonce binding for providers that cannot return a nonce. */
+    disableIdTokenNonceBinding: z.boolean().optional(),
   }),
 );
 
@@ -145,6 +149,8 @@ const testTypeIsValid = (
   | "getToken"
   | "getUserInfo"
   | "mapProfileToUser"
+  | "accountSubject"
+  | "tokenEndpointAuth"
   | "authorizationUrlParams"
   | "tokenUrlParams"
 > => input;

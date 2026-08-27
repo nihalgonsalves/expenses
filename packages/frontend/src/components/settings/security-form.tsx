@@ -124,12 +124,11 @@ const ProvidersCard = ({ providers }: { providers: OAuthProvider[] }) => {
   } = useMutation({
     mutationFn: async ({
       accountId,
-      providerId,
     }: {
       accountId: string;
       providerId: string;
     }) => {
-      const result = await authClient.unlinkAccount({ accountId, providerId });
+      const result = await authClient.unlinkAccount({ accountId });
       if (result.error)
         throw new Error(result.error.message ?? "Failed to unlink account");
     },
@@ -142,8 +141,8 @@ const ProvidersCard = ({ providers }: { providers: OAuthProvider[] }) => {
   const handleLink = async (providerId: string) => {
     setLinkingProvider(providerId);
     try {
-      await authClient.oauth2.link({
-        providerId,
+      await authClient.linkSocial({
+        provider: providerId,
         callbackURL: window.location.href,
       });
     } catch {
@@ -173,7 +172,7 @@ const ProvidersCard = ({ providers }: { providers: OAuthProvider[] }) => {
                   }
                   onClick={() =>
                     void unlinkAccount({
-                      accountId: account.accountId,
+                      accountId: account.id,
                       providerId: provider,
                     })
                   }

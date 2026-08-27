@@ -42,14 +42,12 @@ export const createAuth = (
         });
       },
     },
-    experimental: {
-      joins: true,
-    },
     advanced: {
       trustedProxyHeaders: config.TRUSTED_PROXY_HEADERS,
       trustedOrigins: config.TRUSTED_ORIGINS,
       database: {
         generateId: false,
+        joins: true,
       },
     },
     plugins: [
