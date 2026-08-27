@@ -48,16 +48,18 @@ export class TransactionScheduleWorker implements IWorker<
   }
 
   async init() {
-    await this.queue.add(
-      "process-transaction-schedules",
-      { now: undefined },
-      {
-        repeat: {
-          // every hour
-          pattern: "0 * * * *",
-        },
-      },
-    );
+    const name = "process-transaction-schedules";
+    const repeat = {
+      // every hour
+      pattern: "0 * * * *",
+    };
+
+    // oxlint-disable-next-line typescript/no-deprecated
+    await this.queue.removeRepeatable(name, repeat);
+    await this.queue.upsertJobScheduler(name, repeat, {
+      name,
+      data: { now: undefined },
+    });
   }
 
   async processOnce(now?: Temporal.Instant) {
