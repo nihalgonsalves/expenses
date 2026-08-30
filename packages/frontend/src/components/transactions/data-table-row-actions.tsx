@@ -1,5 +1,4 @@
 "use client";
-"use no memo";
 
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useMutation } from "@tanstack/react-query";
@@ -25,9 +24,10 @@ import {
 } from "../ui/dropdown-menu";
 import { EditTransactionDialog } from "../group-sheets/transaction-form";
 import { haptics } from "bzzz";
+import type { TransactionTableFeatures } from "./table-features";
 
 type DataTableRowActionsProps = {
-  row: Row<ConvertedTransactionWithSheet>;
+  row: Row<TransactionTableFeatures, ConvertedTransactionWithSheet>;
 };
 
 const PersonalTransactionDropdownContent = ({

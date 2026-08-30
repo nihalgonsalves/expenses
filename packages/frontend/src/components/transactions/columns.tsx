@@ -1,8 +1,7 @@
 "use client";
-"use no memo";
 
 import { Link } from "@tanstack/react-router";
-import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
+import { createColumnHelper } from "@tanstack/react-table";
 
 import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
 import { useCurrentUser } from "../../api/use-current-user";
@@ -18,6 +17,7 @@ import { Button } from "../ui/button";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
 
 import { DataTableRowActions } from "./data-table-row-actions";
+import type { TransactionTableFeatures } from "./table-features";
 
 const MeAvatar = () => {
   const me = useCurrentUser();
@@ -51,10 +51,12 @@ const SheetLink = ({
     }
   />
 );
-const columnHelper = createColumnHelper<ConvertedTransactionWithSheet>();
+const columnHelper = createColumnHelper<
+  TransactionTableFeatures,
+  ConvertedTransactionWithSheet
+>();
 
-// oxlint-disable typescript/no-explicit-any
-export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
+export const columns = columnHelper.columns([
   columnHelper.accessor("category", {
     id: "category",
     header: ({ column }) => (
@@ -62,14 +64,14 @@ export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
     ),
     cell: ({ row }) => <CategoryAvatar category={row.original.category} />,
     enableSorting: false,
-    filterFn: "arrIncludesSome",
+    filterFn: "arrIncludes",
   }),
   columnHelper.accessor("type", {
     id: "type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
     ),
-    filterFn: "arrIncludesSome",
+    filterFn: "arrIncludes",
   }),
   columnHelper.accessor("description", {
     header: ({ column }) => (
@@ -95,7 +97,7 @@ export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
       <DataTableColumnHeader column={column} title="Sheet" />
     ),
     cell: ({ row }) => <SheetLink transaction={row.original} />,
-    filterFn: "arrIncludesSome",
+    filterFn: "arrIncludes",
   }),
   columnHelper.accessor("convertedMoney.amount", {
     id: "amount",
@@ -153,4 +155,4 @@ export const columns: ColumnDef<ConvertedTransactionWithSheet, any>[] = [
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,
   }),
-];
+]);

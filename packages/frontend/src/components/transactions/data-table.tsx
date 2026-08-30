@@ -1,23 +1,13 @@
 "use client";
-"use no memo";
-
-// react-compiler does not work with TanStack table:
-// https://github.com/TanStack/table/issues/5567
 
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  type ColumnVisibilityState,
   type SortingState,
-  type VisibilityState,
   flexRender,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  useTable,
 } from "@tanstack/react-table";
 import { Fragment, useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
@@ -37,9 +27,13 @@ import {
 
 import { DataTableExpandedRow } from "./data-table-expanded-row";
 import { DataTableToolbar } from "./data-table-toolbar";
+import {
+  transactionTableFeatures,
+  type TransactionTableFeatures,
+} from "./table-features";
 
 type DataTableProps = {
-  columns: ColumnDef<ConvertedTransactionWithSheet>[];
+  columns: ColumnDef<TransactionTableFeatures, ConvertedTransactionWithSheet>[];
   data: ConvertedTransactionWithSheet[];
   dateRange: DateRange | undefined;
   setDateRange: (dateRange: DateRange | undefined) => void;
@@ -70,9 +64,10 @@ export const DataTable = ({
   const navigate = useNavigate({ from: "/" });
 
   const [rowSelection, setRowSelection] = useState({});
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    type: false,
-  });
+  const [columnVisibility, setColumnVisibility] =
+    useState<ColumnVisibilityState>({
+      type: false,
+    });
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     loadFilters(searchParams),
   );
@@ -102,7 +97,8 @@ export const DataTable = ({
     });
   };
 
-  const table = useReactTable({
+  const table = useTable({
+    features: transactionTableFeatures,
     data,
     columns,
     state: {
@@ -116,12 +112,7 @@ export const DataTable = ({
     onSortingChange: setSorting,
     onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getRowCanExpand: () => true,
   });
 
   const breakpointSm = useBreakpoint("sm");

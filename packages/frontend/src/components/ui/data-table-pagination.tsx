@@ -1,6 +1,4 @@
-"use no memo";
-
-import type { Table } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -16,15 +14,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import type { TransactionTable } from "../transactions/table-features";
 
-type DataTablePaginationProps<TData> = {
-  table: Table<TData>;
+type DataTablePaginationProps<TData extends RowData> = {
+  table: TransactionTable<TData>;
 };
 
-export const DataTablePagination = <TData,>({
+export const DataTablePagination = <TData extends RowData>({
   table,
 }: DataTablePaginationProps<TData>) => {
-  const value = table.getState().pagination.pageSize;
+  const value = table.state.pagination.pageSize;
   const setValue = (newValue: number | null) => {
     if (newValue == null) {
       return;
@@ -75,7 +74,7 @@ export const DataTablePagination = <TData,>({
         </Button>
 
         <div className="text-sm font-medium">
-          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          {table.state.pagination.pageIndex + 1} of {table.getPageCount()}
         </div>
 
         <Button

@@ -1,10 +1,10 @@
 "use client";
-"use no memo";
 
-import type { Table } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
 import { EyeIcon } from "lucide-react";
 
 import { useBreakpoint } from "../../utils/hooks/use-breakpoint";
+import type { TransactionTable } from "../transactions/table-features";
 
 import { Button } from "./button";
 import {
@@ -18,12 +18,12 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 
-type DataTableViewOptionsProps<TData> = {
-  table: Table<TData>;
+type DataTableViewOptionsProps<TData extends RowData> = {
+  table: TransactionTable<TData>;
   className?: string;
 };
 
-export const DataTableViewOptions = <TData,>({
+export const DataTableViewOptions = <TData extends RowData>({
   table,
   className,
 }: DataTableViewOptionsProps<TData>) => {

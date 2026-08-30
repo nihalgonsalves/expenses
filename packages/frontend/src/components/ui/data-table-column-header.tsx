@@ -1,6 +1,4 @@
-"use no memo";
-
-import type { Column } from "@tanstack/react-table";
+import { Subscribe, type Column, type RowData } from "@tanstack/react-table";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -18,13 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { cn } from "./utils";
+import type { TransactionTableFeatures } from "../transactions/table-features";
 
-type DataTableColumnHeaderProps<TData, TValue> = {
-  column: Column<TData, TValue>;
+type DataTableColumnHeaderProps<TData extends RowData, TValue> = {
+  column: Column<TransactionTableFeatures, TData, TValue>;
   title: string;
 } & ComponentProps<"div">;
 
-export const DataTableColumnHeader = <TData, TValue>({
+export const DataTableColumnHeader = <TData extends RowData, TValue>({
   column,
   title,
   className,
@@ -44,13 +43,22 @@ export const DataTableColumnHeader = <TData, TValue>({
               className="data-[state=open]:bg-accent -ml-3 h-8"
             >
               <span>{title}</span>
-              {column.getIsSorted() === "desc" ? (
-                <ArrowDownIcon className="ml-2 h-4 w-4" />
-              ) : column.getIsSorted() === "asc" ? (
-                <ArrowUpIcon className="ml-2 h-4 w-4" />
-              ) : (
-                <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
-              )}
+              <Subscribe
+                source={column.table.atoms.sorting}
+                selector={(sorting) =>
+                  sorting.find((sort) => sort.id === column.id)
+                }
+              >
+                {(sorting) =>
+                  sorting?.desc === true ? (
+                    <ArrowDownIcon className="ml-2 h-4 w-4" />
+                  ) : sorting ? (
+                    <ArrowUpIcon className="ml-2 h-4 w-4" />
+                  ) : (
+                    <ChevronsUpDownIcon className="ml-2 h-4 w-4" />
+                  )
+                }
+              </Subscribe>
             </Button>
           }
         />

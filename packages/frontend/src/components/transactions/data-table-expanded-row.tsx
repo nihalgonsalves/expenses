@@ -1,5 +1,3 @@
-"use no memo";
-
 import type { Row } from "@tanstack/react-table";
 
 import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
@@ -8,9 +6,10 @@ import { Avatar } from "../avatar";
 import { CurrencySpan } from "../currency-span";
 import { ParticipantListItem } from "../group-sheets/participant-list-item";
 import { Badge } from "../ui/badge";
+import type { TransactionTableFeatures } from "./table-features";
 
 type DataTableExpandedRowProps = {
-  row: Row<ConvertedTransactionWithSheet>;
+  row: Row<TransactionTableFeatures, ConvertedTransactionWithSheet>;
 };
 
 const noContent = <div className="p-4">No additional info</div>;
