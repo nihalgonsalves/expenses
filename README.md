@@ -93,6 +93,9 @@ Docker build args:
 - VITE_GIT_COMMIT_SHA
 - VITE_ENV_NAME
 - VITE_SENTRY_DSN
+
+Docker build secrets:
+
 - SENTRY_AUTH_TOKEN
 - SENTRY_ORG
 - SENTRY_PROJECT
