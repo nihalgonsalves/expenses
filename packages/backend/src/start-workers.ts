@@ -36,6 +36,12 @@ export const closeWorker = async ({ worker, queue }: IWorker<any, any>) => {
   }
 };
 
+export const closeWorkers = async (workers: Workers) => {
+  await Promise.all(
+    Object.values(workers).map(async (worker) => closeWorker(worker)),
+  );
+};
+
 export const startWorkers = async (prisma: PrismaClientType, pool: Pool) => {
   const workers = {
     notificationDispatchService: new NotificationDispatchWorker(prisma, pool, {
@@ -51,14 +57,6 @@ export const startWorkers = async (prisma: PrismaClientType, pool: Pool) => {
   await Promise.all(
     Object.values(workers).map(async (worker) => startWorker(worker)),
   );
-
-  process.on("SIGINT", () => {
-    console.log(`SIGINT received, closing workers`);
-
-    Object.values(workers).forEach((worker) => {
-      void closeWorker(worker);
-    });
-  });
 
   return workers;
 };

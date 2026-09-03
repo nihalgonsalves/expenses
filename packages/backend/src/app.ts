@@ -8,21 +8,18 @@ import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import { Hono, type Context } from "hono";
 import { showRoutes } from "hono/dev";
-import type { Pool } from "pg";
-
 import { appRouter } from "./app-router.ts";
 import { config, IS_PROD } from "./config.ts";
 import { makeCreateContext, type ContextObj } from "./context.ts";
-import { type PrismaClientType, createPrisma } from "./create-prisma.ts";
-import { createBullMQPool, migrateBullMQ } from "./postgres.ts";
+import type { PrismaClientType } from "./create-prisma.ts";
 import { makePWARouter } from "./pwa-router.ts";
-import { startWorkers } from "./start-workers.ts";
+import { closeBackendRuntime, createBackendRuntime } from "./runtime.ts";
+import type { Workers } from "./start-workers.ts";
 
 export type HonoVariables = { context: ContextObj };
 
-export const createApp = async (prisma: PrismaClientType, pool: Pool) => {
+export const createApp = async (prisma: PrismaClientType, workers: Workers) => {
   const app = new Hono<{ Variables: HonoVariables }>();
-  const workers = await startWorkers(prisma, pool);
 
   const createContext = makeCreateContext(prisma, workers);
 
@@ -97,13 +94,9 @@ void (async () => {
     profileSessionSampleRate: 1.0,
   });
 
-  const prisma = createPrisma();
-
-  const bullMQPool = createBullMQPool(config.DATABASE_URL);
-
   try {
-    await migrateBullMQ(bullMQPool);
-    const app = await createApp(prisma, bullMQPool);
+    const runtime = await createBackendRuntime();
+    const app = await createApp(runtime.prisma, runtime.workers);
 
     if (!IS_PROD) {
       showRoutes(app);
@@ -126,7 +119,7 @@ void (async () => {
       console.log(`SIGINT received, shutting web server down`);
       void Sentry.close(1000);
       server.close();
-      void bullMQPool.end();
+      void closeBackendRuntime(runtime);
     });
   } catch (e) {
     console.error(e);
