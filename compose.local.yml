@@ -8,13 +8,6 @@ services:
     ports:
       - "5432:5432"
 
-  redis:
-    extends:
-      file: compose.dev.yml
-      service: redis
-    ports:
-      - "6379:6379"
-
   frankfurter:
     extends:
       file: compose.dev.yml

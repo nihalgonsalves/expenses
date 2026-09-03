@@ -8,7 +8,7 @@ import {
 } from "../../../test/factories.ts";
 import { FakeEmailWorker } from "../../../test/fake-email-worker.ts";
 import { getPrisma } from "../../../test/get-prisma.ts";
-import { getRedis } from "../../../test/get-redis.ts";
+import { getBullMQPool } from "../../../test/get-bullmq.ts";
 import { setupMockServer } from "../../../test/msw.ts";
 import { getVapidDetails } from "../../../test/web-push-utils.ts";
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
@@ -19,10 +19,10 @@ import { NotificationDispatchWorker } from "./notification-dispatch-worker.ts";
 
 const prisma = await getPrisma();
 const betterAuth = createAuth(prisma, new FakeEmailWorker());
-const redis = await getRedis();
+const pool = await getBullMQPool();
 const notificationDispatchService = new NotificationDispatchWorker(
   prisma,
-  redis,
+  pool,
   getVapidDetails(),
 );
 const mockServer = setupMockServer();
@@ -43,7 +43,7 @@ const sendTestNotification = async (userId: string) =>
 
 const waitForQueueSuccess = makeWaitForQueueSuccess(
   NOTIFICATION_BULLMQ_QUEUE,
-  redis,
+  pool,
 );
 
 describe("NotificationService", () => {

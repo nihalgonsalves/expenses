@@ -1,5 +1,5 @@
-import type { Queue, Worker } from "bullmq";
-import type { Redis } from "ioredis";
+import type { IQueueBackend, Queue, Worker } from "bullmq";
+import type { Pool } from "pg";
 
 import { config } from "./config.ts";
 import type { PrismaClientType } from "./create-prisma.ts";
@@ -8,8 +8,8 @@ import { NotificationDispatchWorker } from "./service/notification/notification-
 import { TransactionScheduleWorker } from "./service/transaction/transaction-schedule-worker.ts";
 
 export type IWorker<TData, TResult> = {
-  worker: Worker<TData, TResult>;
-  queue: Queue<TData, TResult>;
+  worker: Worker<TData, TResult, string, IQueueBackend>;
+  queue: Queue<TData, TResult, string, TData, TResult, string, IQueueBackend>;
   init?: () => Promise<void>;
 };
 
@@ -36,15 +36,15 @@ export const closeWorker = async ({ worker, queue }: IWorker<any, any>) => {
   }
 };
 
-export const startWorkers = async (prisma: PrismaClientType, redis: Redis) => {
+export const startWorkers = async (prisma: PrismaClientType, pool: Pool) => {
   const workers = {
-    notificationDispatchService: new NotificationDispatchWorker(prisma, redis, {
+    notificationDispatchService: new NotificationDispatchWorker(prisma, pool, {
       publicKey: config.VAPID_PUBLIC_KEY,
       privateKey: config.VAPID_PRIVATE_KEY,
       subject: `mailto:${config.VAPID_EMAIL}`,
     }),
-    transactionScheduleWorker: new TransactionScheduleWorker(prisma, redis),
-    emailWorker: new EmailWorker(redis),
+    transactionScheduleWorker: new TransactionScheduleWorker(prisma, pool),
+    emailWorker: new EmailWorker(pool),
     // oxlint-disable typescript/no-explicit-any
   } as const satisfies Record<string, IWorker<any, any>>;
 

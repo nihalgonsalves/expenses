@@ -1,5 +1,5 @@
-import { Queue, Worker } from "bullmq";
-import type { Redis } from "ioredis";
+import { Queue, Worker, type PostgresQueueBackend } from "bullmq";
+import type { Pool } from "pg";
 import webPush, {
   WebPushError,
   type PushSubscription,
@@ -14,6 +14,7 @@ import {
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
 import type { PrismaClientType } from "../../create-prisma.ts";
 import type { IWorker } from "../../start-workers.ts";
+import { createPostgresBackend } from "../../postgres.ts";
 
 type WebPushQueueItem = {
   userId: string;
@@ -38,31 +39,45 @@ export class NotificationDispatchWorker
     INotificationDispatchWorker,
     IWorker<WebPushQueueItem, NotificationDispatchResult>
 {
-  queue: Queue<WebPushQueueItem, NotificationDispatchResult>;
+  queue: Queue<
+    WebPushQueueItem,
+    NotificationDispatchResult,
+    string,
+    WebPushQueueItem,
+    NotificationDispatchResult,
+    string,
+    PostgresQueueBackend
+  >;
 
-  worker: Worker<WebPushQueueItem, NotificationDispatchResult>;
+  worker: Worker<
+    WebPushQueueItem,
+    NotificationDispatchResult,
+    string,
+    PostgresQueueBackend
+  >;
 
   private prismaClient: PrismaClientType;
   private vapidDetails: NonNullable<RequestOptions["vapidDetails"]>;
 
   constructor(
     prismaClient: PrismaClientType,
-    redis: Redis,
+    pool: Pool,
     vapidDetails: NonNullable<RequestOptions["vapidDetails"]>,
   ) {
     this.prismaClient = prismaClient;
     this.vapidDetails = vapidDetails;
 
-    this.queue = new Queue(NOTIFICATION_BULLMQ_QUEUE, {
-      connection: redis,
-    });
+    this.queue = new Queue(
+      NOTIFICATION_BULLMQ_QUEUE,
+      { connection: pool },
+      createPostgresBackend,
+    );
 
     this.worker = new Worker(
       NOTIFICATION_BULLMQ_QUEUE,
       async (job) => this.process(job.data),
-      {
-        connection: redis,
-      },
+      { connection: pool },
+      createPostgresBackend,
     );
   }
 

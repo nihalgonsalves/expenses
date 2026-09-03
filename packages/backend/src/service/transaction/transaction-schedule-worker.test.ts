@@ -4,7 +4,7 @@ import { makeWaitForQueueSuccess } from "../../../test/bull-mq-utils.ts";
 import { personalSheetFactory, userFactory } from "../../../test/factories.ts";
 import { FakeEmailWorker } from "../../../test/fake-email-worker.ts";
 import { getPrisma } from "../../../test/get-prisma.ts";
-import { getRedis } from "../../../test/get-redis.ts";
+import { getBullMQPool } from "../../../test/get-bullmq.ts";
 import { createAuth } from "../../utils/auth.ts";
 import { createPersonalSheetTransactionScheduleInput } from "../../../test/input.ts";
 import { closeWorker } from "../../start-workers.ts";
@@ -14,10 +14,10 @@ import { mapInputToCreatePersonalTransactionSchedule } from "./prisma-mappers.ts
 
 const prisma = await getPrisma();
 const betterAuth = createAuth(prisma, new FakeEmailWorker());
-const redis = await getRedis();
+const pool = await getBullMQPool();
 
 const getWorker = async () => {
-  const worker = new TransactionScheduleWorker(prisma, redis);
+  const worker = new TransactionScheduleWorker(prisma, pool);
 
   return {
     worker,
@@ -34,7 +34,7 @@ describe("TransactionScheduleWorker", () => {
 
     const waitForQueueSuccess = makeWaitForQueueSuccess(
       worker.queue.name,
-      redis,
+      pool,
     );
 
     const { user } = await userFactory(prisma, betterAuth);
@@ -143,7 +143,7 @@ describe("TransactionScheduleWorker", () => {
 
     const waitForQueueSuccess = makeWaitForQueueSuccess(
       worker.queue.name,
-      redis,
+      pool,
     );
     const { returnvalue } = await waitForQueueSuccess(async () => {
       await worker.processOnce();

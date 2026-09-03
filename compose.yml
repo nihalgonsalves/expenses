@@ -3,7 +3,6 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-      - redis
     build:
       context: .
       dockerfile: ./infra/Dockerfile-backend
@@ -16,7 +15,6 @@ services:
     environment:
       PORT: 5174
       FRANKFURTER_BASE_URL: https://api.frankfurter.dev/
-      REDIS_URL: redis://redis:6379/
 
   frontend:
     restart: unless-stopped
@@ -41,13 +39,5 @@ services:
       - .env.postgres
     volumes:
       - postgres:/var/lib/postgresql
-  redis:
-    restart: unless-stopped
-    image: redis:7-alpine
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 volumes:
   postgres:

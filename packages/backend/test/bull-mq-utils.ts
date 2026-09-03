@@ -1,16 +1,19 @@
 import { QueueEvents } from "bullmq";
-import type { Redis } from "ioredis";
+import type { Pool } from "pg";
+import { createPostgresBackend } from "../src/postgres.ts";
 
 export const makeWaitForQueueSuccess =
-  (queueName: string, redis: Redis) => async (exec: () => Promise<void>) => {
-    const queueEvents = new QueueEvents(queueName, {
-      connection: redis,
-    });
+  (queueName: string, pool: Pool) => async (exec: () => Promise<void>) => {
+    const queueEvents = new QueueEvents(
+      queueName,
+      { connection: pool },
+      createPostgresBackend,
+    );
 
     await queueEvents.waitUntilReady();
     await exec();
 
-    return new Promise<{
+    const result = await new Promise<{
       jobId: string;
       returnvalue: unknown;
       prev?: string;
@@ -18,4 +21,7 @@ export const makeWaitForQueueSuccess =
       queueEvents.on("completed", resolve);
       queueEvents.on("failed", reject);
     });
+
+    await queueEvents.close();
+    return result;
   };

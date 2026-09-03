@@ -218,7 +218,6 @@ const ZEnv = z.object({
     z.url(),
     "postgresql://postgres:postgres@localhost:5432/postgres",
   ),
-  REDIS_URL: devOnlyDefault(z.url(), "redis://localhost:6379/0"),
   FRANKFURTER_BASE_URL: devOnlyDefault(
     z.url({ protocol: /^https?$/ }),
     "http://localhost:5200/",

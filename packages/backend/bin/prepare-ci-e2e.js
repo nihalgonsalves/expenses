@@ -8,7 +8,6 @@ const { publicKey, privateKey } = webPush.generateVAPIDKeys();
 
 const env = {
   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/postgres",
-  REDIS_URL: "redis://redis:6379/",
   SMTP_HOST: "mailpit",
   SMTP_PORT: 1025,
   SECURE: "false",

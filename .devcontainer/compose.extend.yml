@@ -8,7 +8,6 @@ services:
       dockerfile: .devcontainer/Dockerfile
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
-      REDIS_URL: redis://redis:6379
       FRANKFURTER_BASE_URL: http://frankfurter:8080/
     expose:
       - 5173

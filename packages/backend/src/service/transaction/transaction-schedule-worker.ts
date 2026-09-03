@@ -1,11 +1,12 @@
-import { Queue, Worker } from "bullmq";
-import type { Redis } from "ioredis";
+import { Queue, Worker, type PostgresQueueBackend } from "bullmq";
+import type { Pool } from "pg";
 
 import { TRANSACTION_SCHEDULE_BULLMQ_QUEUE } from "../../config.ts";
 import type { PrismaClientType } from "../../create-prisma.ts";
 import type { Prisma } from "../../prisma/client.ts";
 import type { IWorker } from "../../start-workers.ts";
 import { generateId } from "../../utils/nanoid.ts";
+import { createPostgresBackend } from "../../postgres.ts";
 
 import { getRRuleInstancesTzAware } from "./rrule-utils.ts";
 
@@ -23,17 +24,32 @@ export class TransactionScheduleWorker implements IWorker<
   { now: string | undefined },
   TransactionScheduleWorkerResult
 > {
-  queue: Queue<{ now: string | undefined }, TransactionScheduleWorkerResult>;
+  queue: Queue<
+    { now: string | undefined },
+    TransactionScheduleWorkerResult,
+    string,
+    { now: string | undefined },
+    TransactionScheduleWorkerResult,
+    string,
+    PostgresQueueBackend
+  >;
 
-  worker: Worker<{ now: string | undefined }, TransactionScheduleWorkerResult>;
+  worker: Worker<
+    { now: string | undefined },
+    TransactionScheduleWorkerResult,
+    string,
+    PostgresQueueBackend
+  >;
 
   private prisma: PrismaClientType;
 
-  constructor(prisma: PrismaClientType, redis: Redis) {
+  constructor(prisma: PrismaClientType, pool: Pool) {
     this.prisma = prisma;
-    this.queue = new Queue(TRANSACTION_SCHEDULE_BULLMQ_QUEUE, {
-      connection: redis,
-    });
+    this.queue = new Queue(
+      TRANSACTION_SCHEDULE_BULLMQ_QUEUE,
+      { connection: pool },
+      createPostgresBackend,
+    );
 
     this.worker = new Worker(
       TRANSACTION_SCHEDULE_BULLMQ_QUEUE,
@@ -43,7 +59,8 @@ export class TransactionScheduleWorker implements IWorker<
             ? Temporal.Instant.from(job.data.now)
             : Temporal.Now.instant(),
         ),
-      { connection: redis },
+      { connection: pool },
+      createPostgresBackend,
     );
   }
 
