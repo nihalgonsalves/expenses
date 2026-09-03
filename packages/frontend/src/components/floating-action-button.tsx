@@ -2,13 +2,13 @@ import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { haptics } from "bzzz";
 
 import { Link } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import type { MouseEventHandler, ReactNode, Ref } from "react";
 
 import { Button } from "./ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
 
-const MotionButton = motion.create(Button);
+const glassClassName =
+  "mobile-glass-fab border-foreground/10 bg-background/20 text-primary ring-primary/25 absolute right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] size-12 overflow-hidden rounded-full border text-2xl shadow-[0_10px_28px_rgb(0_0_0/0.22),inset_0_1px_0_rgb(255_255_255/0.5)] ring-1 backdrop-blur-md backdrop-saturate-150 hover:bg-background/30 [a]:hover:bg-background/30 md:bottom-4";
 
 type FloatingActionButtonProps = {
   ref?: Ref<HTMLDivElement>;
@@ -41,7 +41,7 @@ export const FloatingActionButton = ({
       <TooltipTrigger
         render={
           to ? (
-            <MotionButton
+            <Button
               role="link"
               nativeButton={false}
               onClick={() => {
@@ -49,25 +49,25 @@ export const FloatingActionButton = ({
               }}
               render={
                 <Link to={to}>
-                  <AccessibleIcon label={label}>{icon}</AccessibleIcon>
+                  <span className="transition-transform duration-150 group-hover/button:scale-110 group-active/button:scale-90">
+                    <AccessibleIcon label={label}>{icon}</AccessibleIcon>
+                  </span>
                 </Link>
               }
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.8 }}
-              className="absolute right-4 bottom-4 size-12 rounded-full text-2xl"
+              className={glassClassName}
             />
           ) : (
-            <MotionButton
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.8 }}
-              className="absolute right-4 bottom-4 size-12 rounded-full text-2xl"
+            <Button
+              className={glassClassName}
               onClick={(e) => {
                 haptics.selection();
                 onClick?.(e);
               }}
             >
-              <AccessibleIcon label={label}>{icon}</AccessibleIcon>
-            </MotionButton>
+              <span className="transition-transform duration-150 group-hover/button:scale-110 group-active/button:scale-90">
+                <AccessibleIcon label={label}>{icon}</AccessibleIcon>
+              </span>
+            </Button>
           )
         }
       />

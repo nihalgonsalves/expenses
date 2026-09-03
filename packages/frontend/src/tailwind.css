@@ -48,6 +48,21 @@
   }
 }
 
+@media (prefers-reduced-transparency: reduce) {
+  .mobile-glass-nav {
+    background: var(--background);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .mobile-glass-fab,
+  .mobile-glass-fab:hover {
+    background: var(--background);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 :root,
 [data-theme="blue-light"] {
   --background: hsl(0 0% 100%);

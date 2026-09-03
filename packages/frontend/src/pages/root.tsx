@@ -96,7 +96,7 @@ export const Root = ({
   return (
     <>
       <title>{data ? `${data.name} - ${title}` : title}</title>
-      <div className="bg-background m-auto flex h-dvh flex-col">
+      <div className="bg-background relative isolate m-auto flex h-dvh flex-col">
         {!navigatorOnLine || bannerText ? (
           <header className="bg-muted text-muted-foreground flex justify-center gap-1 p-1 text-center text-xs tracking-tighter">
             {bannerText ? <span>{bannerText}</span> : null}
@@ -183,7 +183,10 @@ export const Root = ({
 
         <main className="contents">
           <ScrollArea
-            viewportClassName={cn("p-3 md:p-5", className)}
+            viewportClassName={cn(
+              "p-3 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:p-5",
+              className,
+            )}
             rootClassName="flex grow flex-col"
           >
             {children}
@@ -192,52 +195,56 @@ export const Root = ({
 
         {additionalChildren}
 
-        <nav
-          className="border-primary flex shrink-0 border-t-2 text-3xl md:hidden"
-          style={{}}
-        >
-          {navItems.map(({ to, text, icon }) => (
-            <Link
-              key={to}
-              to={to}
-              aria-label={text}
-              title={text}
-              className="flex grow flex-col"
-              onClick={() => {
-                haptics.selection();
-              }}
-            >
-              {({ isActive }) => (
-                <>
-                  {isActive ? (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
+          <nav className="mobile-glass-nav border-foreground/10 bg-background/20 pointer-events-auto relative flex h-16 overflow-hidden rounded-[1.75rem] border p-1.5 shadow-[0_12px_36px_rgb(0_0_0/0.18),inset_0_1px_0_rgb(255_255_255/0.35)] backdrop-blur-md backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/70 before:to-transparent">
+            {navItems.map(({ to, text, icon }) => (
+              <Link
+                key={to}
+                to={to}
+                aria-label={text}
+                title={text}
+                className="text-muted-foreground focus-visible:ring-ring focus-visible:ring-offset-background relative flex min-w-0 grow items-center justify-center rounded-[1.35rem] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
+                onClick={() => {
+                  haptics.selection();
+                }}
+              >
+                {({ isActive }) => (
+                  <>
+                    {isActive ? (
+                      <motion.span
+                        className="bg-primary/15 ring-primary/20 absolute inset-0 rounded-[1.35rem] shadow-[inset_0_1px_0_rgb(255_255_255/0.3),0_4px_14px_rgb(0_0_0/0.08)] ring-1"
+                        layoutId="activeMobileNavItem"
+                        transition={{
+                          type: "spring",
+                          bounce: 0.2,
+                          duration: 0.5,
+                        }}
+                      />
+                    ) : null}
                     <motion.span
-                      className="bg-primary h-1"
-                      layoutId="activeLine"
+                      animate={{
+                        scale: isActive ? 1.08 : 1,
+                        y: isActive ? -1 : 0,
+                      }}
+                      whileTap={{ scale: 0.88 }}
                       transition={{
                         type: "spring",
-                        bounce: 0.2,
-                        duration: 0.5,
+                        bounce: 0.25,
+                        duration: 0.35,
                       }}
-                    />
-                  ) : (
-                    <span className="h-1" />
-                  )}
-                  <motion.span
-                    animate={{ scale: 1 }}
-                    className="flex grow justify-center p-4"
-                    style={{
-                      paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
-                    }}
-                  >
-                    <span />
-                    {icon}
-                    <span />
-                  </motion.span>
-                </>
-              )}
-            </Link>
-          ))}
-        </nav>
+                      className={cn(
+                        "relative z-10 flex size-11 items-center justify-center transition-colors",
+                        isActive ? "text-primary" : "text-muted-foreground",
+                      )}
+                    >
+                      {icon}
+                    </motion.span>
+                  </>
+                )}
+              </Link>
+            ))}
+          </nav>
+        </div>
       </div>
     </>
   );
