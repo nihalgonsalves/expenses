@@ -7,6 +7,7 @@ import { ZParticipant, ZSheet, type SheetType } from "./sheet.ts";
 const ZCreateSheetTransactionInput = z.object({
   type: z.enum(["EXPENSE", "INCOME"]),
   money: ZMoney,
+  originalMoney: ZMoney.optional(),
   spentAt: z.string().min(1, { message: "Required" }),
   description: z.string(),
   category: z.string().min(1, { message: "Required" }),
@@ -44,13 +45,20 @@ export const ZRecurrenceRule = z.object({
 
 export type RecurrenceRule = z.infer<typeof ZRecurrenceRule>;
 
+// TODO: Support a source currency on schedules by converting each occurrence
+// at its own date, with retry and failure handling in the schedule worker.
 export const ZCreatePersonalSheetTransactionScheduleInput =
-  ZCreatePersonalSheetTransactionInput.omit({ spentAt: true }).extend({
-    // TODO: add Zod type
-    /** ISO86001 string with timezone */
-    firstOccurrenceAt: z.string().min(1),
-    recurrenceRule: ZRecurrenceRule,
-  });
+  ZCreatePersonalSheetTransactionInput.omit({
+    spentAt: true,
+    originalMoney: true,
+  })
+    .extend({
+      // TODO: add Zod type
+      /** ISO86001 string with timezone */
+      firstOccurrenceAt: z.string().min(1),
+      recurrenceRule: ZRecurrenceRule,
+    })
+    .strict();
 
 export type CreatePersonalSheetTransactionScheduleInput = z.infer<
   typeof ZCreatePersonalSheetTransactionScheduleInput
@@ -113,6 +121,7 @@ export type TransactionType = z.infer<typeof ZTransactionType>;
 export const ZTransactionListItem = z.object({
   id: z.string().min(1),
   money: ZMoney,
+  originalMoney: ZMoney.optional(),
   spentAt: z.string().min(1),
   description: z.string(),
   category: z.string().min(1),
@@ -123,6 +132,7 @@ export type TransactionListItem = z.infer<typeof ZTransactionListItem>;
 
 export const ZTransactionScheduleListItem = ZTransactionListItem.omit({
   spentAt: true,
+  originalMoney: true,
 }).extend({
   nextOccurrenceAt: z.string(),
   recurrenceRule: ZRecurrenceRule,

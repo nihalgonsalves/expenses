@@ -23,7 +23,10 @@ import type { UserService } from "../user/user-service.ts";
 class SheetServiceError extends TRPCError {}
 
 export class SheetService {
-  private prismaClient: Pick<PrismaClientType, "sheet" | "sheetMemberships">;
+  private prismaClient: Pick<
+    PrismaClientType,
+    "$queryRaw" | "sheet" | "sheetMemberships"
+  >;
   private transactionService: TransactionService;
   private userService: Pick<UserService, "findByEmail" | "inviteUser">;
 
@@ -124,6 +127,59 @@ export class SheetService {
       },
       include: { participants: { include: { participant: true } } },
     });
+  }
+
+  async getFrequentlyUsedCurrencyCodes(
+    user: User,
+    supportedCurrencyCodes: string[],
+  ) {
+    if (supportedCurrencyCodes.length === 0) return [];
+
+    const currencies = await this.prismaClient.$queryRaw<
+      { currencyCode: string }[]
+    >`
+      WITH accessible_sheets AS (
+        SELECT sheets.id, sheets.currency_code, sheets.updated_at
+        FROM sheets
+        INNER JOIN sheet_memberships
+          ON sheet_memberships.sheet_id = sheets.id
+        WHERE sheet_memberships.participant_id = ${user.id}
+      ),
+      currency_usage AS (
+        SELECT
+          accessible_sheets.currency_code,
+          0::bigint AS transaction_count,
+          1::bigint AS sheet_count,
+          accessible_sheets.updated_at AS last_used_at
+        FROM accessible_sheets
+
+        UNION ALL
+
+        SELECT
+          COALESCE(
+            transactions.original_currency_code,
+            accessible_sheets.currency_code
+          ) AS currency_code,
+          1::bigint AS transaction_count,
+          0::bigint AS sheet_count,
+          transactions.spent_at AS last_used_at
+        FROM accessible_sheets
+        INNER JOIN transactions
+          ON transactions.sheet_id = accessible_sheets.id
+      )
+      SELECT currency_code AS "currencyCode"
+      FROM currency_usage
+      WHERE currency_code IN (${Prisma.join(supportedCurrencyCodes)})
+      GROUP BY currency_code
+      ORDER BY
+        SUM(transaction_count) DESC,
+        MAX(last_used_at) DESC,
+        SUM(sheet_count) DESC,
+        currency_code ASC
+      LIMIT 5
+    `;
+
+    return currencies.map(({ currencyCode }) => currencyCode);
   }
 
   async getGroupSheetById(id: string, viewer: User) {

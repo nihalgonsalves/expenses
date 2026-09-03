@@ -19,12 +19,27 @@ const decimalToScaled = (decimal: number) => {
 
 export const currencyConversionRouter = router({
   getSupportedCurrencies: protectedProcedure
-    .output(z.array(z.string()))
+    .output(
+      z.object({
+        frequent: z.array(z.string()),
+        supported: z.array(z.string()),
+      }),
+    )
     .query(async ({ ctx }) => {
       const result = await ctx.frankfurterService.getCurrencies();
-      return result
+      const supported = result
         .map(({ iso_code: isoCode }) => isoCode)
-        .filter((isoCode) => CURRENCY_CODES.includes(isoCode));
+        .filter((isoCode) => CURRENCY_CODES.includes(isoCode))
+        .toSorted();
+      const frequent = await ctx.sheetService.getFrequentlyUsedCurrencyCodes(
+        ctx.user,
+        supported,
+      );
+
+      return {
+        frequent,
+        supported,
+      };
     }),
 
   getConversionRate: protectedProcedure

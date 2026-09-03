@@ -74,6 +74,7 @@ const PersonMenu = ({
         trpc.sheet.groupSheetById.queryKey(groupSheetId),
         trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
         trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
+        trpc.currencyConversion.getSupportedCurrencies.queryKey(),
       );
 
       if (actorInfo.id === id) {
@@ -184,6 +185,7 @@ const TransferItem = ({
       }),
       trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
       trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
   };
 

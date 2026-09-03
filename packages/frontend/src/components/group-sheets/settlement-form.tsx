@@ -76,6 +76,7 @@ export const SettlementForm = ({
       }),
       trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
       trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
 
     dialog.dismiss();

@@ -367,6 +367,7 @@ export const PersonalTransactionsImporter = ({
       trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
 
     await navigate({

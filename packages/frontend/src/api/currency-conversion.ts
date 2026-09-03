@@ -8,7 +8,7 @@ import { durationMilliseconds } from "../utils/temporal";
 
 import { useTRPC } from "./trpc";
 
-export const useSupportedCurrencies = () => {
+export const useCurrencyOptions = () => {
   const { trpc } = useTRPC();
 
   return useQuery(
@@ -22,7 +22,8 @@ export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
   const { trpc } = useTRPC();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
-  const { data: supportedCurrencies = [] } = useSupportedCurrencies();
+  const { data: currencyOptions } = useCurrencyOptions();
+  const supportedCurrencies = currencyOptions?.supported ?? [];
 
   const rates = useQueries({
     queries: [
@@ -74,7 +75,8 @@ export const useCurrencyConversion = (
   targetCode: string,
   sourceSnapshot: Money,
 ) => {
-  const { data: supportedCurrencies = [] } = useSupportedCurrencies();
+  const { data: currencyOptions } = useCurrencyOptions();
+  const supportedCurrencies = currencyOptions?.supported ?? [];
 
   const { trpc } = useTRPC();
   const { data: rate } = useQuery(
@@ -97,5 +99,10 @@ export const useCurrencyConversion = (
       ? convertCurrency(sourceSnapshot, targetCode, rate)
       : undefined;
 
-  return { supportedCurrencies, rate, targetSnapshot };
+  return {
+    supportedCurrencies,
+    frequentCurrencies: currencyOptions?.frequent ?? [],
+    rate,
+    targetSnapshot,
+  };
 };

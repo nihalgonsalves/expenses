@@ -26,6 +26,7 @@ export type GroupTransactionSplitType =
 
 export const formSchema = ZCreateGroupSheetTransactionInput.omit({
   money: true,
+  originalMoney: true,
   groupSheetId: true,
   splits: true,
 }).extend({

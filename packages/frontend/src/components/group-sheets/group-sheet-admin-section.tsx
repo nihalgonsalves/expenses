@@ -30,6 +30,7 @@ export const GroupSheetAdminSection = ({
     void invalidate(
       trpc.sheet.groupSheetById.queryKey(groupSheet.id),
       trpc.sheet.mySheets.queryKey(),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
 
     await navigate({ to: "/sheets" });

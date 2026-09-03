@@ -190,6 +190,7 @@ export const TransactionForm = ({
 
   const {
     supportedCurrencies,
+    frequentCurrencies,
     rate,
     targetSnapshot: convertedMoneySnapshot,
   } = useCurrencyConversion(
@@ -228,6 +229,7 @@ export const TransactionForm = ({
         await createGroupSheetTransaction({
           ...basePayload,
           money: convertedMoneySnapshot,
+          originalMoney: moneySnapshot,
           splits: calcSplits(
             groupSheet.participants,
             currencyCodeOrGroupDefault,
@@ -252,6 +254,7 @@ export const TransactionForm = ({
       }),
       trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
       trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
   };
 
@@ -303,7 +306,11 @@ export const TransactionForm = ({
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
                   {supportedCurrencies.includes(groupSheet.currencyCode) && (
-                    <CurrencySelect options={supportedCurrencies} {...field} />
+                    <CurrencySelect
+                      options={supportedCurrencies}
+                      frequentOptions={frequentCurrencies}
+                      {...field}
+                    />
                   )}
                 </FormControl>
                 <FormMessage />
@@ -371,8 +378,12 @@ export const EditTransactionForm = ({
     defaultValues: {
       type: transaction.type,
       category: transaction.category,
-      currencyCode: transaction.money.currencyCode,
-      amount: transaction.money.amount,
+      currencyCode:
+        transaction.originalMoney?.currencyCode ??
+        transaction.money.currencyCode,
+      amount: Math.abs(
+        transaction.originalMoney?.amount ?? transaction.money.amount,
+      ),
       description: transaction.description,
       spentAt: Temporal.Instant.from(transaction.spentAt)
         .toZonedDateTimeISO(CURRENT_TIMEZONE)
@@ -392,7 +403,10 @@ export const EditTransactionForm = ({
     name: "currencyCode",
     control: form.control,
   });
-  const currencyCodeOrOriginal = currencyCode || transaction.money.currencyCode;
+  const currencyCodeOrOriginal =
+    currencyCode ||
+    transaction.originalMoney?.currencyCode ||
+    transaction.money.currencyCode;
 
   const [dineroValue, moneySnapshot] = toMoneyValues(
     amount,
@@ -401,6 +415,7 @@ export const EditTransactionForm = ({
 
   const {
     supportedCurrencies,
+    frequentCurrencies,
     rate,
     targetSnapshot: convertedMoneySnapshot,
   } = useCurrencyConversion(
@@ -441,6 +456,7 @@ export const EditTransactionForm = ({
           ...basePayload,
           transactionId: transaction.id,
           money: convertedMoneySnapshot,
+          originalMoney: moneySnapshot,
           splits: calcSplits(
             groupSheet.participants,
             currencyCodeOrOriginal,
@@ -469,6 +485,7 @@ export const EditTransactionForm = ({
       }),
       trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
       trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
   };
 
@@ -520,7 +537,11 @@ export const EditTransactionForm = ({
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
                   {supportedCurrencies.includes(groupSheet.currencyCode) && (
-                    <CurrencySelect options={supportedCurrencies} {...field} />
+                    <CurrencySelect
+                      options={supportedCurrencies}
+                      frequentOptions={frequentCurrencies}
+                      {...field}
+                    />
                   )}
                 </FormControl>
                 <FormMessage />

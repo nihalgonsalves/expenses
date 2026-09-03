@@ -43,6 +43,7 @@ const formSchema = ZUpdatePersonalSheetTransactionInput.omit({
   type: true,
   personalSheetId: true,
   money: true,
+  originalMoney: true,
 }).extend({
   // can be blank when the user clears out the search box
   currencyCode: z
@@ -67,9 +68,12 @@ const EditPersonalTransactionForm = ({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
     defaultValues: {
-      currencyCode: personalSheet.currencyCode,
+      currencyCode:
+        transaction.originalMoney?.currencyCode ?? personalSheet.currencyCode,
       category: transaction.category,
-      amount: Math.abs(transaction.money.amount),
+      amount: Math.abs(
+        transaction.originalMoney?.amount ?? transaction.money.amount,
+      ),
       description: transaction.description,
       spentAt: isoToTemporalZonedDateTime(transaction.spentAt)
         .toPlainDateTime()
@@ -87,13 +91,16 @@ const EditPersonalTransactionForm = ({
 
   const [, moneySnapshot] = toMoneyValues(amount, currencyCodeOrSheetDefault);
 
-  const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
-    useCurrencyConversion(
-      Temporal.PlainDate.from(spentAt),
-      currencyCodeOrSheetDefault,
-      personalSheet.currencyCode,
-      moneySnapshot,
-    );
+  const {
+    supportedCurrencies,
+    frequentCurrencies,
+    targetSnapshot: convertedMoneySnapshot,
+  } = useCurrencyConversion(
+    Temporal.PlainDate.from(spentAt),
+    currencyCodeOrSheetDefault,
+    personalSheet.currencyCode,
+    moneySnapshot,
+  );
 
   const { trpc, invalidate } = useTRPC();
   const { mutateAsync: updatePersonalSheetTransaction, isPending } =
@@ -111,6 +118,7 @@ const EditPersonalTransactionForm = ({
         type: z.enum(["EXPENSE", "INCOME"]).parse(transaction.type),
         personalSheetId: personalSheet.id,
         money,
+        ...(convertedMoneySnapshot ? { originalMoney: moneySnapshot } : {}),
         category: values.category,
         description: values.description,
         spentAt: dateTimeLocalToZonedISOString(values.spentAt),
@@ -137,6 +145,7 @@ const EditPersonalTransactionForm = ({
         sheetId: personalSheet.id,
         transactionId: transaction.id,
       }),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
   };
 
@@ -186,7 +195,11 @@ const EditPersonalTransactionForm = ({
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
                   {supportedCurrencies.includes(personalSheet.currencyCode) && (
-                    <CurrencySelect options={supportedCurrencies} {...field} />
+                    <CurrencySelect
+                      options={supportedCurrencies}
+                      frequentOptions={frequentCurrencies}
+                      {...field}
+                    />
                   )}
                 </FormControl>
                 <FormMessage />

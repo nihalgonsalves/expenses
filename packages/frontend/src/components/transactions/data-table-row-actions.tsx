@@ -56,6 +56,7 @@ const PersonalTransactionDropdownContent = ({
       trpc.transaction.getPersonalSheetTransactions.queryKey({
         personalSheetId: sheetId,
       }),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
   };
 
@@ -125,6 +126,7 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
       }),
       trpc.transaction.getParticipantSummaries.queryKey(sheetId),
       trpc.transaction.getSimplifiedBalances.queryKey(sheetId),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
   };
 

@@ -96,6 +96,10 @@ model Transaction {
   scale       Int      @db.SmallInt()
   spentAt     DateTime @map("spent_at") @db.Timestamptz()
 
+  originalAmount       Int?    @map("original_amount")
+  originalScale        Int?    @map("original_scale") @db.SmallInt()
+  originalCurrencyCode String? @map("original_currency_code")
+
   transactionEntries TransactionEntry[]
 
   transactionSchedule   TransactionSchedule? @relation(fields: [transactionScheduleId], references: [id], onDelete: SetNull)

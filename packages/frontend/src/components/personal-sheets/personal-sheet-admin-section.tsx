@@ -29,6 +29,7 @@ export const PersonalSheetAdminSection = ({
     await invalidate(
       trpc.sheet.personalSheetById.queryKey(personalSheet.id),
       trpc.sheet.mySheets.queryKey(),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
     await navigate({ to: "/sheets" });
   };

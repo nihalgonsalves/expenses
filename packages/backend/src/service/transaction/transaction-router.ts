@@ -26,22 +26,59 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import { ZCategoryEmoji } from "@nihalgonsalves/expenses-shared/types/user";
 
+import type { Transaction as PrismaTransaction } from "../../prisma/client.ts";
 import { protectedProcedure, router } from "../../trpc.ts";
 
 import { calculateBalances } from "./transaction-service.ts";
 
-const mapTransaction = <
-  T extends { amount: number; scale: number; spentAt: Date },
->(
-  { amount, scale, spentAt, ...transaction }: T,
+type StoredTransactionMoney = Pick<
+  PrismaTransaction,
+  | "amount"
+  | "scale"
+  | "spentAt"
+  | "originalAmount"
+  | "originalScale"
+  | "originalCurrencyCode"
+>;
+
+const mapTransaction = <T extends StoredTransactionMoney>(
+  {
+    amount,
+    scale,
+    spentAt,
+    originalAmount,
+    originalScale,
+    originalCurrencyCode,
+    ...transaction
+  }: T,
   sheet: { currencyCode: string },
-): Omit<T, "amount" | "scale" | "spentAt"> & {
+): Omit<
+  T,
+  | "amount"
+  | "scale"
+  | "spentAt"
+  | "originalAmount"
+  | "originalScale"
+  | "originalCurrencyCode"
+> & {
   spentAt: string;
   money: Money;
+  originalMoney?: Money;
 } => ({
   ...transaction,
   spentAt: spentAt.toISOString(),
   money: { amount, scale, currencyCode: sheet.currencyCode },
+  ...(originalAmount != null &&
+  originalScale != null &&
+  originalCurrencyCode != null
+    ? {
+        originalMoney: {
+          amount: originalAmount,
+          scale: originalScale,
+          currencyCode: originalCurrencyCode,
+        },
+      }
+    : {}),
 });
 
 export const transactionRouter = router({
@@ -298,12 +335,30 @@ export const transactionRouter = router({
       );
 
       return data.map(
-        ({ sheet, spentAt, ...transaction }): TransactionWithSheet => {
+        ({
+          sheet,
+          spentAt,
+          originalAmount,
+          originalScale,
+          originalCurrencyCode,
+          ...transaction
+        }): TransactionWithSheet => {
           const sheetType = sheet.type;
+          const originalMoney =
+            originalAmount != null &&
+            originalScale != null &&
+            originalCurrencyCode != null
+              ? {
+                  amount: originalAmount,
+                  scale: originalScale,
+                  currencyCode: originalCurrencyCode,
+                }
+              : undefined;
 
           if (sheetType === "PERSONAL") {
             return {
               ...transaction,
+              ...(originalMoney ? { originalMoney } : {}),
               sheet,
               sheetType,
               spentAt: spentAt.toISOString(),
@@ -318,6 +373,7 @@ export const transactionRouter = router({
 
           return {
             ...transaction,
+            ...(originalMoney ? { originalMoney } : {}),
             sheet,
             sheetType,
             spentAt: spentAt.toISOString(),

@@ -62,6 +62,31 @@ const sumTransactions = (
     currencyCode,
   );
 
+const verifyAmountIsAbsolute = (money: Money) => {
+  if (money.amount < 0) {
+    throw new TransactionServiceError({
+      code: "BAD_REQUEST",
+      message: "Amount must be absolute",
+    });
+  }
+};
+
+const verifyOriginalMoney = (
+  sheetCurrencyCode: string,
+  originalMoney: Money | undefined,
+) => {
+  if (!originalMoney) return;
+
+  if (originalMoney.currencyCode === sheetCurrencyCode) {
+    throw new TransactionServiceError({
+      code: "BAD_REQUEST",
+      message: "Original currency must differ from sheet currency",
+    });
+  }
+
+  verifyAmountIsAbsolute(originalMoney);
+};
+
 export const calculateBalances = (
   groupSheet: Sheet,
   type: TransactionType,
@@ -137,15 +162,6 @@ const verifyCurrencies = (
     throw new TransactionServiceError({
       code: "BAD_REQUEST",
       message: "Currencies do not match",
-    });
-  }
-};
-
-const verifyAmountIsAbsolute = (money: Money) => {
-  if (money.amount < 0) {
-    throw new TransactionServiceError({
-      code: "BAD_REQUEST",
-      message: "Amount must be absolute",
     });
   }
 };
@@ -337,6 +353,7 @@ export class TransactionService {
   ) {
     verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
     verifyAmountIsAbsolute(input.money);
+    verifyOriginalMoney(personalSheet.currencyCode, input.originalMoney);
 
     return this.prismaClient.transaction.create({
       include: {
@@ -362,6 +379,7 @@ export class TransactionService {
   ) {
     verifyCurrencies(personalSheet.currencyCode, input.money.currencyCode);
     verifyAmountIsAbsolute(input.money);
+    verifyOriginalMoney(personalSheet.currencyCode, input.originalMoney);
 
     const transaction = await this.prismaClient.transaction.findUnique({
       where: { id: input.id },
@@ -427,6 +445,7 @@ export class TransactionService {
 
     input.forEach((txn) => {
       verifyAmountIsAbsolute(txn.money);
+      verifyOriginalMoney(personalSheet.currencyCode, txn.originalMoney);
     });
 
     const inputWithIds = input.map((item) => ({ id: generateId(), item }));
@@ -462,6 +481,7 @@ export class TransactionService {
     );
 
     verifyAmountIsAbsolute(input.money);
+    verifyOriginalMoney(groupSheet.currencyCode, input.originalMoney);
 
     const splitTotal = sumMoney(
       input.splits.map(({ share }) => share),
@@ -488,6 +508,13 @@ export class TransactionService {
         sheet: { connect: { id: groupSheet.id } },
         amount: input.money.amount,
         scale: input.money.scale,
+        ...(input.originalMoney
+          ? {
+              originalAmount: input.originalMoney.amount,
+              originalScale: input.originalMoney.scale,
+              originalCurrencyCode: input.originalMoney.currencyCode,
+            }
+          : {}),
         type: input.type,
         category: input.category,
         description: input.description,

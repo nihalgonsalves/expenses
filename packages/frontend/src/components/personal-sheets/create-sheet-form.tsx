@@ -7,6 +7,7 @@ import type { z } from "zod";
 
 import { ZCreatePersonalSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
+import { useCurrencyOptions } from "../../api/currency-conversion";
 import { useTRPC } from "../../api/trpc";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { CurrencySelect } from "../form/currency-select";
@@ -32,6 +33,7 @@ export const CreateSheetForm = ({
 
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
+  const { data: currencyOptions } = useCurrencyOptions();
 
   const { trpc, invalidate } = useTRPC();
   const { mutateAsync: createSheet, isPending } = useMutation(
@@ -62,7 +64,10 @@ export const CreateSheetForm = ({
         replace: true,
       });
 
-      await invalidate(trpc.sheet.mySheets.queryKey());
+      await invalidate(
+        trpc.sheet.mySheets.queryKey(),
+        trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      );
     } catch (e) {
       haptics.error();
       throw e;
@@ -105,7 +110,11 @@ export const CreateSheetForm = ({
             <FormItem className="flex flex-col">
               <FormLabel>Sheet currency</FormLabel>
               <FormControl>
-                <CurrencySelect {...field} />
+                <CurrencySelect
+                  options={currencyOptions?.supported}
+                  frequentOptions={currencyOptions?.frequent}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

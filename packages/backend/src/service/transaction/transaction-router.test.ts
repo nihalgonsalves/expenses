@@ -80,6 +80,69 @@ describe("createPersonalSheetTransaction", () => {
     ).rejects.toThrow("Currencies do not match");
   });
 
+  it("stores and returns the original money for a converted transaction", async () => {
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: "EUR",
+    });
+
+    const input = {
+      ...createPersonalSheetTransactionInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        "EXPENSE",
+        95_00,
+      ),
+      originalMoney: { amount: 8_500_00, scale: 2, currencyCode: "INR" },
+    };
+    const { id } =
+      await caller.transaction.createPersonalSheetTransaction(input);
+
+    await expect(
+      prisma.transaction.findUniqueOrThrow({ where: { id } }),
+    ).resolves.toMatchObject({
+      originalAmount: -8_500_00,
+      originalScale: 2,
+      originalCurrencyCode: "INR",
+    });
+
+    const result = await caller.transaction.getPersonalSheetTransactions({
+      personalSheetId: personalSheet.id,
+    });
+
+    expect(result.transactions[0]?.originalMoney).toEqual({
+      amount: -8_500_00,
+      scale: 2,
+      currencyCode: "INR",
+    });
+  });
+
+  it("rejects original money in the sheet currency", async () => {
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: "EUR",
+    });
+
+    await expect(
+      caller.transaction.createPersonalSheetTransaction({
+        ...createPersonalSheetTransactionInput(
+          personalSheet.id,
+          personalSheet.currencyCode,
+          "EXPENSE",
+        ),
+        originalMoney: { amount: 100_00, scale: 2, currencyCode: "EUR" },
+      }),
+    ).rejects.toThrow("Original currency must differ from sheet currency");
+  });
+
   it("returns 404 if the personalSheet does not exist", async () => {
     const userAndCookie = await userFactory(prisma, betterAuth);
     const caller = useProtectedCaller(userAndCookie);
@@ -323,6 +386,29 @@ describe("createPersonalSheetTransactionSchedule", () => {
     await expect(
       caller.transaction.createPersonalSheetTransactionSchedule(invalidInput),
     ).rejects.toThrow("Currencies do not match");
+  });
+
+  it("rejects original money on a transaction schedule", async () => {
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const user = userAndCookie.user;
+    const caller = useProtectedCaller(userAndCookie);
+
+    const personalSheet = await personalSheetFactory(prisma, {
+      withOwnerId: user.id,
+      currencyCode: "EUR",
+    });
+    const input = {
+      ...createPersonalSheetTransactionScheduleInput(
+        personalSheet.id,
+        personalSheet.currencyCode,
+        "EXPENSE",
+      ),
+      originalMoney: { amount: 8_500_00, scale: 2, currencyCode: "INR" },
+    };
+
+    await expect(
+      caller.transaction.createPersonalSheetTransactionSchedule(input),
+    ).rejects.toThrow("originalMoney");
   });
 
   it("returns 404 if the personalSheet does not exist", async () => {

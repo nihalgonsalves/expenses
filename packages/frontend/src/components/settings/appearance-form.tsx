@@ -2,7 +2,7 @@ import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from "lucide-react";
 
 import { THEMES } from "@nihalgonsalves/expenses-shared/types/theme";
 
-import { useSupportedCurrencies } from "../../api/currency-conversion";
+import { useCurrencyOptions } from "../../api/currency-conversion";
 import { usePreferredCurrencyCode } from "../../state/preferences";
 import {
   useThemePreference,
@@ -29,7 +29,7 @@ export const AppearanceForm = () => {
   const [preferredCurrencyCode, setPreferredCurrencyCode] =
     usePreferredCurrencyCode();
 
-  const { data: supportedCurrencies = [] } = useSupportedCurrencies();
+  const { data: currencyOptions } = useCurrencyOptions();
 
   return (
     <Card className="flex flex-col">
@@ -102,7 +102,8 @@ export const AppearanceForm = () => {
           <CurrencySelect
             name="Currency"
             onBlur={noop}
-            options={supportedCurrencies}
+            options={currencyOptions?.supported}
+            frequentOptions={currencyOptions?.frequent}
             value={preferredCurrencyCode}
             onChange={(newCode) => {
               void setPreferredCurrencyCode(newCode ?? undefined);

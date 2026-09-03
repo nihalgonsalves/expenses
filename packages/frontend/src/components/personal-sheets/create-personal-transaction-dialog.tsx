@@ -85,6 +85,7 @@ const formSchema = ZCreatePersonalSheetTransactionInput.extend(
 )
   .omit({
     money: true,
+    originalMoney: true,
     personalSheetId: true,
     // replace these differing parameters with `dateTime`
     spentAt: true,
@@ -153,13 +154,16 @@ const CreatePersonalTransactionForm = ({
 
   const [, moneySnapshot] = toMoneyValues(amount, currencyCodeOrSheetDefault);
 
-  const { supportedCurrencies, targetSnapshot: convertedMoneySnapshot } =
-    useCurrencyConversion(
-      safeParseDateString(dateTime),
-      currencyCodeOrSheetDefault,
-      personalSheet.currencyCode,
-      moneySnapshot,
-    );
+  const {
+    supportedCurrencies,
+    frequentCurrencies,
+    targetSnapshot: convertedMoneySnapshot,
+  } = useCurrencyConversion(
+    safeParseDateString(dateTime),
+    currencyCodeOrSheetDefault,
+    personalSheet.currencyCode,
+    moneySnapshot,
+  );
 
   const { trpc, invalidate } = useTRPC();
   const {
@@ -182,7 +186,6 @@ const CreatePersonalTransactionForm = ({
     const commonValues = {
       type: values.type,
       personalSheetId: personalSheet.id,
-      money: convertedMoneySnapshot ?? moneySnapshot,
       category: values.category,
       description: values.description,
     };
@@ -191,6 +194,7 @@ const CreatePersonalTransactionForm = ({
       if (values.recurrenceRule?.freq) {
         await createPersonalSheetTransactionSchedule({
           ...commonValues,
+          money: moneySnapshot,
           firstOccurrenceAt: dateTimeLocalToZonedISOString(dateTime),
           recurrenceRule: {
             freq: values.recurrenceRule.freq,
@@ -204,6 +208,8 @@ const CreatePersonalTransactionForm = ({
       } else {
         await createPersonalSheetTransaction({
           ...commonValues,
+          money: convertedMoneySnapshot ?? moneySnapshot,
+          ...(convertedMoneySnapshot ? { originalMoney: moneySnapshot } : {}),
           spentAt: dateTimeLocalToZonedISOString(dateTime),
         });
       }
@@ -224,6 +230,7 @@ const CreatePersonalTransactionForm = ({
       trpc.transaction.getPersonalSheetTransactionSchedules.queryKey({
         personalSheetId: personalSheet.id,
       }),
+      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
     );
   };
 
@@ -295,9 +302,19 @@ const CreatePersonalTransactionForm = ({
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
                   {supportedCurrencies.includes(personalSheet.currencyCode) && (
-                    <CurrencySelect options={supportedCurrencies} {...field} />
+                    <CurrencySelect
+                      options={supportedCurrencies}
+                      frequentOptions={frequentCurrencies}
+                      {...field}
+                      disabled={Boolean(recurrenceRule?.freq)}
+                    />
                   )}
                 </FormControl>
+                {recurrenceRule?.freq ? (
+                  <FormDescription>
+                    Recurring transactions use the sheet currency.
+                  </FormDescription>
+                ) : null}
                 <FormMessage />
               </FormItem>
             )}
@@ -360,7 +377,23 @@ const CreatePersonalTransactionForm = ({
             <FormItem>
               <FormLabel>Recurring?</FormLabel>
               <FormControl>
-                <Select options={RECURRENCE_OPTIONS} {...field} />
+                <Select
+                  options={RECURRENCE_OPTIONS}
+                  {...field}
+                  onChange={(frequency) => {
+                    field.onChange(frequency);
+                    if (frequency) {
+                      form.setValue(
+                        "currencyCode",
+                        personalSheet.currencyCode,
+                        {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        },
+                      );
+                    }
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
