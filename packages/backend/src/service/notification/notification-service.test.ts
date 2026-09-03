@@ -1,4 +1,5 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, describe, expect, it } from "vitest";
+import { HttpResponse, http } from "msw";
 
 import { makeWaitForQueueSuccess } from "../../../test/bull-mq-utils.ts";
 import {
@@ -8,10 +9,8 @@ import {
 import { FakeEmailWorker } from "../../../test/fake-email-worker.ts";
 import { getPrisma } from "../../../test/get-prisma.ts";
 import { getRedis } from "../../../test/get-redis.ts";
-import {
-  createPushService,
-  getVapidDetails,
-} from "../../../test/web-push-utils.ts";
+import { setupMockServer } from "../../../test/msw.ts";
+import { getVapidDetails } from "../../../test/web-push-utils.ts";
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
 import { closeWorker } from "../../start-workers.ts";
 import { createAuth } from "../../utils/auth.ts";
@@ -26,16 +25,13 @@ const notificationDispatchService = new NotificationDispatchWorker(
   redis,
   getVapidDetails(),
 );
-
-beforeAll(() => {
-  // self-signed test certificate
-  process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
-});
+const mockServer = setupMockServer();
 
 afterAll(async () => {
   await closeWorker(notificationDispatchService);
-  delete process.env["NODE_TLS_REJECT_UNAUTHORIZED"];
 });
+
+const pushEndpoint = "https://push.example.test/subscription";
 
 const sendTestNotification = async (userId: string) =>
   notificationDispatchService.sendNotifications({
@@ -54,31 +50,32 @@ describe("NotificationService", () => {
   describe("sendNotifications", () => {
     it("sends notifications to all users", async () => {
       // since assertions are within callbacks
-      expect.assertions(2);
+      expect.assertions(3);
 
       const { user } = await userFactory(prisma, betterAuth);
 
-      const address = await createPushService((req, res) => {
-        // don't bother reproducing the entire web push library test suite, just confirm that it was sent
-        expect(req.headers).toStrictEqual({
-          authorization: expect.stringMatching(/^vapid t=.*$/),
-          connection: expect.stringMatching(/^(keep-alive|close)$/),
-          "content-encoding": "aes128gcm",
-          "content-length": "135",
-          "content-type": "application/octet-stream",
-          host: expect.stringMatching(/localhost:\d+/),
-          ttl: "2419200",
-          urgency: "normal",
-        });
+      mockServer.use(
+        http.post(pushEndpoint, ({ request }) => {
+          // don't bother reproducing the entire web push library test suite, just confirm that it was sent
+          expect(request.method).toBe("POST");
+          expect(Object.fromEntries(request.headers)).toEqual(
+            expect.objectContaining({
+              authorization: expect.stringMatching(/^vapid t=.*$/),
+              "content-encoding": "aes128gcm",
+              "content-type": "application/octet-stream",
+              ttl: "2419200",
+              urgency: "normal",
+            }),
+          );
 
-        res.writeHead(201);
-        res.end("okay");
-      });
+          return new HttpResponse(null, { status: 201 });
+        }),
+      );
 
       const { id } = await notificationSubscriptionFactory(
         prisma,
         user,
-        address,
+        pushEndpoint,
       );
 
       const { returnvalue } = await waitForQueueSuccess(async () => {
@@ -95,15 +92,14 @@ describe("NotificationService", () => {
     it("unsubscribes on failure (e.g. 410 Gone)", async () => {
       const { user } = await userFactory(prisma, betterAuth);
 
-      const address = await createPushService((_req, res) => {
-        res.writeHead(410);
-        res.end();
-      });
+      mockServer.use(
+        http.post(pushEndpoint, () => new HttpResponse(null, { status: 410 })),
+      );
 
       const { id } = await notificationSubscriptionFactory(
         prisma,
         user,
-        address,
+        pushEndpoint,
       );
 
       const { returnvalue } = await waitForQueueSuccess(async () => {

@@ -1,8 +1,4 @@
 import crypto from "crypto";
-import type { ServerResponse, IncomingMessage } from "http";
-import { createServer } from "https";
-
-import { type CertificateCreationResult, createCertificate } from "pem";
 import { generateVAPIDKeys } from "web-push";
 
 import {
@@ -51,40 +47,3 @@ export const getUserKeys = () => {
     auth: userAuth.toString("base64url"),
   };
 };
-
-const { clientKey, certificate } = await new Promise<CertificateCreationResult>(
-  (resolve, reject) => {
-    createCertificate({ days: 1, selfSigned: true }, (err, keys) => {
-      if (err != null) {
-        reject(
-          err instanceof Error
-            ? err
-            : new Error("Error creating certificate", { cause: err }),
-        );
-      } else {
-        resolve(keys);
-      }
-    });
-  },
-);
-
-export const createPushService = async (
-  onReceive: (req: IncomingMessage, res: ServerResponse) => void,
-) =>
-  new Promise<string>((resolve, reject) => {
-    const server = createServer(
-      { key: clientKey, cert: certificate },
-      (req, res) => {
-        onReceive(req, res);
-      },
-    );
-
-    server.listen(undefined, () => {
-      const addr = server.address();
-      if (addr == null || typeof addr === "string") {
-        reject(new Error("Unexpected server address"));
-      } else {
-        resolve(`https://localhost:${addr.port}/`);
-      }
-    });
-  });
