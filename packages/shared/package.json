@@ -19,7 +19,7 @@
   "dependencies": {
     "dinero.js": "2.0.2",
     "fastpriorityqueue": "0.8.0",
-    "zod": "4.5.2"
+    "zod": "4.5.4"
   },
   "devDependencies": {
     "vitest": "4.1.11"
