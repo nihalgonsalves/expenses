@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
+import {
+  CURRENCY_CODES,
+  ZCurrencyCode,
+} from "@nihalgonsalves/expenses-shared/money";
 
 import { protectedProcedure, router } from "../../trpc.ts";
 
@@ -19,7 +22,9 @@ export const currencyConversionRouter = router({
     .output(z.array(z.string()))
     .query(async ({ ctx }) => {
       const result = await ctx.frankfurterService.getCurrencies();
-      return Object.keys(result);
+      return result
+        .map(({ iso_code: isoCode }) => isoCode)
+        .filter((isoCode) => CURRENCY_CODES.includes(isoCode));
     }),
 
   getConversionRate: protectedProcedure

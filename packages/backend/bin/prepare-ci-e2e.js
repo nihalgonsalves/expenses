@@ -12,7 +12,7 @@ const env = {
   SMTP_HOST: "mailpit",
   SMTP_PORT: 1025,
   SECURE: "false",
-  FRANKFURTER_BASE_URL: "https://api.frankfurter.app/",
+  FRANKFURTER_BASE_URL: "https://api.frankfurter.dev/",
   JWT_SECRET: "test-secret",
   VAPID_EMAIL: "ci+test@example.com",
   VAPID_PRIVATE_KEY: privateKey,

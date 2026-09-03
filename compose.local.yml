@@ -19,9 +19,6 @@ services:
     extends:
       file: compose.dev.yml
       service: frankfurter
-    depends_on:
-      postgres:
-        condition: service_healthy
     ports:
       - "5200:8080"
 

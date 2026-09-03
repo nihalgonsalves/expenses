@@ -26,12 +26,7 @@ services:
       - 6379
 
   frankfurter:
-    depends_on:
-      postgres:
-        condition: service_healthy
-    image: hakanensari/frankfurter
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/frankfurter
+    image: lineofflight/frankfurter:2.3.5
 
   mailpit:
     image: axllent/mailpit

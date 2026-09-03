@@ -31,11 +31,14 @@ const safeFetchJson = async (
   }
 };
 
+const ZCurrenciesSchema = z.array(
+  z.object({
+    iso_code: z.string(),
+  }),
+);
+
 const ZRateSchema = z.object({
-  amount: z.number(),
-  base: z.string(),
-  date: z.string(),
-  rates: z.record(z.string(), z.number()),
+  rate: z.number(),
 });
 
 export class FrankfurterService {
@@ -46,7 +49,7 @@ export class FrankfurterService {
   }
 
   async getCurrencies() {
-    const url = new URL("/currencies", this.baseUrl);
+    const url = new URL("/v2/currencies", this.baseUrl);
 
     const fetchResult = await safeFetchJson(url);
 
@@ -58,9 +61,7 @@ export class FrankfurterService {
       });
     }
 
-    const parseResult = z
-      .record(z.string(), z.string())
-      .safeParse(fetchResult.response);
+    const parseResult = ZCurrenciesSchema.safeParse(fetchResult.response);
 
     if (!parseResult.success) {
       throw new FrankfurterServiceError({
@@ -77,33 +78,11 @@ export class FrankfurterService {
     targetCurrency: string,
     date: Temporal.PlainDate,
   ) {
-    const rates = await this.getRates(baseCurrency, targetCurrency, date);
-
-    // this is only called for currencies returned by getCurrencies,
-    // safe to assert and not safe parse
-    return z.number().parse(rates[targetCurrency]);
-  }
-
-  private async getRates(
-    baseCurrency: string,
-    targetCurrency: string,
-    date: Temporal.PlainDate,
-  ) {
-    if (
-      Temporal.PlainDate.compare(
-        date,
-        Temporal.PlainDate.from("1999-01-04"),
-      ) === -1
-    ) {
-      throw new FrankfurterServiceError({
-        code: "NOT_FOUND",
-        message: "Rates not available before 1999-01-04",
-      });
-    }
-
-    const url = new URL(`/${date.toString()}`, this.baseUrl);
-    url.searchParams.set("from", baseCurrency);
-    url.searchParams.set("to", targetCurrency);
+    const url = new URL(
+      `/v2/rate/${encodeURIComponent(baseCurrency)}/${encodeURIComponent(targetCurrency)}`,
+      this.baseUrl,
+    );
+    url.searchParams.set("date", date.toString());
 
     const fetchResult = await safeFetchJson(url);
 
@@ -130,6 +109,6 @@ export class FrankfurterService {
       });
     }
 
-    return parseResult.data.rates;
+    return parseResult.data.rate;
   }
 }
