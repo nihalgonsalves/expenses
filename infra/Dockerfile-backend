@@ -1,5 +1,5 @@
 # NODE_VERSION
-FROM node:24-slim
+FROM node:26-slim
 
 # "Pin versions in apt-get install"
 # hadolint ignore=DL3008
@@ -11,7 +11,9 @@ RUN --mount=type=cache,target=/var/log \
     ca-certificates openssl
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable
+# "Pin versions in npm"
+# hadolint ignore=DL3016
+RUN npm install -g corepack && corepack enable
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"

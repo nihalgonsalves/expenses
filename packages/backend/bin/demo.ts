@@ -1,4 +1,3 @@
-import "temporal-polyfill/global";
 import { faker } from "@faker-js/faker";
 import { createTRPCClient, httpLink } from "@trpc/client";
 import fetchCookie from "fetch-cookie";

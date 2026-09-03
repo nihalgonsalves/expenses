@@ -6,9 +6,9 @@
   "author": "Nihal Gonsalves <nihal@nihalgonsalves.com>",
   "private": true,
   "license": "MIT",
-  "packageManager": "pnpm@11.24.0",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "scripts": {
     "dev": "pnpm run --stream \"/^dev:.*/\"",
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "0.18.2",
-    "@types/node": "24",
+    "@types/node": "^26.4.1",
     "@vitest/coverage-v8": "4.1.11",
     "@vitest/ui": "4.1.11",
     "eslint-plugin-jest-dom": "5.10.1",

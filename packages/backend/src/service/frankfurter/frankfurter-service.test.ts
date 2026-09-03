@@ -1,5 +1,3 @@
-import "temporal-polyfill/global";
-
 import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
