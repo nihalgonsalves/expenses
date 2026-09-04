@@ -7,23 +7,27 @@ import { NotificationService } from "./service/notification/notification-service
 import { SheetService } from "./service/sheet/sheet-service.ts";
 import { TransactionService } from "./service/transaction/transaction-service.ts";
 import { UserService } from "./service/user/user-service.ts";
-import type { Workers } from "./start-workers.ts";
+import type { IEmailWorker } from "./service/email/email-worker.ts";
+import type { INotificationDispatchWorker } from "./service/notification/notification-dispatch-worker.ts";
 import { createAuth } from "./utils/auth.ts";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 export const makeCreateContext = (
   prisma: PrismaClientType,
-  workers: Workers,
+  services: {
+    emailWorker: IEmailWorker;
+    notificationDispatchService: INotificationDispatchWorker;
+  },
 ) => {
-  const betterAuth = createAuth(prisma, workers.emailWorker);
+  const betterAuth = createAuth(prisma, services.emailWorker);
 
-  const userService = new UserService(prisma, betterAuth, workers.emailWorker);
+  const userService = new UserService(prisma, betterAuth, services.emailWorker);
 
   const notificationSubscriptionService = new NotificationService(prisma);
 
   const transactionService = new TransactionService(
     prisma,
-    workers.notificationDispatchService,
+    services.notificationDispatchService,
   );
   const sheetService = new SheetService(
     prisma,

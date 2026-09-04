@@ -1,15 +1,6 @@
 # NODE_VERSION
 FROM node:26-slim
 
-# "Pin versions in apt-get install"
-# hadolint ignore=DL3008
-RUN --mount=type=cache,target=/var/log \
-    --mount=type=cache,target=/var/cache,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-  apt-get update -y && \
-  apt-get install -y --no-install-recommends \
-    ca-certificates openssl
-
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 # "Pin versions in npm"
 # hadolint ignore=DL3016
@@ -33,8 +24,10 @@ COPY ./patches/ ./patches/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY ./tsconfig.json ./tsconfig.base.json ./
+COPY ./packages/frontend/ ./packages/frontend/
 COPY ./packages/backend/ ./packages/backend/
 COPY ./packages/shared/ ./packages/shared/
+COPY ./packages/e2e/ ./packages/e2e/
 
 WORKDIR /opt/app/packages/backend
 RUN pnpm db:generate
@@ -47,4 +40,4 @@ USER node
 ARG GIT_COMMIT_SHA
 ENV GIT_COMMIT_SHA=${GIT_COMMIT_SHA}
 
-CMD ["node", "--enable-source-maps", "src/app.ts"]
+CMD ["node", "--enable-source-maps", "src/worker.ts"]

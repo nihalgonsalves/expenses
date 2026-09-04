@@ -20,6 +20,7 @@ allowBuilds:
 engineStrict: true
 
 patchedDependencies:
+  rrule@2.8.1: patches/rrule@2.8.1.patch
   sonner: patches/sonner.patch
 
 saveExact: true

@@ -20,21 +20,11 @@ type TransactionScheduleWorkerResult = {
   failedSchedules: Record<string, string>;
 };
 
-export class TransactionScheduleWorker implements IWorker<
-  { now: string | undefined },
-  TransactionScheduleWorkerResult
-> {
+export class TransactionScheduleQueue {
   queue: Queue<
     { now: string | undefined },
     TransactionScheduleWorkerResult,
     string,
-    { now: string | undefined },
-    TransactionScheduleWorkerResult,
-    string,
-    PostgresQueueBackend
-  >;
-
-  worker: Worker<
     { now: string | undefined },
     TransactionScheduleWorkerResult,
     string,
@@ -47,18 +37,6 @@ export class TransactionScheduleWorker implements IWorker<
     this.prisma = prisma;
     this.queue = new Queue(
       TRANSACTION_SCHEDULE_BULLMQ_QUEUE,
-      { connection: pool },
-      createPostgresBackend,
-    );
-
-    this.worker = new Worker(
-      TRANSACTION_SCHEDULE_BULLMQ_QUEUE,
-      async (job) =>
-        this.process(
-          job.data.now
-            ? Temporal.Instant.from(job.data.now)
-            : Temporal.Now.instant(),
-        ),
       { connection: pool },
       createPostgresBackend,
     );
@@ -83,7 +61,7 @@ export class TransactionScheduleWorker implements IWorker<
     });
   }
 
-  private async process(
+  protected async process(
     now: Temporal.Instant,
   ): Promise<TransactionScheduleWorkerResult> {
     const schedulesToProcess = await this.prisma.transactionSchedule.findMany({
@@ -181,5 +159,33 @@ export class TransactionScheduleWorker implements IWorker<
       successfulSchedules,
       failedSchedules,
     };
+  }
+}
+
+export class TransactionScheduleWorker
+  extends TransactionScheduleQueue
+  implements
+    IWorker<{ now: string | undefined }, TransactionScheduleWorkerResult>
+{
+  worker: Worker<
+    { now: string | undefined },
+    TransactionScheduleWorkerResult,
+    string,
+    PostgresQueueBackend
+  >;
+
+  constructor(prisma: PrismaClientType, pool: Pool) {
+    super(prisma, pool);
+    this.worker = new Worker(
+      TRANSACTION_SCHEDULE_BULLMQ_QUEUE,
+      async (job) =>
+        this.process(
+          job.data.now
+            ? Temporal.Instant.from(job.data.now)
+            : Temporal.Now.instant(),
+        ),
+      { connection: pool },
+      createPostgresBackend,
+    );
   }
 }

@@ -75,7 +75,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     links: [
       {
         rel: "manifest",
-        href: "/api/manifest.webmanifest",
+        href: "/manifest.webmanifest",
         crossOrigin: "use-credentials",
       },
       { rel: "stylesheet", href: mainCss },

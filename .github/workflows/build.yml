@@ -103,6 +103,16 @@ jobs:
   test-playwright:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SECURE: "false"
+      FRANKFURTER_BASE_URL: https://api.frankfurter.dev/
+      JWT_SECRET: test-secret
+      VAPID_EMAIL: "ci+test@example.com"
+      VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+      VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
     container:
       image: mcr.microsoft.com/playwright:v1.62.1
     services:
@@ -130,7 +140,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - working-directory: ./packages/backend/
-        run: pnpm prepare:e2e && pnpm db:generate && pnpm prisma migrate deploy
+        run: |
+          pnpm db:generate
+          pnpm prisma migrate deploy
       - working-directory: ./packages/e2e/
         run: pnpm test
 

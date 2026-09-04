@@ -11,7 +11,7 @@ const DEMO_B_EMAIL = "other-user@example.com";
 const DEMO_PASSWORD = "password1234";
 
 const authClient = createAuthClient({
-  baseURL: "http://localhost:5174/auth",
+  baseURL: "http://localhost:5173/api/auth",
   fetchOptions: {
     headers: {
       Origin: "http://localhost:5173",
@@ -26,7 +26,7 @@ const getClient = (fetchFn: typeof fetch) =>
   createTRPCClient<AppRouter>({
     links: [
       httpLink({
-        url: "http://localhost:5174/trpc",
+        url: "http://localhost:5173/api/trpc",
         // @ts-expect-error slightly divering fetch types
         fetch: fetchFn,
       }),

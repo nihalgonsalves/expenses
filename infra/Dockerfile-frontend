@@ -29,6 +29,11 @@ COPY ./packages/backend/ ./packages/backend/
 COPY ./packages/shared/ ./packages/shared/
 COPY ./packages/e2e/ ./packages/e2e/
 
+WORKDIR /opt/app/packages/backend
+RUN pnpm db:generate
+
+WORKDIR /opt/app/packages/frontend
+
 ARG VITE_ENV_NAME=production
 ARG VITE_GIT_COMMIT_SHA
 ARG VITE_SENTRY_DSN
@@ -43,9 +48,9 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     SENTRY_AUTH_TOKEN="$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || true)" \
     SENTRY_ORG="$(cat /run/secrets/SENTRY_ORG 2>/dev/null || true)" \
     SENTRY_PROJECT="$(cat /run/secrets/SENTRY_PROJECT 2>/dev/null || true)" \
-    pnpm fe build:vite
+    pnpm build:vite
 
-# the image itself is 24 pinned to LTS
+# the image itself is 26 pinned to LTS
 # hadolint ignore=DL3007
 FROM gcr.io/distroless/nodejs26:latest
 # NODE_VERSION
@@ -53,6 +58,8 @@ FROM gcr.io/distroless/nodejs26:latest
 WORKDIR /app
 
 COPY --from=builder /opt/app/packages/frontend/.output/ ./
+
+ENV NODE_ENV=production
 
 EXPOSE 3000
 

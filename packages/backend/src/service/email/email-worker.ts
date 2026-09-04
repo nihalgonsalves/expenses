@@ -29,7 +29,7 @@ const nodemailerTransport = createTransport({
   },
 });
 
-export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
+export class EmailQueue implements IEmailWorker {
   queue: Queue<
     EmailPayload,
     void,
@@ -40,21 +40,12 @@ export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
     PostgresQueueBackend
   >;
 
-  worker: Worker<EmailPayload, void, string, PostgresQueueBackend>;
-
   globalRateLimiter: RateLimiterPostgres;
   recipientRateLimiter: RateLimiterPostgres;
 
   constructor(pool: Pool) {
     this.queue = new Queue(
       EMAIL_BULLMQ_QUEUE,
-      { connection: pool },
-      createPostgresBackend,
-    );
-
-    this.worker = new Worker(
-      EMAIL_BULLMQ_QUEUE,
-      async (job) => EmailWorker.process(job.data),
       { connection: pool },
       createPostgresBackend,
     );
@@ -99,10 +90,27 @@ export class EmailWorker implements IEmailWorker, IWorker<EmailPayload, void> {
     await this.queue.add("email", email);
   }
 
-  private static async process(payload: EmailPayload): Promise<void> {
+  protected static async process(payload: EmailPayload): Promise<void> {
     await nodemailerTransport.sendMail({
       ...payload,
       from: `${config.APP_NAME} <${config.EMAIL_FROM}>`,
     });
+  }
+}
+
+export class EmailWorker
+  extends EmailQueue
+  implements IWorker<EmailPayload, void>
+{
+  worker: Worker<EmailPayload, void, string, PostgresQueueBackend>;
+
+  constructor(pool: Pool) {
+    super(pool);
+    this.worker = new Worker(
+      EMAIL_BULLMQ_QUEUE,
+      async (job) => EmailWorker.process(job.data),
+      { connection: pool },
+      createPostgresBackend,
+    );
   }
 }

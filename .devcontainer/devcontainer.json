@@ -23,13 +23,10 @@
     "prepare": "pnpm be prepare:local"
   },
   "postAttachCommand": "pnpm dev",
-  "forwardPorts": [5173, 5174],
+  "forwardPorts": [5173],
   "portsAttributes": {
     "5173": {
-      "label": "Frontend (+ backend proxy)"
-    },
-    "5174": {
-      "label": "Backend"
+      "label": "Web"
     },
     "6006": {
       "label": "Storybook"

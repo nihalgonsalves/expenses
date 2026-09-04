@@ -38,7 +38,7 @@ export const PWAInstall = () => {
       styles={{
         "--tint-color": "var(--primary)",
       }}
-      manifestUrl="/api/manifest.webmanifest"
+      manifestUrl="/manifest.webmanifest"
       name="Expenses"
       description="Shared expense tracking app with personal and shared sheets"
       installDescription={getOsText(os)}

@@ -34,22 +34,11 @@ export type INotificationDispatchWorker = {
   ) => Promise<void>;
 };
 
-export class NotificationDispatchWorker
-  implements
-    INotificationDispatchWorker,
-    IWorker<WebPushQueueItem, NotificationDispatchResult>
-{
+export class NotificationDispatchQueue implements INotificationDispatchWorker {
   queue: Queue<
     WebPushQueueItem,
     NotificationDispatchResult,
     string,
-    WebPushQueueItem,
-    NotificationDispatchResult,
-    string,
-    PostgresQueueBackend
-  >;
-
-  worker: Worker<
     WebPushQueueItem,
     NotificationDispatchResult,
     string,
@@ -69,13 +58,6 @@ export class NotificationDispatchWorker
 
     this.queue = new Queue(
       NOTIFICATION_BULLMQ_QUEUE,
-      { connection: pool },
-      createPostgresBackend,
-    );
-
-    this.worker = new Worker(
-      NOTIFICATION_BULLMQ_QUEUE,
-      async (job) => this.process(job.data),
       { connection: pool },
       createPostgresBackend,
     );
@@ -112,7 +94,7 @@ export class NotificationDispatchWorker
     );
   }
 
-  private async process({
+  protected async process({
     subscriptionId,
     userId,
     pushSubscription,
@@ -162,5 +144,31 @@ export class NotificationDispatchWorker
         };
       }
     }
+  }
+}
+
+export class NotificationDispatchWorker
+  extends NotificationDispatchQueue
+  implements IWorker<WebPushQueueItem, NotificationDispatchResult>
+{
+  worker: Worker<
+    WebPushQueueItem,
+    NotificationDispatchResult,
+    string,
+    PostgresQueueBackend
+  >;
+
+  constructor(
+    prismaClient: PrismaClientType,
+    pool: Pool,
+    vapidDetails: NonNullable<RequestOptions["vapidDetails"]>,
+  ) {
+    super(prismaClient, pool, vapidDetails);
+    this.worker = new Worker(
+      NOTIFICATION_BULLMQ_QUEUE,
+      async (job) => this.process(job.data),
+      { connection: pool },
+      createPostgresBackend,
+    );
   }
 }

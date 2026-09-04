@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "pnpm run --stream \"/^dev:.*/\"",
-    "dev:vite": "VITE_ROOT=$(pwd) VITE_GIT_COMMIT_SHA=\"$(git rev-parse HEAD)$(git diff --quiet || echo '-dirty')\" VITE_ENV_NAME=local vite --clearScreen=false --host --port 5173",
+    "dev:vite": "VITE_ROOT=$(pwd) VITE_GIT_COMMIT_SHA=\"$(git rev-parse HEAD)$(git diff --quiet || echo '-dirty')\" VITE_ENV_NAME=local sh bin/dev-vite.sh --clearScreen=false --host --port 5173",
     "dev:storybook": "storybook dev --port 6006 --no-open",
     "build": "pnpm run --stream \"/^build:.*/\"",
     "build:vite": "vite build",
@@ -44,6 +44,7 @@
     "@tanstack/react-start": "1.168.49",
     "@tanstack/react-table": "9.2.4",
     "@trpc/client": "11.18.0",
+    "@trpc/server": "11.18.0",
     "@trpc/tanstack-react-query": "11.18.0",
     "better-auth": "1.7.2",
     "bzzz": "0.1.1",

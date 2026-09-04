@@ -19,7 +19,7 @@
     "start:fe": "pnpm fe start",
     "start:be": "pnpm be start",
     "start:e2e": "VITE_INTEGRATION_TEST=true pnpm run-p start:be 'fe dev:vite'",
-    "clean": "git clean -Xdf --exclude='!packages/backend/.env'",
+    "clean": "git clean -Xdf --exclude='!.env.app'",
     "test": "vitest",
     "lint": "pnpm run \"/^lint:.*/\"",
     "lint:oxlint": "oxlint",

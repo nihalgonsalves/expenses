@@ -7,7 +7,7 @@ test("web manifest loads", async ({ page }) => {
     .locator("link[rel=manifest]")
     .getAttribute("href");
 
-  expect(manifestHref).toBe("/api/manifest.webmanifest");
+  expect(manifestHref).toBe("/manifest.webmanifest");
 
   const manifest = await page.request.get(manifestHref!);
 

@@ -1,0 +1,34 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+deleted file mode 100644
+index bfaae2edc85d2ac819c975cc8f72a98678a6ab21..0000000000000000000000000000000000000000
+diff --git a/dist/es5/rrule.js b/dist/es5/rrule.js
+index b671aaad592beda14cd0a778fe25b412a0effd89..f477f3f3bce232534185b08182ba3f9cbaccfeef 100644
+--- a/dist/es5/rrule.js
++++ b/dist/es5/rrule.js
+@@ -1,7 +1,11 @@
+ (function webpackUniversalModuleDefinition(root, factory) {
+-	if(typeof exports === 'object' && typeof module === 'object')
+-		module.exports = factory();
+-	else if(typeof define === 'function' && define.amd)
++	if(typeof exports === 'object' && typeof module === 'object') {
++        const rrule = factory();
++
++        module.exports.rrulestr = rrule.rrulestr;
++        module.exports.datetime = rrule.datetime;
++        module.exports.RRule = rrule.RRule;
++    } else if(typeof define === 'function' && define.amd)
+ 		define([], factory);
+ 	else if(typeof exports === 'object')
+ 		exports["rrule"] = factory();
+diff --git a/package.json b/package.json
+index 4035e6fcefc690b033f8eb20c557f11980bb8422..4e224e1ce2f64aeab3b863805714853a98cb29e8 100644
+--- a/package.json
++++ b/package.json
+@@ -13,7 +13,6 @@
+   ],
+   "author": "Jakub Roztocil, Lars Schöning, and David Golightly",
+   "main": "dist/es5/rrule.js",
+-  "module": "dist/esm/index.js",
+   "types": "dist/esm/index.d.ts",
+   "repository": {
+     "type": "git",

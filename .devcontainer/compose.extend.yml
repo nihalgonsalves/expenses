@@ -11,5 +11,4 @@ services:
       FRANKFURTER_BASE_URL: http://frankfurter:8080/
     expose:
       - 5173
-      - 5174
     command: /bin/sh -c "while sleep 1000; do :; done"

@@ -1,6 +1,4 @@
-// note: poor cjs/esm interop
-// oxlint-disable import/default, import/no-named-as-default, import/no-named-as-default-member
-import RRule from "rrule";
+import { RRule, type Frequency } from "rrule";
 
 import {
   ZRecurrenceFrequency,
@@ -9,9 +7,9 @@ import {
 
 import type { TransactionSchedule } from "../../prisma/client.ts";
 
-const frequencyToRRuleEnum: Record<RecurrenceFrequency, RRule.Frequency> = {
-  WEEKLY: RRule.Frequency.WEEKLY,
-  MONTHLY: RRule.Frequency.MONTHLY,
+const frequencyToRRuleEnum: Record<RecurrenceFrequency, Frequency> = {
+  WEEKLY: RRule.WEEKLY,
+  MONTHLY: RRule.MONTHLY,
 };
 
 const floatingDateToZonedDateTime = (floatingDate: Date, tzId: string) =>
@@ -48,7 +46,7 @@ export const getRRuleInstancesTzAware = (
   // we pretend that all the instances are in UTC, and then convert them to the local timezone
   // later for DST support, since the rrule library doesn't have true timezone support
 
-  const rrule = new RRule.RRule({
+  const rrule = new RRule({
     freq: frequencyToRRuleEnum[
       ZRecurrenceFrequency.parse(transactionSchedule.rruleFreq)
     ],

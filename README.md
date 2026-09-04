@@ -42,7 +42,7 @@ descriptions, in my experience.
 
 - React, Vite, Tailwind CSS, Radix/shadcn, Motion
 - tRPC, React Query
-- Hono, BullMQ, Prisma, Postgres
+- BullMQ, Prisma, Postgres
 - Playwright, Vitest
 - oxlint, Prettier
 

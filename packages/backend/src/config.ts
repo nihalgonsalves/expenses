@@ -184,8 +184,6 @@ const jsonCodec = <T extends z.core.$ZodType>(schema: T) =>
 const ZEnv = z.object({
   GIT_COMMIT_SHA: z.string().default("unknown"),
 
-  LISTEN_HOST: z.string().min(1).default("0.0.0.0"),
-  PORT: z.coerce.number().default(5174),
   PUBLIC_ORIGIN: devOnlyDefault(
     z.url({ protocol: /^https?$/ }),
     "http://localhost:5173",
@@ -222,8 +220,6 @@ const ZEnv = z.object({
     z.url({ protocol: /^https?$/ }),
     "http://localhost:5200/",
   ),
-
-  ENABLE_ADMIN: z.coerce.boolean().default(!IS_PROD),
 
   SENTRY_DSN: z.string().optional(),
 

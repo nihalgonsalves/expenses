@@ -1,5 +1,25 @@
 services:
-  backend:
+  web:
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: ./infra/Dockerfile-frontend
+    # TODO: centralise/autogenerate this. must contain:
+    # DATABASE_URL, JWT_SECRET, VAPID_EMAIL, VAPID_PRIVATE_KEY,
+    # VAPID_PUBLIC_KEY, PUBLIC_ORIGIN, SMTP_HOST, SMTP_PORT, SMTP_USER,
+    # SMTP_PASSWORD, and optional SENTRY_DSN
+    env_file: &env_file
+      - .env.app
+    # Server-side tRPC keeps using HTTP semantics, through this web process.
+    environment: &environment
+      API_BASE_URL: http://localhost:3000/
+      FRANKFURTER_BASE_URL: https://api.frankfurter.dev/
+    ports:
+      - 3000:3000
+
+  worker:
     restart: unless-stopped
     depends_on:
       - postgres
@@ -7,24 +27,9 @@ services:
       context: .
       dockerfile: ./infra/Dockerfile-backend
     init: true
-    # TODO: centralise/autogenerate this
-    # must contain DATABASE_URL, JWT_SECRET, VAPID_EMAIL, VAPID_PRIVATE_KEY, VAPID_PUBLIC_KEY, PUBLIC_ORIGIN, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD
-    # optional SENTRY_DSN
-    env_file:
-      - .env.backend
-    environment:
-      PORT: 5174
-      FRANKFURTER_BASE_URL: https://api.frankfurter.dev/
-
-  frontend:
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: ./infra/Dockerfile-frontend
-    environment:
-      API_BASE_URL: http://backend:5174/
-    ports:
-      - 3000:3000
+    command: ["node", "--enable-source-maps", "src/worker.ts"]
+    env_file: *env_file
+    environment: *environment
 
   postgres:
     restart: unless-stopped

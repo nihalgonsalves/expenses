@@ -3,7 +3,7 @@ import { createIsomorphicFn, createServerOnlyFn } from "@tanstack/react-start";
 
 export const getBaseApiUrl = createServerOnlyFn(() => {
   if (process.env["NODE_ENV"] !== "production") {
-    return "http://localhost:5174/";
+    return "http://localhost:5173/";
   }
 
   const backendBaseUrl = process.env["API_BASE_URL"];
@@ -16,4 +16,4 @@ export const getBaseApiUrl = createServerOnlyFn(() => {
 
 export const getTrpcBaseUrl = createIsomorphicFn()
   .client(() => config.VITE_API_BASE_URL)
-  .server(() => new URL("/trpc", getBaseApiUrl()).toString());
+  .server(() => new URL("/api/trpc", getBaseApiUrl()).toString());

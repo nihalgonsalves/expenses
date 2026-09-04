@@ -13,7 +13,6 @@ import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
-import { Route as ApiSplatRouteImport } from './routes/api/$'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
 import { Route as AuthGroupsSheetIdRouteImport } from './routes/_auth/groups/$sheetId'
@@ -39,11 +38,6 @@ const AuthStatsRoute = AuthStatsRouteImport.update({
   id: '/stats',
   path: '/stats',
   getParentRoute: () => AuthRoute,
-} as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/auth/sign-in',
@@ -80,7 +74,6 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
-  '/api/$': typeof ApiSplatRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
@@ -91,7 +84,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
-  '/api/$': typeof ApiSplatRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/': typeof AuthIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
@@ -105,7 +97,6 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/settings': typeof SettingsRoute
   '/_auth/stats': typeof AuthStatsRoute
-  '/api/$': typeof ApiSplatRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/groups/$sheetId': typeof AuthGroupsSheetIdRoute
@@ -120,7 +111,6 @@ export interface FileRouteTypes {
     | '/'
     | '/settings'
     | '/stats'
-    | '/api/$'
     | '/auth/sign-in'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
@@ -131,7 +121,6 @@ export interface FileRouteTypes {
   to:
     | '/settings'
     | '/stats'
-    | '/api/$'
     | '/auth/sign-in'
     | '/'
     | '/groups/$sheetId'
@@ -144,7 +133,6 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/settings'
     | '/_auth/stats'
-    | '/api/$'
     | '/auth/sign-in'
     | '/_auth/'
     | '/_auth/groups/$sheetId'
@@ -157,7 +145,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   SettingsRoute: typeof SettingsRoute
-  ApiSplatRoute: typeof ApiSplatRoute
   AuthSignInRoute: typeof AuthSignInRoute
 }
 
@@ -190,13 +177,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/stats'
       preLoaderRoute: typeof AuthStatsRouteImport
       parentRoute: typeof AuthRoute
-    }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/auth/sign-in': {
       id: '/auth/sign-in'
@@ -277,7 +257,6 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   SettingsRoute: SettingsRoute,
-  ApiSplatRoute: ApiSplatRoute,
   AuthSignInRoute: AuthSignInRoute,
 }
 export const routeTree = rootRouteImport
