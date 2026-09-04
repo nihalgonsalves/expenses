@@ -1,13 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useTRPC } from "../api/trpc";
+import { transactionQueries } from "../api/transaction";
 
 export const useCategoryEmojiShortCode = (
   category: string,
 ): string | undefined => {
-  const { trpc } = useTRPC();
   const { data: categories } = useQuery(
-    trpc.transaction.getCategories.queryOptions(),
+    transactionQueries.categories.queryOptions(),
   );
 
   const categoryById = categories

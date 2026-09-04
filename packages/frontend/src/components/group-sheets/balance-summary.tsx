@@ -16,7 +16,13 @@ import type {
   TransactionSummaryResponse,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useTRPC } from "../../api/trpc";
+import { currencyConversionQueries } from "../../api/currency-conversion";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
+import { sheetMutations, sheetQueries } from "../../api/sheet";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { Avatar } from "../avatar";
 import { CurrencySpan } from "../currency-span";
@@ -55,10 +61,10 @@ const PersonMenu = ({
   const onLine = useNavigatorOnLine();
   const navigate = useNavigate();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
 
   const { mutateAsync: deleteGroupSheetMember } = useMutation(
-    trpc.sheet.deleteGroupSheetMember.mutationOptions(),
+    sheetMutations.deleteGroupSheetMember(),
   );
 
   const handleDelete = async () => {
@@ -71,10 +77,10 @@ const PersonMenu = ({
       });
 
       await invalidate(
-        trpc.sheet.groupSheetById.queryKey(groupSheetId),
-        trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
-        trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
-        trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+        sheetQueries.groupSheetById.queryKey(groupSheetId),
+        transactionQueries.participantSummaries.queryKey(groupSheetId),
+        transactionQueries.simplifiedBalances.queryKey(groupSheetId),
+        currencyConversionQueries.supportedCurrencies.queryKey(),
       );
 
       if (actorInfo.id === id) {
@@ -163,10 +169,10 @@ const TransferItem = ({
   transfer: BalanceSimplificationResponse[number];
   summary: TransactionSummaryResponse[number];
 }) => {
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
 
   const { mutateAsync: createGroupSheetSettlement, isPending } = useMutation(
-    trpc.transaction.createGroupSheetSettlement.mutationOptions(),
+    transactionMutations.createGroupSheetSettlement(),
   );
 
   const handleSettleUp = async () => {
@@ -178,14 +184,14 @@ const TransferItem = ({
     });
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getGroupSheetTransactions.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.groupSheetTransactions.queryKey({
         groupSheetId,
       }),
-      trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
-      trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      transactionQueries.participantSummaries.queryKey(groupSheetId),
+      transactionQueries.simplifiedBalances.queryKey(groupSheetId),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
   };
 
@@ -312,14 +318,12 @@ export const BalanceSummary = ({
   groupSheetId: string;
   actorInfo: ActorInfo;
 }) => {
-  const { trpc } = useTRPC();
-
   const { data: summaries } = useQuery(
-    trpc.transaction.getParticipantSummaries.queryOptions(groupSheetId),
+    transactionQueries.participantSummaries.queryOptions(groupSheetId),
   );
 
   const { data: transfers } = useQuery(
-    trpc.transaction.getSimplifiedBalances.queryOptions(groupSheetId),
+    transactionQueries.simplifiedBalances.queryOptions(groupSheetId),
   );
 
   return (

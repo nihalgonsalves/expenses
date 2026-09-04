@@ -7,7 +7,8 @@ import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { z } from "zod";
 
-import { useTRPC } from "../../api/trpc";
+import { sheetQueries } from "../../api/sheet";
+import { transactionQueries } from "../../api/transaction";
 import { useBreakpoint } from "../../utils/hooks/use-breakpoint";
 import { CategoryIcon } from "../category-avatar";
 import { Button } from "../ui/button";
@@ -41,16 +42,15 @@ export const DataTableToolbar = <TData extends RowData>({
   // TODO: make these part of the filters, encapsulate reset / default date logic
   const [hasCustomDateRange, setHasCustomDateRange] = useState(false);
 
-  const { trpc } = useTRPC();
   const { data: sheets } = useQuery(
-    trpc.sheet.mySheets.queryOptions({ includeArchived: false }),
+    sheetQueries.mySheets.queryOptions({ includeArchived: false }),
   );
   const { data: futureTransactions } = useQuery(
-    trpc.transaction.getFutureTransactions.queryOptions(),
+    transactionQueries.futureTransactions.queryOptions(),
   );
 
   const { data: categories } = useQuery(
-    trpc.transaction.getCategories.queryOptions(),
+    transactionQueries.categories.queryOptions(),
   );
 
   const typeColumn = table.getColumn("type");

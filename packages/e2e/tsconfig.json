@@ -8,5 +8,9 @@
     {
       "path": "../shared"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true
+  }
 }

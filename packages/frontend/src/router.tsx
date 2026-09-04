@@ -2,38 +2,19 @@ import * as Sentry from "@sentry/react";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
-import { createTRPCClient, httpLink } from "@trpc/client";
-import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
-import type { AppRouter } from "@nihalgonsalves/expenses-backend/build";
 import {
   getQueryClient,
-  TrpcProvider,
   asyncStoragePersister,
-} from "./api/trpc-provider";
+  QueryProvider,
+} from "./api/query-client-provider";
 import { ErrorBoundary } from "./components/error-boundary";
 import { NotFoundPage } from "./components/not-found-page";
 import { config } from "./config";
 import { routeTree } from "./routeTree.gen";
-import { getRequestHeaders } from "@tanstack/react-start/server";
 
 import { persistQueryClientRestore } from "@tanstack/react-query-persist-client";
-import { getTrpcBaseUrl } from "./utils/get-api-base-url";
-
-const getIncomingHeaders = () =>
-  createIsomorphicFn()
-    .client(() => ({}))
-    .server(() => getRequestHeaders());
 
 export const getRouter = async () => {
-  const trpcClient = createTRPCClient<AppRouter>({
-    links: [
-      httpLink({
-        headers: getIncomingHeaders(),
-        url: getTrpcBaseUrl(),
-      }),
-    ],
-  });
-
   const queryClient = getQueryClient();
 
   const persistClientRestore = createIsomorphicFn().client(async () =>
@@ -45,21 +26,16 @@ export const getRouter = async () => {
   );
   await persistClientRestore();
 
-  const trpc = createTRPCOptionsProxy<AppRouter>({
-    client: trpcClient,
-    queryClient,
-  });
-
   const router = createRouter({
     routeTree,
     defaultNotFoundComponent: NotFoundPage,
-    context: { queryClient, trpcClient, trpc },
+    context: { queryClient },
     scrollRestoration: true,
     defaultPreload: "intent",
     Wrap: ({ children }) => (
-      <TrpcProvider trpcClient={trpcClient} queryClient={queryClient}>
+      <QueryProvider queryClient={queryClient}>
         <ErrorBoundary>{children}</ErrorBoundary>
-      </TrpcProvider>
+      </QueryProvider>
     ),
   });
 

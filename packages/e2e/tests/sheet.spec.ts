@@ -1,18 +1,13 @@
 import { expect, test } from "../utils/test";
 
-["personal", "group"].forEach((type) => {
+(["personal", "group"] as const).forEach((type) => {
   test(`creates a ${type} sheet successfully`, async ({ page, signIn }) => {
     await signIn();
     await page.goto("/");
-
     await page.getByRole("link", { name: "Sheets" }).click();
-
     await page.getByRole("button", { name: `New ${type} sheet` }).click();
-
     await page.getByLabel(/sheet name/i).fill("Test Sheet");
-
     await page.getByRole("button", { name: /create/i }).click();
-
     await expect(page).toHaveTitle(/test sheet/i);
     await expect(page.getByText("Test Sheet")).toBeVisible();
   });
@@ -20,31 +15,13 @@ import { expect, test } from "../utils/test";
   test(`updates a ${type} sheet  successfully`, async ({
     page,
     signIn,
-    serverTRPCClient,
+    backendSheets,
   }) => {
-    await signIn();
+    const user = await signIn();
+    await (type === "personal"
+      ? backendSheets.createPersonal(user)
+      : backendSheets.createGroup(user));
     await page.goto("/");
-
-    switch (type) {
-      case "personal":
-        await serverTRPCClient.sheet.createPersonalSheet.mutate({
-          name: "Test Sheet",
-          currencyCode: "EUR",
-        });
-
-        break;
-      case "group":
-        await serverTRPCClient.sheet.createGroupSheet.mutate({
-          name: "Test Sheet",
-          currencyCode: "EUR",
-        });
-
-        break;
-
-      default:
-        break;
-    }
-
     await page.getByRole("link", { name: "Sheets" }).click();
     await page.getByRole("link", { name: "Test Sheet" }).click();
 

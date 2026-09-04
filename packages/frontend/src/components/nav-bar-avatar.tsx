@@ -2,7 +2,8 @@ import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { Link } from "@tanstack/react-router";
 import { UserIcon } from "lucide-react";
 
-import { useCurrentUser } from "../api/use-current-user";
+import { useCurrentUser, userApi } from "../api/user";
+import { useResetCache } from "../api/use-reset-cache";
 
 import { Button } from "./ui/button";
 import {
@@ -13,9 +14,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Separator } from "./ui/separator";
 import { cn } from "./ui/utils";
-import { useInvalidateRouter } from "#/api/use-invalidate-router";
 import { useMutation } from "@tanstack/react-query";
-import { useTRPC } from "#/api/trpc";
 
 export const LoggedOutNavBarAvatar = () => (
   <Button
@@ -52,11 +51,10 @@ export const LoggedInNavBarAvatar = ({
 
 export const NavBarAvatar = ({ className }: { className?: string }) => {
   const me = useCurrentUser();
-  const { trpc } = useTRPC();
   const { mutateAsync: signOut } = useMutation(
-    trpc.user.signOut.mutationOptions(),
+    userApi.signOut.mutationOptions(),
   );
-  const invalidateRouter = useInvalidateRouter();
+  const resetCache = useResetCache();
 
   return (
     <div className={cn("flex place-items-center gap-4", className)}>
@@ -65,7 +63,7 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
         <LoggedInNavBarAvatar
           handleSignOut={async () => {
             await signOut();
-            await invalidateRouter();
+            await resetCache();
           }}
         />
       ) : (

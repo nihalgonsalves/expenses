@@ -16,3 +16,7 @@ export const initBackendSentry = (integrations: BackendIntegration[] = []) => {
     profileSessionSampleRate: 1.0,
   });
 };
+
+export const captureBackendException = (error: unknown) => {
+  Sentry.captureException(error);
+};

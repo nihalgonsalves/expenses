@@ -1,7 +1,8 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-class FrankfurterServiceError extends TRPCError {}
+import { AppError } from "../../utils/errors.ts";
+
+class FrankfurterServiceError extends AppError {}
 
 const safeFetchJson = async (
   input: RequestInfo | URL,

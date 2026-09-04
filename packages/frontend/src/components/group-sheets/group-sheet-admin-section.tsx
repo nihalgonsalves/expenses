@@ -4,7 +4,9 @@ import { ArchiveIcon, Trash2Icon } from "lucide-react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { useTRPC } from "../../api/trpc";
+import { currencyConversionQueries } from "../../api/currency-conversion";
+import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { useQueryClient } from "../../api/query-client";
 import { ConfirmDialog } from "../form/confirm-dialog";
 import { Button } from "../ui/button";
 
@@ -15,22 +17,22 @@ export const GroupSheetAdminSection = ({
 }) => {
   const navigate = useNavigate();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
 
   const { mutateAsync: deleteGroupSheet } = useMutation(
-    trpc.sheet.deleteSheet.mutationOptions(),
+    sheetMutations.deleteSheet(),
   );
   const { mutateAsync: archiveSheet } = useMutation(
-    trpc.sheet.archiveSheet.mutationOptions(),
+    sheetMutations.archiveSheet(),
   );
 
   const handleDelete = async () => {
     await deleteGroupSheet(groupSheet.id);
 
     void invalidate(
-      trpc.sheet.groupSheetById.queryKey(groupSheet.id),
-      trpc.sheet.mySheets.queryKey(),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      sheetQueries.groupSheetById.queryKey(groupSheet.id),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
+      sheetQueries.mySheets.queryKey(),
     );
 
     await navigate({ to: "/sheets" });
@@ -43,8 +45,8 @@ export const GroupSheetAdminSection = ({
     });
 
     void invalidate(
-      trpc.sheet.groupSheetById.queryKey(groupSheet.id),
-      trpc.sheet.mySheets.queryKey(),
+      sheetQueries.groupSheetById.queryKey(groupSheet.id),
+      sheetQueries.mySheets.queryKey(),
     );
   };
 

@@ -10,7 +10,12 @@ import {
   TrashIcon,
 } from "lucide-react";
 
-import { useTRPC } from "../../api/trpc";
+import { currencyConversionQueries } from "../../api/currency-conversion";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
 import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
 import { ConfirmDialog } from "../form/confirm-dialog";
 import { useDialogControls } from "../form/responsive-dialog";
@@ -36,9 +41,9 @@ const PersonalTransactionDropdownContent = ({
   const editDialogControls = useDialogControls();
   const deleteDialogControls = useDialogControls();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: deleteTransaction } = useMutation(
-    trpc.transaction.deleteTransaction.mutationOptions(),
+    transactionMutations.deleteTransaction(),
   );
 
   const sheetId = row.original.sheet.id;
@@ -51,12 +56,12 @@ const PersonalTransactionDropdownContent = ({
     });
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getPersonalSheetTransactions.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.personalSheetTransactions.queryKey({
         personalSheetId: sheetId,
       }),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
   };
 
@@ -104,9 +109,9 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
   const deleteDialogControls = useDialogControls();
   const editDialogControls = useDialogControls();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: deleteTransaction } = useMutation(
-    trpc.transaction.deleteTransaction.mutationOptions(),
+    transactionMutations.deleteTransaction(),
   );
 
   const sheetId = row.original.sheet.id;
@@ -119,14 +124,14 @@ const GroupTransactionDropdownContent = ({ row }: DataTableRowActionsProps) => {
     });
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getGroupSheetTransactions.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.groupSheetTransactions.queryKey({
         groupSheetId: sheetId,
       }),
-      trpc.transaction.getParticipantSummaries.queryKey(sheetId),
-      trpc.transaction.getSimplifiedBalances.queryKey(sheetId),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      transactionQueries.participantSummaries.queryKey(sheetId),
+      transactionQueries.simplifiedBalances.queryKey(sheetId),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
   };
 

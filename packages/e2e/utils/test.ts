@@ -1,19 +1,34 @@
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
-import { test as base, type APIRequestContext } from "@playwright/test";
+import { test as base, type BrowserContext } from "@playwright/test";
 export { expect } from "@playwright/test";
-import { type TRPCClient, createTRPCClient, httpLink } from "@trpc/client";
 
-import type { AppRouter } from "@nihalgonsalves/expenses-backend";
+import { makeCreateContext } from "@nihalgonsalves/expenses-backend/src/context.ts";
+import {
+  closeBackendRuntime,
+  createBackendWebRuntime,
+} from "@nihalgonsalves/expenses-backend/src/runtime.ts";
+import * as sheetApi from "@nihalgonsalves/expenses-backend/src/service/sheet/sheet-api.ts";
+import * as userApi from "@nihalgonsalves/expenses-backend/src/service/user/user-api.ts";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { getUserData } from "./misc";
 
 type Fixtures = {
   setup: () => void;
-  serverTRPCClient: TRPCClient<AppRouter>;
   createUser: () => Promise<Omit<User, "theme">>;
   signIn: () => Promise<Omit<User, "theme">>;
+};
+
+type WorkerFixtures = {
+  backendSheets: {
+    createTestUser: (input: { name: string; email: string }) => Promise<{
+      user: Omit<User, "theme">;
+      cookies: Parameters<BrowserContext["addCookies"]>[0];
+    }>;
+    createPersonal: (user: Omit<User, "theme">) => Promise<{ id: string }>;
+    createGroup: (user: Omit<User, "theme">) => Promise<{ id: string }>;
+  };
 };
 
 declare global {
@@ -21,52 +36,7 @@ declare global {
   var __coverage__: unknown;
 }
 
-const createCompatibleFetch =
-  (origin: string, request: APIRequestContext): typeof fetch =>
-  async (...args) => {
-    let urlString: string;
-    let fetchInit: RequestInit | undefined;
-
-    if (args[0] instanceof Request) {
-      urlString = args[0].url;
-      fetchInit = args[1] ?? args[0];
-    } else if (typeof args[0] === "string" || args[0] instanceof URL) {
-      urlString = args[0].toString();
-      fetchInit = args[1];
-    } else {
-      throw new Error("Can only handle string, URL, or Request args.");
-    }
-
-    const { body, headers, method = "GET" } = fetchInit ?? {};
-
-    const headersObject =
-      headers instanceof Headers
-        ? Object.fromEntries(headers.entries())
-        : Array.isArray(headers)
-          ? Object.fromEntries(headers)
-          : (headers ?? {});
-
-    const response = await request.fetch(urlString, {
-      data: body,
-      method,
-      headers: { ...headersObject, origin },
-    });
-
-    const responseBody = await response.body();
-    return new Response(
-      new Blob([
-        // @ts-expect-error minor type differences
-        responseBody,
-      ]),
-      {
-        status: response.status(),
-        statusText: response.statusText(),
-        headers: response.headers(),
-      },
-    );
-  };
-
-export const test = base.extend<Fixtures>({
+export const test = base.extend<Fixtures, WorkerFixtures>({
   page: async ({ page }, use) => {
     const originalGoto = page.goto.bind(page);
     page.goto = async (...args) =>
@@ -127,25 +97,50 @@ export const test = base.extend<Fixtures>({
     { auto: true },
   ],
 
-  serverTRPCClient: async ({ page, baseURL }, use) => {
-    const client = createTRPCClient<AppRouter>({
-      links: [
-        httpLink({
-          url: new URL("/api/trpc", baseURL),
-          // @ts-expect-error minor type differences
-          fetch: createCompatibleFetch(baseURL!, page.request),
-        }),
-      ],
-    });
+  backendSheets: [
+    // First argument must use the object destructuring pattern: _fixtures
+    // oxlint-disable-next-line no-empty-pattern
+    async ({}, use) => {
+      const runtime = await createBackendWebRuntime();
+      const createContext = makeCreateContext(runtime.prisma, runtime.services);
+      const contextFor = async (user: Omit<User, "theme">) => ({
+        ...(await createContext({
+          req: new Request("http://localhost:5173"),
+          resHeaders: new Headers(),
+        })),
+        user: { ...user, theme: null },
+      });
 
-    await use(client);
-  },
+      await use({
+        createTestUser: async (input) =>
+          userApi.createTestUser(
+            await createContext({
+              req: new Request("http://localhost:5173"),
+              resHeaders: new Headers(),
+            }),
+            input,
+          ),
+        createPersonal: async (user) =>
+          sheetApi.createPersonalSheet(await contextFor(user), {
+            name: "Test Sheet",
+            currencyCode: "EUR",
+          }),
+        createGroup: async (user) =>
+          sheetApi.createGroupSheet(await contextFor(user), {
+            name: "Test Sheet",
+            currencyCode: "EUR",
+          }),
+      });
+      await closeBackendRuntime(runtime);
+    },
+    { scope: "worker" },
+  ],
 
-  createUser: async ({ serverTRPCClient }, use) => {
+  createUser: async ({ backendSheets }, use) => {
     await use(async () => {
       const { name, email } = getUserData();
 
-      const { user } = await serverTRPCClient.user.createTestUser.mutate({
+      const { user } = await backendSheets.createTestUser({
         name,
         email,
       });
@@ -154,15 +149,14 @@ export const test = base.extend<Fixtures>({
     });
   },
 
-  signIn: async ({ page, serverTRPCClient }, use) => {
+  signIn: async ({ page, backendSheets }, use) => {
     await use(async () => {
       const { name, email } = getUserData();
 
-      const { user, cookies } =
-        await serverTRPCClient.user.createTestUser.mutate({
-          name,
-          email,
-        });
+      const { user, cookies } = await backendSheets.createTestUser({
+        name,
+        email,
+      });
 
       await page.context().addCookies(cookies);
 

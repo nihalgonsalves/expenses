@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => ({
         },
       },
     !process.env["VITE_STORYBOOK"] && nitro({}),
-    react({ compiler: true }),
+    react({ compiler: { logDiagnostics: false } }),
     !process.env["VITE_STORYBOOK"] &&
       process.env["VITE_COVERAGE"] &&
       IstanbulPlugin({

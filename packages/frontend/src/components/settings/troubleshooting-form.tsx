@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { useResetCache } from "#/api/use-reset-cache";
 
-import { useTRPC } from "../../api/trpc";
+import { userApi } from "../../api/user";
 import { config } from "../../config";
 import { useServiceWorkerRegistration } from "../../utils/hooks/use-service-worker-registration";
 import { Button } from "../ui/button";
@@ -21,9 +21,8 @@ export const TroubleshootingForm = () => {
   const resetCache = useResetCache();
   const serviceWorker = useServiceWorkerRegistration();
 
-  const { trpc } = useTRPC();
   const { mutateAsync: signOut } = useMutation(
-    trpc.user.signOut.mutationOptions(),
+    userApi.signOut.mutationOptions(),
   );
 
   const handleReset = async () => {

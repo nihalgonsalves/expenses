@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { userFactory } from "../../../test/factories.ts";
-import { getTRPCCaller } from "../../../test/get-trpc-caller.ts";
+import { getApiCaller } from "../../../test/get-api-caller.ts";
 
-const { prisma, betterAuth, useProtectedCaller } = await getTRPCCaller();
+const { prisma, betterAuth, useProtectedCaller } = await getApiCaller();
 
 describe("getPublicKey", () => {
   it("returns the server public key", async () => {

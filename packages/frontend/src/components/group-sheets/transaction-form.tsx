@@ -12,8 +12,16 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { useCurrencyConversion } from "../../api/currency-conversion";
-import { useTRPC } from "../../api/trpc";
+import {
+  currencyConversionQueries,
+  useCurrencyConversion,
+} from "../../api/currency-conversion";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
+import { sheetQueries } from "../../api/sheet";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";
 import {
@@ -151,9 +159,9 @@ export const TransactionForm = ({
   const dialog = useDialog();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: createGroupSheetTransaction, isPending } = useMutation(
-    trpc.transaction.createGroupSheetTransaction.mutationOptions(),
+    transactionMutations.createGroupSheetTransaction(),
   );
 
   const onLine = useNavigatorOnLine();
@@ -247,14 +255,14 @@ export const TransactionForm = ({
     dialog.dismiss();
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getGroupSheetTransactions.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.groupSheetTransactions.queryKey({
         groupSheetId: groupSheet.id,
       }),
-      trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
-      trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      transactionQueries.participantSummaries.queryKey(groupSheet.id),
+      transactionQueries.simplifiedBalances.queryKey(groupSheet.id),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
   };
 
@@ -350,9 +358,9 @@ export const EditTransactionForm = ({
 }) => {
   const dialog = useDialog();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: replaceGroupSheetTransaction, isPending } = useMutation(
-    trpc.transaction.replaceGroupSheetTransaction.mutationOptions(),
+    transactionMutations.replaceGroupSheetTransaction(),
   );
 
   const onLine = useNavigatorOnLine();
@@ -474,18 +482,18 @@ export const EditTransactionForm = ({
     dialog.dismiss();
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getTransaction.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.transaction.queryKey({
         sheetId: groupSheet.id,
         transactionId: transaction.id,
       }),
-      trpc.transaction.getGroupSheetTransactions.queryKey({
+      transactionQueries.groupSheetTransactions.queryKey({
         groupSheetId: groupSheet.id,
       }),
-      trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
-      trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      transactionQueries.participantSummaries.queryKey(groupSheet.id),
+      transactionQueries.simplifiedBalances.queryKey(groupSheet.id),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
   };
 
@@ -585,16 +593,14 @@ export const EditTransactionDialog = ({
   transactionId: string;
   dialogProps: DialogControls;
 }) => {
-  const { trpc } = useTRPC();
-
   const { data, isLoading } = useQuery(
-    trpc.transaction.getTransaction.queryOptions({
+    transactionQueries.transaction.queryOptions({
       sheetId,
       transactionId,
     }),
   );
   const { data: groupSheetData } = useQuery(
-    trpc.sheet.groupSheetById.queryOptions(sheetId),
+    sheetQueries.groupSheetById.queryOptions(sheetId),
   );
 
   return (

@@ -1,25 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useTRPC, type QueryOptionsContext } from "../../../api/trpc";
+import { sheetQueries } from "../../../api/sheet";
 import { SheetsList } from "../../../components/sheets-list";
 import { RootLoader } from "../../../pages/root";
 
-const queryOptions = (context: QueryOptionsContext) =>
-  context.trpc.sheet.mySheets.queryOptions({ includeArchived: true });
-
 export const Route = createFileRoute("/_auth/sheets/")({
   component: RouteComponent,
-  loader: async ({ context: { queryClient, trpc } }) =>
+  loader: async ({ context: { queryClient } }) =>
     queryClient.query({
-      ...queryOptions({ trpc }),
+      ...sheetQueries.mySheets.queryOptions({ includeArchived: true }),
       staleTime: "static",
     }),
 });
 
 function RouteComponent() {
-  const { trpc } = useTRPC();
-  const result = useQuery(queryOptions({ trpc }));
+  const result = useQuery(
+    sheetQueries.mySheets.queryOptions({ includeArchived: true }),
+  );
 
   return (
     <RootLoader

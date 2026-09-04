@@ -1,11 +1,8 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { FastResponse } from "srvx";
-import { appRouter } from "@nihalgonsalves/expenses-backend/src/app-router";
-import { makeCreateContext } from "@nihalgonsalves/expenses-backend/src/context";
+import { z } from "zod";
 import { config } from "@nihalgonsalves/expenses-backend/src/config";
-import { createAuth } from "@nihalgonsalves/expenses-backend/src/utils/auth";
-import { createBackendWebRuntime } from "@nihalgonsalves/expenses-backend/src/runtime";
+import { getBackendWebApp } from "@nihalgonsalves/expenses-backend/src/web-context";
 import { initBackendSentry } from "@nihalgonsalves/expenses-backend/src/sentry";
 import {
   THEME_DEFAULT,
@@ -16,34 +13,8 @@ import {
 globalThis.Response = FastResponse;
 initBackendSentry();
 
-const backendApp = (async () => {
-  console.log("Starting backend runtime…");
-  const runtime = await createBackendWebRuntime();
-  const createContext = makeCreateContext(runtime.prisma, runtime.services);
-  const auth = createAuth(runtime.prisma, runtime.services.emailWorker);
-  console.log("Backend runtime started");
-  return { auth, createContext };
-})();
-
-const handleBackendRequest = async (request: Request) => {
-  const backend = await backendApp;
-  const url = new URL(request.url);
-
-  if (url.pathname.startsWith("/api/auth")) {
-    return backend.auth.handler(request);
-  }
-
-  return fetchRequestHandler({
-    endpoint: "/api/trpc",
-    req: request,
-    router: appRouter,
-    createContext: async ({ req, resHeaders }) =>
-      backend.createContext({ req, resHeaders }),
-  });
-};
-
 const handleManifestRequest = async (request: Request) => {
-  const backend = await backendApp;
+  const backend = await getBackendWebApp();
   const responseHeaders = new Headers();
   const context = await backend.createContext({
     req: request,
@@ -94,19 +65,37 @@ const handleManifestRequest = async (request: Request) => {
   );
 };
 
+const handleAuthRequest = async (request: Request) => {
+  const backend = await getBackendWebApp();
+  return backend.auth.handler(request);
+};
+
+const handleHealthRequest = async () => {
+  try {
+    const backend = await getBackendWebApp();
+    const result = await backend.runtime.prisma.$queryRaw`SELECT 1 as one`;
+    z.array(z.object({ one: z.literal(1) })).parse(result);
+
+    return Response.json({ status: "ok" });
+  } catch {
+    return Response.json({ status: "error" }, { status: 503 });
+  }
+};
+
 // oxlint-disable-next-line import/no-default-export
 export default createServerEntry({
   async fetch(request) {
     const pathname = new URL(request.url).pathname;
-    if (
-      pathname === "/manifest.webmanifest" ||
-      pathname.startsWith("/api/trpc") ||
-      pathname.startsWith("/api/auth")
-    ) {
-      if (pathname === "/manifest.webmanifest") {
-        return handleManifestRequest(request);
-      }
-      return handleBackendRequest(request);
+    if (pathname === "/healthz") {
+      return handleHealthRequest();
+    }
+
+    if (pathname === "/manifest.webmanifest") {
+      return handleManifestRequest(request);
+    }
+
+    if (pathname.startsWith("/api/auth")) {
+      return handleAuthRequest(request);
     }
 
     return handler.fetch(request);

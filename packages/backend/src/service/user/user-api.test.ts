@@ -1,11 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { personalSheetFactory, userFactory } from "../../../test/factories.ts";
-import { getTRPCCaller } from "../../../test/get-trpc-caller.ts";
+import { getApiCaller } from "../../../test/get-api-caller.ts";
 import { createPersonalSheetTransactionInput } from "../../../test/input.ts";
 
 const { usePublicCaller, useProtectedCaller, prisma, betterAuth } =
-  await getTRPCCaller();
+  await getApiCaller();
 
 describe("signOut", () => {
   it("signs a user out", async () => {

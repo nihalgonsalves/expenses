@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { Queue, Worker, type PostgresQueueBackend } from "bullmq";
 import type { Pool } from "pg";
 import { createTransport, type SendMailOptions } from "nodemailer";
@@ -8,6 +7,7 @@ import { EMAIL_BULLMQ_QUEUE, config } from "../../config.ts";
 import type { IWorker } from "../../start-workers.ts";
 import { durationSeconds } from "../../utils/temporal.ts";
 import { createPostgresBackend } from "../../postgres.ts";
+import { AppError } from "../../utils/errors.ts";
 
 export type EmailPayload = Pick<SendMailOptions, "subject" | "text"> & {
   to: Extract<SendMailOptions["to"], { address: unknown }>;
@@ -17,7 +17,7 @@ export type IEmailWorker = {
   sendEmail: (email: EmailPayload) => Promise<void>;
 };
 
-export class EmailWorkerError extends TRPCError {}
+export class EmailWorkerError extends AppError {}
 
 const nodemailerTransport = createTransport({
   host: config.SMTP_HOST,

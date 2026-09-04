@@ -2,12 +2,12 @@ import { HttpResponse, http } from "msw";
 import { describe, expect, it } from "vitest";
 
 import { personalSheetFactory, userFactory } from "../../../test/factories.ts";
-import { getTRPCCaller } from "../../../test/get-trpc-caller.ts";
+import { getApiCaller } from "../../../test/get-api-caller.ts";
 import { createPersonalSheetTransactionInput } from "../../../test/input.ts";
 import { setupMockServer } from "../../../test/msw.ts";
 import { config } from "../../config.ts";
 
-const { prisma, betterAuth, useProtectedCaller } = await getTRPCCaller();
+const { prisma, betterAuth, useProtectedCaller } = await getApiCaller();
 const mockServer = setupMockServer();
 const currenciesUrl = new URL(
   "/v2/currencies",

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { useCurrentUser } from "../api/use-current-user";
+import { useCurrentUser } from "../api/user";
 import { AppearanceForm } from "../components/settings/appearance-form";
 import { CategoryForm } from "../components/settings/category-form";
 import { NotificationPreferenceForm } from "../components/settings/notification-preference-form";

@@ -7,7 +7,12 @@ import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/typ
 import { ZCreateGroupSheetSettlementInput } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { useTRPC } from "../../api/trpc";
+import { currencyConversionQueries } from "../../api/currency-conversion";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";
 import { MoneyField } from "../form/money-field";
@@ -52,9 +57,9 @@ export const SettlementForm = ({
     },
   });
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: createGroupSheetSettlement, isPending } = useMutation(
-    trpc.transaction.createGroupSheetSettlement.mutationOptions(),
+    transactionMutations.createGroupSheetSettlement(),
   );
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -69,14 +74,14 @@ export const SettlementForm = ({
     });
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getGroupSheetTransactions.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.groupSheetTransactions.queryKey({
         groupSheetId: groupSheet.id,
       }),
-      trpc.transaction.getParticipantSummaries.queryKey(groupSheet.id),
-      trpc.transaction.getSimplifiedBalances.queryKey(groupSheet.id),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      transactionQueries.participantSummaries.queryKey(groupSheet.id),
+      transactionQueries.simplifiedBalances.queryKey(groupSheet.id),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
 
     dialog.dismiss();

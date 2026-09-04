@@ -2,8 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { useTRPC } from "../../api/trpc";
-import { useInvalidateRouter } from "../../api/use-invalidate-router";
+import { userApi } from "../../api/user";
+import { useResetCache } from "../../api/use-reset-cache";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
@@ -14,10 +14,9 @@ export const PrivacyForm = () => {
 
   const [isReconfirming, setIsReconfirming] = useState(false);
 
-  const invalidateRouter = useInvalidateRouter();
-  const { trpc } = useTRPC();
+  const resetCache = useResetCache();
   const { mutateAsync: anonymizeUser, isPending } = useMutation(
-    trpc.user.anonymizeUser.mutationOptions(),
+    userApi.anonymize.mutationOptions(),
   );
 
   const handleAnonymize = async () => {
@@ -28,7 +27,7 @@ export const PrivacyForm = () => {
 
     await anonymizeUser();
 
-    await invalidateRouter();
+    await resetCache();
     await navigate({ to: "/" });
   };
 

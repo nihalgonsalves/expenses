@@ -2,6 +2,8 @@ import { fileURLToPath } from "url";
 
 import { defineConfig, devices } from "@playwright/test";
 
+process.env["VITE_INTEGRATION_TEST"] = "true";
+
 /** https://playwright.dev/docs/test-configuration. */
 export default defineConfig({
   testDir: "./tests",

@@ -1,5 +1,3 @@
-import { TRPCError } from "@trpc/server";
-
 import {
   type Money,
   sumMoney,
@@ -35,6 +33,7 @@ import {
   type User as PrismaUser,
 } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
+import { AppError } from "../../utils/errors.ts";
 import type { INotificationDispatchWorker } from "../notification/notification-dispatch-worker.ts";
 
 import {
@@ -47,7 +46,7 @@ import {
   mapInputToCreatePersonalTransactionSchedule,
 } from "./prisma-mappers.ts";
 
-class TransactionServiceError extends TRPCError {}
+class TransactionServiceError extends AppError {}
 
 const sumTransactions = (
   currencyCode: string,

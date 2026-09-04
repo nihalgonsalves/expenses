@@ -1,3 +1,3 @@
-import { TRPCError } from "@trpc/server";
+import { AppError } from "../../utils/errors.ts";
 
-export class UserServiceError extends TRPCError {}
+export class UserServiceError extends AppError {}

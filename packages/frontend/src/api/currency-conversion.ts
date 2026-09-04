@@ -1,25 +1,71 @@
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
+import { createServerFn } from "@tanstack/react-start";
+import type { z } from "zod";
 
 import type { Money } from "@nihalgonsalves/expenses-shared/money";
+import {
+  ZGetConversionRateInput,
+  getConversionRate as getBackendConversionRate,
+  getSupportedCurrencies as getBackendSupportedCurrencies,
+} from "@nihalgonsalves/expenses-backend/src/service/frankfurter/currency-conversion-api";
 
+import { withRequiredServerContext } from "../server/context";
 import { usePreferredCurrencyCode } from "../state/preferences";
 import { convertCurrency } from "../utils/money";
 import { durationMilliseconds } from "../utils/temporal";
 
-import { useTRPC } from "./trpc";
+export const getSupportedCurrencies = createServerFn({ method: "GET" }).handler(
+  async () =>
+    withRequiredServerContext(async (context) =>
+      getBackendSupportedCurrencies(context),
+    ),
+);
 
-export const useCurrencyOptions = () => {
-  const { trpc } = useTRPC();
-
-  return useQuery(
-    trpc.currencyConversion.getSupportedCurrencies.queryOptions(undefined, {
-      staleTime: durationMilliseconds({ hours: 1 }),
-    }),
+export const getConversionRate = createServerFn({ method: "GET" })
+  .validator(ZGetConversionRateInput)
+  .handler(async ({ data }) =>
+    withRequiredServerContext(async (context) =>
+      getBackendConversionRate(context, data),
+    ),
   );
+
+type GetConversionRateInput = z.output<typeof ZGetConversionRateInput>;
+
+const supportedCurrenciesQueryKey = () =>
+  ["currencyConversion", "getSupportedCurrencies"] as const;
+
+const conversionRateQueryKey = (input: GetConversionRateInput) =>
+  ["currencyConversion", "getConversionRate", input] as const;
+
+const supportedCurrenciesQueryOptions = () =>
+  queryOptions({
+    queryKey: supportedCurrenciesQueryKey(),
+    queryFn: async () => getSupportedCurrencies(),
+    staleTime: durationMilliseconds({ hours: 1 }),
+  });
+
+const conversionRateQueryOptions = (input: GetConversionRateInput) =>
+  queryOptions({
+    queryKey: conversionRateQueryKey(input),
+    queryFn: async () => getConversionRate({ data: input }),
+    staleTime: durationMilliseconds({ minutes: 5 }),
+  });
+
+export const currencyConversionQueries = {
+  supportedCurrencies: {
+    queryKey: supportedCurrenciesQueryKey,
+    queryOptions: supportedCurrenciesQueryOptions,
+  },
+  conversionRate: {
+    queryKey: conversionRateQueryKey,
+    queryOptions: conversionRateQueryOptions,
+  },
 };
 
+export const useCurrencyOptions = () =>
+  useQuery(currencyConversionQueries.supportedCurrencies.queryOptions());
+
 export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
-  const { trpc } = useTRPC();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
 
   const { data: currencyOptions } = useCurrencyOptions();
@@ -29,19 +75,17 @@ export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
     queries: [
       ...new Set(
         sourceCodes.filter(
-          (s) => s !== preferredCurrencyCode && supportedCurrencies.includes(s),
+          (sourceCode) =>
+            sourceCode !== preferredCurrencyCode &&
+            supportedCurrencies.includes(sourceCode),
         ),
       ),
     ].map((sourceCode) =>
-      trpc.currencyConversion.getConversionRate.queryOptions(
-        {
-          date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
-          from: sourceCode,
-          to: preferredCurrencyCode,
-        },
-        // theoretically could be Infinity for anything over 3 days ago (to account for weekend rates not updating)
-        { staleTime: durationMilliseconds({ minutes: 5 }) },
-      ),
+      currencyConversionQueries.conversionRate.queryOptions({
+        date: Temporal.Now.zonedDateTimeISO().toPlainDate().toString(),
+        from: sourceCode,
+        to: preferredCurrencyCode,
+      }),
     ),
   });
 
@@ -60,7 +104,6 @@ export const useConvertToPreferredCurrency = (sourceCodes: string[]) => {
     }
 
     const rate = sourceRateMap[sourceSnapshot.currencyCode];
-
     if (!rate) return undefined;
 
     return convertCurrency(sourceSnapshot, preferredCurrencyCode, rate);
@@ -78,21 +121,14 @@ export const useCurrencyConversion = (
   const { data: currencyOptions } = useCurrencyOptions();
   const supportedCurrencies = currencyOptions?.supported ?? [];
 
-  const { trpc } = useTRPC();
-  const { data: rate } = useQuery(
-    trpc.currencyConversion.getConversionRate.queryOptions(
-      {
-        date: date.toString(),
-        from: sourceCode,
-        to: targetCode,
-      },
-      {
-        enabled: sourceCode !== targetCode,
-        // theoretically could be Infinity for anything over 3 days ago (to account for weekend rates not updating)
-        staleTime: durationMilliseconds({ minutes: 5 }),
-      },
-    ),
-  );
+  const { data: rate } = useQuery({
+    ...currencyConversionQueries.conversionRate.queryOptions({
+      date: date.toString(),
+      from: sourceCode,
+      to: targetCode,
+    }),
+    enabled: sourceCode !== targetCode,
+  });
 
   const targetSnapshot =
     sourceCode !== targetCode && rate

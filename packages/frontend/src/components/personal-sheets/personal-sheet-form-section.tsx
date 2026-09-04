@@ -9,7 +9,8 @@ import {
   type Sheet,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { useTRPC } from "../../api/trpc";
+import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { useQueryClient } from "../../api/query-client";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -26,9 +27,9 @@ export const PersonalSheetFormSection = ({
 }: {
   personalSheet: Sheet;
 }) => {
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: updateSheet } = useMutation(
-    trpc.sheet.updateSheet.mutationOptions(),
+    sheetMutations.updateSheet(),
   );
 
   const form = useForm({
@@ -44,8 +45,8 @@ export const PersonalSheetFormSection = ({
     await updateSheet(values);
 
     await invalidate(
-      trpc.sheet.mySheets.queryKey(),
-      trpc.sheet.personalSheetById.queryKey(personalSheet.id),
+      sheetQueries.personalSheetById.queryKey(personalSheet.id),
+      sheetQueries.mySheets.queryKey(),
     );
 
     toast.success("Sheet updated successfully");

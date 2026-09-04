@@ -9,7 +9,7 @@ import {
   personalSheetFactory,
   userFactory,
 } from "../../../test/factories.ts";
-import { getTRPCCaller } from "../../../test/get-trpc-caller.ts";
+import { getApiCaller } from "../../../test/get-api-caller.ts";
 import {
   createGroupSheetTransactionInput,
   createPersonalSheetTransactionInput,
@@ -18,7 +18,7 @@ import {
 import { TransactionType } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
 
-const { prisma, betterAuth, useProtectedCaller } = await getTRPCCaller();
+const { prisma, betterAuth, useProtectedCaller } = await getApiCaller();
 
 describe("createPersonalSheetTransaction", () => {
   it.each([

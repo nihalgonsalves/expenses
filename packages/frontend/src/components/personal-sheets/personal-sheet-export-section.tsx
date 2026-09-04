@@ -4,7 +4,7 @@ import { DownloadIcon } from "lucide-react";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { requestExport } from "../../api/request-export";
-import { useTRPC } from "../../api/trpc";
+import { transactionQueries } from "../../api/transaction";
 import { moneyToString } from "../../utils/money";
 import { Button } from "../ui/button";
 
@@ -13,9 +13,8 @@ export const PersonalSheetExportSection = ({
 }: {
   personalSheet: Sheet;
 }) => {
-  const { trpc } = useTRPC();
   const { refetch } = useQuery(
-    trpc.transaction.getPersonalSheetTransactions.queryOptions(
+    transactionQueries.personalSheetTransactions.queryOptions(
       {
         personalSheetId: personalSheet.id,
       },

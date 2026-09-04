@@ -41,7 +41,7 @@ descriptions, in my experience.
 ## Built with
 
 - React, Vite, Tailwind CSS, Radix/shadcn, Motion
-- tRPC, React Query
+- TanStack Query
 - BullMQ, Prisma, Postgres
 - Playwright, Vitest
 - oxlint, Prettier

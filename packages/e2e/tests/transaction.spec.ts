@@ -2,15 +2,11 @@ import { expect, test } from "../utils/test";
 
 test(`creates and edits a personal sheet transaction successfully`, async ({
   page,
-  serverTRPCClient,
   signIn,
+  backendSheets,
 }) => {
-  await signIn();
-
-  await serverTRPCClient.sheet.createPersonalSheet.mutate({
-    name: "Test Sheet",
-    currencyCode: "EUR",
-  });
+  const user = await signIn();
+  await backendSheets.createPersonal(user);
 
   await page.goto("/");
   await page.getByRole("button", { name: "Add Transaction" }).first().click();
@@ -61,15 +57,11 @@ test(`creates and edits a personal sheet transaction successfully`, async ({
 
 test(`creates and edits a shared sheet transaction successfully`, async ({
   page,
-  serverTRPCClient,
   signIn,
+  backendSheets,
 }) => {
-  await signIn();
-
-  await serverTRPCClient.sheet.createGroupSheet.mutate({
-    name: "Test Sheet",
-    currencyCode: "EUR",
-  });
+  const user = await signIn();
+  await backendSheets.createGroup(user);
 
   await page.goto("/");
   await page.getByRole("button", { name: "Add Transaction" }).first().click();

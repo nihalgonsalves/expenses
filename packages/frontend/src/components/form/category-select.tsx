@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, type Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
-import { useTRPC } from "../../api/trpc";
+import { transactionQueries } from "../../api/transaction";
 import { CategoryIcon } from "../category-avatar";
 import {
   Combobox,
@@ -30,9 +30,8 @@ export const CategorySelect = ({
 }: CategorySelectProps) => {
   const [searchValue, setSearchValue] = useState("");
 
-  const { trpc } = useTRPC();
   const { data: categories = [] } = useQuery(
-    trpc.transaction.getCategories.queryOptions(),
+    transactionQueries.categories.queryOptions(),
   );
 
   const categoryIds = categories.map((c) => c.id);

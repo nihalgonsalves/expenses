@@ -1,28 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useTRPC, type QueryOptionsContext } from "../../../api/trpc";
+import { sheetQueries } from "../../../api/sheet";
 import { PersonalTransactionsImporter } from "../../../components/personal-sheets/personal-transactions-importer";
 import { Root } from "../../../pages/root";
 
-const queryOptions = (context: QueryOptionsContext, sheetId: string) =>
-  context.trpc.sheet.personalSheetById.queryOptions(sheetId);
+const queryOptions = (sheetId: string) =>
+  sheetQueries.personalSheetById.queryOptions(sheetId);
 
 export const Route = createFileRoute("/_auth/sheets/$sheetId/import")({
   component: RouteComponent,
-  loader: async ({ context: { queryClient, trpc }, params: { sheetId } }) =>
+  loader: async ({ context: { queryClient }, params: { sheetId } }) =>
     queryClient.query({
-      ...queryOptions({ trpc }, sheetId),
+      ...queryOptions(sheetId),
       staleTime: "static",
     }),
 });
 
 function RouteComponent() {
-  const { trpc } = useTRPC();
-
   const { sheetId } = Route.useParams();
 
-  const { data } = useQuery(queryOptions({ trpc }, sheetId));
+  const { data } = useQuery(queryOptions(sheetId));
 
   return (
     <Root title="Import Transactions" showBackButton>

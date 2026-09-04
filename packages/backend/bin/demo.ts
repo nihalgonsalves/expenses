@@ -1,182 +1,116 @@
 import { faker } from "@faker-js/faker";
-import { createTRPCClient, httpLink } from "@trpc/client";
-import fetchCookie from "fetch-cookie";
 import { createAuthClient } from "better-auth/react";
 
-import type { AppRouter } from "../src/app-router.ts";
+import { getBackendWebApp } from "../src/web-context.ts";
+import * as sheetApi from "../src/service/sheet/sheet-api.ts";
+import * as transactionApi from "../src/service/transaction/transaction-api.ts";
 
 const DEMO_A_EMAIL = "user@example.com";
 const DEMO_B_EMAIL = "other-user@example.com";
-
 const DEMO_PASSWORD = "password1234";
+const BASE_URL = "http://localhost:5173";
+
+await using backend = await getBackendWebApp();
 
 const authClient = createAuthClient({
-  baseURL: "http://localhost:5173/api/auth",
+  baseURL: `${BASE_URL}/api/auth`,
   fetchOptions: {
-    headers: {
-      Origin: "http://localhost:5173",
-    },
+    headers: { Origin: BASE_URL },
   },
 });
 
-const fetchA = fetchCookie(fetch);
-const fetchB = fetchCookie(fetch);
-
-const getClient = (fetchFn: typeof fetch) =>
-  createTRPCClient<AppRouter>({
-    links: [
-      httpLink({
-        url: "http://localhost:5173/api/trpc",
-        // @ts-expect-error slightly divering fetch types
-        fetch: fetchFn,
-      }),
-    ],
+const getContextForUser = async (user: {
+  id: string;
+  name: string;
+  email: string;
+}) => {
+  const context = await backend.createContext({
+    req: new Request(BASE_URL),
+    resHeaders: new Headers(),
   });
+  return {
+    ...context,
+    user: { id: user.id, name: user.name, email: user.email, theme: null },
+  };
+};
 
-const clientA = getClient(fetchA);
-await clientA.health.query();
-
-const [
-  {
-    user: { id: idA },
-  },
-  {
-    user: { id: idB, name: nameB },
-  },
-] = await Promise.all([
+const createDemoUser = async (name: string, email: string) =>
   authClient.signUp.email(
-    {
-      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
-      email: DEMO_A_EMAIL,
-      password: DEMO_PASSWORD,
-    },
-    { throw: true, customFetchImpl: fetchA },
+    { name, email, password: DEMO_PASSWORD },
+    { throw: true },
+  );
+
+const eur = (amountCents: number) => ({
+  currencyCode: "EUR" as const,
+  amount: amountCents,
+  scale: 2,
+});
+
+const [{ user: userA }, { user: userB }] = await Promise.all([
+  createDemoUser(
+    `${faker.person.firstName()} ${faker.person.lastName()}`,
+    DEMO_A_EMAIL,
   ),
-  authClient.signUp.email(
-    {
-      name: `${faker.person.firstName()} ${faker.person.lastName()}`,
-      email: DEMO_B_EMAIL,
-      password: DEMO_PASSWORD,
-    },
-    { throw: true, customFetchImpl: fetchB },
+  createDemoUser(
+    `${faker.person.firstName()} ${faker.person.lastName()}`,
+    DEMO_B_EMAIL,
   ),
 ]);
 
-const { id: personalSheetId } = await clientA.sheet.createPersonalSheet.mutate({
+const contextA = await getContextForUser(userA);
+const { id: personalSheetId } = await sheetApi.createPersonalSheet(contextA, {
   name: "Personal Expenses",
   currencyCode: "EUR",
 });
-
-const { id: groupSheetId } = await clientA.sheet.createGroupSheet.mutate({
+const { id: groupSheetId } = await sheetApi.createGroupSheet(contextA, {
   name: "🌍 Berlin Trip",
   currencyCode: "EUR",
 });
 
-await clientA.sheet.addGroupSheetMember.mutate({
+await sheetApi.addGroupSheetMember(contextA, {
   groupSheetId,
-  name: nameB,
+  name: userB.name,
   email: DEMO_B_EMAIL,
 });
 
 const spentAt = Temporal.Now.zonedDateTimeISO("Europe/Berlin").toString();
 
-const eur = (amountCents: number) => ({
-  currencyCode: "EUR",
-  amount: amountCents,
-  scale: 2,
-});
-
-await clientA.transaction.batchCreatePersonalSheetTransactions.mutate({
+await transactionApi.batchCreatePersonalSheetTransactions(contextA, {
   personalSheetId,
   transactions: [
-    {
-      type: "EXPENSE",
-      category: "Rent",
-      description: "",
-      // between 500 and 1,000 € in increments of 50 €
-      money: eur(faker.number.int({ min: 50, max: 100 }) * 1000),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Utilities",
-      description: "",
-      money: eur(faker.number.int({ min: 50_00, max: 100_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Groceries",
-      description: "",
-      money: eur(faker.number.int({ min: 20_00, max: 50_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Drinks",
-      description: "",
-      money: eur(faker.number.int({ min: 10_00, max: 20_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Movies",
-      description: "",
-      money: eur(faker.number.int({ min: 10_00, max: 20_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Eating Out",
-      description: "",
-      money: eur(faker.number.int({ min: 25_00, max: 50_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Shopping",
-      description: "",
-      money: eur(faker.number.int({ min: 100_00, max: 200_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Transport",
-      description: "",
-      money: eur(faker.number.int({ min: 50_00, max: 100_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Travel",
-      description: "",
-      money: eur(faker.number.int({ min: 200_00, max: 500_00 })),
-      spentAt,
-    },
-    {
-      type: "EXPENSE",
-      category: "Health",
-      description: "",
-      money: eur(faker.number.int({ min: 10_00, max: 50_00 })),
-      spentAt,
-    },
-  ],
+    { category: "Rent", min: 50, max: 100, multiplier: 1000 },
+    { category: "Utilities", min: 50_00, max: 100_00, multiplier: 1 },
+    { category: "Groceries", min: 20_00, max: 50_00, multiplier: 1 },
+    { category: "Drinks", min: 10_00, max: 20_00, multiplier: 1 },
+    { category: "Movies", min: 10_00, max: 20_00, multiplier: 1 },
+    { category: "Eating Out", min: 25_00, max: 50_00, multiplier: 1 },
+    { category: "Shopping", min: 100_00, max: 200_00, multiplier: 1 },
+    { category: "Transport", min: 50_00, max: 100_00, multiplier: 1 },
+    { category: "Travel", min: 200_00, max: 500_00, multiplier: 1 },
+    { category: "Health", min: 10_00, max: 50_00, multiplier: 1 },
+  ].map(({ category, min, max, multiplier }) => ({
+    type: "EXPENSE" as const,
+    category,
+    description: "",
+    money: eur(faker.number.int({ min, max }) * multiplier),
+    spentAt,
+  })),
 });
 
 const shareA = faker.number.int({ min: 75_00, max: 150_00 });
 const shareB = faker.number.int({ min: 75_00, max: 150_00 });
 
-await clientA.transaction.createGroupSheetTransaction.mutate({
+await transactionApi.createGroupSheetTransaction(contextA, {
   groupSheetId,
   type: "EXPENSE",
   category: "Travel",
   description: "Train tickets",
   money: eur(shareA + shareB),
   spentAt,
-  paidOrReceivedById: idA,
+  paidOrReceivedById: userA.id,
   splits: [
-    { participantId: idA, share: eur(shareA) },
-    { participantId: idB, share: eur(shareB) },
+    { participantId: userA.id, share: eur(shareA) },
+    { participantId: userB.id, share: eur(shareB) },
   ],
 });
 
@@ -193,7 +127,7 @@ await Promise.all(
     Utilities: ":zap:",
     Health: ":heart:",
   }).map(async ([id, emojiShortCode]) =>
-    clientA.transaction.setCategoryEmojiShortCode.mutate({
+    transactionApi.setCategoryEmojiShortCode(contextA, {
       id,
       emojiShortCode,
     }),

@@ -7,7 +7,9 @@ import type { z } from "zod";
 
 import { ZAddGroupSheetMemberInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { useTRPC } from "../../api/trpc";
+import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { useQueryClient } from "../../api/query-client";
+import { transactionQueries } from "../../api/transaction";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { ResponsiveDialog, useDialog } from "../form/responsive-dialog";
 import { Button } from "../ui/button";
@@ -26,10 +28,10 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
   const dialog = useDialog();
   const onLine = useNavigatorOnLine();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
 
   const { mutateAsync: addGroupSheetMember, isPending } = useMutation(
-    trpc.sheet.addGroupSheetMember.mutationOptions(),
+    sheetMutations.addGroupSheetMember(),
   );
 
   const form = useForm({
@@ -56,9 +58,9 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
     dialog.dismiss();
 
     await invalidate(
-      trpc.sheet.groupSheetById.queryKey(groupSheetId),
-      trpc.transaction.getParticipantSummaries.queryKey(groupSheetId),
-      trpc.transaction.getSimplifiedBalances.queryKey(groupSheetId),
+      sheetQueries.groupSheetById.queryKey(groupSheetId),
+      transactionQueries.participantSummaries.queryKey(groupSheetId),
+      transactionQueries.simplifiedBalances.queryKey(groupSheetId),
     );
   };
 

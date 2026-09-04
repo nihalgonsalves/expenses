@@ -12,9 +12,7 @@ services:
     # SMTP_PASSWORD, and optional SENTRY_DSN
     env_file: &env_file
       - .env.app
-    # Server-side tRPC keeps using HTTP semantics, through this web process.
     environment: &environment
-      API_BASE_URL: http://localhost:3000/
       FRANKFURTER_BASE_URL: https://api.frankfurter.dev/
     ports:
       - 3000:3000

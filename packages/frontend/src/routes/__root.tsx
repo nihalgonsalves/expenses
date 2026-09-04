@@ -15,12 +15,13 @@ import {
   ZTheme,
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
-import type { TRPCClient, TRPCOptionsProxy } from "../api/trpc";
 import { useOffLineToaster } from "../api/use-off-line-toaster";
 import { usePrefetchQueries } from "../api/use-prefetch-queries";
 import { TooltipRoot } from "../components/tooltip-root";
 import { Toaster } from "../components/ui/toaster";
 import { config } from "../config";
+import { appConfigQueryOptions } from "../api/config";
+import { userApi } from "../api/user";
 import mainCss from "../main.css?url";
 import { useSwUpdateCheck } from "../register-sw";
 import { getThemeDataAttribute, useThemeSync } from "../state/theme";
@@ -42,18 +43,14 @@ const GlobalHookContainer = () => {
 
 export type RouterContext = {
   queryClient: QueryClient;
-  trpcClient: TRPCClient;
-  trpc: TRPCOptionsProxy;
 };
 
 export const Route = createRootRouteWithContext<RouterContext>()({
-  beforeLoad: async ({ context: { queryClient, trpc } }) => {
-    const user = queryClient
-      .query({ ...trpc.user.me.queryOptions(), staleTime: Infinity })
-      .catch(() => null);
+  beforeLoad: async ({ context: { queryClient } }) => {
+    const user = queryClient.query(userApi.me.queryOptions()).catch(() => null);
 
     const configResult = queryClient
-      .query({ ...trpc.config.queryOptions(), staleTime: Infinity })
+      .query(appConfigQueryOptions())
       .catch(() => null);
 
     return { user: await user, config: await configResult };

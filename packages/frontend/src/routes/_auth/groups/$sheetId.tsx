@@ -1,29 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { useTRPC, type QueryOptionsContext } from "../../../api/trpc";
-import { useCurrentUser } from "../../../api/use-current-user";
+import { sheetQueries } from "../../../api/sheet";
+import { useCurrentUser } from "../../../api/user";
 import type { ActorInfo } from "../../../components/group-sheets/balance-summary";
 import { GroupSheet } from "../../../components/group-sheets/group-sheet";
 import { RootLoader } from "../../../pages/root";
 
-const queryOptions = (context: QueryOptionsContext, sheetId: string) =>
-  context.trpc.sheet.groupSheetById.queryOptions(sheetId);
+const queryOptions = (sheetId: string) =>
+  sheetQueries.groupSheetById.queryOptions(sheetId);
 
 export const Route = createFileRoute("/_auth/groups/$sheetId")({
   component: RouteComponent,
-  loader: async ({ context: { queryClient, trpc }, params: { sheetId } }) =>
+  loader: async ({ context: { queryClient }, params: { sheetId } }) =>
     queryClient.query({
-      ...queryOptions({ trpc }, sheetId),
+      ...queryOptions(sheetId),
       staleTime: "static",
     }),
 });
 
 function RouteComponent() {
-  const { trpc } = useTRPC();
   const { sheetId } = Route.useParams();
 
-  const result = useQuery(queryOptions({ trpc }, sheetId));
+  const result = useQuery(queryOptions(sheetId));
   const me = useCurrentUser();
 
   const actorInfo: ActorInfo | undefined =

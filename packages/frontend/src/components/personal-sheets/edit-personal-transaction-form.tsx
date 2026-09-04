@@ -8,8 +8,15 @@ import {
   type TransactionWithSheet,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useCurrencyConversion } from "../../api/currency-conversion";
-import { useTRPC } from "../../api/trpc";
+import {
+  currencyConversionQueries,
+  useCurrencyConversion,
+} from "../../api/currency-conversion";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";
 import {
@@ -102,11 +109,9 @@ const EditPersonalTransactionForm = ({
     moneySnapshot,
   );
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: updatePersonalSheetTransaction, isPending } =
-    useMutation(
-      trpc.transaction.updatePersonalSheetTransaction.mutationOptions(),
-    );
+    useMutation(transactionMutations.updatePersonalSheetTransaction());
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const money = convertedMoneySnapshot ?? moneySnapshot;
@@ -132,20 +137,20 @@ const EditPersonalTransactionForm = ({
     dialog.dismiss();
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getTransaction.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.transaction.queryKey({
         sheetId: data.sheet.id,
         transactionId: transaction.id,
       }),
-      trpc.transaction.getPersonalSheetTransactions.queryKey({
+      transactionQueries.personalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),
-      trpc.transaction.getTransaction.queryKey({
+      transactionQueries.transaction.queryKey({
         sheetId: personalSheet.id,
         transactionId: transaction.id,
       }),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
   };
 
@@ -276,9 +281,8 @@ export const EditPersonalTransactionDialog = ({
   transactionId: string;
   dialogProps: DialogControls;
 }) => {
-  const { trpc } = useTRPC();
   const { data } = useQuery(
-    trpc.transaction.getTransaction.queryOptions({
+    transactionQueries.transaction.queryOptions({
       sheetId,
       transactionId,
     }),

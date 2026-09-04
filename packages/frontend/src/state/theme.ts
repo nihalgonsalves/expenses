@@ -12,8 +12,7 @@ import {
 
 import { useInvalidateRouter } from "#/api/use-invalidate-router";
 
-import { useTRPC } from "../api/trpc";
-import { useCurrentUser } from "../api/use-current-user";
+import { useCurrentUser, userApi } from "../api/user";
 import { useDialog } from "../components/form/responsive-dialog";
 import { isOldDataAtom } from "../pages/root";
 
@@ -35,12 +34,11 @@ export const useThemePreference = createPreferenceWithDefault(
 );
 
 export const useTheme = () => {
-  const { trpc } = useTRPC();
   const invalidateRouter = useInvalidateRouter();
 
   const me = useCurrentUser();
   const { mutateAsync: updateTheme } = useMutation(
-    trpc.user.updateTheme.mutationOptions(),
+    userApi.theme.mutationOptions(),
   );
 
   const parsedTheme = ZTheme.safeParse(me?.theme);

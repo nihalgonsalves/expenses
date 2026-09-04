@@ -4,7 +4,11 @@ import { HelpCircleIcon } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useTRPC } from "../../api/trpc";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
@@ -23,13 +27,13 @@ const ZEmojiData = z.object({
 });
 
 export const CategoryForm = () => {
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { data: categories } = useQuery(
-    trpc.transaction.getCategories.queryOptions(),
+    transactionQueries.categories.queryOptions(),
   );
 
   const { mutateAsync: setCategoryEmojiShortCode } = useMutation(
-    trpc.transaction.setCategoryEmojiShortCode.mutationOptions(),
+    transactionMutations.setCategoryEmojiShortCode(),
   );
 
   const handleEmojiSelect = async (id: string, data: unknown) => {
@@ -47,7 +51,7 @@ export const CategoryForm = () => {
       emojiShortCode: emoji.data.shortcodes,
     });
 
-    await invalidate(trpc.transaction.getCategories.queryKey());
+    await invalidate(transactionQueries.categories.queryKey());
   };
 
   return (

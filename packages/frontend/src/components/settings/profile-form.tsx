@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useCurrentUser } from "#/api/use-current-user";
+import { useCurrentUser } from "#/api/user";
 import { useInvalidateRouter } from "#/api/use-invalidate-router.js";
 import { authClient } from "#/utils/auth.js";
 import { Button } from "../ui/button";

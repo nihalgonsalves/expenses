@@ -13,8 +13,16 @@ import {
   type RecurrenceFrequency,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useCurrencyConversion } from "../../api/currency-conversion";
-import { useTRPC } from "../../api/trpc";
+import {
+  currencyConversionQueries,
+  useCurrencyConversion,
+} from "../../api/currency-conversion";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
+import { sheetQueries } from "../../api/sheet";
 import { usePreferredCurrencyCode } from "../../state/preferences";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";
@@ -165,19 +173,17 @@ const CreatePersonalTransactionForm = ({
     moneySnapshot,
   );
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const {
     mutateAsync: createPersonalSheetTransaction,
     isPending: noScheduleMutationIsPending,
-  } = useMutation(
-    trpc.transaction.createPersonalSheetTransaction.mutationOptions(),
-  );
+  } = useMutation(transactionMutations.createPersonalSheetTransaction());
 
   const {
     mutateAsync: createPersonalSheetTransactionSchedule,
     isPending: scheduleMutationIsPending,
   } = useMutation(
-    trpc.transaction.createPersonalSheetTransactionSchedule.mutationOptions(),
+    transactionMutations.createPersonalSheetTransactionSchedule(),
   );
 
   const isPending = noScheduleMutationIsPending || scheduleMutationIsPending;
@@ -222,15 +228,15 @@ const CreatePersonalTransactionForm = ({
     dialog.dismiss();
 
     await invalidate(
-      trpc.transaction.getAllUserTransactions.queryKey(),
-      trpc.transaction.getFutureTransactions.queryKey(),
-      trpc.transaction.getPersonalSheetTransactions.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.futureTransactions.queryKey(),
+      transactionQueries.personalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),
-      trpc.transaction.getPersonalSheetTransactionSchedules.queryKey({
+      transactionQueries.personalSheetTransactionSchedules.queryKey({
         personalSheetId: personalSheet.id,
       }),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
   };
 
@@ -420,9 +426,8 @@ export const CreatePersonalTransactionDialog = ({
   render: RenderProp;
   sheetId: string;
 }) => {
-  const { trpc } = useTRPC();
   const { data: personalSheet } = useQuery(
-    trpc.sheet.personalSheetById.queryOptions(sheetId),
+    sheetQueries.personalSheetById.queryOptions(sheetId),
   );
 
   return (

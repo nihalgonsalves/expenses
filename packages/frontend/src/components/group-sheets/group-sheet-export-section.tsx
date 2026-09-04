@@ -4,7 +4,7 @@ import { DownloadIcon } from "lucide-react";
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { requestExport } from "../../api/request-export";
-import { useTRPC } from "../../api/trpc";
+import { transactionQueries } from "../../api/transaction";
 import { moneyToString } from "../../utils/money";
 import { getShortName } from "../../utils/utils";
 import { Button } from "../ui/button";
@@ -14,9 +14,8 @@ export const GroupSheetExportSection = ({
 }: {
   groupSheet: GroupSheetByIdResponse;
 }) => {
-  const { trpc } = useTRPC();
   const { refetch } = useQuery(
-    trpc.transaction.getGroupSheetTransactions.queryOptions(
+    transactionQueries.groupSheetTransactions.queryOptions(
       {
         groupSheetId: groupSheet.id,
       },

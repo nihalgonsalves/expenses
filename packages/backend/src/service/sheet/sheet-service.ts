@@ -1,5 +1,3 @@
-import { TRPCError } from "@trpc/server";
-
 import type {
   Sheet,
   CreateGroupSheetInput,
@@ -16,11 +14,11 @@ import {
   Prisma,
 } from "../../prisma/client.ts";
 import { generateId } from "../../utils/nanoid.ts";
-import { getTRPCError } from "../../utils/trpc-utils.ts";
+import { AppError, getInternalError } from "../../utils/errors.ts";
 import type { TransactionService } from "../transaction/transaction-service.ts";
 import type { UserService } from "../user/user-service.ts";
 
-class SheetServiceError extends TRPCError {}
+class SheetServiceError extends AppError {}
 
 export class SheetService {
   private prismaClient: Pick<
@@ -70,7 +68,7 @@ export class SheetService {
         });
       }
 
-      throw new SheetServiceError(getTRPCError(error));
+      throw new SheetServiceError(getInternalError(error));
     }
   }
 
@@ -105,7 +103,7 @@ export class SheetService {
         });
       }
 
-      throw new SheetServiceError(getTRPCError(error));
+      throw new SheetServiceError(getInternalError(error));
     }
   }
 
@@ -335,7 +333,7 @@ export class SheetService {
     const role = participant?.role;
 
     if (!role) {
-      throw new TRPCError({
+      throw new SheetServiceError({
         code: "NOT_FOUND",
         message: "Sheet not found",
       });

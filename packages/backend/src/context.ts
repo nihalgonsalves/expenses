@@ -1,4 +1,3 @@
-import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import { UAParser } from "ua-parser-js";
 import { config } from "./config.ts";
 import type { PrismaClientType } from "./create-prisma.ts";
@@ -39,10 +38,7 @@ export const makeCreateContext = (
     config.FRANKFURTER_BASE_URL,
   );
 
-  return async ({
-    req,
-    resHeaders,
-  }: Pick<FetchCreateContextFnOptions, "req" | "resHeaders">) => {
+  return async ({ req, resHeaders }: { req: Request; resHeaders: Headers }) => {
     const appendHeaders = (headers: Headers) => {
       for (const [key, value] of headers.entries()) {
         if (key === "set-cookie") continue;
@@ -86,7 +82,6 @@ export const makeCreateContext = (
       frankfurterService,
       notificationSubscriptionService,
       headers: req.headers,
-      appendHeaders,
       clearSiteData,
     };
   };

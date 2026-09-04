@@ -14,7 +14,11 @@ import type { ReactNode } from "react";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionListItem } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useTRPC } from "../../api/trpc";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
 import {
   formatDateTimeRelative,
   shortDateTimeFormatter,
@@ -86,15 +90,17 @@ const TransactionScheduleDropdownMenu = ({
 }) => {
   const deleteDialogControls = useDialogControls();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: deleteTransactionSchedule } = useMutation(
-    trpc.transaction.deleteTransactionSchedule.mutationOptions(),
+    transactionMutations.deleteTransactionSchedule(),
   );
 
   const handleDelete = async () => {
     await deleteTransactionSchedule({ sheetId, transactionScheduleId });
     await invalidate(
-      trpc.transaction.getPersonalSheetTransactionSchedules.queryKey(),
+      transactionQueries.personalSheetTransactionSchedules.queryKey({
+        personalSheetId: sheetId,
+      }),
     );
   };
 
@@ -135,9 +141,8 @@ const CardTitleWithButton = twx(
 )`flex place-items-center justify-between`;
 
 export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
-  const { trpc } = useTRPC();
   const { data: getPersonalSheetTransactionSchedulesResponse } = useQuery(
-    trpc.transaction.getPersonalSheetTransactionSchedules.queryOptions({
+    transactionQueries.personalSheetTransactionSchedules.queryOptions({
       personalSheetId: personalSheet.id,
     }),
   );

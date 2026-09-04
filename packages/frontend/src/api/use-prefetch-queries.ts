@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useTRPC } from "./trpc";
+import { sheetQueries } from "./sheet";
+import { notificationQueries } from "./notification";
 
 export const usePrefetchQueries = () => {
-  const { trpc } = useTRPC();
-
-  useQuery(trpc.sheet.mySheets.queryOptions({ includeArchived: true }));
-  useQuery(trpc.sheet.mySheets.queryOptions({ includeArchived: false }));
-  useQuery(trpc.notification.getSubscriptions.queryOptions(undefined));
-  useQuery(trpc.notification.getPublicKey.queryOptions(undefined));
+  useQuery(sheetQueries.mySheets.queryOptions({ includeArchived: true }));
+  useQuery(sheetQueries.mySheets.queryOptions({ includeArchived: false }));
+  useQuery(notificationQueries.subscriptions.queryOptions());
+  useQuery(notificationQueries.publicKey.queryOptions());
 };

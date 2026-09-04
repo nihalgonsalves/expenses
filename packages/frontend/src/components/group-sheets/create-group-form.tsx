@@ -7,8 +7,12 @@ import type { z } from "zod";
 
 import { ZCreateGroupSheetInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { useCurrencyOptions } from "../../api/currency-conversion";
-import { useTRPC } from "../../api/trpc";
+import {
+  currencyConversionQueries,
+  useCurrencyOptions,
+} from "../../api/currency-conversion";
+import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { useQueryClient } from "../../api/query-client";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { CurrencySelect } from "../form/currency-select";
 import { useDialog } from "../form/responsive-dialog";
@@ -35,9 +39,9 @@ export const CreateGroupForm = ({
   const onLine = useNavigatorOnLine();
   const { data: currencyOptions } = useCurrencyOptions();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: createGroupSheet, isPending } = useMutation(
-    trpc.sheet.createGroupSheet.mutationOptions(),
+    sheetMutations.createGroupSheet(),
   );
 
   const form = useForm({
@@ -63,8 +67,8 @@ export const CreateGroupForm = ({
       });
 
       await invalidate(
-        trpc.sheet.mySheets.queryKey(),
-        trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+        currencyConversionQueries.supportedCurrencies.queryKey(),
+        sheetQueries.mySheets.queryKey(),
       );
     } catch (error) {
       haptics.error();

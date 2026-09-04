@@ -6,8 +6,8 @@ import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/typ
 import type { TransactionType } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { useTRPC } from "../../api/trpc";
-import { useCurrentUser } from "../../api/use-current-user";
+import { sheetQueries } from "../../api/sheet";
+import { useCurrentUser } from "../../api/user";
 import { ResponsiveDialog } from "../form/responsive-dialog";
 import { ToggleButtonGroup } from "../form/toggle-button-group";
 import type { RenderProp } from "../ui/utils";
@@ -78,9 +78,8 @@ export const CreateGroupSheetTransactionDialog = ({
   sheetId: string;
   render: RenderProp;
 }) => {
-  const { trpc } = useTRPC();
   const { data: groupSheet } = useQuery(
-    trpc.sheet.groupSheetById.queryOptions(sheetId),
+    sheetQueries.groupSheetById.queryOptions(sheetId),
   );
 
   const me = useCurrentUser();

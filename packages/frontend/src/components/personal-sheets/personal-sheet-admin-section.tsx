@@ -4,7 +4,9 @@ import { ArchiveIcon, Trash2Icon } from "lucide-react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { useTRPC } from "../../api/trpc";
+import { currencyConversionQueries } from "../../api/currency-conversion";
+import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { useQueryClient } from "../../api/query-client";
 import { ConfirmDialog } from "../form/confirm-dialog";
 import { Button } from "../ui/button";
 
@@ -15,21 +17,21 @@ export const PersonalSheetAdminSection = ({
 }) => {
   const navigate = useNavigate();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: deleteSheet } = useMutation(
-    trpc.sheet.deleteSheet.mutationOptions(),
+    sheetMutations.deleteSheet(),
   );
   const { mutateAsync: archiveSheet } = useMutation(
-    trpc.sheet.archiveSheet.mutationOptions(),
+    sheetMutations.archiveSheet(),
   );
 
   const handleDelete = async () => {
     await deleteSheet(personalSheet.id);
 
     await invalidate(
-      trpc.sheet.personalSheetById.queryKey(personalSheet.id),
-      trpc.sheet.mySheets.queryKey(),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      sheetQueries.personalSheetById.queryKey(personalSheet.id),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
+      sheetQueries.mySheets.queryKey(),
     );
     await navigate({ to: "/sheets" });
   };
@@ -41,8 +43,8 @@ export const PersonalSheetAdminSection = ({
     });
 
     await invalidate(
-      trpc.sheet.personalSheetById.queryKey(personalSheet.id),
-      trpc.sheet.mySheets.queryKey(),
+      sheetQueries.personalSheetById.queryKey(personalSheet.id),
+      sheetQueries.mySheets.queryKey(),
     );
   };
 

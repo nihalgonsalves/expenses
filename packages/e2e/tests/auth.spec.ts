@@ -42,17 +42,14 @@ test("signs up via invite flow successfully", async ({
   page,
   request,
   signIn,
-  serverTRPCClient,
+  backendSheets,
   browser,
 }) => {
   // TODO: Enable on CI (mailpit issues)
   test.skip(process.env["CI"] != null);
 
-  await signIn();
-  const { id } = await serverTRPCClient.sheet.createGroupSheet.mutate({
-    name: "Test Sheet",
-    currencyCode: "EUR",
-  });
+  const user = await signIn();
+  const { id } = await backendSheets.createGroup(user);
 
   await page.goto(`/groups/${id}`);
 

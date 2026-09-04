@@ -3,8 +3,8 @@ import { loadEnvFile } from "node:process";
 
 import { defineConfig } from "prisma/config";
 
-if (existsSync(new URL("./.env", import.meta.url))) {
-  loadEnvFile(new URL("./.env", import.meta.url));
+if (existsSync(new URL("../../.env.app", import.meta.url))) {
+  loadEnvFile(new URL("../../.env.app", import.meta.url));
 }
 
 export default defineConfig({

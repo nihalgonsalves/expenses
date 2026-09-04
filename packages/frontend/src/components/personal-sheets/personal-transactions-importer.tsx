@@ -9,7 +9,12 @@ import { z } from "zod";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { CreateSheetTransactionInput } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useTRPC } from "../../api/trpc";
+import { currencyConversionQueries } from "../../api/currency-conversion";
+import { useQueryClient } from "../../api/query-client";
+import {
+  transactionMutations,
+  transactionQueries,
+} from "../../api/transaction";
 import { formatCurrency } from "../../utils/money";
 import { dateToISOString } from "../../utils/temporal";
 import { noop } from "../../utils/utils";
@@ -285,9 +290,9 @@ export const PersonalTransactionsImporter = ({
 }) => {
   const navigate = useNavigate();
 
-  const { trpc, invalidate } = useTRPC();
+  const { invalidate } = useQueryClient();
   const { mutateAsync: batchCreatePersonalSheetTransactions } = useMutation(
-    trpc.transaction.batchCreatePersonalSheetTransactions.mutationOptions(),
+    transactionMutations.batchCreatePersonalSheetTransactions(),
   );
 
   const [headers, setHeaders] = useState<string[]>();
@@ -364,10 +369,11 @@ export const PersonalTransactionsImporter = ({
     });
 
     await invalidate(
-      trpc.transaction.getPersonalSheetTransactions.queryKey({
+      transactionQueries.allUserTransactions.queryKey(),
+      transactionQueries.personalSheetTransactions.queryKey({
         personalSheetId: personalSheet.id,
       }),
-      trpc.currencyConversion.getSupportedCurrencies.queryKey(),
+      currencyConversionQueries.supportedCurrencies.queryKey(),
     );
 
     await navigate({

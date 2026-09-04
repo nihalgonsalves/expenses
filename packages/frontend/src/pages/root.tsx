@@ -2,7 +2,6 @@ import { useInterval } from "@mantine/hooks";
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
-import type { TRPCClientErrorLike } from "@trpc/client";
 import { atom, useAtom } from "jotai";
 import {
   ArrowLeftIcon,
@@ -16,7 +15,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
 
-import { useTRPC } from "../api/trpc";
 import { usePullToRefresh } from "../api/use-pull-to-refresh";
 import { ErrorBoundary } from "../components/error-boundary";
 import { NavBarAvatar } from "../components/nav-bar-avatar";
@@ -31,6 +29,7 @@ import {
 } from "../components/ui/navigation-menu";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { cn } from "../components/ui/utils";
+import { appConfigQueryOptions } from "../api/config";
 import { useNavigatorOnLine } from "../state/use-navigator-on-line";
 import { useIsStandalone } from "../utils/hooks/use-is-standalone";
 import {
@@ -86,8 +85,7 @@ export const Root = ({
   className,
   bannerText,
 }: RootProps) => {
-  const { trpc } = useTRPC();
-  const { data } = useQuery(trpc.config.queryOptions());
+  const { data } = useQuery(appConfigQueryOptions());
 
   const router = useRouter();
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
@@ -262,8 +260,7 @@ export const RootLoader = <TData,>({
   render: (data: TData) => ReactNode;
   result: {
     data: TData | undefined;
-    // oxlint-disable typescript/no-explicit-any
-    error: TRPCClientErrorLike<any> | null;
+    error: { message: string } | null;
     isLoading: boolean;
     refetch: () => Promise<unknown>;
     dataUpdatedAt: number;

@@ -1,21 +1,7 @@
-import type { Preview } from "@storybook/react-vite";
+import type { Preview } from "@storybook/tanstack-react";
 import "../src/tailwind.css";
-import {
-  createMemoryHistory,
-  createRoute,
-  createRouter,
-  createRootRoute,
-  RouterProvider,
-} from "@tanstack/react-router";
 
 import { TooltipRoot } from "#/components/tooltip-root";
-
-const rootRoute = createRootRoute();
-const indexRoute = createRoute({ getParentRoute: () => rootRoute, path: "/" });
-const memoryHistory = createMemoryHistory({ initialEntries: ["/"] });
-const routeTree = rootRoute.addChildren([indexRoute]);
-
-const router = createRouter({ routeTree, history: memoryHistory });
 
 const preview: Preview = {
   parameters: {
@@ -27,9 +13,9 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (story) => (
+    (Story) => (
       <>
-        <RouterProvider router={router} defaultComponent={story} />
+        <Story />
         <TooltipRoot />
       </>
     ),

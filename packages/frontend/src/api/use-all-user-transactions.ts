@@ -9,7 +9,7 @@ import type {
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
 import { useConvertToPreferredCurrency } from "./currency-conversion";
-import { useTRPC } from "./trpc";
+import { transactionQueries } from "./transaction";
 
 export type ConvertedTransactionWithSheet = TransactionWithSheet & {
   convertedMoney: Money | undefined;
@@ -21,7 +21,6 @@ export type AllConvertedUserTransactions = ConvertedTransactionWithSheet[];
 export const useAllUserTransactions = (
   input: UndefinedOnPartialDeep<Partial<GetAllUserTransactionsInput>>,
 ) => {
-  const { trpc } = useTRPC();
   const enabled = input.fromTimestamp != null && input.toTimestamp != null;
 
   const {
@@ -31,7 +30,7 @@ export const useAllUserTransactions = (
     refetch,
     dataUpdatedAt,
   } = useQuery(
-    trpc.transaction.getAllUserTransactions.queryOptions(
+    transactionQueries.allUserTransactions.queryOptions(
       {
         ...input,
         fromTimestamp: input.fromTimestamp ?? "",

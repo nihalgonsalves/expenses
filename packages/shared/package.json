@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./money": "./src/money.ts",
+    "./errors": "./src/errors.ts",
     "./routes": "./src/routes.ts",
     "./simplify-balances": "./src/simplify-balances.ts",
     "./types/transaction": "./src/types/transaction.ts",
