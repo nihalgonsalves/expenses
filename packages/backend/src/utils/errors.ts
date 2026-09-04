@@ -9,12 +9,6 @@ export type AppErrorOptions = {
   cause?: unknown;
 };
 
-/** The fields intentionally exposed across the server-function boundary. */
-export type AppErrorPayload = {
-  code: AppErrorCode;
-  message: string;
-};
-
 export class AppError extends Error {
   readonly code: AppErrorCode;
 

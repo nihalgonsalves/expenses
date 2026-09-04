@@ -5,8 +5,6 @@ allowBuilds:
   '@prisma/engines': true
   '@sentry/cli': true
   '@sentry/node-cpu-profiler': true
-  '@swc/core': true
-  core-js: false
   cpu-features: true
   esbuild: true
   lefthook: true
@@ -15,7 +13,6 @@ allowBuilds:
   prisma: true
   protobufjs: true
   ssh2: false
-  unrs-resolver: false
 
 engineStrict: true
 
