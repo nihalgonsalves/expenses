@@ -5,7 +5,16 @@ import { config, IS_PROD } from "../config.ts";
 import type { IEmailWorker } from "../service/email/email-worker.ts";
 import { admin, genericOAuth, emailOTP, testUtils } from "better-auth/plugins";
 import { passkey } from "@better-auth/passkey";
+import { apiKey } from "@better-auth/api-key";
 import { durationSeconds } from "./temporal.ts";
+
+export const getBearerApiKey = (headers: Headers) => {
+  const authorization = headers.get("authorization");
+  if (authorization === null) return null;
+
+  const [scheme, key] = authorization.split(" ");
+  return scheme === "Bearer" && key !== undefined ? key : null;
+};
 
 export const createAuth = (
   prismaClient: PrismaClientType,
@@ -84,6 +93,12 @@ export const createAuth = (
         },
       }),
       passkey(),
+      apiKey({
+        defaultPrefix: "exp_",
+        requireName: true,
+        customAPIKeyGetter: ({ request }) =>
+          request === undefined ? null : getBearerApiKey(request.headers),
+      }),
       genericOAuth({ config: config.OAUTH_PROVIDER_CONFIG }),
       ...((config.VITEST_WORKER_ID || config.VITE_INTEGRATION_TEST) && !IS_PROD
         ? // causes various issues with exact optional property types

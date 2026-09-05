@@ -3,6 +3,7 @@ import {
   BrushCleaningIcon,
   FolderIcon,
   FolderTreeIcon,
+  KeyRoundIcon,
   LockKeyholeIcon,
   ShieldCheckIcon,
   UserIcon,
@@ -16,6 +17,7 @@ export const settingsSections = [
   { slug: "category-groups", title: "Category groups", icon: FolderTreeIcon },
   { slug: "notifications", title: "Notifications", icon: BellIcon },
   { slug: "security", title: "Security", icon: LockKeyholeIcon },
+  { slug: "api-keys", title: "API keys", icon: KeyRoundIcon },
   { slug: "privacy", title: "Privacy", icon: ShieldCheckIcon },
   { slug: "troubleshooting", title: "Troubleshooting", icon: WrenchIcon },
 ] as const;

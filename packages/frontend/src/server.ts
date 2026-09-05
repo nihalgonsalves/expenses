@@ -86,6 +86,7 @@ const handleHealthRequest = async () => {
 export default createServerEntry({
   async fetch(request) {
     const pathname = new URL(request.url).pathname;
+
     if (pathname === "/healthz") {
       return handleHealthRequest();
     }

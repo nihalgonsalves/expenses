@@ -16,7 +16,7 @@ type AuthenticatedContext = ContextObj & {
   user: NonNullable<ContextObj["user"]>;
 };
 
-export const getCurrentUser = (ctx: AuthenticatedContext) =>
+export const getCurrentUser = (ctx: Pick<AuthenticatedContext, "user">) =>
   ZUser.parse(ctx.user);
 
 export const signOut = async (ctx: ContextObj) => {

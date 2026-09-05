@@ -16,6 +16,7 @@ import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as SettingsSectionRouteImport } from './routes/settings/$section'
+import { Route as V1MeRouteImport } from './routes/v1/me'
 import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
 import { Route as AuthGroupsSheetIdRouteImport } from './routes/_auth/groups/$sheetId'
 import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
@@ -56,6 +57,11 @@ const SettingsSectionRoute = SettingsSectionRouteImport.update({
   path: '/$section',
   getParentRoute: () => SettingsRoute,
 } as any)
+const V1MeRoute = V1MeRouteImport.update({
+  id: '/v1/me',
+  path: '/v1/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthGroupsIndexRoute = AuthGroupsIndexRouteImport.update({
   id: '/groups/',
   path: '/groups/',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/settings/$section': typeof SettingsSectionRoute
+  '/v1/me': typeof V1MeRoute
   '/settings/': typeof SettingsIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/settings/$section': typeof SettingsSectionRoute
+  '/v1/me': typeof V1MeRoute
   '/': typeof AuthIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/_auth/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/settings/$section': typeof SettingsSectionRoute
+  '/v1/me': typeof V1MeRoute
   '/_auth/': typeof AuthIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/_auth/groups/$sheetId': typeof AuthGroupsSheetIdRoute
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/auth/sign-in'
     | '/settings/$section'
+    | '/v1/me'
     | '/settings/'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/stats'
     | '/auth/sign-in'
     | '/settings/$section'
+    | '/v1/me'
     | '/'
     | '/settings'
     | '/groups/$sheetId'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/_auth/stats'
     | '/auth/sign-in'
     | '/settings/$section'
+    | '/v1/me'
     | '/_auth/'
     | '/settings/'
     | '/_auth/groups/$sheetId'
@@ -168,6 +180,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   SettingsRoute: typeof SettingsRouteWithChildren
   AuthSignInRoute: typeof AuthSignInRoute
+  V1MeRoute: typeof V1MeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/$section'
       preLoaderRoute: typeof SettingsSectionRouteImport
       parentRoute: typeof SettingsRoute
+    }
+    '/v1/me': {
+      id: '/v1/me'
+      path: '/v1/me'
+      fullPath: '/v1/me'
+      preLoaderRoute: typeof V1MeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_auth/groups/': {
       id: '/_auth/groups/'
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   SettingsRoute: SettingsRouteWithChildren,
   AuthSignInRoute: AuthSignInRoute,
+  V1MeRoute: V1MeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

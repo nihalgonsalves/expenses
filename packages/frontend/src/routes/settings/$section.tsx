@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import { z } from "zod";
 
 import { AppearanceForm } from "../../components/settings/appearance-form";
+import { ApiKeysForm } from "../../components/settings/api-keys-form";
 import { CategoryForm } from "../../components/settings/category-form";
 import { CategoryGroupsForm } from "../../components/settings/category-groups-form";
 import { NotificationPreferenceForm } from "../../components/settings/notification-preference-form";
@@ -20,6 +21,7 @@ const ZSettingsParams = z.object({
     "category-groups",
     "notifications",
     "security",
+    "api-keys",
     "privacy",
     "troubleshooting",
   ]),
@@ -42,6 +44,7 @@ function RouteComponent(): ReactElement {
     "category-groups": <CategoryGroupsForm />,
     notifications: <NotificationPreferenceForm />,
     security: <SecurityForm config={config} />,
+    "api-keys": <ApiKeysForm />,
     privacy: <PrivacyForm />,
     troubleshooting: <TroubleshootingForm />,
   };

@@ -19,6 +19,7 @@
     "prepare:demo": "node bin/demo.ts"
   },
   "dependencies": {
+    "@better-auth/api-key": "1.7.2",
     "@better-auth/core": "1.7.2",
     "@better-auth/passkey": "1.7.2",
     "@better-auth/prisma-adapter": "1.7.2",

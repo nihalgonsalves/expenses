@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
+    "@better-auth/api-key": "1.7.2",
     "@better-auth/passkey": "1.7.2",
     "@emoji-mart/data": "1.2.1",
     "@emoji-mart/react": "1.1.1",
