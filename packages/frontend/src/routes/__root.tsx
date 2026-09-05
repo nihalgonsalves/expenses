@@ -7,7 +7,6 @@ import {
   Outlet,
   Scripts,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { MotionConfig } from "motion/react";
 
 import {
@@ -26,6 +25,7 @@ import mainCss from "../main.css?url";
 import { useSwUpdateCheck } from "../register-sw";
 import { getThemeDataAttribute, useThemeSync } from "../state/theme";
 import { PWAInstall } from "#/components/pwa-install";
+import { Devtools } from "../components/devtools";
 
 const GlobalHookContainer = () => {
   useSwUpdateCheck();
@@ -87,6 +87,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       <TooltipRoot />
       <Toaster />
       <ConditionalPWAInstall />
+      {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
+        <ClientOnly>
+          <Devtools />
+        </ClientOnly>
+      ) : null}
     </>
   ),
   shellComponent: RootDocument,
@@ -115,9 +120,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
-          <TanStackRouterDevtools position="bottom-right" />
-        ) : null}
         <Scripts />
       </body>
     </html>

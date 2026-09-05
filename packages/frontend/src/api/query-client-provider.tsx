@@ -1,6 +1,5 @@
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import { QueryClient } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import type { ReactNode } from "react";
 import { toast } from "sonner";
@@ -61,6 +60,5 @@ export const QueryProvider = ({
     }}
   >
     {children}
-    <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
   </PersistQueryClientProvider>
 );

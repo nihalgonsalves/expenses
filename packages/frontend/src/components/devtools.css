@@ -1,0 +1,11 @@
+/* render jotai-devtools as a TanStack Devtools plugin, with 100% of pane height. */
+#jotai-devtools-root .internal-jotai-devtools-shell {
+  position: relative;
+  inset: auto;
+  left: auto;
+  bottom: auto;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none;
+  transform: none;
+}

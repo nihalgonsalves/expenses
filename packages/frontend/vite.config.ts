@@ -3,7 +3,9 @@ import { fileURLToPath } from "url";
 import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
+import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
+import { jotaiPlugin } from "jotai-rolldown";
 
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { nitro } from "nitro/vite";
@@ -47,6 +49,8 @@ export default defineConfig(({ mode }) => ({
     host: true,
   },
   plugins: [
+    devtools(),
+    jotaiPlugin(),
     process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
     tailwindcss(),
     !process.env["VITE_STORYBOOK"] &&
