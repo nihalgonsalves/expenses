@@ -9,24 +9,20 @@ import {
   getSupportedCurrencies as getBackendSupportedCurrencies,
 } from "@nihalgonsalves/expenses-backend/src/service/frankfurter/currency-conversion-api";
 
-import { withRequiredServerContext } from "../server/context";
+import { requiredServerContextMiddleware } from "../server/context";
 import { usePreferredCurrencyCode } from "../state/preferences";
 import { convertCurrency } from "../utils/money";
 import { durationMilliseconds } from "../utils/temporal";
 
-export const getSupportedCurrencies = createServerFn({ method: "GET" }).handler(
-  async () =>
-    withRequiredServerContext(async (context) =>
-      getBackendSupportedCurrencies(context),
-    ),
-);
+export const getSupportedCurrencies = createServerFn({ method: "GET" })
+  .middleware([requiredServerContextMiddleware])
+  .handler(async ({ context }) => getBackendSupportedCurrencies(context));
 
 export const getConversionRate = createServerFn({ method: "GET" })
+  .middleware([requiredServerContextMiddleware])
   .validator(ZGetConversionRateInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      getBackendConversionRate(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    getBackendConversionRate(context, data),
   );
 
 type GetConversionRateInput = z.output<typeof ZGetConversionRateInput>;

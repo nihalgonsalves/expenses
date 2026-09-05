@@ -5,37 +5,31 @@ import { z } from "zod";
 import { ZNotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
 import * as backendNotificationApi from "@nihalgonsalves/expenses-backend/src/service/notification/notification-api";
 
-import { withRequiredServerContext } from "../server/context";
+import { requiredServerContextMiddleware } from "../server/context";
 
-export const getPublicKey = createServerFn({ method: "GET" }).handler(
-  async () =>
-    withRequiredServerContext(async (context) =>
-      backendNotificationApi.getPublicKey(context),
-    ),
-);
+export const getPublicKey = createServerFn({ method: "GET" })
+  .middleware([requiredServerContextMiddleware])
+  .handler(async ({ context }) => backendNotificationApi.getPublicKey(context));
 
 export const upsertSubscription = createServerFn({ method: "POST" })
+  .middleware([requiredServerContextMiddleware])
   .validator(ZNotificationSubscriptionUpsertInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendNotificationApi.upsertSubscription(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendNotificationApi.upsertSubscription(context, data),
   );
 
 export const deleteSubscription = createServerFn({ method: "POST" })
+  .middleware([requiredServerContextMiddleware])
   .validator(z.string())
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendNotificationApi.deleteSubscription(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendNotificationApi.deleteSubscription(context, data),
   );
 
-export const getSubscriptions = createServerFn({ method: "GET" }).handler(
-  async () =>
-    withRequiredServerContext(async (context) =>
-      backendNotificationApi.getSubscriptions(context),
-    ),
-);
+export const getSubscriptions = createServerFn({ method: "GET" })
+  .middleware([requiredServerContextMiddleware])
+  .handler(async ({ context }) =>
+    backendNotificationApi.getSubscriptions(context),
+  );
 
 const notificationQueryKeyPrefix = ["notification"] as const;
 const publicKeyQueryKey = () =>

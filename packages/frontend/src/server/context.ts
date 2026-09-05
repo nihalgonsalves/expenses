@@ -1,3 +1,4 @@
+import { createMiddleware } from "@tanstack/react-start";
 import { getRequest, setResponseHeader } from "@tanstack/react-start/server";
 import { getBackendWebContext } from "@nihalgonsalves/expenses-backend/src/web-context";
 import { AppError } from "@nihalgonsalves/expenses-backend/src/utils/errors";
@@ -15,45 +16,41 @@ const commitResponseHeaders = (headers: Headers) => {
   }
 };
 
-export const getServerContext = async () => {
-  const { context, responseHeaders } = await getBackendWebContext(getRequest());
-  commitResponseHeaders(responseHeaders);
-  return context;
-};
+export const serverContextMiddleware = createMiddleware({
+  type: "function",
+}).server(async ({ next }) => {
+  const { context: serverContext, responseHeaders } =
+    await getBackendWebContext(getRequest());
 
-export const withServerContext = async <T>(
-  handler: (
-    context: Awaited<ReturnType<typeof getServerContext>>,
-  ) => Promise<T>,
-) => {
-  const { context, responseHeaders } = await getBackendWebContext(getRequest());
+  setResponseHeader("Cache-Control", "private, no-store");
 
   try {
-    return await handler(context);
+    return await next({ context: serverContext });
   } finally {
     commitResponseHeaders(responseHeaders);
   }
-};
+});
 
-export const getRequiredServerContext = async () => {
-  const context = await getServerContext();
+export const requiredServerContextMiddleware = createMiddleware({
+  type: "function",
+}).server(async ({ next }) => {
+  const { context: serverContext, responseHeaders } =
+    await getBackendWebContext(getRequest());
 
-  if (!context.user) {
-    throw new AppError({ code: "UNAUTHORIZED", message: "Unauthorized" });
-  }
+  setResponseHeader("Cache-Control", "private, no-store");
 
-  return { ...context, user: context.user };
-};
-
-export const withRequiredServerContext = async <T>(
-  handler: (
-    context: Awaited<ReturnType<typeof getRequiredServerContext>>,
-  ) => Promise<T>,
-) =>
-  withServerContext(async (context) => {
-    if (!context.user) {
+  try {
+    if (!serverContext.user) {
       throw new AppError({ code: "UNAUTHORIZED", message: "Unauthorized" });
     }
 
-    return handler({ ...context, user: context.user });
-  });
+    return await next({
+      context: {
+        ...serverContext,
+        user: serverContext.user,
+      },
+    });
+  } finally {
+    commitResponseHeaders(responseHeaders);
+  }
+});

@@ -11,88 +11,80 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 import * as backendSheetApi from "@nihalgonsalves/expenses-backend/src/service/sheet/sheet-api";
 
-import { withRequiredServerContext } from "../server/context";
+import { requiredServerContextMiddleware } from "../server/context";
+
+const authenticatedMiddleware = [requiredServerContextMiddleware] as const;
 
 export const getMySheets = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(ZSheetsQuery)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.getMySheets(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.getMySheets(context, data),
   );
 
 export const getGroupSheetById = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(z.string().min(1))
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.getGroupSheetById(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.getGroupSheetById(context, data),
   );
 
 export const getPersonalSheetById = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(z.string().min(1))
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.getPersonalSheetById(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.getPersonalSheetById(context, data),
   );
 
 export const createPersonalSheet = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZCreatePersonalSheetInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.createPersonalSheet(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.createPersonalSheet(context, data),
   );
 
 export const createGroupSheet = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZCreateGroupSheetInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.createGroupSheet(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.createGroupSheet(context, data),
   );
 
 export const updateSheet = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZUpdateSheetInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.updateSheet(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.updateSheet(context, data),
   );
 
 const ZArchiveSheetInput = backendSheetApi.ZArchiveSheetInput;
 
 export const archiveSheet = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZArchiveSheetInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.archiveSheet(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.archiveSheet(context, data),
   );
 
 export const deleteSheet = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(z.string().min(1))
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.deleteSheet(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.deleteSheet(context, data),
   );
 
 export const addGroupSheetMember = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZAddGroupSheetMemberInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.addGroupSheetMember(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.addGroupSheetMember(context, data),
   );
 
 export const deleteGroupSheetMember = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(backendSheetApi.ZDeleteGroupSheetMemberInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendSheetApi.deleteGroupSheetMember(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendSheetApi.deleteGroupSheetMember(context, data),
   );
 
 type MySheetsInput = z.output<typeof ZSheetsQuery>;

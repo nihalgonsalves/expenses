@@ -14,110 +14,100 @@ import {
   ZUpdatePersonalSheetTransactionInput,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import { ZCategoryEmoji } from "@nihalgonsalves/expenses-shared/types/user";
-import { withRequiredServerContext } from "../server/context";
+import { requiredServerContextMiddleware } from "../server/context";
+
+const authenticatedMiddleware = [requiredServerContextMiddleware] as const;
 
 export const createPersonalSheetTransaction = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZCreatePersonalSheetTransactionInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.createPersonalSheetTransaction(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.createPersonalSheetTransaction(context, data),
   );
 export const updatePersonalSheetTransaction = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZUpdatePersonalSheetTransactionInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.updatePersonalSheetTransaction(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.updatePersonalSheetTransaction(context, data),
   );
 export const createPersonalSheetTransactionSchedule = createServerFn({
   method: "POST",
 })
+  .middleware(authenticatedMiddleware)
   .validator(ZCreatePersonalSheetTransactionScheduleInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.createPersonalSheetTransactionSchedule(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.createPersonalSheetTransactionSchedule(context, data),
   );
 export const batchCreatePersonalSheetTransactions = createServerFn({
   method: "POST",
 })
+  .middleware(authenticatedMiddleware)
   .validator(ZBatchCreatePersonalSheetTransactionInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.batchCreatePersonalSheetTransactions(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.batchCreatePersonalSheetTransactions(context, data),
   );
 export const createGroupSheetTransaction = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZCreateGroupSheetTransactionInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.createGroupSheetTransaction(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.createGroupSheetTransaction(context, data),
   );
 export const replaceGroupSheetTransaction = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZReplaceGroupSheetTransactionInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.replaceGroupSheetTransaction(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.replaceGroupSheetTransaction(context, data),
   );
 export const createGroupSheetSettlement = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZCreateGroupSheetSettlementInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.createGroupSheetSettlement(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.createGroupSheetSettlement(context, data),
   );
 const ZDeleteTransactionInput = z.object({
   sheetId: z.string().min(1),
   transactionId: z.string().min(1),
 });
 export const deleteTransaction = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZDeleteTransactionInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) => api.deleteTransaction(ctx, data)),
-  );
+  .handler(async ({ context, data }) => api.deleteTransaction(context, data));
 const ZDeleteTransactionScheduleInput = z.object({
   sheetId: z.string().min(1),
   transactionScheduleId: z.string().min(1),
 });
 export const deleteTransactionSchedule = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZDeleteTransactionScheduleInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.deleteTransactionSchedule(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.deleteTransactionSchedule(context, data),
   );
 const ZGetTransactionInput = z.object({
   sheetId: z.string().min(1),
   transactionId: z.string().min(1),
 });
 export const getTransaction = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(ZGetTransactionInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) => api.getTransaction(ctx, data)),
-  );
+  .handler(async ({ context, data }) => api.getTransaction(context, data));
 export const getAllUserTransactions = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(ZGetAllUserTransactionsInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.getAllUserTransactions(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.getAllUserTransactions(context, data),
   );
-export const getFutureTransactions = createServerFn({ method: "GET" }).handler(
-  async () => withRequiredServerContext(api.getFutureTransactions),
-);
+export const getFutureTransactions = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
+  .handler(async ({ context }) => api.getFutureTransactions(context));
 const ZPersonalSheetTransactionsInput = z.object({
   personalSheetId: z.string().min(1),
   limit: z.number().positive().optional(),
 });
 export const getPersonalSheetTransactions = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(ZPersonalSheetTransactionsInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.getPersonalSheetTransactions(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.getPersonalSheetTransactions(context, data),
   );
 const ZPersonalSheetTransactionSchedulesInput = z.object({
   personalSheetId: z.string().min(1),
@@ -125,46 +115,41 @@ const ZPersonalSheetTransactionSchedulesInput = z.object({
 export const getPersonalSheetTransactionSchedules = createServerFn({
   method: "GET",
 })
+  .middleware(authenticatedMiddleware)
   .validator(ZPersonalSheetTransactionSchedulesInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.getPersonalSheetTransactionSchedules(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.getPersonalSheetTransactionSchedules(context, data),
   );
 const ZGroupSheetTransactionsInput = z.object({
   groupSheetId: z.string().min(1),
   limit: z.number().positive().optional(),
 });
 export const getGroupSheetTransactions = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(ZGroupSheetTransactionsInput)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.getGroupSheetTransactions(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.getGroupSheetTransactions(context, data),
   );
 export const getParticipantSummaries = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(z.string().min(1))
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.getParticipantSummaries(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.getParticipantSummaries(context, data),
   );
 export const getSimplifiedBalances = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
   .validator(z.string().min(1))
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.getSimplifiedBalances(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.getSimplifiedBalances(context, data),
   );
-export const getCategories = createServerFn({ method: "GET" }).handler(
-  async () => withRequiredServerContext(api.getCategories),
-);
+export const getCategories = createServerFn({ method: "GET" })
+  .middleware(authenticatedMiddleware)
+  .handler(async ({ context }) => api.getCategories(context));
 export const setCategoryEmojiShortCode = createServerFn({ method: "POST" })
+  .middleware(authenticatedMiddleware)
   .validator(ZCategoryEmoji)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (ctx) =>
-      api.setCategoryEmojiShortCode(ctx, data),
-    ),
+  .handler(async ({ context, data }) =>
+    api.setCategoryEmojiShortCode(context, data),
   );
 
 const key = (name: string, input?: unknown) =>

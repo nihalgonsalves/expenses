@@ -7,36 +7,27 @@ import { ZTheme } from "@nihalgonsalves/expenses-shared/types/theme";
 import * as backendUserApi from "@nihalgonsalves/expenses-backend/src/service/user/user-api";
 
 import {
-  withRequiredServerContext,
-  withServerContext,
+  requiredServerContextMiddleware,
+  serverContextMiddleware,
 } from "../server/context";
 
-export const getCurrentUser = createServerFn({ method: "GET" }).handler(
-  async () =>
-    withRequiredServerContext(async (context) =>
-      backendUserApi.getCurrentUser(context),
-    ),
-);
+export const getCurrentUser = createServerFn({ method: "GET" })
+  .middleware([requiredServerContextMiddleware])
+  .handler(async ({ context }) => backendUserApi.getCurrentUser(context));
 
-export const signOut = createServerFn({ method: "POST" }).handler(async () =>
-  withServerContext(async (context) => {
-    await backendUserApi.signOut(context);
-  }),
-);
+export const signOut = createServerFn({ method: "POST" })
+  .middleware([serverContextMiddleware])
+  .handler(async ({ context }) => backendUserApi.signOut(context));
 
-export const anonymizeCurrentUser = createServerFn({ method: "POST" }).handler(
-  async () =>
-    withRequiredServerContext(async (context) =>
-      backendUserApi.anonymizeUser(context),
-    ),
-);
+export const anonymizeCurrentUser = createServerFn({ method: "POST" })
+  .middleware([requiredServerContextMiddleware])
+  .handler(async ({ context }) => backendUserApi.anonymizeUser(context));
 
 export const updateCurrentUserTheme = createServerFn({ method: "POST" })
+  .middleware([requiredServerContextMiddleware])
   .validator(ZTheme)
-  .handler(async ({ data }) =>
-    withRequiredServerContext(async (context) =>
-      backendUserApi.updateTheme(context, data),
-    ),
+  .handler(async ({ context, data }) =>
+    backendUserApi.updateTheme(context, data),
   );
 
 const currentUserQueryKey = () => ["user", "me"] as const;
