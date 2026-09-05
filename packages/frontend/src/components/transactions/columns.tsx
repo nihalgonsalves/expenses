@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { createColumnHelper } from "@tanstack/react-table";
 
 import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
-import { useCurrentUser } from "../../api/user";
+import { useCurrentUser } from "../../api/user.functions";
 import {
   formatDateRelative,
   formatDateTimeRelative,

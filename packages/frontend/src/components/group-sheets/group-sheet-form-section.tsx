@@ -9,7 +9,7 @@ import {
   type Sheet,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { sheetMutations, sheetQueries } from "../../api/sheet.functions";
 import { useQueryClient } from "../../api/query-client";
 import { Button } from "../ui/button";
 import {

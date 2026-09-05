@@ -7,12 +7,12 @@ import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/typ
 import { ZCreateGroupSheetSettlementInput } from "@nihalgonsalves/expenses-shared/types/transaction";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
-import { currencyConversionQueries } from "../../api/currency-conversion";
+import { currencyConversionQueries } from "../../api/currency-conversion.functions";
 import { useQueryClient } from "../../api/query-client";
 import {
   transactionMutations,
   transactionQueries,
-} from "../../api/transaction";
+} from "../../api/transaction.functions";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";
 import { MoneyField } from "../form/money-field";

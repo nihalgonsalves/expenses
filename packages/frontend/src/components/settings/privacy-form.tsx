@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { userApi } from "../../api/user";
+import { userApi } from "../../api/user.functions";
 import { useResetCache } from "../../api/use-reset-cache";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { Button } from "../ui/button";

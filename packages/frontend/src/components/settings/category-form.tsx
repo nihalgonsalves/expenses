@@ -8,7 +8,7 @@ import { useQueryClient } from "../../api/query-client";
 import {
   transactionMutations,
   transactionQueries,
-} from "../../api/transaction";
+} from "../../api/transaction.functions";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";

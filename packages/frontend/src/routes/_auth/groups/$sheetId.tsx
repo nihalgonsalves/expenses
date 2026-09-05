@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { sheetQueries } from "../../../api/sheet";
-import { useCurrentUser } from "../../../api/user";
+import { sheetQueries } from "../../../api/sheet.functions";
+import { useCurrentUser } from "../../../api/user.functions";
 import type { ActorInfo } from "../../../components/group-sheets/balance-summary";
 import { GroupSheet } from "../../../components/group-sheets/group-sheet";
 import { RootLoader } from "../../../pages/root";

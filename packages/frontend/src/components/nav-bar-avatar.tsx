@@ -2,7 +2,7 @@ import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { Link } from "@tanstack/react-router";
 import { UserIcon } from "lucide-react";
 
-import { useCurrentUser, userApi } from "../api/user";
+import { useCurrentUser, userApi } from "../api/user.functions";
 import { useResetCache } from "../api/use-reset-cache";
 
 import { Button } from "./ui/button";

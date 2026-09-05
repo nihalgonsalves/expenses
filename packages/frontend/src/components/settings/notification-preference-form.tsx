@@ -10,7 +10,7 @@ import { ZPushSubscription } from "@nihalgonsalves/expenses-shared/types/notific
 import {
   notificationMutations,
   notificationQueries,
-} from "../../api/notification";
+} from "../../api/notification.functions";
 import { useSubscriptionEndpoint } from "../../state/preferences";
 import { useNotificationPermission } from "../../utils/hooks/use-notification-permission";
 import { useServiceWorkerRegistration } from "../../utils/hooks/use-service-worker-registration";

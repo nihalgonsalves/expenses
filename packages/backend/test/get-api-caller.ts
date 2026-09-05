@@ -26,11 +26,11 @@ import {
 import { ZNotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
 import { z } from "zod";
 import { config } from "../src/config.ts";
-import * as currencyConversionApi from "../src/service/frankfurter/currency-conversion-api.ts";
-import * as notificationApi from "../src/service/notification/notification-api.ts";
-import * as sheetApi from "../src/service/sheet/sheet-api.ts";
-import * as transactionApi from "../src/service/transaction/transaction-api.ts";
-import * as userApi from "../src/service/user/user-api.ts";
+import * as currencyConversionApi from "../src/service/frankfurter/currency-conversion-api.server.ts";
+import * as notificationApi from "../src/service/notification/notification-api.server.ts";
+import * as sheetApi from "../src/service/sheet/sheet-api.server.ts";
+import * as transactionApi from "../src/service/transaction/transaction-api.server.ts";
+import * as userApi from "../src/service/user/user-api.server.ts";
 
 import { FrankfurterService } from "../src/service/frankfurter/frankfurter-service.ts";
 import { NotificationService } from "../src/service/notification/notification-service.ts";

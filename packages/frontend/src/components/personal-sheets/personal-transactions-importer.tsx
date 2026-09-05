@@ -9,12 +9,12 @@ import { z } from "zod";
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { CreateSheetTransactionInput } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { currencyConversionQueries } from "../../api/currency-conversion";
+import { currencyConversionQueries } from "../../api/currency-conversion.functions";
 import { useQueryClient } from "../../api/query-client";
 import {
   transactionMutations,
   transactionQueries,
-} from "../../api/transaction";
+} from "../../api/transaction.functions";
 import { formatCurrency } from "../../utils/money";
 import { dateToISOString } from "../../utils/temporal";
 import { noop } from "../../utils/utils";

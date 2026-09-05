@@ -3,9 +3,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import { ZNotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
-import * as backendNotificationApi from "@nihalgonsalves/expenses-backend/src/service/notification/notification-api";
+import * as backendNotificationApi from "@nihalgonsalves/expenses-backend/src/service/notification/notification-api.server";
 
-import { requiredServerContextMiddleware } from "../server/context";
+import { requiredServerContextMiddleware } from "../server/context.functions";
 
 export const getPublicKey = createServerFn({ method: "GET" })
   .middleware([requiredServerContextMiddleware])

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 
-import { sheetQueries } from "../../api/sheet";
+import { sheetQueries } from "../../api/sheet.functions";
 import { FloatingActionButton } from "../floating-action-button";
 import { ResponsiveDialog } from "../form/responsive-dialog";
 import { CreateGroupSheetTransactionDialog } from "../group-sheets/create-group-sheet-transaction-dialog";

@@ -4,12 +4,12 @@ import { createServerFn } from "@tanstack/react-start";
 import type { z } from "zod";
 
 import { ZTheme } from "@nihalgonsalves/expenses-shared/types/theme";
-import * as backendUserApi from "@nihalgonsalves/expenses-backend/src/service/user/user-api";
+import * as backendUserApi from "@nihalgonsalves/expenses-backend/src/service/user/user-api.server";
 
 import {
   requiredServerContextMiddleware,
   serverContextMiddleware,
-} from "../server/context";
+} from "../server/context.functions";
 
 export const getCurrentUser = createServerFn({ method: "GET" })
   .middleware([requiredServerContextMiddleware])

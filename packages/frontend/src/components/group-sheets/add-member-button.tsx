@@ -7,9 +7,9 @@ import type { z } from "zod";
 
 import { ZAddGroupSheetMemberInput } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { sheetMutations, sheetQueries } from "../../api/sheet.functions";
 import { useQueryClient } from "../../api/query-client";
-import { transactionQueries } from "../../api/transaction";
+import { transactionQueries } from "../../api/transaction.functions";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { ResponsiveDialog, useDialog } from "../form/responsive-dialog";
 import { Button } from "../ui/button";

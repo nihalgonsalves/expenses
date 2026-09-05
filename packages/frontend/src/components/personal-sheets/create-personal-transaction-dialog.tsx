@@ -16,13 +16,13 @@ import {
 import {
   currencyConversionQueries,
   useCurrencyConversion,
-} from "../../api/currency-conversion";
+} from "../../api/currency-conversion.functions";
 import { useQueryClient } from "../../api/query-client";
 import {
   transactionMutations,
   transactionQueries,
-} from "../../api/transaction";
-import { sheetQueries } from "../../api/sheet";
+} from "../../api/transaction.functions";
+import { sheetQueries } from "../../api/sheet.functions";
 import { usePreferredCurrencyCode } from "../../state/preferences";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";

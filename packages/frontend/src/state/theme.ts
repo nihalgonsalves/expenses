@@ -12,7 +12,7 @@ import {
 
 import { useInvalidateRouter } from "#/api/use-invalidate-router";
 
-import { useCurrentUser, userApi } from "../api/user";
+import { useCurrentUser, userApi } from "../api/user.functions";
 import { useDialog } from "../components/form/responsive-dialog";
 import { isOldDataAtom } from "../pages/root";
 

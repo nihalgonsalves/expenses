@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { sheetQueries } from "./sheet";
-import { notificationQueries } from "./notification";
+import { sheetQueries } from "./sheet.functions";
+import { notificationQueries } from "./notification.functions";
 
 export const usePrefetchQueries = () => {
   useQuery(sheetQueries.mySheets.queryOptions({ includeArchived: true }));

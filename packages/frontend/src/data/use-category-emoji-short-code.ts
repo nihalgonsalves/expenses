@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { transactionQueries } from "../api/transaction";
+import { transactionQueries } from "../api/transaction.functions";
 
 export const useCategoryEmojiShortCode = (
   category: string,

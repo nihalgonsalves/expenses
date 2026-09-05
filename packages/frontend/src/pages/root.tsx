@@ -29,7 +29,7 @@ import {
 } from "../components/ui/navigation-menu";
 import { ScrollArea } from "../components/ui/scroll-area";
 import { cn } from "../components/ui/utils";
-import { appConfigQueryOptions } from "../api/config";
+import { appConfigQueryOptions } from "../api/config.functions";
 import { useNavigatorOnLine } from "../state/use-navigator-on-line";
 import { useIsStandalone } from "../utils/hooks/use-is-standalone";
 import {

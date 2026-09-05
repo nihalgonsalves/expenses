@@ -9,9 +9,9 @@ import {
   ZSheetsQuery,
   ZUpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
-import * as backendSheetApi from "@nihalgonsalves/expenses-backend/src/service/sheet/sheet-api";
+import * as backendSheetApi from "@nihalgonsalves/expenses-backend/src/service/sheet/sheet-api.server";
 
-import { requiredServerContextMiddleware } from "../server/context";
+import { requiredServerContextMiddleware } from "../server/context.functions";
 
 const authenticatedMiddleware = [requiredServerContextMiddleware] as const;
 

@@ -2,7 +2,7 @@ import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import * as api from "@nihalgonsalves/expenses-backend/src/service/transaction/transaction-api";
+import * as api from "@nihalgonsalves/expenses-backend/src/service/transaction/transaction-api.server";
 import {
   ZBatchCreatePersonalSheetTransactionInput,
   ZCreateGroupSheetSettlementInput,
@@ -14,7 +14,7 @@ import {
   ZUpdatePersonalSheetTransactionInput,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 import { ZCategoryEmoji } from "@nihalgonsalves/expenses-shared/types/user";
-import { requiredServerContextMiddleware } from "../server/context";
+import { requiredServerContextMiddleware } from "../server/context.functions";
 
 const authenticatedMiddleware = [requiredServerContextMiddleware] as const;
 

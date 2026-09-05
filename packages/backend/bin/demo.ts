@@ -2,8 +2,8 @@ import { faker } from "@faker-js/faker";
 import { createAuthClient } from "better-auth/react";
 
 import { getBackendWebApp } from "../src/web-context.ts";
-import * as sheetApi from "../src/service/sheet/sheet-api.ts";
-import * as transactionApi from "../src/service/transaction/transaction-api.ts";
+import * as sheetApi from "../src/service/sheet/sheet-api.server.ts";
+import * as transactionApi from "../src/service/transaction/transaction-api.server.ts";
 
 const DEMO_A_EMAIL = "user@example.com";
 const DEMO_B_EMAIL = "other-user@example.com";

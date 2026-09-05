@@ -18,7 +18,7 @@ import { useQueryClient } from "../../api/query-client";
 import {
   transactionMutations,
   transactionQueries,
-} from "../../api/transaction";
+} from "../../api/transaction.functions";
 import {
   formatDateTimeRelative,
   shortDateTimeFormatter,

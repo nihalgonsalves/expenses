@@ -8,8 +8,8 @@ import type {
   TransactionWithSheet,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { useConvertToPreferredCurrency } from "./currency-conversion";
-import { transactionQueries } from "./transaction";
+import { useConvertToPreferredCurrency } from "./currency-conversion.functions";
+import { transactionQueries } from "./transaction.functions";
 
 export type ConvertedTransactionWithSheet = TransactionWithSheet & {
   convertedMoney: Money | undefined;

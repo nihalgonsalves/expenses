@@ -8,8 +8,8 @@ import {
   closeBackendRuntime,
   createBackendWebRuntime,
 } from "@nihalgonsalves/expenses-backend/src/runtime.ts";
-import * as sheetApi from "@nihalgonsalves/expenses-backend/src/service/sheet/sheet-api.ts";
-import * as userApi from "@nihalgonsalves/expenses-backend/src/service/user/user-api.ts";
+import * as sheetApi from "@nihalgonsalves/expenses-backend/src/service/sheet/sheet-api.server.ts";
+import * as userApi from "@nihalgonsalves/expenses-backend/src/service/user/user-api.server.ts";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { getUserData } from "./misc";

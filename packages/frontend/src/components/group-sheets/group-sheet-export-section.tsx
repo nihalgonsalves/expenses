@@ -4,7 +4,7 @@ import { DownloadIcon } from "lucide-react";
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 
 import { requestExport } from "../../api/request-export";
-import { transactionQueries } from "../../api/transaction";
+import { transactionQueries } from "../../api/transaction.functions";
 import { moneyToString } from "../../utils/money";
 import { getShortName } from "../../utils/utils";
 import { Button } from "../ui/button";

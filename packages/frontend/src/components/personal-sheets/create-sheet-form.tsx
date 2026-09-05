@@ -10,8 +10,8 @@ import { ZCreatePersonalSheetInput } from "@nihalgonsalves/expenses-shared/types
 import {
   currencyConversionQueries,
   useCurrencyOptions,
-} from "../../api/currency-conversion";
-import { sheetMutations, sheetQueries } from "../../api/sheet";
+} from "../../api/currency-conversion.functions";
+import { sheetMutations, sheetQueries } from "../../api/sheet.functions";
 import { useQueryClient } from "../../api/query-client";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { CurrencySelect } from "../form/currency-select";

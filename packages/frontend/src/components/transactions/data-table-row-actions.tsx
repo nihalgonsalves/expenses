@@ -10,12 +10,12 @@ import {
   TrashIcon,
 } from "lucide-react";
 
-import { currencyConversionQueries } from "../../api/currency-conversion";
+import { currencyConversionQueries } from "../../api/currency-conversion.functions";
 import { useQueryClient } from "../../api/query-client";
 import {
   transactionMutations,
   transactionQueries,
-} from "../../api/transaction";
+} from "../../api/transaction.functions";
 import type { ConvertedTransactionWithSheet } from "../../api/use-all-user-transactions";
 import { ConfirmDialog } from "../form/confirm-dialog";
 import { useDialogControls } from "../form/responsive-dialog";

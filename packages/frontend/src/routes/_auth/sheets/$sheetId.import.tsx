@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { sheetQueries } from "../../../api/sheet";
+import { sheetQueries } from "../../../api/sheet.functions";
 import { PersonalTransactionsImporter } from "../../../components/personal-sheets/personal-transactions-importer";
 import { Root } from "../../../pages/root";
 

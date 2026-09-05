@@ -4,8 +4,8 @@ import { ArchiveIcon, Trash2Icon } from "lucide-react";
 
 import type { Sheet } from "@nihalgonsalves/expenses-shared/types/sheet";
 
-import { currencyConversionQueries } from "../../api/currency-conversion";
-import { sheetMutations, sheetQueries } from "../../api/sheet";
+import { currencyConversionQueries } from "../../api/currency-conversion.functions";
+import { sheetMutations, sheetQueries } from "../../api/sheet.functions";
 import { useQueryClient } from "../../api/query-client";
 import { ConfirmDialog } from "../form/confirm-dialog";
 import { Button } from "../ui/button";

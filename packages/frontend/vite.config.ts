@@ -49,7 +49,17 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
     tailwindcss(),
-    !process.env["VITE_STORYBOOK"] && tanstackStart(),
+    !process.env["VITE_STORYBOOK"] &&
+      tanstackStart({
+        importProtection: {
+          client: {
+            // `files` replaces TanStack Start's defaults, so retain the
+            // `.server` convention while treating all backend source as server-only.
+            files: ["**/*.server.*", "**/packages/backend/src/**"],
+            excludeFiles: ["**/node_modules/**"],
+          },
+        },
+      }),
     !process.env["VITE_STORYBOOK"] &&
       mode === "production" && {
         name: "generate-sw-on-build",

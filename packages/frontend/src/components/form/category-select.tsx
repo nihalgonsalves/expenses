@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, type Ref } from "react";
 import type { ControllerRenderProps } from "react-hook-form";
 
-import { transactionQueries } from "../../api/transaction";
+import { transactionQueries } from "../../api/transaction.functions";
 import { CategoryIcon } from "../category-avatar";
 import {
   Combobox,

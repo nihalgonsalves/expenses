@@ -2,7 +2,7 @@ import { CheckIcon, MoonIcon, SunIcon, MonitorIcon } from "lucide-react";
 
 import { THEMES } from "@nihalgonsalves/expenses-shared/types/theme";
 
-import { useCurrencyOptions } from "../../api/currency-conversion";
+import { useCurrencyOptions } from "../../api/currency-conversion.functions";
 import { usePreferredCurrencyCode } from "../../state/preferences";
 import {
   useThemePreference,

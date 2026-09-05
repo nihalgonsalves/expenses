@@ -16,13 +16,13 @@ import type {
   TransactionSummaryResponse,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
 
-import { currencyConversionQueries } from "../../api/currency-conversion";
+import { currencyConversionQueries } from "../../api/currency-conversion.functions";
 import { useQueryClient } from "../../api/query-client";
 import {
   transactionMutations,
   transactionQueries,
-} from "../../api/transaction";
-import { sheetMutations, sheetQueries } from "../../api/sheet";
+} from "../../api/transaction.functions";
+import { sheetMutations, sheetQueries } from "../../api/sheet.functions";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { Avatar } from "../avatar";
 import { CurrencySpan } from "../currency-span";
