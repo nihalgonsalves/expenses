@@ -34,7 +34,7 @@ test("signs in and out successfully", async ({ page, request, createUser }) => {
 
   await expect(page).toHaveTitle(/transactions/i);
 
-  await page.getByRole("button", { name: /profile/i }).click();
+  await page.getByRole("button", { name: email }).click();
   await page.getByRole("menuitem", { name: /sign out/i }).click();
 });
 

@@ -14,6 +14,8 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
+import { Route as SettingsIndexRouteImport } from './routes/settings/index'
+import { Route as SettingsSectionRouteImport } from './routes/settings/$section'
 import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
 import { Route as AuthGroupsSheetIdRouteImport } from './routes/_auth/groups/$sheetId'
 import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
@@ -44,6 +46,16 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsIndexRoute = SettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SettingsRoute,
+} as any)
+const SettingsSectionRoute = SettingsSectionRouteImport.update({
+  id: '/$section',
+  path: '/$section',
+  getParentRoute: () => SettingsRoute,
+} as any)
 const AuthGroupsIndexRoute = AuthGroupsIndexRouteImport.update({
   id: '/groups/',
   path: '/groups/',
@@ -72,9 +84,11 @@ const AuthSheetsSheetIdImportRoute = AuthSheetsSheetIdImportRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
-  '/settings': typeof SettingsRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
+  '/settings/$section': typeof SettingsSectionRoute
+  '/settings/': typeof SettingsIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
   '/groups/': typeof AuthGroupsIndexRoute
@@ -82,10 +96,11 @@ export interface FileRoutesByFullPath {
   '/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
 }
 export interface FileRoutesByTo {
-  '/settings': typeof SettingsRoute
   '/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
+  '/settings/$section': typeof SettingsSectionRoute
   '/': typeof AuthIndexRoute
+  '/settings': typeof SettingsIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
   '/groups': typeof AuthGroupsIndexRoute
@@ -95,10 +110,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
-  '/settings': typeof SettingsRoute
+  '/settings': typeof SettingsRouteWithChildren
   '/_auth/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
+  '/settings/$section': typeof SettingsSectionRoute
   '/_auth/': typeof AuthIndexRoute
+  '/settings/': typeof SettingsIndexRoute
   '/_auth/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/_auth/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
   '/_auth/groups/': typeof AuthGroupsIndexRoute
@@ -112,6 +129,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/stats'
     | '/auth/sign-in'
+    | '/settings/$section'
+    | '/settings/'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
     | '/groups/'
@@ -119,10 +138,11 @@ export interface FileRouteTypes {
     | '/sheets/$sheetId/import'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/settings'
     | '/stats'
     | '/auth/sign-in'
+    | '/settings/$section'
     | '/'
+    | '/settings'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
     | '/groups'
@@ -134,7 +154,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/_auth/stats'
     | '/auth/sign-in'
+    | '/settings/$section'
     | '/_auth/'
+    | '/settings/'
     | '/_auth/groups/$sheetId'
     | '/_auth/sheets/$sheetId'
     | '/_auth/groups/'
@@ -144,7 +166,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
-  SettingsRoute: typeof SettingsRoute
+  SettingsRoute: typeof SettingsRouteWithChildren
   AuthSignInRoute: typeof AuthSignInRoute
 }
 
@@ -184,6 +206,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/sign-in'
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/settings/': {
+      id: '/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof SettingsIndexRouteImport
+      parentRoute: typeof SettingsRoute
+    }
+    '/settings/$section': {
+      id: '/settings/$section'
+      path: '/$section'
+      fullPath: '/settings/$section'
+      preLoaderRoute: typeof SettingsSectionRouteImport
+      parentRoute: typeof SettingsRoute
     }
     '/_auth/groups/': {
       id: '/_auth/groups/'
@@ -254,9 +290,23 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface SettingsRouteChildren {
+  SettingsSectionRoute: typeof SettingsSectionRoute
+  SettingsIndexRoute: typeof SettingsIndexRoute
+}
+
+const SettingsRouteChildren: SettingsRouteChildren = {
+  SettingsSectionRoute: SettingsSectionRoute,
+  SettingsIndexRoute: SettingsIndexRoute,
+}
+
+const SettingsRouteWithChildren = SettingsRoute._addFileChildren(
+  SettingsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
-  SettingsRoute: SettingsRoute,
+  SettingsRoute: SettingsRouteWithChildren,
   AuthSignInRoute: AuthSignInRoute,
 }
 export const routeTree = rootRouteImport

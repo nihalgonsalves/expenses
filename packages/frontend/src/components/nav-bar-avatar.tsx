@@ -1,11 +1,12 @@
 import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { Link } from "@tanstack/react-router";
-import { UserIcon } from "lucide-react";
+import { ChevronsUpDownIcon, UserIcon } from "lucide-react";
 
 import { useCurrentUser, userApi } from "../api/user.functions";
 import { useResetCache } from "../api/use-reset-cache";
 
 import { Button } from "./ui/button";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,5 +71,62 @@ export const NavBarAvatar = ({ className }: { className?: string }) => {
         <LoggedOutNavBarAvatar />
       )}
     </div>
+  );
+};
+
+export const SidebarUserCard = () => {
+  const me = useCurrentUser();
+  const { mutateAsync: signOut } = useMutation(
+    userApi.signOut.mutationOptions(),
+  );
+  const resetCache = useResetCache();
+
+  if (me == null) {
+    return (
+      <Button
+        variant="outline"
+        className="w-full"
+        nativeButton={false}
+        render={<Link to="/auth/sign-in">Sign in</Link>}
+      />
+    );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        render={
+          <Button
+            variant="ghost"
+            className="h-auto w-full justify-start gap-3 px-2 py-2 text-left"
+          >
+            <Avatar>
+              <AvatarFallback>
+                <UserIcon />
+              </AvatarFallback>
+            </Avatar>
+            <span className="min-w-0 grow">
+              <span className="block truncate text-sm font-medium">
+                {me.name}
+              </span>
+              <span className="text-muted-foreground block truncate text-xs">
+                {me.email}
+              </span>
+            </span>
+            <ChevronsUpDownIcon className="text-muted-foreground size-4" />
+          </Button>
+        }
+      />
+      <DropdownMenuContent align="start" side="top">
+        <DropdownMenuItem
+          onClick={async () => {
+            await signOut();
+            await resetCache();
+          }}
+        >
+          Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

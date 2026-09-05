@@ -146,9 +146,9 @@ export const ProfileForm = () => {
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <NameCard name={user.name} />
       <EmailCard email={user.email} />
-    </>
+    </div>
   );
 };
