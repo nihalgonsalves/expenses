@@ -15,8 +15,8 @@
     "build:storybook": "VITE_STORYBOOK=1 storybook build --output-dir=./build/storybook",
     "gen:assets": "tsx bin/generate-assets.tsx",
     "start": "vite preview",
-    "test": "vitest --project=unit",
-    "test:storybook": "vitest --project=storybook"
+    "test": "vitest",
+    "test:storybook": "vitest --config vitest.storybook.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
@@ -91,8 +91,8 @@
     "@types/react-dom": "19.2.7",
     "@vitejs/devtools": "0.7.2",
     "@vitejs/plugin-react": "6.1.1",
-    "@vitest/browser-playwright": "4.1.11",
-    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/browser-playwright": "5.0.0",
+    "@vitest/coverage-v8": "5.0.0",
     "happy-dom": "20.14.0",
     "oxc-transform-react": "0.148.0",
     "playwright": "1.62.1",
@@ -102,6 +102,6 @@
     "tsx": "4.23.13",
     "vite": "8.2.2",
     "vite-plugin-istanbul": "9.0.1",
-    "vitest": "4.1.11"
+    "vitest": "5.0.0"
   }
 }

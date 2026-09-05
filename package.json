@@ -38,8 +38,8 @@
   "devDependencies": {
     "@nihalgonsalves/esconfig": "0.18.2",
     "@types/node": "^26.4.1",
-    "@vitest/coverage-v8": "4.1.11",
-    "@vitest/ui": "4.1.11",
+    "@vitest/coverage-v8": "5.0.0",
+    "@vitest/ui": "5.0.0",
     "eslint-plugin-jest-dom": "5.10.1",
     "eslint-plugin-storybook": "10.6.0",
     "eslint-plugin-testing-library": "7.16.2",
@@ -55,6 +55,6 @@
     "sherif": "1.13.0",
     "type-fest": "5.9.0",
     "typescript": "7.0.2",
-    "vitest": "4.1.11"
+    "vitest": "5.0.0"
   }
 }
