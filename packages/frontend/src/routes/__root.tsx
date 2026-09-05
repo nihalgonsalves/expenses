@@ -26,7 +26,6 @@ import mainCss from "../main.css?url";
 import { useSwUpdateCheck } from "../register-sw";
 import { getThemeDataAttribute, useThemeSync } from "../state/theme";
 import { PWAInstall } from "#/components/pwa-install";
-import { ReactTrace } from "#/components/react-trace";
 
 const GlobalHookContainer = () => {
   useSwUpdateCheck();
@@ -117,10 +116,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         {import.meta.env.DEV && !config.VITE_INTEGRATION_TEST ? (
-          <>
-            <TanStackRouterDevtools position="bottom-right" />
-            <ReactTrace />
-          </>
+          <TanStackRouterDevtools position="bottom-right" />
         ) : null}
         <Scripts />
       </body>
