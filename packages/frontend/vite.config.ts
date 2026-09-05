@@ -49,7 +49,10 @@ export default defineConfig(({ mode }) => ({
     host: true,
   },
   plugins: [
-    devtools(),
+    devtools({
+      consolePiping: { enabled: true },
+      enhancedLogs: { enabled: true },
+    }),
     jotaiPlugin(),
     process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
     tailwindcss(),

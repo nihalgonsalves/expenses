@@ -85,6 +85,7 @@
     "@storybook/react-vite": "10.6.0",
     "@storybook/tanstack-react": "10.6.0",
     "@tailwindcss/vite": "4.3.3",
+    "@tanstack/devtools-a11y": "0.2.2",
     "@tanstack/devtools-vite": "0.8.5",
     "@tanstack/react-devtools": "0.10.12",
     "@total-typescript/ts-reset": "0.6.1",

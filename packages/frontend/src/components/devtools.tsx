@@ -1,6 +1,7 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { a11yDevtoolsPlugin } from "@tanstack/devtools-a11y/react";
 import { DevTools as JotaiDevTools } from "jotai-devtools";
 
 if (import.meta.env.DEV) {
@@ -26,6 +27,7 @@ const MailpitPanel = () => (
 
 export const Devtools = () => (
   <TanStackDevtools
+    eventBusConfig={{ connectToServerBus: true }}
     config={{
       defaultOpen: false,
       panelLocation: "bottom",
@@ -53,6 +55,7 @@ export const Devtools = () => (
         name: "Mailpit",
         render: <MailpitPanel />,
       },
+      a11yDevtoolsPlugin(),
     ]}
   />
 );
