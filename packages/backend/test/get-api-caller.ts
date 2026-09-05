@@ -24,6 +24,10 @@ import {
   ZUpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
 import { ZNotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
+import {
+  ZCreateCategoryGroupInput,
+  ZUpdateCategoryGroupInput,
+} from "@nihalgonsalves/expenses-shared/types/category-group";
 import { z } from "zod";
 import { config } from "../src/config.ts";
 import * as currencyConversionApi from "../src/service/frankfurter/currency-conversion-api.server.ts";
@@ -289,6 +293,27 @@ const apiCaller = (caller: { context: ContextObj }) => {
     user: {
       signOut: async () => userApi.signOut(context),
       anonymizeUser: async () => userApi.anonymizeUser(authenticated(context)),
+      getCategoryGroups: async () =>
+        userApi.getCategoryGroups(authenticated(context)),
+      createCategoryGroup: async (
+        input: Parameters<typeof userApi.createCategoryGroup>[1],
+      ) =>
+        userApi.createCategoryGroup(
+          authenticated(context),
+          parse(ZCreateCategoryGroupInput, input),
+        ),
+      updateCategoryGroup: async (
+        input: Parameters<typeof userApi.updateCategoryGroup>[1],
+      ) =>
+        userApi.updateCategoryGroup(
+          authenticated(context),
+          parse(ZUpdateCategoryGroupInput, input),
+        ),
+      deleteCategoryGroup: async (id: string) =>
+        userApi.deleteCategoryGroup(
+          authenticated(context),
+          parse(z.string().min(1), id),
+        ),
     },
     notification: {
       getPublicKey: async () =>

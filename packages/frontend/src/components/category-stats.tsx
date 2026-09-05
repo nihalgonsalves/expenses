@@ -1,121 +1,129 @@
 import { Link } from "@tanstack/react-router";
+import { ChevronRightIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
-import {
-  addMoney,
-  compareMoney,
-  type Money,
-} from "@nihalgonsalves/expenses-shared/money";
+import type { CategoryGroup } from "@nihalgonsalves/expenses-shared/types/category-group";
+import type { Money } from "@nihalgonsalves/expenses-shared/money";
 
-import type {
-  AllConvertedUserTransactions,
-  ConvertedTransactionWithSheet,
-} from "../api/use-all-user-transactions";
-
+import type { AllConvertedUserTransactions } from "../api/use-all-user-transactions";
+import { getDateRangeSearch } from "../utils/date-range-search";
 import { CategoryIcon } from "./category-avatar";
+import { getCategoryStats, type CategoryStat } from "./category-stats-utils";
 import { CurrencySpan } from "./currency-span";
 import { Button } from "./ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
 import { DateRangePicker } from "./ui/date-range-picker";
-import { cn } from "./ui/utils";
 
-const getCategorySums = (data: ConvertedTransactionWithSheet[]) => {
-  const categorySums: Record<string, Money> = {};
-
-  data.forEach((transaction) => {
-    if (!transaction.convertedMoney) return;
-
-    const currentSum = categorySums[transaction.category];
-
-    categorySums[transaction.category] = currentSum
-      ? addMoney(currentSum, transaction.convertedMoney)
-      : transaction.convertedMoney;
-  });
-
-  return categorySums;
-};
-
-const CategoryStat = ({ category, sum }: { category: string; sum: Money }) => (
-  <div className="bg-card flex place-items-center content-between justify-between rounded-lg border p-6 shadow-sm">
-    <div>
-      <div className="text-sm text-neutral-500 capitalize md:text-lg">
-        <Button
-          variant="link"
-          className="h-auto p-0"
-          role="link"
-          nativeButton={false}
-          render={
-            <Link to="/" search={{ category: [category] }}>
-              {category}
-            </Link>
-          }
-        />
-      </div>
-
-      <div className="text-base font-bold md:text-3xl">
-        <CurrencySpan money={sum} />
-      </div>
-    </div>
-
-    <div className="text-primary">
+const CategoryLink = ({
+  category,
+  sum,
+  dateRange,
+}: CategoryStat & { dateRange: DateRange }) => (
+  <Link
+    to="/"
+    search={{ category: [category], ...getDateRangeSearch(dateRange) }}
+    className="hover:bg-muted flex items-center justify-between gap-4 rounded-md px-3 py-2 text-sm"
+  >
+    <span className="flex items-center gap-2">
       <CategoryIcon category={category} />
+      {category}
+    </span>
+    <CurrencySpan money={sum} />
+  </Link>
+);
+
+const CategoryGroupStat = ({
+  name,
+  categories,
+  sum,
+  dateRange,
+}: {
+  name: string;
+  categories: CategoryStat[];
+  sum: Money;
+  dateRange: DateRange;
+}) => (
+  <Collapsible className="bg-card rounded-xl border shadow-sm">
+    <div className="flex items-center gap-2 p-4">
+      <CollapsibleTrigger
+        aria-label={`Toggle ${name}`}
+        render={<Button variant="ghost" size="icon-sm" />}
+      >
+        <ChevronRightIcon className="transition-transform [[data-panel-open]_&]:rotate-90" />
+      </CollapsibleTrigger>
+      <Link
+        to="/"
+        search={{
+          category: categories.map(({ category }) => category),
+          ...getDateRangeSearch(dateRange),
+        }}
+        className="flex min-w-0 grow items-center justify-between gap-4 font-medium"
+      >
+        <span className="truncate">{name}</span>
+        <CurrencySpan money={sum} />
+      </Link>
     </div>
-  </div>
+    <CollapsibleContent className="border-t px-2 py-2">
+      {categories.map((categoryStat) => (
+        <CategoryLink
+          key={categoryStat.category}
+          {...categoryStat}
+          dateRange={dateRange}
+        />
+      ))}
+    </CollapsibleContent>
+  </Collapsible>
 );
 
 export const CategoryStats = ({
   data,
+  categoryGroups,
   dateRange,
   setDateRange,
 }: {
   data: AllConvertedUserTransactions;
-  dateRange: DateRange | undefined;
+  categoryGroups: CategoryGroup[];
+  dateRange: DateRange;
   setDateRange: (dateRange: DateRange | undefined) => void;
 }) => {
-  const categoryExpenseSumEntries = Object.entries(
-    getCategorySums(
-      data.filter((t) => t.type !== "TRANSFER" && t.money.amount < 0),
-    ),
-  ).toSorted(([, a], [, b]) => compareMoney(a, b));
-
-  const categoryIncomeSumEntries = Object.entries(
-    getCategorySums(
-      data.filter((t) => t.type !== "TRANSFER" && t.money.amount > 0),
-    ),
-  ).toSorted(([, a], [, b]) => compareMoney(a, b));
+  const { groupStats, ungrouped } = getCategoryStats(data, categoryGroups);
 
   return (
     <>
       <div className="bg-muted mb-4 rounded-md p-1 text-center">
         <DateRangePicker
-          initialDateFrom={dateRange?.from}
-          initialDateTo={dateRange?.to}
+          initialDateFrom={dateRange.from}
+          initialDateTo={dateRange.to}
           onUpdate={({ range }) => {
             setDateRange(range);
           }}
         />
       </div>
-      <div
-        className={cn(
-          "grid gap-2 md:gap-4",
-          categoryExpenseSumEntries.length > 0 &&
-            categoryIncomeSumEntries.length > 0
-            ? "grid-cols-2"
-            : "grid-cols-1",
-        )}
-      >
-        {categoryExpenseSumEntries.length > 0 && (
-          <div className="flex flex-col gap-2 md:gap-4">
-            {categoryExpenseSumEntries.map(([category, sum]) => (
-              <CategoryStat key={category} category={category} sum={sum} />
-            ))}
-          </div>
-        )}
-        {categoryIncomeSumEntries.length > 0 && (
-          <div className="flex flex-col gap-2 md:gap-4">
-            {categoryIncomeSumEntries.map(([category, sum]) => (
-              <CategoryStat key={category} category={category} sum={sum} />
-            ))}
-          </div>
+      <div className="flex flex-col gap-3">
+        {groupStats.map((categoryGroup) => (
+          <CategoryGroupStat
+            key={categoryGroup.name}
+            {...categoryGroup}
+            dateRange={dateRange}
+          />
+        ))}
+        {ungrouped.length > 0 && (
+          <section className="bg-card rounded-xl border p-4 shadow-sm">
+            <h2 className="mb-2 font-medium">Ungrouped</h2>
+            <div className="flex flex-col">
+              {ungrouped.map((categoryStat) => (
+                <CategoryLink
+                  key={categoryStat.category}
+                  {...categoryStat}
+                  dateRange={dateRange}
+                />
+              ))}
+            </div>
+          </section>
         )}
       </div>
     </>

@@ -1,7 +1,8 @@
-import { ClientOnly, createFileRoute } from "@tanstack/react-router";
-import { endOfMonth, startOfMonth } from "date-fns";
-import { useState } from "react";
-import type { DateRange } from "react-day-picker";
+import {
+  ClientOnly,
+  createFileRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 
 import { useAllUserTransactions } from "../../api/use-all-user-transactions";
 import { QuickCreateTransactionFAB } from "../../components/expenses/quick-create-transaction-fab";
@@ -11,6 +12,11 @@ import {
   ZTransactionFilters,
 } from "../../components/transactions/data-table";
 import { RootLoader } from "../../pages/root";
+import {
+  getDateRangeFromSearch,
+  getDateRangeSearch,
+  ZDateRangeSearch,
+} from "../../utils/date-range-search";
 
 export const Route = createFileRoute("/_auth/")({
   // TODO: date hydration mismatch
@@ -19,18 +25,26 @@ export const Route = createFileRoute("/_auth/")({
       <RouteComponent />
     </ClientOnly>
   ),
-  validateSearch: ZTransactionFilters,
+  validateSearch: ZTransactionFilters.extend(ZDateRangeSearch.shape),
 });
 
 function RouteComponent() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: startOfMonth(new Date()),
-    to: endOfMonth(new Date()),
-  });
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/" });
+  const dateRange = getDateRangeFromSearch(search);
+  const setDateRange = (nextDateRange: typeof dateRange | undefined) => {
+    if (!nextDateRange?.from || !nextDateRange.to) return;
+    void navigate({
+      search: (previous) => ({
+        ...previous,
+        ...getDateRangeSearch(nextDateRange),
+      }),
+    });
+  };
 
   const result = useAllUserTransactions({
-    fromTimestamp: dateRange?.from?.toISOString(),
-    toTimestamp: dateRange?.to?.toISOString(),
+    fromTimestamp: dateRange.from?.toISOString(),
+    toTimestamp: dateRange.to?.toISOString(),
   });
 
   return (

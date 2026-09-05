@@ -81,3 +81,49 @@ describe("anonymizeUser", () => {
     ).resolves.toBeNull();
   });
 });
+
+describe("category groups", () => {
+  it("creates, updates, and deletes a user's category group", async () => {
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie, {});
+
+    const created = await caller.user.createCategoryGroup({
+      name: "Food",
+      categories: ["Eating Out", "Work Lunch"],
+    });
+
+    await expect(caller.user.getCategoryGroups()).resolves.toMatchObject([
+      {
+        id: created.id,
+        name: "Food",
+        categories: ["Eating Out", "Work Lunch"],
+      },
+    ]);
+
+    await caller.user.updateCategoryGroup({
+      id: created.id,
+      name: "Meals",
+      categories: ["Eating Out"],
+    });
+
+    await caller.user.deleteCategoryGroup(created.id);
+    await expect(caller.user.getCategoryGroups()).resolves.toEqual([]);
+  });
+
+  it("does not let a category belong to two groups for the same user", async () => {
+    const userAndCookie = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(userAndCookie, {});
+
+    await caller.user.createCategoryGroup({
+      name: "Food",
+      categories: ["Groceries"],
+    });
+
+    await expect(
+      caller.user.createCategoryGroup({
+        name: "Home",
+        categories: ["Groceries"],
+      }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  });
+});

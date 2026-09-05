@@ -1,3 +1,7 @@
+import type {
+  CreateCategoryGroupInput,
+  UpdateCategoryGroupInput,
+} from "@nihalgonsalves/expenses-shared/types/category-group";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import type { PrismaClientType } from "../../create-prisma.ts";
@@ -12,7 +16,7 @@ import { config } from "../../config.ts";
 export class UserService {
   private prismaClient: Pick<
     PrismaClientType,
-    "$transaction" | "user" | "account" | "sheet" | "category"
+    "$transaction" | "user" | "account" | "sheet" | "category" | "categoryGroup"
   >;
   private betterAuth: BetterAuthInstance;
   private emailWorker: IEmailWorker;
@@ -123,6 +127,76 @@ export class UserService {
       });
       return undefined;
     }
+  }
+
+  async getCategoryGroups(user: User) {
+    return this.prismaClient.categoryGroup.findMany({
+      where: { userId: user.id },
+      orderBy: { name: "asc" },
+    });
+  }
+
+  private async ensureCategoriesAreUnassigned(
+    userId: string,
+    categories: string[],
+    categoryGroupId?: string,
+  ) {
+    if (categories.length === 0) return;
+
+    const assignedGroup = await this.prismaClient.categoryGroup.findFirst({
+      where: {
+        userId,
+        ...(categoryGroupId ? { id: { not: categoryGroupId } } : {}),
+        categories: { hasSome: categories },
+      },
+      select: { name: true },
+    });
+
+    if (assignedGroup) {
+      throw new UserServiceError({
+        code: "BAD_REQUEST",
+        message: `A selected category is already in ${assignedGroup.name}`,
+      });
+    }
+  }
+
+  async createCategoryGroup(user: User, input: CreateCategoryGroupInput) {
+    await this.ensureCategoriesAreUnassigned(user.id, input.categories);
+
+    return this.prismaClient.categoryGroup.create({
+      data: { id: generateId(), userId: user.id, ...input },
+    });
+  }
+
+  async updateCategoryGroup(user: User, input: UpdateCategoryGroupInput) {
+    await this.ensureCategoriesAreUnassigned(
+      user.id,
+      input.categories,
+      input.id,
+    );
+
+    const categoryGroup = await this.prismaClient.categoryGroup.findFirst({
+      where: { id: input.id, userId: user.id },
+      select: { id: true },
+    });
+
+    if (!categoryGroup) {
+      throw new UserServiceError({
+        code: "NOT_FOUND",
+        message: "Category group not found",
+      });
+    }
+
+    return this.prismaClient.categoryGroup.update({
+      where: { id: categoryGroup.id },
+      data: { name: input.name, categories: input.categories },
+    });
+  }
+
+  async deleteCategoryGroup(user: User, id: string) {
+    await this.prismaClient.categoryGroup.deleteMany({
+      where: { id, userId: user.id },
+    });
   }
 
   async findByEmail(email: string) {

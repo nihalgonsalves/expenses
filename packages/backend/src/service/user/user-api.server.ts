@@ -1,6 +1,11 @@
 import { z } from "zod";
 
 import type { ZTheme } from "@nihalgonsalves/expenses-shared/types/theme";
+import {
+  ZCategoryGroup,
+  ZCreateCategoryGroupInput,
+  ZUpdateCategoryGroupInput,
+} from "@nihalgonsalves/expenses-shared/types/category-group";
 import { ZUser } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { config } from "../../config.ts";
@@ -32,6 +37,43 @@ export const updateTheme = async (
   input: z.output<typeof ZTheme>,
 ) => {
   await ctx.userService.updateTheme(ctx.user.id, input);
+};
+
+export const getCategoryGroups = async (ctx: AuthenticatedContext) =>
+  z
+    .array(ZCategoryGroup)
+    .parse(await ctx.userService.getCategoryGroups(ctx.user));
+
+export const createCategoryGroup = async (
+  ctx: AuthenticatedContext,
+  input: z.input<typeof ZCreateCategoryGroupInput>,
+) =>
+  ZCategoryGroup.parse(
+    await ctx.userService.createCategoryGroup(
+      ctx.user,
+      ZCreateCategoryGroupInput.parse(input),
+    ),
+  );
+
+export const updateCategoryGroup = async (
+  ctx: AuthenticatedContext,
+  input: z.input<typeof ZUpdateCategoryGroupInput>,
+) =>
+  ZCategoryGroup.parse(
+    await ctx.userService.updateCategoryGroup(
+      ctx.user,
+      ZUpdateCategoryGroupInput.parse(input),
+    ),
+  );
+
+export const deleteCategoryGroup = async (
+  ctx: AuthenticatedContext,
+  id: string,
+) => {
+  await ctx.userService.deleteCategoryGroup(
+    ctx.user,
+    z.string().min(1).parse(id),
+  );
 };
 
 const ZCreateTestUserInput = z.object({

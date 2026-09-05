@@ -61,15 +61,26 @@ function ComboboxInput({
   disabled = false,
   showTrigger = true,
   showClear = false,
+  selectOnFocus = false,
+  onFocus,
   ...props
 }: ComboboxPrimitive.Input.Props & {
   showTrigger?: boolean;
   showClear?: boolean;
+  /** Select the current value when the input receives desktop focus. */
+  selectOnFocus?: boolean;
 }) {
   return (
     <InputGroup className={cn("w-auto", className)}>
       <ComboboxPrimitive.Input
         render={<InputGroupInput disabled={disabled} />}
+        onFocus={(event) => {
+          onFocus?.(event);
+
+          if (selectOnFocus && window.innerWidth > 1024) {
+            event.currentTarget.select();
+          }
+        }}
         {...props}
       />
       <InputGroupAddon align="inline-end">

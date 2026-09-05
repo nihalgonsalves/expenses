@@ -124,6 +124,21 @@ model Category {
   @@map("categories")
 }
 
+model CategoryGroup {
+  id        String   @id
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  name       String
+  categories String[]
+
+  @@index([userId])
+  @@map("category_groups")
+}
+
 model TransactionSchedule {
   id        String   @id
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()

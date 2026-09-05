@@ -53,7 +53,12 @@ export const CategorySelect = ({
       onValueChange={onChange}
       onInputValueChange={setSearchValue}
     >
-      <ComboboxInput placeholder={placeholder} showClear {...controllerProps} />
+      <ComboboxInput
+        placeholder={placeholder}
+        showClear
+        selectOnFocus
+        {...controllerProps}
+      />
 
       <ComboboxContent>
         <ComboboxList>

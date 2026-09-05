@@ -1,11 +1,19 @@
-import { ClientOnly, createFileRoute } from "@tanstack/react-router";
-import { endOfMonth, startOfMonth } from "date-fns";
-import { useState } from "react";
-import type { DateRange } from "react-day-picker";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ClientOnly,
+  createFileRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 
 import { useAllUserTransactions } from "../../api/use-all-user-transactions";
+import { userApi } from "../../api/user.functions";
 import { CategoryStats } from "../../components/category-stats";
 import { RootLoader } from "../../pages/root";
+import {
+  getDateRangeFromSearch,
+  getDateRangeSearch,
+  ZDateRangeSearch,
+} from "../../utils/date-range-search";
 
 export const Route = createFileRoute("/_auth/stats")({
   // TODO: date hydration mismatch
@@ -14,18 +22,25 @@ export const Route = createFileRoute("/_auth/stats")({
       <RouteComponent />
     </ClientOnly>
   ),
+  validateSearch: ZDateRangeSearch,
 });
 
 function RouteComponent() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: startOfMonth(new Date()),
-    to: endOfMonth(new Date()),
-  });
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/stats" });
+  const dateRange = getDateRangeFromSearch(search);
+  const setDateRange = (nextDateRange: typeof dateRange | undefined) => {
+    if (!nextDateRange?.from || !nextDateRange.to) return;
+    void navigate({ search: getDateRangeSearch(nextDateRange) });
+  };
 
   const result = useAllUserTransactions({
-    fromTimestamp: dateRange?.from?.toISOString(),
-    toTimestamp: dateRange?.to?.toISOString(),
+    fromTimestamp: dateRange.from?.toISOString(),
+    toTimestamp: dateRange.to?.toISOString(),
   });
+  const { data: categoryGroups = [] } = useQuery(
+    userApi.categoryGroups.queryOptions(),
+  );
 
   return (
     <RootLoader
@@ -34,6 +49,7 @@ function RouteComponent() {
       render={(data) => (
         <CategoryStats
           data={data}
+          categoryGroups={categoryGroups}
           dateRange={dateRange}
           setDateRange={setDateRange}
         />

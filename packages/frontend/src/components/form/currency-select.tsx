@@ -100,7 +100,12 @@ export const CurrencySelect = ({
         return symbol === code ? code : `${code} · ${symbol}`;
       }}
     >
-      <ComboboxInput placeholder="e.g. EUR" ref={ref} {...controllerProps} />
+      <ComboboxInput
+        placeholder="e.g. EUR"
+        ref={ref}
+        selectOnFocus
+        {...controllerProps}
+      />
 
       <ComboboxContent>
         <ComboboxEmpty>No currency codes found.</ComboboxEmpty>

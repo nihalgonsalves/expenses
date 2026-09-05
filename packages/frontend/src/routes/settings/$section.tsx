@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { AppearanceForm } from "../../components/settings/appearance-form";
 import { CategoryForm } from "../../components/settings/category-form";
+import { CategoryGroupsForm } from "../../components/settings/category-groups-form";
 import { NotificationPreferenceForm } from "../../components/settings/notification-preference-form";
 import { PrivacyForm } from "../../components/settings/privacy-form";
 import { ProfileForm } from "../../components/settings/profile-form";
@@ -16,6 +17,7 @@ const ZSettingsParams = z.object({
     "profile",
     "appearance",
     "categories",
+    "category-groups",
     "notifications",
     "security",
     "privacy",
@@ -37,6 +39,7 @@ function RouteComponent(): ReactElement {
     profile: <ProfileForm />,
     appearance: <AppearanceForm />,
     categories: <CategoryForm />,
+    "category-groups": <CategoryGroupsForm />,
     notifications: <NotificationPreferenceForm />,
     security: <SecurityForm config={config} />,
     privacy: <PrivacyForm />,

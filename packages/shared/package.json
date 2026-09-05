@@ -12,7 +12,8 @@
     "./types/notification": "./src/types/notification.ts",
     "./types/sheet": "./src/types/sheet.ts",
     "./types/theme": "./src/types/theme.ts",
-    "./types/user": "./src/types/user.ts"
+    "./types/user": "./src/types/user.ts",
+    "./types/category-group": "./src/types/category-group.ts"
   },
   "scripts": {
     "test": "vitest"

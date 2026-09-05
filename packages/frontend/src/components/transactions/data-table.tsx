@@ -47,10 +47,12 @@ export const ZTransactionFilters = z.object({
 const loadFilters = (
   search: z.infer<typeof ZTransactionFilters>,
 ): ColumnFiltersState =>
-  Object.entries(search).map(([id, value]) => ({
-    id,
-    value,
-  }));
+  Object.entries(search)
+    .filter(([id]) => id === "sheetId" || id === "category")
+    .map(([id, value]) => ({
+      id,
+      value,
+    }));
 
 export const DataTable = ({
   columns,
