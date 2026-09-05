@@ -10,7 +10,10 @@ import { createPostgresBackend } from "../../postgres.ts";
 import { AppError } from "../../utils/errors.ts";
 
 export type EmailPayload = Pick<SendMailOptions, "subject" | "text"> & {
-  to: Extract<SendMailOptions["to"], { address: unknown }>;
+  to: {
+    name: string;
+    address: string;
+  };
 };
 
 export type IEmailWorker = {
@@ -23,10 +26,14 @@ const nodemailerTransport = createTransport({
   host: config.SMTP_HOST,
   port: config.SMTP_PORT,
   secure: config.SECURE,
-  auth: {
-    user: config.SMTP_USER,
-    pass: config.SMTP_PASSWORD,
-  },
+  ...(config.SMTP_USER && config.SMTP_PASSWORD
+    ? {
+        auth: {
+          user: config.SMTP_USER,
+          pass: config.SMTP_PASSWORD,
+        },
+      }
+    : undefined),
 });
 
 export class EmailQueue implements IEmailWorker {

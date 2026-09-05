@@ -1,11 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
+import type { StorageValue } from "localspace";
 import { z } from "zod";
 
 import { ZCurrencyCode } from "@nihalgonsalves/expenses-shared/money";
 
 import { prefsDb } from "./prefs-db";
 
-const createUsePreference = <T>(key: string, parse: (value: unknown) => T) => {
+const createUsePreference = <T extends StorageValue>(
+  key: string,
+  parse: (value: unknown) => T,
+) => {
   const getPreference = async () => {
     const value = await prefsDb.getItem(key);
     return value == null ? null : parse(value);
@@ -21,7 +25,7 @@ const createUsePreference = <T>(key: string, parse: (value: unknown) => T) => {
       if (value === undefined) {
         await prefsDb.removeItem(key);
       } else {
-        await prefsDb.setItem(key, value);
+        await prefsDb.setItem<StorageValue>(key, value);
       }
       await refetch();
     };
@@ -32,7 +36,7 @@ const createUsePreference = <T>(key: string, parse: (value: unknown) => T) => {
   return usePreference;
 };
 
-export const createPreferenceWithDefault = <T>(
+export const createPreferenceWithDefault = <T extends StorageValue>(
   key: string,
   parse: (value: unknown) => T,
   defaultValue: T,

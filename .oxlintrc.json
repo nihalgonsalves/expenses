@@ -18,7 +18,11 @@
         "caughtErrors": "all",
         "caughtErrorsIgnorePattern": "^_",
         "destructuredArrayIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
+        "varsIgnorePattern": "^_",
+        "fix": {
+          "imports": "safe-fix",
+          "variables": "fix"
+        }
       }
     ],
     "no-underscore-dangle": "off",
