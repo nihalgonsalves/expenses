@@ -1,9 +1,7 @@
 // TODO: conditional import? causes an error currently.
 import "temporal-polyfill/global";
 
-import emojiMartData from "@emoji-mart/data";
 import { StartClient } from "@tanstack/react-start/client";
-import { init as initEmojiMart } from "emoji-mart";
 import { StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 
@@ -16,9 +14,6 @@ window.addEventListener("beforeinstallprompt", (event) => {
 });
 
 await registerSW();
-
-// TODO: Use a react-query client instead of baked-in data
-await initEmojiMart({ data: emojiMartData });
 
 // only haptics, no audio
 haptics.setOutput("haptics");

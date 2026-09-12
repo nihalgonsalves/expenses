@@ -108,24 +108,20 @@ export class UserService {
     });
   }
 
-  async setCategoryEmojiShortCode(
-    user: User,
-    id: string,
-    emojiShortCode: string | undefined,
-  ) {
+  async setCategoryEmoji(user: User, id: string, emoji: string | null) {
     const where = { id_userId: { id, userId: user.id } };
 
-    if (emojiShortCode !== undefined) {
+    if (emoji !== null) {
       return this.prismaClient.category.upsert({
         where,
-        update: { emojiShortCode },
-        create: { id, emojiShortCode, userId: user.id },
+        update: { emoji },
+        create: { id, emojiShortCode: "", emoji, userId: user.id },
       });
     } else {
-      await this.prismaClient.category.delete({
+      return this.prismaClient.category.update({
         where,
+        data: { emoji: null },
       });
-      return undefined;
     }
   }
 

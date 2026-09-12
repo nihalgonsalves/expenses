@@ -1,11 +1,11 @@
-import { useCategoryEmojiShortCode } from "../data/use-category-emoji-short-code";
+import { useCategoryEmoji } from "../data/use-category-emoji-short-code";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 export const CategoryIcon = ({ category }: { category: string }) => {
-  const shortCode = useCategoryEmojiShortCode(category);
+  const emoji = useCategoryEmoji(category);
 
-  return shortCode ? <em-emoji shortcodes={shortCode} /> : "❓";
+  return emoji ?? "❓";
 };
 
 export const CategoryAvatar = ({ category }: { category: string }) => (

@@ -126,10 +126,10 @@ await Promise.all(
     Rent: ":house:",
     Utilities: ":zap:",
     Health: ":heart:",
-  }).map(async ([id, emojiShortCode]) =>
-    transactionApi.setCategoryEmojiShortCode(contextA, {
+  }).map(async ([id, emoji]) =>
+    transactionApi.setCategoryEmoji(contextA, {
       id,
-      emojiShortCode,
+      emoji,
     }),
   ),
 );

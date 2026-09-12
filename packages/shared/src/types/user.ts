@@ -70,5 +70,5 @@ export type UpdateUserInput = z.infer<typeof ZUpdateUserInput>;
 
 export const ZCategoryEmoji = z.object({
   id: z.string(),
-  emojiShortCode: z.string().optional(),
+  emoji: z.string().nullable(),
 });

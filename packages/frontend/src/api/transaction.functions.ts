@@ -145,12 +145,10 @@ export const getSimplifiedBalances = createServerFn({ method: "GET" })
 export const getCategories = createServerFn({ method: "GET" })
   .middleware(authenticatedMiddleware)
   .handler(async ({ context }) => api.getCategories(context));
-export const setCategoryEmojiShortCode = createServerFn({ method: "POST" })
+export const setCategoryEmoji = createServerFn({ method: "POST" })
   .middleware(authenticatedMiddleware)
   .validator(ZCategoryEmoji)
-  .handler(async ({ context, data }) =>
-    api.setCategoryEmojiShortCode(context, data),
-  );
+  .handler(async ({ context, data }) => api.setCategoryEmoji(context, data));
 
 const key = (name: string, input?: unknown) =>
   input === undefined
@@ -273,9 +271,9 @@ export const transactionMutations = {
         transactionScheduleId: string;
       }) => deleteTransactionSchedule({ data }),
     }),
-  setCategoryEmojiShortCode: () =>
+  setCategoryEmoji: () =>
     mutationOptions({
       mutationFn: async (data: z.input<typeof ZCategoryEmoji>) =>
-        setCategoryEmojiShortCode({ data }),
+        setCategoryEmoji({ data }),
     }),
 };

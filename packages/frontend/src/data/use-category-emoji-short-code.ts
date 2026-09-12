@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 
 import { transactionQueries } from "../api/transaction.functions";
 
-export const useCategoryEmojiShortCode = (
+export const useCategoryEmoji = (
   category: string,
-): string | undefined => {
+): string | null | undefined => {
   const { data: categories } = useQuery(
     transactionQueries.categories.queryOptions(),
   );
@@ -13,5 +13,5 @@ export const useCategoryEmojiShortCode = (
     ? Object.fromEntries(categories.map((c) => [c.id, c]))
     : {};
 
-  return categoryById[category]?.emojiShortCode;
+  return categoryById[category]?.emoji;
 };

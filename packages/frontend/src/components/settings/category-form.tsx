@@ -1,8 +1,5 @@
-import Picker from "@emoji-mart/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { HelpCircleIcon } from "lucide-react";
-import { toast } from "sonner";
-import { z } from "zod";
 
 import { useQueryClient } from "../../api/query-client";
 import {
@@ -12,18 +9,11 @@ import {
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-
-const ZEmojiData = z.object({
-  id: z.string(),
-  name: z.string(),
-  shortcodes: z.string(),
-  keywords: z.array(z.string()),
-  // aliases: z.array(z.string()).optional(),
-  // emoticons: z.array(z.string()).optional(),
-  // native: z.string(),
-  // unified: z.string(),
-  // skin: z.number().optional(),
-});
+import {
+  EmojiPicker,
+  EmojiPickerContent,
+  EmojiPickerSearch,
+} from "../ui/emoji-picker";
 
 export const CategoryForm = () => {
   const { invalidate } = useQueryClient();
@@ -31,24 +21,12 @@ export const CategoryForm = () => {
     transactionQueries.categories.queryOptions(),
   );
 
-  const { mutateAsync: setCategoryEmojiShortCode } = useMutation(
-    transactionMutations.setCategoryEmojiShortCode(),
+  const { mutateAsync: setCategoryEmoji } = useMutation(
+    transactionMutations.setCategoryEmoji(),
   );
 
-  const handleEmojiSelect = async (id: string, data: unknown) => {
-    const emoji = ZEmojiData.safeParse(data);
-
-    if (!emoji.success) {
-      // TODO: Sentry report or similar?
-      toast.error("Emoji data was invalid");
-      console.error("Emoji data was invalid", emoji.error);
-      return;
-    }
-
-    await setCategoryEmojiShortCode({
-      id,
-      emojiShortCode: emoji.data.shortcodes,
-    });
+  const handleEmojiSelect = async (id: string, emoji: string) => {
+    await setCategoryEmoji({ id, emoji });
 
     await invalidate(transactionQueries.categories.queryKey());
   };
@@ -64,7 +42,7 @@ export const CategoryForm = () => {
           add a new category when adding a transaction.
         </div>
         <div className="flex flex-col gap-4">
-          {categories?.map(({ id, emojiShortCode }) => (
+          {categories?.map(({ id, emoji: categoryEmoji }) => (
             <div
               key={id}
               className="flex items-center gap-2 text-sm tracking-tight"
@@ -77,20 +55,20 @@ export const CategoryForm = () => {
                       size="icon"
                       className="bg-inherit"
                     >
-                      {emojiShortCode ? (
-                        <em-emoji shortcodes={emojiShortCode} />
-                      ) : (
-                        <HelpCircleIcon />
-                      )}
+                      {categoryEmoji ? categoryEmoji : <HelpCircleIcon />}
                     </Button>
                   }
                 />
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Picker
-                    onEmojiSelect={(emojiData: unknown) => {
-                      void handleEmojiSelect(id, emojiData);
-                    }}
-                  />
+                  <EmojiPicker
+                    onEmojiSelect={({ emoji: selectedEmoji }) =>
+                      void handleEmojiSelect(id, selectedEmoji)
+                    }
+                    className="h-96"
+                  >
+                    <EmojiPickerSearch />
+                    <EmojiPickerContent />
+                  </EmojiPicker>
                 </PopoverContent>
               </Popover>
 

@@ -14,6 +14,7 @@
     "db:sql-lint": "pnpx squawk-cli",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
+    "tmp:migrate-emoji": "node ./bin/migrate-emoji.ts",
     "auth:generate": "BETTER_AUTH_CLI=true auth generate --output=./prisma/schema/auth.prisma",
     "prepare:local": "node bin/prepare-local-env.js",
     "prepare:demo": "node bin/demo.ts"
@@ -42,6 +43,7 @@
     "zod": "4.5.4"
   },
   "devDependencies": {
+    "@emoji-mart/data": "1.2.1",
     "@faker-js/faker": "10.6.0",
     "@testcontainers/postgresql": "12.1.0",
     "@total-typescript/ts-reset": "0.6.1",

@@ -1597,7 +1597,7 @@ describe("getParticipantSummaries", () => {
   });
 });
 
-describe("getCategories / setCategoryEmojiShortCode", () => {
+describe("getCategories / setCategoryEmoji", () => {
   it("returns all transaction categories with user-set emoji", async () => {
     const userAndCookie = await userFactory(prisma, betterAuth);
 
@@ -1616,15 +1616,15 @@ describe("getCategories / setCategoryEmojiShortCode", () => {
       ),
     );
 
-    await caller.transaction.setCategoryEmojiShortCode({
+    await caller.transaction.setCategoryEmoji({
       id: "other",
-      emojiShortCode: ":+1:",
+      emoji: "👍",
     });
 
     await expect(caller.transaction.getCategories()).resolves.toMatchObject([
       {
         id: "other",
-        emojiShortCode: ":+1:",
+        emoji: "👍",
       },
     ]);
   });

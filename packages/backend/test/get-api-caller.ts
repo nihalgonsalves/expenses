@@ -271,10 +271,10 @@ const apiCaller = (caller: { context: ContextObj }) => {
         ),
       getCategories: async () =>
         transactionApi.getCategories(authenticated(context)),
-      setCategoryEmojiShortCode: async (
-        input: Parameters<typeof transactionApi.setCategoryEmojiShortCode>[1],
+      setCategoryEmoji: async (
+        input: Parameters<typeof transactionApi.setCategoryEmoji>[1],
       ) =>
-        transactionApi.setCategoryEmojiShortCode(
+        transactionApi.setCategoryEmoji(
           authenticated(context),
           parse(ZCategoryEmoji, input),
         ),

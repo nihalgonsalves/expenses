@@ -562,28 +562,26 @@ export const getCategories = async (ctx: AuthenticatedContext) => {
   ]);
 
   const emojisById = Object.fromEntries(
-    userCategories.map((c) => [c.id, c.emojiShortCode]),
+    userCategories.map((c) => [c.id, c.emoji]),
   );
 
   return z.array(ZCategoryEmoji).parse(
     allCategoryIds.map((id) => ({
       id,
-      emojiShortCode: emojisById[id],
+      emoji: emojisById[id] ?? null,
     })),
   );
 };
 
-export const setCategoryEmojiShortCode = async (
+export const setCategoryEmoji = async (
   ctx: AuthenticatedContext,
   input: z.input<typeof ZCategoryEmoji>,
 ) => {
-  const result = await ctx.userService.setCategoryEmojiShortCode(
+  const result = await ctx.userService.setCategoryEmoji(
     ctx.user,
     input.id,
-    input.emojiShortCode,
+    input.emoji,
   );
 
-  return ZCategoryEmoji.parse(
-    result ?? { id: input.id, emojiShortCode: undefined },
-  );
+  return ZCategoryEmoji.parse(result);
 };
