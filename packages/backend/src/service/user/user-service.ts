@@ -115,7 +115,7 @@ export class UserService {
       return this.prismaClient.category.upsert({
         where,
         update: { emoji },
-        create: { id, emojiShortCode: "", emoji, userId: user.id },
+        create: { id, emoji, userId: user.id },
       });
     } else {
       return this.prismaClient.category.update({
