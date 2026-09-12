@@ -1,4 +1,3 @@
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { Link } from "@tanstack/react-router";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
@@ -83,13 +82,12 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
                 <Button
                   size="icon"
                   variant="outline"
+                  aria-label="New personal sheet"
                   onClick={() => {
                     haptics.selection();
                   }}
                 >
-                  <AccessibleIcon label="New personal sheet">
-                    <PlusIcon />
-                  </AccessibleIcon>
+                  <PlusIcon />
                 </Button>
               }
             />
@@ -111,13 +109,12 @@ export const SheetsList = ({ sheets }: { sheets: SheetsResponse }) => {
                 <Button
                   size="icon"
                   variant="outline"
+                  aria-label="New group sheet"
                   onClick={() => {
                     haptics.selection();
                   }}
                 >
-                  <AccessibleIcon label="New group sheet">
-                    <PlusIcon />
-                  </AccessibleIcon>
+                  <PlusIcon />
                 </Button>
               }
             />

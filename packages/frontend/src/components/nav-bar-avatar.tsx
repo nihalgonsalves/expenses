@@ -1,4 +1,3 @@
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { Link } from "@tanstack/react-router";
 import { ChevronsUpDownIcon, UserIcon } from "lucide-react";
 
@@ -37,10 +36,13 @@ export const LoggedInNavBarAvatar = ({
   <DropdownMenu>
     <DropdownMenuTrigger
       render={
-        <Button variant="ghost" size="icon" {...(className && { className })}>
-          <AccessibleIcon label="Profile and Settings menu">
-            <UserIcon className="text-primary-foreground size-5" />
-          </AccessibleIcon>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Profile and Settings menu"
+          {...(className && { className })}
+        >
+          <UserIcon className="text-primary-foreground size-5" />
         </Button>
       }
     />

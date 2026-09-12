@@ -1,6 +1,5 @@
 "use client";
 
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useMutation } from "@tanstack/react-query";
 import type { Row } from "@tanstack/react-table";
 import {
@@ -187,11 +186,10 @@ export const DataTableRowActions = ({ row }: DataTableRowActionsProps) => (
           <Button
             size="icon"
             variant="ghost"
+            aria-label="Open menu"
             className="data-[state=open]:bg-muted flex p-0"
           >
-            <AccessibleIcon label="Open menu">
-              <MoreVerticalIcon />
-            </AccessibleIcon>
+            <MoreVerticalIcon />
           </Button>
         }
       />

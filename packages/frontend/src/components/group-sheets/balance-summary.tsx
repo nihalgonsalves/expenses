@@ -1,4 +1,3 @@
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -105,10 +104,13 @@ const PersonMenu = ({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button size="icon" variant="outline" className="bg-inherit">
-            <AccessibleIcon label="Member actions">
-              <MoreVerticalIcon />
-            </AccessibleIcon>
+          <Button
+            size="icon"
+            variant="outline"
+            aria-label="Member actions"
+            className="bg-inherit"
+          >
+            <MoreVerticalIcon />
           </Button>
         }
       />
@@ -274,15 +276,15 @@ const SummaryCard = ({
         <CollapsibleTrigger
           disabled={transfers?.length === 0}
           render={
-            <Button variant="ghost" size="icon">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={transfers?.length === 0 ? "Settled up" : "Toggle"}
+            >
               {transfers?.length === 0 ? (
-                <AccessibleIcon label="Settled up">
-                  <CheckIcon className="h-4 w-4" />
-                </AccessibleIcon>
+                <CheckIcon className="h-4 w-4" aria-hidden="true" />
               ) : (
-                <AccessibleIcon label="Toggle">
-                  <ChevronsUpDownIcon className="h-4 w-4" />
-                </AccessibleIcon>
+                <ChevronsUpDownIcon className="h-4 w-4" aria-hidden="true" />
               )}
             </Button>
           }

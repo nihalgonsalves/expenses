@@ -1,8 +1,9 @@
-import { Slot } from "@radix-ui/react-slot";
+import { Field as BaseField } from "@base-ui/react/field";
 import { motion, type HTMLMotionProps } from "motion/react";
 import {
   type HTMLProps,
   type ComponentProps,
+  type ReactElement,
   createContext,
   useMemo,
   use,
@@ -64,10 +65,21 @@ const FormField = <
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
   const contextValue = useMemo(() => ({ name: props.name }), [props.name]);
+  const { render, ...controllerProps } = props;
 
   return (
     <FormFieldContext.Provider value={contextValue}>
-      <Controller {...props} />
+      <Controller
+        {...controllerProps}
+        render={(renderProps) => (
+          <BaseField.Root
+            name={props.name}
+            invalid={renderProps.fieldState.invalid}
+          >
+            {render(renderProps)}
+          </BaseField.Root>
+        )}
+      />
     </FormFieldContext.Provider>
   );
 };
@@ -141,13 +153,25 @@ const FormLabel = ({
   );
 };
 
-const FormControl = ({ ref, ...props }: ComponentProps<typeof Slot>) => {
+type FormControlProps = Omit<
+  ComponentProps<typeof BaseField.Control>,
+  "children" | "render"
+> & {
+  children: ReactElement | false | null;
+};
+
+const FormControl = ({ ref, children, ...props }: FormControlProps) => {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
 
+  if (!children) {
+    return null;
+  }
+
   return (
-    <Slot
+    <BaseField.Control
       ref={ref}
+      render={children}
       id={formItemId}
       aria-describedby={
         !error ? formDescriptionId : `${formDescriptionId} ${formMessageId}`

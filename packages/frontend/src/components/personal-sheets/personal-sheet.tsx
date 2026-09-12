@@ -1,4 +1,3 @@
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
@@ -150,10 +149,8 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
     <CreatePersonalTransactionDialog
       sheetId={personalSheet.id}
       render={
-        <Button variant="outline" size="icon">
-          <AccessibleIcon label="Add Transaction">
-            <PlusIcon />
-          </AccessibleIcon>
+        <Button variant="outline" size="icon" aria-label="Add Transaction">
+          <PlusIcon />
         </Button>
       }
     />
@@ -224,9 +221,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                             <Tooltip>
                               <TooltipTrigger>
                                 <Badge variant="outline">
-                                  <AccessibleIcon label="Pending processing">
-                                    <ClockIcon />
-                                  </AccessibleIcon>
+                                  <ClockIcon aria-label="Pending processing" />
                                 </Badge>
                               </TooltipTrigger>
                               <TooltipContent>

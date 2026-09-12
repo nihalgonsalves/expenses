@@ -1,5 +1,4 @@
 import { useInterval } from "@mantine/hooks";
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
 import { atom, useAtom } from "jotai";
@@ -444,10 +443,9 @@ export const RootLoader = <TData,>({
               size="icon"
               className="ml-2"
               onClick={refetch}
+              aria-label="Refresh"
             >
-              <AccessibleIcon label="Refresh">
-                <RefreshCcwIcon />
-              </AccessibleIcon>
+              <RefreshCcwIcon />
             </Button>
           ) : null}
         </>

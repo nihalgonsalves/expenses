@@ -1,4 +1,3 @@
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { type Dinero, allocate } from "dinero.js";
 import {
   PieChartIcon,
@@ -471,6 +470,7 @@ export const SplitsFormSection = ({
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="Reset ratio"
                         disabled={
                           !form.formState.dirtyFields.ratios?.[i]?.ratio
                         }
@@ -481,9 +481,7 @@ export const SplitsFormSection = ({
                           handleRatioBlur(-1);
                         }}
                       >
-                        <AccessibleIcon label="Reset ratio">
-                          <RotateCcwIcon />
-                        </AccessibleIcon>
+                        <RotateCcwIcon />
                       </Button>
                     )}
 

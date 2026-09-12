@@ -1,4 +1,3 @@
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { haptics } from "bzzz";
 
 import { Link } from "@tanstack/react-router";
@@ -49,15 +48,20 @@ export const FloatingActionButton = ({
               }}
               render={
                 <Link to={to}>
-                  <span className="transition-transform duration-150 group-hover/button:scale-110 group-active/button:scale-90">
-                    <AccessibleIcon label={label}>{icon}</AccessibleIcon>
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-150 group-hover/button:scale-110 group-active/button:scale-90"
+                  >
+                    {icon}
                   </span>
                 </Link>
               }
+              aria-label={label}
               className={glassClassName}
             />
           ) : (
             <Button
+              aria-label={label}
               className={glassClassName}
               onClick={(e) => {
                 haptics.selection();
@@ -65,7 +69,7 @@ export const FloatingActionButton = ({
               }}
             >
               <span className="transition-transform duration-150 group-hover/button:scale-110 group-active/button:scale-90">
-                <AccessibleIcon label={label}>{icon}</AccessibleIcon>
+                <span aria-hidden="true">{icon}</span>
               </span>
             </Button>
           )

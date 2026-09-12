@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
 import { useMutation } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -71,14 +70,13 @@ export const AddMemberButton = ({ groupSheetId }: { groupSheetId: string }) => {
         <Button
           variant="outline"
           size="icon"
+          aria-label="Add Participant"
           disabled={!onLine}
           onClick={() => {
             haptics.selection();
           }}
         >
-          <AccessibleIcon label="Add Participant">
-            <PlusIcon />
-          </AccessibleIcon>
+          <PlusIcon />
         </Button>
       }
       title="Add Participant"
