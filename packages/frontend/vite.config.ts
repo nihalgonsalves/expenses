@@ -45,9 +45,12 @@ export default defineConfig(({ mode }) => ({
     },
   },
   css: { transformer: "lightningcss" },
-  server: {
-    host: true,
-  },
+  server: process.env["VITE_ALLOWED_HOST"]
+    ? {
+        host: true,
+        allowedHosts: [process.env["VITE_ALLOWED_HOST"]],
+      }
+    : {},
   plugins: [
     devtools({
       consolePiping: { enabled: true },

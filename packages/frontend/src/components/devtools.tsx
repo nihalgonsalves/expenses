@@ -9,21 +9,25 @@ if (import.meta.env.DEV) {
   void import("jotai-devtools/styles.css");
 }
 
-const MailpitPanel = () => (
-  <iframe
-    title="Mailpit"
-    src="http://localhost:8025"
-    referrerPolicy="no-referrer"
-    // oxlint-disable-next-line react/iframe-missing-sandbox
-    sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
-    style={{
-      border: 0,
-      display: "block",
-      height: "100%",
-      width: "100%",
-    }}
-  />
-);
+const MailpitPanel = () => {
+  const mailpitUrl = `http://${window.location.hostname}:8025`;
+
+  return (
+    <iframe
+      title="Mailpit"
+      src={mailpitUrl}
+      referrerPolicy="no-referrer"
+      // oxlint-disable-next-line react/iframe-missing-sandbox
+      sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
+      style={{
+        border: 0,
+        display: "block",
+        height: "100%",
+        width: "100%",
+      }}
+    />
+  );
+};
 
 export const Devtools = () => (
   <TanStackDevtools
