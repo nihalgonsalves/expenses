@@ -12,7 +12,6 @@ import {
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
-import { ScrollArea } from "../ui/scroll-area";
 
 const ZEmojiData = z.object({
   id: z.string(),
@@ -64,43 +63,41 @@ export const CategoryForm = () => {
           You can add icons to your categories here. To create more categories,
           add a new category when adding a transaction.
         </div>
-        <ScrollArea viewportClassName="max-h-96">
-          <div className="flex flex-col gap-4">
-            {categories?.map(({ id, emojiShortCode }) => (
-              <div
-                key={id}
-                className="flex items-center gap-2 text-sm tracking-tight"
-              >
-                <Popover>
-                  <PopoverTrigger
-                    render={
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="bg-inherit"
-                      >
-                        {emojiShortCode ? (
-                          <em-emoji shortcodes={emojiShortCode} />
-                        ) : (
-                          <HelpCircleIcon />
-                        )}
-                      </Button>
-                    }
+        <div className="flex flex-col gap-4">
+          {categories?.map(({ id, emojiShortCode }) => (
+            <div
+              key={id}
+              className="flex items-center gap-2 text-sm tracking-tight"
+            >
+              <Popover>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="bg-inherit"
+                    >
+                      {emojiShortCode ? (
+                        <em-emoji shortcodes={emojiShortCode} />
+                      ) : (
+                        <HelpCircleIcon />
+                      )}
+                    </Button>
+                  }
+                />
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Picker
+                    onEmojiSelect={(emojiData: unknown) => {
+                      void handleEmojiSelect(id, emojiData);
+                    }}
                   />
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Picker
-                      onEmojiSelect={(emojiData: unknown) => {
-                        void handleEmojiSelect(id, emojiData);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
+                </PopoverContent>
+              </Popover>
 
-                {id}
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
+              {id}
+            </div>
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

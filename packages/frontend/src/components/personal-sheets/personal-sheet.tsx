@@ -37,7 +37,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import {
   Tooltip,
@@ -185,76 +184,69 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             </CardTitleWithButton>
           </CardHeader>
           <CardContent>
-            <ScrollArea viewportClassName="max-h-96">
-              <div role="list" className="flex flex-col gap-2 md:gap-4">
-                {getPersonalSheetTransactionSchedulesResponse?.map(
-                  (schedule) => {
-                    const nextOccurrenceAt = Temporal.ZonedDateTime.from(
-                      schedule.nextOccurrenceAt,
-                    ).toInstant();
+            <div role="list" className="flex flex-col gap-2 md:gap-4">
+              {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => {
+                const nextOccurrenceAt = Temporal.ZonedDateTime.from(
+                  schedule.nextOccurrenceAt,
+                ).toInstant();
 
-                    const isPast =
-                      nextOccurrenceAt.epochMilliseconds <
-                      Temporal.Now.instant().epochMilliseconds;
+                const isPast =
+                  nextOccurrenceAt.epochMilliseconds <
+                  Temporal.Now.instant().epochMilliseconds;
 
-                    return (
-                      <TransactionListItemComponent
-                        key={schedule.id}
-                        transaction={schedule}
-                        description={
-                          <div className={cn("flex gap-1")}>
-                            <Badge variant="outline" className="capitalize">
-                              {schedule.recurrenceRule.freq.toLowerCase()}
-                            </Badge>
+                return (
+                  <TransactionListItemComponent
+                    key={schedule.id}
+                    transaction={schedule}
+                    description={
+                      <div className={cn("flex gap-1")}>
+                        <Badge variant="outline" className="capitalize">
+                          {schedule.recurrenceRule.freq.toLowerCase()}
+                        </Badge>
 
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <Badge variant="outline">
-                                    {formatDateTimeRelative(
-                                      nextOccurrenceAt,
-                                      90,
-                                    )}
-                                  </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>
-                                    {shortDateTimeFormatter.format(
-                                      nextOccurrenceAt.epochMilliseconds,
-                                    )}
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Badge variant="outline">
+                                {formatDateTimeRelative(nextOccurrenceAt, 90)}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>
+                                {shortDateTimeFormatter.format(
+                                  nextOccurrenceAt.epochMilliseconds,
+                                )}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
 
-                              {isPast ? (
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <Badge variant="outline">
-                                      <AccessibleIcon label="Pending processing">
-                                        <ClockIcon />
-                                      </AccessibleIcon>
-                                    </Badge>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>Pending processing</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              ) : null}
-                            </TooltipProvider>
-                          </div>
-                        }
-                        addons={
-                          <TransactionScheduleDropdownMenu
-                            sheetId={personalSheet.id}
-                            transactionScheduleId={schedule.id}
-                          />
-                        }
+                          {isPast ? (
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Badge variant="outline">
+                                  <AccessibleIcon label="Pending processing">
+                                    <ClockIcon />
+                                  </AccessibleIcon>
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Pending processing</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : null}
+                        </TooltipProvider>
+                      </div>
+                    }
+                    addons={
+                      <TransactionScheduleDropdownMenu
+                        sheetId={personalSheet.id}
+                        transactionScheduleId={schedule.id}
                       />
-                    );
-                  },
-                )}
-              </div>
-            </ScrollArea>
+                    }
+                  />
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
 

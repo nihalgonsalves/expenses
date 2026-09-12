@@ -26,6 +26,7 @@ export const usePullToRefresh = (toastId: string, onRefetch: () => void) => {
 
   const touchStartYRef = useRef(0);
   const touchDiffYRef = useRef(0);
+  const touchStartedAtTopRef = useRef(false);
 
   useEffect(() => {
     if (!isStandalone || dialog.isOpen) {
@@ -37,6 +38,7 @@ export const usePullToRefresh = (toastId: string, onRefetch: () => void) => {
       if (clientY == null) return;
 
       touchStartYRef.current = clientY;
+      touchStartedAtTopRef.current = window.scrollY <= 0;
     };
 
     const onTouchMove = (e: TouchEvent) => {
@@ -48,6 +50,7 @@ export const usePullToRefresh = (toastId: string, onRefetch: () => void) => {
       touchDiffYRef.current = touchDiffY;
 
       if (
+        touchStartedAtTopRef.current &&
         // if the touch started at over 60% of the screen height,
         // theres no chance the user will be able to cross more than 40% of the screen height
         touchStartYRef.current < inverseReloadThreshold() &&
@@ -73,7 +76,10 @@ export const usePullToRefresh = (toastId: string, onRefetch: () => void) => {
     };
 
     const onTouchEnd = () => {
-      if (touchDiffYRef.current > reloadThreshold()) {
+      if (
+        touchStartedAtTopRef.current &&
+        touchDiffYRef.current > reloadThreshold()
+      ) {
         onRefetch();
       } else {
         toast.dismiss(toastId);
@@ -81,6 +87,7 @@ export const usePullToRefresh = (toastId: string, onRefetch: () => void) => {
 
       touchStartYRef.current = 0;
       touchDiffYRef.current = 0;
+      touchStartedAtTopRef.current = false;
     };
 
     const abortController = new AbortController();

@@ -36,7 +36,6 @@ import {
   DrawerTrigger,
 } from "../components/ui/drawer";
 import { LoadingSpinner } from "../components/ui/loading-spinner";
-import { ScrollArea } from "../components/ui/scroll-area";
 import { cn } from "../components/ui/utils";
 import { appConfigQueryOptions } from "../api/config.functions";
 import { useNavigatorOnLine } from "../state/use-navigator-on-line";
@@ -84,11 +83,14 @@ const AppSidebar = ({
   appName: string;
   isSettingsRoute: boolean;
 }) => (
-  <aside className="bg-card hidden w-60 shrink-0 border-r md:flex md:flex-col">
+  <aside className="bg-card fixed inset-y-0 left-0 z-20 hidden w-60 border-r md:flex md:flex-col">
     <div className="bg-primary text-primary-foreground flex h-16 shrink-0 items-center px-5 text-lg font-semibold md:text-2xl">
       {appName}
     </div>
-    <nav aria-label="Main navigation" className="flex flex-col gap-1 p-3">
+    <nav
+      aria-label="Main navigation"
+      className="flex min-h-0 flex-col gap-1 overflow-y-auto p-3 *:shrink-0"
+    >
       {primaryNavItems.map(({ to, text, icon }) => (
         <Link
           key={to}
@@ -136,7 +138,7 @@ const AppSidebar = ({
         </CollapsibleContent>
       </Collapsible>
     </nav>
-    <div className="mt-auto border-t p-3">
+    <div className="mt-auto shrink-0 border-t p-3">
       <SidebarUserCard />
     </div>
   </aside>
@@ -167,7 +169,7 @@ export const Root = ({
   return (
     <>
       <title>{data ? `${data.name} - ${title}` : title}</title>
-      <div className="bg-background relative isolate m-auto flex h-dvh flex-col">
+      <div className="bg-background relative isolate m-auto flex min-h-dvh flex-col">
         {!navigatorOnLine || bannerText ? (
           <header className="bg-muted text-muted-foreground flex justify-center gap-1 p-1 text-center text-xs tracking-tighter">
             {bannerText ? <span>{bannerText}</span> : null}
@@ -179,8 +181,8 @@ export const Root = ({
             appName={data?.name ?? "Expenses"}
             isSettingsRoute={isSettingsRoute}
           />
-          <div className="relative flex min-w-0 grow flex-col">
-            <header className="bg-primary flex place-items-center justify-center p-4 px-5 align-middle text-lg md:text-2xl">
+          <div className="relative flex min-w-0 grow flex-col md:ml-60">
+            <header className="bg-primary sticky top-0 z-30 flex place-items-center justify-center p-4 px-5 align-middle text-lg md:text-2xl">
               {showBackButton ? (
                 <Button
                   variant="ghost"
@@ -205,21 +207,18 @@ export const Root = ({
               <NavBarAvatar className="ml-4 md:hidden" />
             </header>
 
-            <main className="contents">
-              <ScrollArea
-                viewportClassName={cn(
-                  "p-3 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:p-5",
-                  className,
-                )}
-                rootClassName="flex grow flex-col"
-              >
-                {children}
-              </ScrollArea>
+            <main
+              className={cn(
+                "relative grow overflow-x-hidden p-3 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:p-5",
+                className,
+              )}
+            >
+              {children}
             </main>
 
             {additionalChildren}
 
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
+            <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
               <nav className="mobile-glass-nav border-foreground/10 bg-background/20 pointer-events-auto relative flex h-16 overflow-hidden rounded-[1.75rem] border p-1.5 shadow-[0_12px_36px_rgb(0_0_0/0.18),inset_0_1px_0_rgb(255_255_255/0.35)] backdrop-blur-md backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/70 before:to-transparent">
                 {primaryNavItems.map(({ to, text, icon }) => (
                   <Link

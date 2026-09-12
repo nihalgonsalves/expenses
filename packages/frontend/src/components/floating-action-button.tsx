@@ -36,7 +36,7 @@ export const FloatingActionButton = ({
   label,
   icon,
 }: FloatingActionButtonProps) => (
-  <div ref={ref} className="sticky bottom-0 w-full">
+  <div ref={ref} className="fixed inset-x-0 bottom-0 z-40 w-full">
     <Tooltip>
       <TooltipTrigger
         render={

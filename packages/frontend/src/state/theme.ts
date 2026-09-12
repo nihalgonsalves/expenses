@@ -70,17 +70,10 @@ export const getThemeDataAttribute = (
   theme: Theme,
 ) => `${theme}-${isDarkMode(themePreference) ? "dark" : "light"}`;
 
-const setColor = (color: string) => {
-  // Chrome PWA, Safari <=17
+const setMetaThemeColor = (color: string) => {
   document
     .querySelector('meta[name="theme-color"]')
     ?.setAttribute("content", color);
-
-  // Safari >=26, iOS >=26
-  document
-    .getElementsByTagName("body")
-    .item(0)
-    ?.style.setProperty("background-color", color);
 };
 
 const syncMetaThemeColor = (shouldDarken: boolean) => {
@@ -89,7 +82,7 @@ const syncMetaThemeColor = (shouldDarken: boolean) => {
   // see Root.tsx
 
   // fallback on load
-  setColor(
+  setMetaThemeColor(
     window
       .getComputedStyle(document.documentElement)
       .getPropertyValue("--primary"),
@@ -112,7 +105,7 @@ const syncMetaThemeColor = (shouldDarken: boolean) => {
 
   const [r, g, b] = result.data;
 
-  setColor(
+  setMetaThemeColor(
     shouldDarken
       ? // the DrawerRoot is styled as bg-black/10, we can mimic the same 10% black effect
         // by setting the RGB value to 90% of the original
