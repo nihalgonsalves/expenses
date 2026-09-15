@@ -11,8 +11,8 @@ export const ParticipantListItem = ({
   avatar?: ReactNode;
   className?: string;
 }) => (
-  <div className={cn("flex items-center gap-4", className)} role="listitem">
+  <li className={cn("flex items-center gap-4", className)}>
     <div>{avatar}</div>
     {children}
-  </div>
+  </li>
 );

@@ -358,6 +358,18 @@
   --ring: hsl(263.4 70% 50.4%);
 }
 
+@media (prefers-contrast: more) {
+  :root {
+    --border: var(--foreground);
+    --card-foreground: var(--foreground);
+    --popover-foreground: var(--foreground);
+    --muted-foreground: var(--foreground);
+    --secondary-foreground: var(--foreground);
+    --input: var(--foreground);
+    --ring: var(--foreground);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

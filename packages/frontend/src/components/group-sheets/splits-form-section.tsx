@@ -421,7 +421,7 @@ export const SplitsFormSection = ({
           )}
         />
       </FormItem>
-      <div role="list" className="grid gap-2" style={{ paddingBlock: "1rem" }}>
+      <ul className="grid gap-2 py-4">
         {fields.map(({ id, participantId, ratio }, i) => {
           const participantName = participantNameById[participantId];
           const share = shareByParticipantId[participantId];
@@ -431,18 +431,18 @@ export const SplitsFormSection = ({
           }
 
           return (
-            <ParticipantListItem
-              key={participantId}
-              avatar={<Avatar name={participantName} />}
-              className="min-h-14"
-            >
-              <FormField
-                key={id}
-                control={form.control}
-                name={`ratios.${i}.ratio`}
-                render={({ field: { value, ...field } }) => (
-                  <FormItem className="flex grow items-center gap-2">
-                    <div className="flex grow flex-col gap-2">
+            <FormField
+              key={id}
+              control={form.control}
+              name={`ratios.${i}.ratio`}
+              render={({ field: { value, ...field } }) => (
+                <ParticipantListItem
+                  key={participantId}
+                  avatar={<Avatar name={participantName} />}
+                  className="min-h-14"
+                >
+                  <FormItem className="flex grow items-center gap-2 *:m-0">
+                    <div className="flex grow flex-col gap-1">
                       <FormLabel>
                         {participantNameById[participantId]}
                       </FormLabel>
@@ -554,12 +554,12 @@ export const SplitsFormSection = ({
 
                     <FormMessage />
                   </FormItem>
-                )}
-              />
-            </ParticipantListItem>
+                </ParticipantListItem>
+              )}
+            />
           );
         })}
-      </div>
+      </ul>
       {splitErrorMessage && !ratioFocused ? (
         <Alert variant="destructive">
           <AlertTitle>{splitErrorMessage}</AlertTitle>

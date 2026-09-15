@@ -94,7 +94,7 @@ const AppSidebar = ({
         <Link
           key={to}
           to={to}
-          className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-2"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring hover:contrast-more:ring-foreground flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-2 hover:contrast-more:ring-1"
         >
           {({ isActive }) => (
             <>
@@ -105,7 +105,7 @@ const AppSidebar = ({
         </Link>
       ))}
       <Collapsible defaultOpen={isSettingsRoute} className="mt-1">
-        <CollapsibleTrigger className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-2">
+        <CollapsibleTrigger className="text-muted-foreground hover:contrast-more:ring-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring flex h-10 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors outline-none focus-visible:ring-2 hover:contrast-more:ring-1">
           <CogIcon
             className={cn("size-5", isSettingsRoute && "text-primary")}
           />
@@ -120,7 +120,7 @@ const AppSidebar = ({
               key={slug}
               to="/settings/$section"
               params={{ section: slug }}
-              className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring flex h-9 items-center gap-3 rounded-lg px-3 text-sm transition-colors outline-none focus-visible:ring-2"
+              className="hover:contrast-more:ring-foreground text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring flex h-9 items-center gap-3 rounded-lg px-3 text-sm transition-colors outline-none focus-visible:ring-2 hover:contrast-more:ring-1"
             >
               {({ isActive }) => (
                 <>
@@ -218,7 +218,7 @@ export const Root = ({
             {additionalChildren}
 
             <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden">
-              <nav className="mobile-glass-nav border-foreground/10 bg-background/20 pointer-events-auto relative flex h-16 overflow-hidden rounded-[1.75rem] border p-1.5 shadow-[0_12px_36px_rgb(0_0_0/0.18),inset_0_1px_0_rgb(255_255_255/0.35)] backdrop-blur-md backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/70 before:to-transparent">
+              <nav className="border-foreground/10 contrast-more:border-foreground contrast-more:bg-background bg-background/20 pointer-events-auto relative flex h-16 overflow-hidden rounded-[1.75rem] border p-1.5 shadow-[0_12px_36px_rgb(0_0_0/0.18),inset_0_1px_0_rgb(255_255_255/0.35)] backdrop-blur-md backdrop-saturate-150 before:pointer-events-none before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-white/70 before:to-transparent">
                 {primaryNavItems.map(({ to, text, icon }) => (
                   <Link
                     key={to}

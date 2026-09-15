@@ -7,7 +7,7 @@ import { Button } from "./ui/button";
 import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/tooltip";
 
 const glassClassName =
-  "mobile-glass-fab border-foreground/10 bg-background/20 text-primary ring-primary/25 absolute right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] size-12 overflow-hidden rounded-full border text-2xl shadow-[0_10px_28px_rgb(0_0_0/0.22),inset_0_1px_0_rgb(255_255_255/0.5)] ring-1 backdrop-blur-md backdrop-saturate-150 hover:bg-background/30 [a]:hover:bg-background/30 md:bottom-4";
+  "border-foreground/10 contrast-more:ring-foreground bg-background/20 text-primary ring-primary/25 absolute right-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] size-12 overflow-hidden rounded-full border text-2xl shadow-[0_10px_28px_rgb(0_0_0/0.22),inset_0_1px_0_rgb(255_255_255/0.5)] ring-1 backdrop-blur-md backdrop-saturate-150 hover:bg-background/30 [a]:hover:bg-background/30 md:bottom-4";
 
 type FloatingActionButtonProps = {
   ref?: Ref<HTMLDivElement>;

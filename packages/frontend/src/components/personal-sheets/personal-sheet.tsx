@@ -61,10 +61,7 @@ const TransactionListItemComponent = ({
 }) => {
   const descriptionText = getTransactionDescription(transaction);
   return (
-    <div
-      role="listitem"
-      className="flex flex-row items-center gap-2 text-sm md:gap-4"
-    >
+    <li className="flex flex-row items-center gap-2 text-sm md:gap-4">
       <CategoryAvatar category={transaction.category} />
       <div className="flex flex-col">
         <span>
@@ -75,7 +72,7 @@ const TransactionListItemComponent = ({
       </div>
       <div className="grow" />
       {addons}
-    </div>
+    </li>
   );
 };
 
@@ -181,7 +178,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
             </CardTitleWithButton>
           </CardHeader>
           <CardContent>
-            <div role="list" className="flex flex-col gap-2 md:gap-4">
+            <ul className="flex flex-col gap-2 md:gap-4">
               {getPersonalSheetTransactionSchedulesResponse?.map((schedule) => {
                 const nextOccurrenceAt = Temporal.ZonedDateTime.from(
                   schedule.nextOccurrenceAt,
@@ -241,7 +238,7 @@ export const PersonalSheet = ({ personalSheet }: { personalSheet: Sheet }) => {
                   />
                 );
               })}
-            </div>
+            </ul>
           </CardContent>
         </Card>
 
