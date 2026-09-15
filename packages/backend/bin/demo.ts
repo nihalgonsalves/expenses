@@ -116,16 +116,16 @@ await transactionApi.createGroupSheetTransaction(contextA, {
 
 await Promise.all(
   Object.entries({
-    Drinks: ":wine_glass:",
-    Movies: ":clapper:",
-    Groceries: ":shopping_trolley:",
-    "Eating Out": ":knife_fork_plate:",
-    Shopping: ":shopping_bags:",
-    Transport: ":train:",
-    Travel: ":earth_africa:",
-    Rent: ":house:",
-    Utilities: ":zap:",
-    Health: ":heart:",
+    Drinks: "🍷",
+    Movies: "🎬",
+    Groceries: "🛒",
+    "Eating Out": "🍽️",
+    Shopping: "🛍️",
+    Transport: "🚝",
+    Travel: "🌍",
+    Rent: "🏠",
+    Utilities: "⚡️",
+    Health: "❤️",
   }).map(async ([id, emoji]) =>
     transactionApi.setCategoryEmoji(contextA, {
       id,
