@@ -100,7 +100,6 @@ const mySheetsQueryOptions = (input: MySheetsInput) =>
   queryOptions({
     queryKey: mySheetsQueryKey(input),
     queryFn: async () => getMySheets({ data: input }),
-    staleTime: Infinity,
   });
 
 const groupSheetByIdQueryKey = (id: string) => ["sheet", "group", id] as const;
@@ -111,13 +110,11 @@ const groupSheetByIdQueryOptions = (id: string) =>
   queryOptions({
     queryKey: groupSheetByIdQueryKey(id),
     queryFn: async () => getGroupSheetById({ data: id }),
-    staleTime: Infinity,
   });
 const personalSheetByIdQueryOptions = (id: string) =>
   queryOptions({
     queryKey: personalSheetByIdQueryKey(id),
     queryFn: async () => getPersonalSheetById({ data: id }),
-    staleTime: Infinity,
   });
 
 export const sheetQueries = {

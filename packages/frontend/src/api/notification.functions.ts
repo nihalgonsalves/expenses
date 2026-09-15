@@ -41,14 +41,12 @@ const publicKeyQueryOptions = () =>
   queryOptions({
     queryKey: publicKeyQueryKey(),
     queryFn: async () => getPublicKey(),
-    staleTime: Infinity,
   });
 
 const subscriptionsQueryOptions = () =>
   queryOptions({
     queryKey: subscriptionsQueryKey(),
     queryFn: async () => getSubscriptions(),
-    staleTime: Infinity,
   });
 
 export const notificationQueries = {

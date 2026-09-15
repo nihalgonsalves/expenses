@@ -104,7 +104,6 @@ export const userApi = {
       queryOptions({
         queryKey: categoryGroupsQueryKey(),
         queryFn: getCategoryGroups,
-        staleTime: Infinity,
       }),
     createMutationOptions: () =>
       mutationOptions({

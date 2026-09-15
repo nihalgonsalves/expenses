@@ -160,7 +160,6 @@ const q = <T, R>(name: string, f: (input: T) => Promise<R>) => ({
     queryOptions({
       queryKey: key(name, input),
       queryFn: async () => f(input),
-      staleTime: Infinity,
       ...options,
     }),
 });
@@ -176,7 +175,6 @@ export const transactionQueries = {
       queryOptions({
         queryKey: key("future"),
         queryFn: getFutureTransactions,
-        staleTime: Infinity,
       }),
   },
   personalSheetTransactions: q(
@@ -211,7 +209,6 @@ export const transactionQueries = {
       queryOptions({
         queryKey: key("categories"),
         queryFn: getCategories,
-        staleTime: Infinity,
       }),
   },
 };
