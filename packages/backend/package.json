@@ -33,7 +33,7 @@
     "better-auth": "1.7.2",
     "bullmq": "6.3.4",
     "nanoid": "6.0.1",
-    "nodemailer": "10.0.0",
+    "nodemailer": "10.0.9",
     "pg": "8.23.0",
     "rate-limiter-flexible": "11.2.0",
     "rrule": "2.8.1",
