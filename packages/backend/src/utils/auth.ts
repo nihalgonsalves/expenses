@@ -77,6 +77,10 @@ export const createAuth = (
                   address: email,
                 },
                 subject: `Your ${config.APP_NAME} verification code: ${otp}`,
+                headers: {
+                  // https://datatracker.ietf.org/doc/draft-goto-otp-token/
+                  "OTP-Token": `"${otp}"; origin="${config.PUBLIC_ORIGIN}"`,
+                },
                 text: [
                   `Enter the code ${otp} to sign in to your account on ${config.PUBLIC_ORIGIN}.`,
                   "---",

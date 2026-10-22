@@ -9,7 +9,10 @@ import { durationSeconds } from "../../utils/temporal.ts";
 import { createPostgresBackend } from "../../postgres.ts";
 import { AppError } from "../../utils/errors.ts";
 
-export type EmailPayload = Pick<SendMailOptions, "subject" | "text"> & {
+export type EmailPayload = Pick<
+  SendMailOptions,
+  "subject" | "text" | "headers"
+> & {
   to: {
     name: string;
     address: string;
