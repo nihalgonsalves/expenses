@@ -9,6 +9,7 @@
     "./routes": "./src/routes.ts",
     "./simplify-balances": "./src/simplify-balances.ts",
     "./types/transaction": "./src/types/transaction.ts",
+    "./types/transaction-draft": "./src/types/transaction-draft.ts",
     "./types/notification": "./src/types/notification.ts",
     "./types/sheet": "./src/types/sheet.ts",
     "./types/theme": "./src/types/theme.ts",

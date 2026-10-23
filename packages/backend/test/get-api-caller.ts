@@ -23,6 +23,7 @@ import {
   ZSheetsQuery,
   ZUpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
+import { ZCreateAppleWalletDraftInput } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 import { ZNotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
 import {
   ZCreateCategoryGroupInput,
@@ -34,12 +35,14 @@ import * as currencyConversionApi from "../src/service/frankfurter/currency-conv
 import * as notificationApi from "../src/service/notification/notification-api.server.ts";
 import * as sheetApi from "../src/service/sheet/sheet-api.server.ts";
 import * as transactionApi from "../src/service/transaction/transaction-api.server.ts";
+import * as transactionDraftApi from "../src/service/transaction-draft/transaction-draft-api.server.ts";
 import * as userApi from "../src/service/user/user-api.server.ts";
 
 import { FrankfurterService } from "../src/service/frankfurter/frankfurter-service.ts";
 import { NotificationService } from "../src/service/notification/notification-service.ts";
 import { SheetService } from "../src/service/sheet/sheet-service.ts";
 import { TransactionService } from "../src/service/transaction/transaction-service.ts";
+import { TransactionDraftService } from "../src/service/transaction-draft/transaction-draft-service.ts";
 import { UserService } from "../src/service/user/user-service.ts";
 import { createAuth } from "../src/utils/auth.ts";
 import { FakeEmailWorker } from "./fake-email-worker.ts";
@@ -71,6 +74,7 @@ const getTestCaller = async () => {
       prisma,
       notificationDispatchService,
     );
+    const transactionDraftService = new TransactionDraftService(prisma);
     const sheetService = new SheetService(
       prisma,
       transactionService,
@@ -86,6 +90,7 @@ const getTestCaller = async () => {
       userService,
       sheetService,
       transactionService,
+      transactionDraftService,
       notificationSubscriptionService,
       frankfurterService,
       ...options,
@@ -278,6 +283,15 @@ const apiCaller = (caller: { context: ContextObj }) => {
           authenticated(context),
           parse(ZCategoryEmoji, input),
         ),
+    },
+    transactionDraft: {
+      createAppleWalletDraft: async (input: unknown) =>
+        transactionDraftApi.createAppleWalletDraft(
+          authenticated(context),
+          parse(ZCreateAppleWalletDraftInput, input),
+        ),
+      getTransactionDrafts: async () =>
+        transactionDraftApi.getTransactionDrafts(authenticated(context)),
     },
     currencyConversion: {
       getSupportedCurrencies: async () =>

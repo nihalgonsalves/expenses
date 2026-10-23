@@ -177,3 +177,32 @@ model TransactionEntry {
 
   @@map("transaction_entries")
 }
+
+enum TransactionDraftSource {
+  APPLE_WALLET
+
+  @@map("transaction_draft_source")
+}
+
+model TransactionDraft {
+  id        String   @id
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  source   TransactionDraftSource
+  // the unparsed request body, kept so that drafts can be re-parsed if the
+  // source format changes
+  rawInput Json                   @map("raw_input")
+
+  description  String?
+  amount       Int?
+  scale        Int?     @db.SmallInt()
+  currencyCode String?  @map("currency_code")
+  spentAt      DateTime @map("spent_at") @db.Timestamptz()
+
+  @@index([userId])
+  @@map("transaction_drafts")
+}

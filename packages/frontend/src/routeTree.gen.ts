@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthDraftsRouteImport } from './routes/_auth/drafts'
 import { Route as AuthStatsRouteImport } from './routes/_auth/stats'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
@@ -21,6 +22,7 @@ import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index
 import { Route as AuthGroupsSheetIdRouteImport } from './routes/_auth/groups/$sheetId'
 import { Route as AuthSheetsIndexRouteImport } from './routes/_auth/sheets/index'
 import { Route as AuthSheetsSheetIdRouteImport } from './routes/_auth/sheets/$sheetId'
+import { Route as V1DraftsAppleWalletRouteImport } from './routes/v1/drafts/apple-wallet'
 import { Route as AuthSheetsSheetIdImportRouteImport } from './routes/_auth/sheets/$sheetId.import'
 
 const AuthRoute = AuthRouteImport.update({
@@ -35,6 +37,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthDraftsRoute = AuthDraftsRouteImport.update({
+  id: '/drafts',
+  path: '/drafts',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthStatsRoute = AuthStatsRouteImport.update({
@@ -82,6 +89,11 @@ const AuthSheetsSheetIdRoute = AuthSheetsSheetIdRouteImport.update({
   path: '/sheets/$sheetId',
   getParentRoute: () => AuthRoute,
 } as any)
+const V1DraftsAppleWalletRoute = V1DraftsAppleWalletRouteImport.update({
+  id: '/v1/drafts/apple-wallet',
+  path: '/v1/drafts/apple-wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthSheetsSheetIdImportRoute = AuthSheetsSheetIdImportRouteImport.update({
   id: '/import',
   path: '/import',
@@ -91,6 +103,7 @@ const AuthSheetsSheetIdImportRoute = AuthSheetsSheetIdImportRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/settings': typeof SettingsRouteWithChildren
+  '/drafts': typeof AuthDraftsRoute
   '/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/settings/$section': typeof SettingsSectionRoute
@@ -98,11 +111,13 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof SettingsIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
+  '/v1/drafts/apple-wallet': typeof V1DraftsAppleWalletRoute
   '/groups/': typeof AuthGroupsIndexRoute
   '/sheets/': typeof AuthSheetsIndexRoute
   '/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
 }
 export interface FileRoutesByTo {
+  '/drafts': typeof AuthDraftsRoute
   '/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/settings/$section': typeof SettingsSectionRoute
@@ -111,6 +126,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsIndexRoute
   '/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
+  '/v1/drafts/apple-wallet': typeof V1DraftsAppleWalletRoute
   '/groups': typeof AuthGroupsIndexRoute
   '/sheets': typeof AuthSheetsIndexRoute
   '/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
@@ -119,6 +135,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/settings': typeof SettingsRouteWithChildren
+  '/_auth/drafts': typeof AuthDraftsRoute
   '/_auth/stats': typeof AuthStatsRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/settings/$section': typeof SettingsSectionRoute
@@ -127,6 +144,7 @@ export interface FileRoutesById {
   '/settings/': typeof SettingsIndexRoute
   '/_auth/groups/$sheetId': typeof AuthGroupsSheetIdRoute
   '/_auth/sheets/$sheetId': typeof AuthSheetsSheetIdRouteWithChildren
+  '/v1/drafts/apple-wallet': typeof V1DraftsAppleWalletRoute
   '/_auth/groups/': typeof AuthGroupsIndexRoute
   '/_auth/sheets/': typeof AuthSheetsIndexRoute
   '/_auth/sheets/$sheetId/import': typeof AuthSheetsSheetIdImportRoute
@@ -136,6 +154,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/settings'
+    | '/drafts'
     | '/stats'
     | '/auth/sign-in'
     | '/settings/$section'
@@ -143,11 +162,13 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
+    | '/v1/drafts/apple-wallet'
     | '/groups/'
     | '/sheets/'
     | '/sheets/$sheetId/import'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/drafts'
     | '/stats'
     | '/auth/sign-in'
     | '/settings/$section'
@@ -156,6 +177,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/groups/$sheetId'
     | '/sheets/$sheetId'
+    | '/v1/drafts/apple-wallet'
     | '/groups'
     | '/sheets'
     | '/sheets/$sheetId/import'
@@ -163,6 +185,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/settings'
+    | '/_auth/drafts'
     | '/_auth/stats'
     | '/auth/sign-in'
     | '/settings/$section'
@@ -171,6 +194,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/_auth/groups/$sheetId'
     | '/_auth/sheets/$sheetId'
+    | '/v1/drafts/apple-wallet'
     | '/_auth/groups/'
     | '/_auth/sheets/'
     | '/_auth/sheets/$sheetId/import'
@@ -181,6 +205,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRouteWithChildren
   AuthSignInRoute: typeof AuthSignInRoute
   V1MeRoute: typeof V1MeRoute
+  V1DraftsAppleWalletRoute: typeof V1DraftsAppleWalletRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -204,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/drafts': {
+      id: '/_auth/drafts'
+      path: '/drafts'
+      fullPath: '/drafts'
+      preLoaderRoute: typeof AuthDraftsRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/stats': {
@@ -269,6 +301,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSheetsSheetIdRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/v1/drafts/apple-wallet': {
+      id: '/v1/drafts/apple-wallet'
+      path: '/v1/drafts/apple-wallet'
+      fullPath: '/v1/drafts/apple-wallet'
+      preLoaderRoute: typeof V1DraftsAppleWalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth/sheets/$sheetId/import': {
       id: '/_auth/sheets/$sheetId/import'
       path: '/import'
@@ -291,6 +330,7 @@ const AuthSheetsSheetIdRouteWithChildren =
   AuthSheetsSheetIdRoute._addFileChildren(AuthSheetsSheetIdRouteChildren)
 
 interface AuthRouteChildren {
+  AuthDraftsRoute: typeof AuthDraftsRoute
   AuthStatsRoute: typeof AuthStatsRoute
   AuthIndexRoute: typeof AuthIndexRoute
   AuthGroupsSheetIdRoute: typeof AuthGroupsSheetIdRoute
@@ -300,6 +340,7 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthDraftsRoute: AuthDraftsRoute,
   AuthStatsRoute: AuthStatsRoute,
   AuthIndexRoute: AuthIndexRoute,
   AuthGroupsSheetIdRoute: AuthGroupsSheetIdRoute,
@@ -329,6 +370,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRouteWithChildren,
   AuthSignInRoute: AuthSignInRoute,
   V1MeRoute: V1MeRoute,
+  V1DraftsAppleWalletRoute: V1DraftsAppleWalletRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

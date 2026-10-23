@@ -101,6 +101,10 @@ export const createAuth = (
       apiKey({
         defaultPrefix: "exp_",
         requireName: true,
+        rateLimit: {
+          timeWindow: durationSeconds({ hours: 1 }) * 1000,
+          maxRequests: 100,
+        },
         customAPIKeyGetter: ({ request }) =>
           request === undefined ? null : getBearerApiKey(request.headers),
       }),

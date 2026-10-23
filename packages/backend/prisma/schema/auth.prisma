@@ -16,6 +16,7 @@ model User {
   notificationSubscriptions NotificationSubscription[]
   categories                Category[]
   categoryGroups            CategoryGroup[]
+  transactionDrafts         TransactionDraft[]
 
   theme String?
 

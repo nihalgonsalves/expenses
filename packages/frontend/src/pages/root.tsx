@@ -7,6 +7,7 @@ import {
   ChevronDownIcon,
   CogIcon,
   HomeIcon,
+  InboxIcon,
   ListIcon,
   PieChartIcon,
   RefreshCcwIcon,
@@ -37,6 +38,7 @@ import {
 import { LoadingSpinner } from "../components/ui/loading-spinner";
 import { cn } from "../components/ui/utils";
 import { appConfigQueryOptions } from "../api/config.functions";
+import { useHasTransactionDrafts } from "../api/transaction-draft.functions";
 import { useNavigatorOnLine } from "../state/use-navigator-on-line";
 import { useIsStandalone } from "../utils/hooks/use-is-standalone";
 import {
@@ -57,7 +59,13 @@ type RootProps = {
   bannerText?: string | undefined;
 };
 
-const primaryNavItems = [
+const draftsNavItem = {
+  to: "/drafts",
+  text: "Drafts",
+  icon: <InboxIcon className="size-5" />,
+};
+
+const basePrimaryNavItems = [
   {
     to: "/",
     text: "Home",
@@ -75,12 +83,26 @@ const primaryNavItems = [
   },
 ];
 
+type PrimaryNavItems = (
+  (typeof basePrimaryNavItems)[number] | typeof draftsNavItem
+)[];
+
+const usePrimaryNavItems = (): PrimaryNavItems => {
+  const hasDrafts = useHasTransactionDrafts();
+
+  return hasDrafts
+    ? [draftsNavItem, ...basePrimaryNavItems]
+    : basePrimaryNavItems;
+};
+
 const AppSidebar = ({
   appName,
   isSettingsRoute,
+  primaryNavItems,
 }: {
   appName: string;
   isSettingsRoute: boolean;
+  primaryNavItems: PrimaryNavItems;
 }) => (
   <aside className="bg-card fixed inset-y-0 left-0 z-20 hidden w-60 border-r md:flex md:flex-col">
     <div className="bg-primary text-primary-foreground flex h-16 shrink-0 items-center px-5 text-lg font-semibold md:text-2xl">
@@ -162,6 +184,7 @@ export const Root = ({
     select: (state) => state.location.pathname,
   });
   const isSettingsRoute = pathname.startsWith("/settings");
+  const primaryNavItems = usePrimaryNavItems();
   // see also: packages/frontend/src/state/theme.ts which marks the theme colour as muted when offline
   const navigatorOnLine = useNavigatorOnLine();
 
@@ -179,6 +202,7 @@ export const Root = ({
           <AppSidebar
             appName={data?.name ?? "Expenses"}
             isSettingsRoute={isSettingsRoute}
+            primaryNavItems={primaryNavItems}
           />
           <div className="relative flex min-w-0 grow flex-col md:ml-60">
             <header className="bg-primary sticky top-0 z-30 flex place-items-center justify-center p-4 px-5 align-middle text-lg md:text-2xl">
