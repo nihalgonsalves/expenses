@@ -140,14 +140,12 @@ const getNotificationPresentation = (
 
   if (payload.type === "DRAFT") {
     const { id, description, money } = payload.draft;
-    const formattedMoney = money
-      ? formatDraftMoney(money)
-      : "amount not recognised";
+    const formattedMoney = money ? formatDraftMoney(money) : undefined;
 
     return {
       tag: `draft-${id}`,
-      title: `🧾 New draft – ${description ?? "No description"} (${formattedMoney})`,
-      body: "Tap to add it to a sheet",
+      title: `🧾 ${description ?? "Transaction"} (${formattedMoney ?? "N/A"})`,
+      body: "New draft ready to import",
       url: `/drafts?${new URLSearchParams({ draftId: id }).toString()}`,
     };
   }
