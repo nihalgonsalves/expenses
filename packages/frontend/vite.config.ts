@@ -32,15 +32,9 @@ export default defineConfig(({ mode }) => ({
     target: "es2025",
     sourcemap: true,
     rolldownOptions: {
-      // TODO use onLog
-      // oxlint-disable-next-line typescript/no-deprecated
-      onwarn(warning, warn) {
-        // Suppress "Module level directives cause errors when bundled" warnings
-        if (warning.code === "MODULE_LEVEL_DIRECTIVE") {
-          return;
-        }
-
-        warn(warning);
+      checks: {
+        // Suppress `"use client"` etc. warnings from dependencies
+        moduleLevelDirective: false,
       },
     },
   },

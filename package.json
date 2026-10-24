@@ -6,7 +6,7 @@
   "author": "Nihal Gonsalves <nihal@nihalgonsalves.com>",
   "private": true,
   "license": "MIT",
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@12.15.0",
   "engines": {
     "node": ">=26"
   },
@@ -37,24 +37,24 @@
   },
   "devDependencies": {
     "@nihalgonsalves/esconfig": "0.18.2",
-    "@types/node": "^26.4.1",
-    "@vitest/coverage-v8": "5.0.0",
-    "@vitest/ui": "5.0.0",
+    "@types/node": "^26.6.5",
+    "@vitest/coverage-v8": "5.0.5",
+    "@vitest/ui": "5.0.5",
     "eslint-plugin-jest-dom": "5.10.1",
-    "eslint-plugin-storybook": "10.6.0",
+    "eslint-plugin-storybook": "10.6.3",
     "eslint-plugin-testing-library": "7.16.2",
-    "knip": "6.34.0",
-    "lefthook": "2.1.12",
-    "npm-run-all2": "9.0.3",
-    "oxlint": "1.81.0",
-    "oxlint-tsgolint": "7.0.2001",
-    "prettier": "3.9.6",
+    "knip": "6.42.1",
+    "lefthook": "2.2.2",
+    "npm-run-all2": "9.0.4",
+    "oxlint": "1.89.0",
+    "oxlint-tsgolint": "7.0.2005",
+    "prettier": "3.9.10",
     "prettier-plugin-prisma": "5.0.0",
     "prettier-plugin-sql": "0.20.0",
     "prettier-plugin-tailwindcss": "0.8.1",
     "sherif": "1.13.0",
-    "type-fest": "5.9.0",
+    "type-fest": "5.10.0",
     "typescript": "7.0.2",
-    "vitest": "5.0.0"
+    "vitest": "5.0.5"
   }
 }

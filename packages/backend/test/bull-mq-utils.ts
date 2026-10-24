@@ -1,12 +1,12 @@
 import { QueueEvents } from "bullmq";
 import type { Pool } from "pg";
-import { createPostgresBackend } from "../src/postgres.ts";
+import { createPostgresBackend, toBullMQConnection } from "../src/postgres.ts";
 
 export const makeWaitForQueueSuccess =
   (queueName: string, pool: Pool) => async (exec: () => Promise<void>) => {
     const queueEvents = new QueueEvents(
       queueName,
-      { connection: pool },
+      { connection: toBullMQConnection(pool) },
       createPostgresBackend,
     );
 

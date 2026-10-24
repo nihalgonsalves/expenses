@@ -308,8 +308,8 @@ export const PersonalTransactionsImporter = ({
 
   const [dateField, setDateField] = useState<string>();
   const [dateFormat, setDateFormat] = useState("yyyy-MM-dd");
-  const dateParser = (value: string) =>
-    dateFnsParse(value, dateFormat, new Date());
+  const [now] = useState(() => new Date());
+  const dateParser = (value: string) => dateFnsParse(value, dateFormat, now);
 
   const [categoryField, setCategoryField] = useState<string>();
   const [descriptionField, setDescriptionField] = useState<string>();
@@ -346,9 +346,7 @@ export const PersonalTransactionsImporter = ({
                 scale,
                 currencyCode: personalSheet.currencyCode,
               },
-              spentAt: dateToISOString(
-                dateValue ? dateParser(dateValue) : new Date(),
-              ),
+              spentAt: dateToISOString(dateValue ? dateParser(dateValue) : now),
               category: findCategory(categoryValue),
               description: descriptionValue ?? "",
             };

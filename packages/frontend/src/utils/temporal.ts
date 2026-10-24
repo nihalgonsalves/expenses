@@ -7,7 +7,7 @@ export const CURRENT_TIMEZONE =
   Intl.DateTimeFormat(getUserLanguage()).resolvedOptions().timeZone;
 
 type NaiveDurationLike = Omit<
-  Temporal.DurationLike,
+  Temporal.DurationLikeObject,
   "years" | "months" | "weeks"
 >;
 

@@ -38,7 +38,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1
+      image: mcr.microsoft.com/playwright:v1.64.1
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
@@ -113,7 +113,7 @@ jobs:
       VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
       VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1
+      image: mcr.microsoft.com/playwright:v1.64.1
     services:
       postgres:
         image: postgres:18-alpine

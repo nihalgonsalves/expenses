@@ -1,4 +1,10 @@
-import { Queue, Worker, type PostgresQueueBackend } from "bullmq";
+import {
+  Queue,
+  Worker,
+  type JobProgress,
+  type PostgresConnectionOptions,
+  type PostgresQueueBackend,
+} from "bullmq";
 import type { Pool } from "pg";
 import { createTransport, type SendMailOptions } from "nodemailer";
 import { RateLimiterPostgres, RateLimiterRes } from "rate-limiter-flexible";
@@ -6,7 +12,7 @@ import { RateLimiterPostgres, RateLimiterRes } from "rate-limiter-flexible";
 import { EMAIL_BULLMQ_QUEUE, config } from "../../config.ts";
 import type { IWorker } from "../../start-workers.ts";
 import { durationSeconds } from "../../utils/temporal.ts";
-import { createPostgresBackend } from "../../postgres.ts";
+import { createPostgresBackend, toBullMQConnection } from "../../postgres.ts";
 import { AppError } from "../../utils/errors.ts";
 
 export type EmailPayload = Pick<
@@ -47,7 +53,8 @@ export class EmailQueue implements IEmailWorker {
     EmailPayload,
     void,
     string,
-    PostgresQueueBackend
+    PostgresQueueBackend,
+    PostgresConnectionOptions
   >;
 
   globalRateLimiter: RateLimiterPostgres;
@@ -56,7 +63,7 @@ export class EmailQueue implements IEmailWorker {
   constructor(pool: Pool) {
     this.queue = new Queue(
       EMAIL_BULLMQ_QUEUE,
-      { connection: pool },
+      { connection: toBullMQConnection(pool) },
       createPostgresBackend,
     );
 
@@ -112,14 +119,21 @@ export class EmailWorker
   extends EmailQueue
   implements IWorker<EmailPayload, void>
 {
-  worker: Worker<EmailPayload, void, string, PostgresQueueBackend>;
+  worker: Worker<
+    EmailPayload,
+    void,
+    string,
+    PostgresQueueBackend,
+    JobProgress,
+    PostgresConnectionOptions
+  >;
 
   constructor(pool: Pool) {
     super(pool);
     this.worker = new Worker(
       EMAIL_BULLMQ_QUEUE,
       async (job) => EmailWorker.process(job.data),
-      { connection: pool },
+      { connection: toBullMQConnection(pool) },
       createPostgresBackend,
     );
   }

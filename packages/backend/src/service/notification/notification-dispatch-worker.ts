@@ -1,4 +1,10 @@
-import { Queue, Worker, type PostgresQueueBackend } from "bullmq";
+import {
+  Queue,
+  Worker,
+  type JobProgress,
+  type PostgresConnectionOptions,
+  type PostgresQueueBackend,
+} from "bullmq";
 import type { Pool } from "pg";
 import webPush, {
   WebPushError,
@@ -14,7 +20,7 @@ import {
 import { NOTIFICATION_BULLMQ_QUEUE } from "../../config.ts";
 import type { PrismaClientType } from "../../create-prisma.ts";
 import type { IWorker } from "../../start-workers.ts";
-import { createPostgresBackend } from "../../postgres.ts";
+import { createPostgresBackend, toBullMQConnection } from "../../postgres.ts";
 
 type WebPushQueueItem = {
   userId: string;
@@ -42,7 +48,8 @@ export class NotificationDispatchQueue implements INotificationDispatchWorker {
     WebPushQueueItem,
     NotificationDispatchResult,
     string,
-    PostgresQueueBackend
+    PostgresQueueBackend,
+    PostgresConnectionOptions
   >;
 
   private prismaClient: PrismaClientType;
@@ -58,7 +65,7 @@ export class NotificationDispatchQueue implements INotificationDispatchWorker {
 
     this.queue = new Queue(
       NOTIFICATION_BULLMQ_QUEUE,
-      { connection: pool },
+      { connection: toBullMQConnection(pool) },
       createPostgresBackend,
     );
   }
@@ -155,7 +162,9 @@ export class NotificationDispatchWorker
     WebPushQueueItem,
     NotificationDispatchResult,
     string,
-    PostgresQueueBackend
+    PostgresQueueBackend,
+    JobProgress,
+    PostgresConnectionOptions
   >;
 
   constructor(
@@ -167,7 +176,7 @@ export class NotificationDispatchWorker
     this.worker = new Worker(
       NOTIFICATION_BULLMQ_QUEUE,
       async (job) => this.process(job.data),
-      { connection: pool },
+      { connection: toBullMQConnection(pool) },
       createPostgresBackend,
     );
   }

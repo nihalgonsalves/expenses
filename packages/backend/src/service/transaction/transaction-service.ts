@@ -674,8 +674,6 @@ export class TransactionService {
     });
   }
 
-  // this is in the parameter defaults
-  // oxlint-disable-next-line class-methods-use-this
   async deleteTransaction(
     id: string,
     groupSheet: Sheet,

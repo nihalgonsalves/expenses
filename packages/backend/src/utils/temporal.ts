@@ -1,5 +1,5 @@
 type NaiveDurationLike = Omit<
-  Temporal.DurationLike,
+  Temporal.DurationLikeObject,
   "years" | "months" | "weeks"
 >;
 

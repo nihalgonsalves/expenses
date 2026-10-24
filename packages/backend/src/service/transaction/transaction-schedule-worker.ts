@@ -1,4 +1,10 @@
-import { Queue, Worker, type PostgresQueueBackend } from "bullmq";
+import {
+  Queue,
+  Worker,
+  type JobProgress,
+  type PostgresConnectionOptions,
+  type PostgresQueueBackend,
+} from "bullmq";
 import type { Pool } from "pg";
 
 import { TRANSACTION_SCHEDULE_BULLMQ_QUEUE } from "../../config.ts";
@@ -6,7 +12,7 @@ import type { PrismaClientType } from "../../create-prisma.ts";
 import type { Prisma } from "../../prisma/client.ts";
 import type { IWorker } from "../../start-workers.ts";
 import { generateId } from "../../utils/nanoid.ts";
-import { createPostgresBackend } from "../../postgres.ts";
+import { createPostgresBackend, toBullMQConnection } from "../../postgres.ts";
 
 import { getRRuleInstancesTzAware } from "./rrule-utils.ts";
 
@@ -28,7 +34,8 @@ export class TransactionScheduleQueue {
     { now: string | undefined },
     TransactionScheduleWorkerResult,
     string,
-    PostgresQueueBackend
+    PostgresQueueBackend,
+    PostgresConnectionOptions
   >;
 
   private prisma: PrismaClientType;
@@ -37,7 +44,7 @@ export class TransactionScheduleQueue {
     this.prisma = prisma;
     this.queue = new Queue(
       TRANSACTION_SCHEDULE_BULLMQ_QUEUE,
-      { connection: pool },
+      { connection: toBullMQConnection(pool) },
       createPostgresBackend,
     );
   }
@@ -171,7 +178,9 @@ export class TransactionScheduleWorker
     { now: string | undefined },
     TransactionScheduleWorkerResult,
     string,
-    PostgresQueueBackend
+    PostgresQueueBackend,
+    JobProgress,
+    PostgresConnectionOptions
   >;
 
   constructor(prisma: PrismaClientType, pool: Pool) {
@@ -184,7 +193,7 @@ export class TransactionScheduleWorker
             ? Temporal.Instant.from(job.data.now)
             : Temporal.Now.instant(),
         ),
-      { connection: pool },
+      { connection: toBullMQConnection(pool) },
       createPostgresBackend,
     );
   }

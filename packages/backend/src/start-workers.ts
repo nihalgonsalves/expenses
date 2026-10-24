@@ -1,4 +1,10 @@
-import type { IQueueBackend, Queue, Worker } from "bullmq";
+import type {
+  JobProgress,
+  PostgresConnectionOptions,
+  PostgresQueueBackend,
+  Queue,
+  Worker,
+} from "bullmq";
 import type { Pool } from "pg";
 
 import { config } from "./config.ts";
@@ -8,8 +14,24 @@ import { NotificationDispatchWorker } from "./service/notification/notification-
 import { TransactionScheduleWorker } from "./service/transaction/transaction-schedule-worker.ts";
 
 export type IWorker<TData, TResult> = {
-  worker: Worker<TData, TResult, string, IQueueBackend>;
-  queue: Queue<TData, TResult, string, TData, TResult, string, IQueueBackend>;
+  worker: Worker<
+    TData,
+    TResult,
+    string,
+    PostgresQueueBackend,
+    JobProgress,
+    PostgresConnectionOptions
+  >;
+  queue: Queue<
+    TData,
+    TResult,
+    string,
+    TData,
+    TResult,
+    string,
+    PostgresQueueBackend,
+    PostgresConnectionOptions
+  >;
   init?: () => Promise<void>;
 };
 

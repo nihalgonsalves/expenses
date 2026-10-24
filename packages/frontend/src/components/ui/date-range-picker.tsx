@@ -2,6 +2,7 @@
 
 // https://github.com/johnpolacek/date-range-picker-for-shadcn/blob/2ee5787f5b2a2034f9133c484847ec4df9d296df/src/date-range-picker.tsx
 
+import { subMonths } from "date-fns";
 import { formatDateRange } from "little-date";
 import { CheckIcon, CalendarIcon } from "lucide-react";
 import {
@@ -130,6 +131,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
   align = "end",
 }): ReactElement => {
   const [isOpen, setIsOpen] = useState(false);
+  const [today] = useState(() => new Date());
 
   const [range, setRange] = useState<DateRange>(() =>
     getAdjustedRange(initialDateFrom, initialDateTo),
@@ -355,13 +357,7 @@ export const DateRangePicker: FC<DateRangePickerProps> = ({
                   }}
                   selected={range}
                   numberOfMonths={isSmallScreen ? 1 : 2}
-                  defaultMonth={
-                    new Date(
-                      new Date().setMonth(
-                        new Date().getMonth() - (isSmallScreen ? 0 : 1),
-                      ),
-                    )
-                  }
+                  defaultMonth={subMonths(today, isSmallScreen ? 0 : 1)}
                 />
               </div>
             </div>

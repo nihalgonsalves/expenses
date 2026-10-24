@@ -5,7 +5,7 @@ export const setupMockServer = () => {
   const mockServer = setupServer();
 
   beforeAll(() => {
-    mockServer.listen({ onUnhandledRequest: "error" });
+    mockServer.listen({ onUnhandledFrame: "error" });
   });
 
   afterEach(() => {
