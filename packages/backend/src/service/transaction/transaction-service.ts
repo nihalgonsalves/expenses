@@ -196,23 +196,17 @@ export class TransactionService {
   }
 
   /**
-   * Runs `create` in a transaction with the draft's deletion, so that a draft
-   * can only be turned into a transaction once
+   * Deleting the draft in the same transaction as the create ensures that a
+   * draft can only be turned into a transaction once
    */
-  private async withDraftDeletion<T>(
+  private async deleteDraftIfPresent(
     user: User,
     draftId: string | undefined,
-    create: (prismaClient: typeof this.prismaClient) => Promise<T>,
-    prismaClient = this.prismaClient,
+    txClient: Prisma.TransactionClient,
   ) {
-    if (!draftId) {
-      return create(prismaClient);
-    }
-
-    return this.prismaClient.$transaction(async (txClient) => {
+    if (draftId) {
       await this.transactionDraftService.deleteDraft(user, draftId, txClient);
-      return create(txClient);
-    });
+    }
   }
 
   async getAllUserTransactions(
@@ -378,8 +372,10 @@ export class TransactionService {
     verifyAmountIsAbsolute(input.money);
     verifyOriginalMoney(personalSheet.currencyCode, input.originalMoney);
 
-    return this.withDraftDeletion(user, input.draftId, async (prismaClient) =>
-      prismaClient.transaction.create({
+    return this.prismaClient.$transaction(async (txClient) => {
+      await this.deleteDraftIfPresent(user, input.draftId, txClient);
+
+      return txClient.transaction.create({
         include: {
           transactionEntries: {
             include: {
@@ -393,8 +389,8 @@ export class TransactionService {
             create: [mapInputToCreatePersonalTransactionEntry(input, user)],
           },
         },
-      }),
-    );
+      });
+    });
   }
 
   async updatePersonalSheetTransaction(
@@ -494,7 +490,27 @@ export class TransactionService {
     user: User,
     input: Omit<CreateGroupSheetTransactionInput, "groupSheetId">,
     groupSheet: Sheet,
-    prismaClient = this.prismaClient,
+  ) {
+    const transaction = await this.prismaClient.$transaction(async (txClient) =>
+      this.insertGroupSheetTransaction(txClient, user, input, groupSheet),
+    );
+
+    await this.sendGroupSheetTransactionNotifications(
+      user,
+      transaction,
+      input.type,
+      groupSheet,
+      "created",
+    );
+
+    return transaction;
+  }
+
+  private async insertGroupSheetTransaction(
+    txClient: Prisma.TransactionClient,
+    user: User,
+    input: Omit<CreateGroupSheetTransactionInput, "groupSheetId">,
+    groupSheet: Sheet,
     existingTransactionId: string | null = null,
   ) {
     const transactionId = existingTransactionId ?? generateId();
@@ -520,76 +536,82 @@ export class TransactionService {
       });
     }
 
-    const transaction = await this.withDraftDeletion(
-      user,
-      input.draftId,
-      async (txClient) =>
-        txClient.transaction.create({
-          include: {
-            transactionEntries: {
-              include: {
-                user: true,
-              },
-            },
-          },
-          data: {
-            id: transactionId,
-            sheet: { connect: { id: groupSheet.id } },
-            amount: input.money.amount,
-            scale: input.money.scale,
-            ...(input.originalMoney
-              ? {
-                  originalAmount: input.originalMoney.amount,
-                  originalScale: input.originalMoney.scale,
-                  originalCurrencyCode: input.originalMoney.currencyCode,
-                }
-              : {}),
-            type: input.type,
-            category: input.category,
-            description: input.description,
-            spentAt: Temporal.ZonedDateTime.from(input.spentAt)
-              .toInstant()
-              .toString(),
-            transactionEntries: {
-              create: input.splits
-                .filter(({ share }) => share.amount !== 0)
-                .flatMap(
-                  (
-                    split,
-                  ): [
-                    Prisma.TransactionEntryCreateWithoutTransactionInput,
-                    Prisma.TransactionEntryCreateWithoutTransactionInput,
-                  ] => [
-                    {
-                      id: generateId(),
-                      user: {
-                        connect: {
-                          id: input.paidOrReceivedById,
-                        },
-                      },
-                      amount:
-                        input.type === "EXPENSE"
-                          ? split.share.amount
-                          : -split.share.amount,
-                      scale: split.share.scale,
-                    },
-                    {
-                      id: generateId(),
-                      user: { connect: { id: split.participantId } },
-                      amount:
-                        input.type === "EXPENSE"
-                          ? -split.share.amount
-                          : split.share.amount,
-                      scale: split.share.scale,
-                    },
-                  ],
-                ),
-            },
-          },
-        }),
-      prismaClient,
-    );
+    await this.deleteDraftIfPresent(user, input.draftId, txClient);
 
+    return txClient.transaction.create({
+      include: {
+        transactionEntries: {
+          include: {
+            user: true,
+          },
+        },
+      },
+      data: {
+        id: transactionId,
+        sheet: { connect: { id: groupSheet.id } },
+        amount: input.money.amount,
+        scale: input.money.scale,
+        ...(input.originalMoney
+          ? {
+              originalAmount: input.originalMoney.amount,
+              originalScale: input.originalMoney.scale,
+              originalCurrencyCode: input.originalMoney.currencyCode,
+            }
+          : {}),
+        type: input.type,
+        category: input.category,
+        description: input.description,
+        spentAt: Temporal.ZonedDateTime.from(input.spentAt)
+          .toInstant()
+          .toString(),
+        transactionEntries: {
+          create: input.splits
+            .filter(({ share }) => share.amount !== 0)
+            .flatMap(
+              (
+                split,
+              ): [
+                Prisma.TransactionEntryCreateWithoutTransactionInput,
+                Prisma.TransactionEntryCreateWithoutTransactionInput,
+              ] => [
+                {
+                  id: generateId(),
+                  user: {
+                    connect: {
+                      id: input.paidOrReceivedById,
+                    },
+                  },
+                  amount:
+                    input.type === "EXPENSE"
+                      ? split.share.amount
+                      : -split.share.amount,
+                  scale: split.share.scale,
+                },
+                {
+                  id: generateId(),
+                  user: { connect: { id: split.participantId } },
+                  amount:
+                    input.type === "EXPENSE"
+                      ? -split.share.amount
+                      : split.share.amount,
+                  scale: split.share.scale,
+                },
+              ],
+            ),
+        },
+      },
+    });
+  }
+
+  private async sendGroupSheetTransactionNotifications(
+    user: User,
+    transaction: Awaited<
+      ReturnType<TransactionService["insertGroupSheetTransaction"]>
+    >,
+    type: CreateGroupSheetTransactionInput["type"],
+    groupSheet: Sheet,
+    action: "created" | "updated",
+  ) {
     const balances = calculateBalances(
       groupSheet,
       transaction.type,
@@ -603,16 +625,14 @@ export class TransactionService {
           .map(({ id, balance }): [string, NotificationPayload] => [
             id,
             transactionToNotificationPayload(
-              { ...transaction, type: input.type },
+              { ...transaction, type },
               groupSheet,
               balance.share,
-              existingTransactionId ? "updated" : "created",
+              action,
             ),
           ]),
       ),
     );
-
-    return transaction;
   }
 
   async replaceGroupSheetTransaction(
@@ -620,20 +640,29 @@ export class TransactionService {
     input: Omit<ReplaceGroupSheetTransactionInput, "groupSheetId">,
     groupSheet: Sheet,
   ) {
-    return this.prismaClient.$transaction(async (prismaClient) => {
-      const [_deleteOp, createOp] = await Promise.all([
-        this.deleteTransaction(input.transactionId, groupSheet, prismaClient),
-        this.createGroupSheetTransaction(
+    const transaction = await this.prismaClient.$transaction(
+      async (txClient) => {
+        await this.deleteTransaction(input.transactionId, groupSheet, txClient);
+
+        return this.insertGroupSheetTransaction(
+          txClient,
           user,
           input,
           groupSheet,
-          prismaClient,
           input.transactionId,
-        ),
-      ]);
+        );
+      },
+    );
 
-      return createOp;
-    });
+    await this.sendGroupSheetTransactionNotifications(
+      user,
+      transaction,
+      input.type,
+      groupSheet,
+      "updated",
+    );
+
+    return transaction;
   }
 
   async createSettlement(

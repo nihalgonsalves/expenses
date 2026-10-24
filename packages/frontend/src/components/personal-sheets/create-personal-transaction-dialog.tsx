@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
@@ -136,6 +137,10 @@ const CreatePersonalTransactionForm = ({
 }) => {
   const dialog = useDialog();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
+  // only used as the initial form values
+  const [draftDefaultValues] = useState(() =>
+    getDraftDefaultValues(draft, preferredCurrencyCode),
+  );
 
   const navigate = useNavigate();
   const onLine = useNavigatorOnLine();
@@ -145,7 +150,7 @@ const CreatePersonalTransactionForm = ({
     mode: "onTouched",
     defaultValues: {
       type: getDraftTransactionType(draft),
-      ...getDraftDefaultValues(draft, preferredCurrencyCode),
+      ...draftDefaultValues,
       category: OTHER_CATEGORY,
     },
   });

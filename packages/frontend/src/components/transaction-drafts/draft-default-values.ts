@@ -1,6 +1,6 @@
 import type { TransactionDraft } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 
-import { toMinorUnits } from "../../utils/money";
+import { CURRENCY_CODES, toMinorUnits } from "../../utils/money";
 import { isoToDateTimeInput, nowForDateTimeInput } from "../../utils/temporal";
 
 /** negative amounts are refunds, e.g. "-€5.00" */
@@ -11,7 +11,13 @@ export const getDraftDefaultValues = (
   draft: TransactionDraft | undefined,
   fallbackCurrencyCode: string,
 ) => {
-  const currencyCode = draft?.money?.currencyCode ?? fallbackCurrencyCode;
+  const draftCurrencyCode = draft?.money?.currencyCode;
+  // the parsed currency may not be one we can handle, e.g. one missing from
+  // `Intl` in this browser
+  const currencyCode =
+    draftCurrencyCode && CURRENCY_CODES.includes(draftCurrencyCode)
+      ? draftCurrencyCode
+      : fallbackCurrencyCode;
 
   return {
     currencyCode,

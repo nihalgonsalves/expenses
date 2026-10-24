@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PlusIcon, CheckIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm, useFormContext, useWatch } from "react-hook-form";
 import type { z } from "zod";
 
@@ -65,6 +66,7 @@ import {
 } from "./transaction-form/form-schema";
 import { LoadingSpinner } from "../ui/loading-spinner";
 import { haptics } from "bzzz";
+import { toast } from "sonner";
 
 const MetadataFormSection = ({
   groupSheet,
@@ -162,9 +164,9 @@ export const TransactionForm = ({
 }) => {
   const dialog = useDialog();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
-  const { dateTime, ...draftDefaultValues } = getDraftDefaultValues(
-    draft,
-    preferredCurrencyCode,
+  // only used as the initial form values
+  const [{ dateTime, ...draftDefaultValues }] = useState(() =>
+    getDraftDefaultValues(draft, preferredCurrencyCode),
   );
 
   const { invalidate } = useQueryClient();
@@ -234,7 +236,7 @@ export const TransactionForm = ({
     };
 
     try {
-      if (groupSheet.currencyCode === currencyCode) {
+      if (groupSheet.currencyCode === currencyCodeOrGroupDefault) {
         await createGroupSheetTransaction({
           ...basePayload,
           money: moneySnapshot,
@@ -252,6 +254,10 @@ export const TransactionForm = ({
             values.ratios,
           ),
         });
+      } else {
+        haptics.error();
+        toast.error("Could not convert currency, please try again later");
+        return;
       }
     } catch (e) {
       haptics.error();
@@ -460,7 +466,7 @@ export const EditTransactionForm = ({
     };
 
     try {
-      if (groupSheet.currencyCode === currencyCode) {
+      if (groupSheet.currencyCode === currencyCodeOrOriginal) {
         await replaceGroupSheetTransaction({
           ...basePayload,
           transactionId: transaction.id,
@@ -480,6 +486,10 @@ export const EditTransactionForm = ({
             values.ratios,
           ),
         });
+      } else {
+        haptics.error();
+        toast.error("Could not convert currency, please try again later");
+        return;
       }
     } catch (e) {
       haptics.error();

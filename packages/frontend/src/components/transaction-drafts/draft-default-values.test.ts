@@ -76,6 +76,15 @@ describe("getDraftDefaultValues", () => {
     });
   });
 
+  it("falls back to the given currency if the draft's is unsupported", () => {
+    expect(
+      getDraftDefaultValues(
+        draft({ amount: 1250, scale: 2, currencyCode: "XYZ" }),
+        "GBP",
+      ),
+    ).toMatchObject({ amount: 1250, currencyCode: "GBP" });
+  });
+
   it("formats the date for a datetime-local input", () => {
     expect(getDraftDefaultValues(draft(null), "GBP").dateTime).toMatch(
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00$/,

@@ -1,7 +1,6 @@
-import { z } from "zod";
-
 import {
   type CreateAppleWalletDraftInput,
+  type DeleteTransactionDraftInput,
   ZTransactionDraft,
 } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 
@@ -28,10 +27,6 @@ const mapDraft = ({
     spentAt: spentAt.toISOString(),
   });
 
-export const ZDeleteTransactionDraftInput = z.object({
-  id: z.string().min(1),
-});
-
 export const createAppleWalletDraft = async (
   ctx: AuthenticatedContext,
   input: CreateAppleWalletDraftInput,
@@ -49,7 +44,7 @@ export const getTransactionDrafts = async (ctx: AuthenticatedContext) =>
 
 export const deleteTransactionDraft = async (
   ctx: AuthenticatedContext,
-  input: z.infer<typeof ZDeleteTransactionDraftInput>,
+  input: DeleteTransactionDraftInput,
 ) => {
   await ctx.transactionDraftService.deleteDraft(ctx.user, input.id);
 };

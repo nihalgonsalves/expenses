@@ -33,3 +33,11 @@ export const ZTransactionDraft = z.object({
 });
 
 export type TransactionDraft = z.infer<typeof ZTransactionDraft>;
+
+export const ZDeleteTransactionDraftInput = z.object({
+  id: z.string().min(1),
+});
+
+export type DeleteTransactionDraftInput = z.infer<
+  typeof ZDeleteTransactionDraftInput
+>;

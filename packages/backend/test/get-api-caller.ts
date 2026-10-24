@@ -23,7 +23,10 @@ import {
   ZSheetsQuery,
   ZUpdateSheetInput,
 } from "@nihalgonsalves/expenses-shared/types/sheet";
-import { ZCreateAppleWalletDraftInput } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
+import {
+  ZCreateAppleWalletDraftInput,
+  ZDeleteTransactionDraftInput,
+} from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 import { ZNotificationSubscriptionUpsertInput } from "@nihalgonsalves/expenses-shared/types/notification";
 import {
   ZCreateCategoryGroupInput,
@@ -298,7 +301,7 @@ const apiCaller = (caller: { context: ContextObj }) => {
       ) =>
         transactionDraftApi.deleteTransactionDraft(
           authenticated(context),
-          parse(transactionDraftApi.ZDeleteTransactionDraftInput, input),
+          parse(ZDeleteTransactionDraftInput, input),
         ),
     },
     currencyConversion: {

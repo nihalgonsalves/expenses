@@ -1,7 +1,10 @@
 import { mutationOptions, queryOptions, useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 
+import {
+  type DeleteTransactionDraftInput,
+  ZDeleteTransactionDraftInput,
+} from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 import * as backendTransactionDraftApi from "@nihalgonsalves/expenses-backend/src/service/transaction-draft/transaction-draft-api.server";
 
 import { requiredServerContextMiddleware } from "../server/context.functions";
@@ -14,9 +17,6 @@ export const getTransactionDrafts = createServerFn({ method: "GET" })
     backendTransactionDraftApi.getTransactionDrafts(context),
   );
 
-const ZDeleteTransactionDraftInput = z.object({
-  id: z.string().min(1),
-});
 export const deleteTransactionDraft = createServerFn({ method: "POST" })
   .middleware([requiredServerContextMiddleware])
   .validator(ZDeleteTransactionDraftInput)
@@ -44,7 +44,7 @@ export const transactionDraftQueries = {
 export const transactionDraftMutations = {
   deleteTransactionDraft: () =>
     mutationOptions({
-      mutationFn: async (data: z.input<typeof ZDeleteTransactionDraftInput>) =>
+      mutationFn: async (data: DeleteTransactionDraftInput) =>
         deleteTransactionDraft({ data }),
     }),
 };

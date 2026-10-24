@@ -47,9 +47,16 @@ const DraftCard = ({ draft }: { draft: TransactionDraft }) => {
   );
 
   const onDiscard = async () => {
-    await deleteTransactionDraft({ id: draft.id });
-    haptics.success();
-    await invalidate(transactionDraftQueries.drafts.queryKey());
+    try {
+      await deleteTransactionDraft({ id: draft.id });
+      haptics.success();
+    } catch {
+      // the error is already toasted by the global mutation `onError`
+      haptics.error();
+    } finally {
+      // refetch even on failure, e.g. when the draft was already used elsewhere
+      await invalidate(transactionDraftQueries.drafts.queryKey());
+    }
   };
 
   return (
