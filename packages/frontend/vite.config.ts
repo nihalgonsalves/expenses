@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-
+import { z } from "zod";
 import { codecovVitePlugin } from "@codecov/vite-plugin";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
@@ -10,11 +10,12 @@ import { jotaiPlugin } from "jotai-rolldown";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import { nitro } from "nitro/vite";
 import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig } from "vite";
+import { defineConfig, type ViteDevServer } from "vite";
 import IstanbulPlugin from "vite-plugin-istanbul";
 // We only need this for Vite's native loader, nowhere else
 // @ts-expect-error An import path can only end with a .ts extension when allowImportingTsExtensions is enabled.
 import { generateSw } from "./bin/generate-sw.ts";
+import { jsonCodec } from "@nihalgonsalves/expenses-shared/zod";
 
 const relativePath = (path: string) =>
   fileURLToPath(new URL(path, import.meta.url).toString());
@@ -39,10 +40,25 @@ export default defineConfig(({ mode }) => ({
     },
   },
   css: { transformer: "lightningcss" },
-  server: process.env["VITE_ALLOWED_HOST"]
+  optimizeDeps: {
+    // sw.ts isn't reachable from the app graph, so its deps would otherwise
+    // be discovered lazily, causing an "outdated optimize dep" reload
+    include: [
+      "dinero.js",
+      "localspace",
+      "workbox-expiration",
+      "workbox-precaching",
+      "workbox-routing",
+      "workbox-strategies",
+      "zod/mini",
+    ],
+  },
+  server: process.env["TRUSTED_ORIGINS"]
     ? {
         host: true,
-        allowedHosts: [process.env["VITE_ALLOWED_HOST"]],
+        allowedHosts: jsonCodec(z.array(z.url()))
+          .parse(process.env["TRUSTED_ORIGINS"])
+          .map((url) => new URL(url).hostname),
       }
     : {},
   plugins: [
@@ -76,6 +92,20 @@ export default defineConfig(({ mode }) => ({
           }
           swGenerated = true;
           await generateSw();
+        },
+      },
+    !process.env["VITE_STORYBOOK"] &&
+      mode !== "production" && {
+        name: "serve-sw-in-dev",
+        configureServer(server: ViteDevServer) {
+          // Registered as a module SW, so Vite can serve the source directly.
+          // Runs before Vite's transform middleware and the SSR handler.
+          server.middlewares.use((req, _res, next) => {
+            if (req.url === "/sw.js") {
+              req.url = "/src/sw.ts";
+            }
+            next();
+          });
         },
       },
     !process.env["VITE_STORYBOOK"] && nitro({}),

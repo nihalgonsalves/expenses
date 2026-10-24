@@ -179,8 +179,8 @@ export const NotificationPreferenceForm = () => {
               you&rsquo;re accessing this page over https.
               {import.meta.env.DEV ? (
                 <strong>
-                  This is a development environment, you need ENABLE_DEV_PWA=1
-                  for service worker support.
+                  This is a development environment, you need
+                  VITE_ENABLE_DEV_PWA=1 for service worker support.
                 </strong>
               ) : null}
             </AlertDescription>

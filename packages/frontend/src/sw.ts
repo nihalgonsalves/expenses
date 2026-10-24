@@ -48,6 +48,49 @@ if (!import.meta.env.DEV) {
       }),
     ),
   );
+
+  // Static assets: CacheFirst for performance
+  // Not in dev: unhashed Vite modules and re-optimised deps would be served
+  // stale, e.g. mixing two copies of React
+  registerRoute(
+    ({ request }) =>
+      request.destination === "style" ||
+      request.destination === "script" ||
+      request.destination === "font",
+    new CacheFirst({
+      cacheName: "static-assets",
+      plugins: [
+        getExpirationPlugin({
+          maxEntries: 100,
+          maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
+        }),
+      ],
+    }),
+  );
+
+  // Images: CacheFirst
+  registerRoute(
+    ({ request }) => request.destination === "image",
+    new CacheFirst({
+      cacheName: "images-cache",
+      plugins: [
+        getExpirationPlugin({
+          maxEntries: 50,
+          maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+        }),
+      ],
+    }),
+  );
+} else {
+  // Clear anything cached by a previous dev SW that did register these routes
+  self.addEventListener("activate", (event) => {
+    event.waitUntil(
+      (async () => {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(async (key) => caches.delete(key)));
+      })(),
+    );
+  });
 }
 
 // Example from https://robelest.com/journal/pwa-tanstack-start
@@ -67,37 +110,6 @@ if (!import.meta.env.DEV) {
 //     ],
 //   }),
 // );
-
-// Static assets: CacheFirst for performance
-registerRoute(
-  ({ request }) =>
-    request.destination === "style" ||
-    request.destination === "script" ||
-    request.destination === "font",
-  new CacheFirst({
-    cacheName: "static-assets",
-    plugins: [
-      getExpirationPlugin({
-        maxEntries: 100,
-        maxAgeSeconds: 7 * 24 * 60 * 60, // 7 days
-      }),
-    ],
-  }),
-);
-
-// Images: CacheFirst
-registerRoute(
-  ({ request }) => request.destination === "image",
-  new CacheFirst({
-    cacheName: "images-cache",
-    plugins: [
-      getExpirationPlugin({
-        maxEntries: 50,
-        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
-      }),
-    ],
-  }),
-);
 
 const getActionText = (action: "created" | "updated" | "deleted") => {
   switch (action) {

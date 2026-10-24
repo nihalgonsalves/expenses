@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "exports": {
+    "./zod": "./src/zod.ts",
     "./money": "./src/money.ts",
     "./errors": "./src/errors.ts",
     "./routes": "./src/routes.ts",

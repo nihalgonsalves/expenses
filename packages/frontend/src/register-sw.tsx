@@ -5,11 +5,16 @@ import { Button } from "./components/ui/button";
 import { queryCache } from "./state/query-cache";
 import { useServiceWorkerRegistration } from "./utils/hooks/use-service-worker-registration";
 import { durationMilliseconds } from "./utils/temporal";
+import { config } from "./config";
 
 // https://whatwebcando.today/articles/handling-service-worker-updates/
 // https://vite-pwa-org.netlify.app/guide/periodic-sw-updates.html
 
 const SW_URL = "/sw.js";
+
+const isServiceWorkerEnabled = () =>
+  (import.meta.env.PROD || config.VITE_ENABLE_DEV_PWA) &&
+  "serviceWorker" in globalThis.navigator;
 
 export const useSwUpdateCheck = () => {
   const registration = useServiceWorkerRegistration();
@@ -20,8 +25,7 @@ export const useSwUpdateCheck = () => {
       await registration?.update();
       return null;
     },
-    // TODO: re-enable dev sw
-    enabled: import.meta.env.PROD && "serviceWorker" in globalThis.navigator,
+    enabled: isServiceWorkerEnabled(),
     networkMode: "online",
     gcTime: 0,
     staleTime: 0,
@@ -39,8 +43,7 @@ const reload = async () => {
 };
 
 export const registerSW = async () => {
-  // TODO: re-enable dev sw
-  if (!import.meta.env.PROD || !("serviceWorker" in navigator)) {
+  if (!isServiceWorkerEnabled()) {
     return;
   }
 
