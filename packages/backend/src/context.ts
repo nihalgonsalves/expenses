@@ -25,7 +25,10 @@ export const makeCreateContext = (
 
   const notificationSubscriptionService = new NotificationService(prisma);
 
-  const transactionDraftService = new TransactionDraftService(prisma);
+  const transactionDraftService = new TransactionDraftService(
+    prisma,
+    services.notificationDispatchService,
+  );
   const transactionService = new TransactionService(
     prisma,
     services.notificationDispatchService,

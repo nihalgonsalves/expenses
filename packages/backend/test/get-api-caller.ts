@@ -73,7 +73,10 @@ const getTestCaller = async () => {
   ) => {
     const userService = new UserService(prisma, betterAuth, emailWorker);
     const notificationSubscriptionService = new NotificationService(prisma);
-    const transactionDraftService = new TransactionDraftService(prisma);
+    const transactionDraftService = new TransactionDraftService(
+      prisma,
+      notificationDispatchService,
+    );
     const transactionService = new TransactionService(
       prisma,
       notificationDispatchService,
@@ -112,6 +115,7 @@ const getTestCaller = async () => {
     prisma,
     betterAuth,
     emailWorker,
+    notificationDispatchService,
     usePublicCaller: ({
       headers = new Headers(),
       clearSiteData = noop,

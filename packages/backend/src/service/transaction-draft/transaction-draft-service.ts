@@ -5,16 +5,23 @@ import type { PrismaClientType } from "../../create-prisma.ts";
 import { Prisma, TransactionDraftSource } from "../../prisma/client.ts";
 import { AppError } from "../../utils/errors.ts";
 import { generateId } from "../../utils/nanoid.ts";
+import type { INotificationDispatchWorker } from "../notification/notification-dispatch-worker.ts";
 
+import { draftToNotificationPayload } from "./draft-mappers.ts";
 import { parseFormattedAmount } from "./parse-formatted-amount.ts";
 
 class TransactionDraftServiceError extends AppError {}
 
 export class TransactionDraftService {
   private prismaClient: Pick<PrismaClientType, "transactionDraft">;
+  private notificationDispatchWorker: INotificationDispatchWorker;
 
-  constructor(prismaClient: Pick<PrismaClientType, "transactionDraft">) {
+  constructor(
+    prismaClient: Pick<PrismaClientType, "transactionDraft">,
+    notificationDispatchWorker: INotificationDispatchWorker,
+  ) {
     this.prismaClient = prismaClient;
+    this.notificationDispatchWorker = notificationDispatchWorker;
   }
 
   /**
@@ -27,7 +34,7 @@ export class TransactionDraftService {
   ) {
     const parsed = parseFormattedAmount(input.amount);
 
-    return this.prismaClient.transactionDraft.create({
+    const draft = await this.prismaClient.transactionDraft.create({
       data: {
         id: generateId(),
         userId: user.id,
@@ -43,6 +50,19 @@ export class TransactionDraftService {
         spentAt,
       },
     });
+
+    try {
+      await this.notificationDispatchWorker.sendNotifications({
+        [user.id]: draftToNotificationPayload(draft),
+      });
+    } catch (error) {
+      console.error(
+        `Error sending draft notification to user=${user.id}`,
+        error,
+      );
+    }
+
+    return draft;
   }
 
   async getDrafts(user: Pick<User, "id">) {

@@ -603,6 +603,20 @@ export class TransactionService {
     });
   }
 
+  /**
+   * Only called once the transaction is committed, so a failure must not fail
+   * the request: the client would retry and create a duplicate
+   */
+  private async trySendNotifications(
+    messagesByUserId: Record<string, NotificationPayload>,
+  ) {
+    try {
+      await this.notificationDispatchWorker.sendNotifications(messagesByUserId);
+    } catch (error) {
+      console.error("Error sending transaction notifications", error);
+    }
+  }
+
   private async sendGroupSheetTransactionNotifications(
     user: User,
     transaction: Awaited<
@@ -618,7 +632,7 @@ export class TransactionService {
       transaction.transactionEntries,
     );
 
-    await this.notificationDispatchWorker.sendNotifications(
+    await this.trySendNotifications(
       Object.fromEntries(
         balances
           .filter(({ id }) => id !== user.id)
@@ -716,7 +730,7 @@ export class TransactionService {
         "received",
       );
 
-    await this.notificationDispatchWorker.sendNotifications(messages);
+    await this.trySendNotifications(messages);
 
     return transaction;
   }

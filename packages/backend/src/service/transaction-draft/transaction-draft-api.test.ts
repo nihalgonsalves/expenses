@@ -12,7 +12,8 @@ import {
   createPersonalSheetTransactionInput,
 } from "../../../test/input.ts";
 
-const { useProtectedCaller, prisma, betterAuth } = await getApiCaller();
+const { useProtectedCaller, prisma, betterAuth, notificationDispatchService } =
+  await getApiCaller();
 
 describe("createAppleWalletDraft", () => {
   it("creates a draft with the parsed amount and raw input", async () => {
@@ -45,6 +46,49 @@ describe("createAppleWalletDraft", () => {
     });
 
     expect(draft).toMatchObject({ money: null, description: "Lidl" });
+  });
+
+  it("notifies the user about the new draft", async () => {
+    const authUser = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(authUser);
+
+    const draft = await caller.transactionDraft.createAppleWalletDraft({
+      amount: "12,34 €",
+      merchant: "Lidl",
+    });
+
+    expect(notificationDispatchService.messages).toStrictEqual([
+      {
+        userId: authUser.user.id,
+        payload: {
+          type: "DRAFT",
+          draft: {
+            id: draft.id,
+            description: "Lidl",
+            money: { amount: 1234, scale: 2, currencyCode: "EUR" },
+          },
+        },
+      },
+    ]);
+  });
+
+  it("notifies the user even if the amount can't be parsed", async () => {
+    const authUser = await userFactory(prisma, betterAuth);
+    const caller = useProtectedCaller(authUser);
+
+    const draft = await caller.transactionDraft.createAppleWalletDraft({
+      amount: "forty-two euros",
+    });
+
+    expect(notificationDispatchService.messages).toStrictEqual([
+      {
+        userId: authUser.user.id,
+        payload: {
+          type: "DRAFT",
+          draft: { id: draft.id, description: null, money: null },
+        },
+      },
+    ]);
   });
 
   it("rejects a body without an amount", async () => {

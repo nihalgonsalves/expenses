@@ -7,6 +7,8 @@ import {
 import type { ContextObj } from "../../context.ts";
 import type { TransactionDraft } from "../../prisma/client.ts";
 
+import { toDraftMoney } from "./draft-mappers.ts";
+
 type AuthenticatedContext = Pick<ContextObj, "transactionDraftService"> & {
   user: NonNullable<ContextObj["user"]>;
 };
@@ -20,10 +22,7 @@ const mapDraft = ({
 }: TransactionDraft) =>
   ZTransactionDraft.parse({
     ...draft,
-    money:
-      amount === null || scale === null
-        ? null
-        : { amount, scale, currencyCode },
+    money: toDraftMoney({ amount, scale, currencyCode }),
     spentAt: spentAt.toISOString(),
   });
 

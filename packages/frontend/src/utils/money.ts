@@ -31,6 +31,21 @@ export const formatCurrency = (
   }).format(floatValue);
 };
 
+/**
+ * Draft amounts may be missing a currency, or have one that `Intl` doesn't
+ * support in this browser
+ */
+export const formatDraftMoney = ({
+  amount,
+  scale,
+  currencyCode,
+}: Pick<Money, "amount" | "scale"> & { currencyCode: string | null }) =>
+  currencyCode && CURRENCY_CODES.includes(currencyCode)
+    ? formatCurrency({ amount, scale, currencyCode })
+    : [(amount / Math.pow(10, scale)).toFixed(scale), currencyCode]
+        .filter(Boolean)
+        .join(" ");
+
 export const toDinero = (amount: number, currencyCode: string) =>
   dinero({ amount, currency: getCurrency(currencyCode) });
 

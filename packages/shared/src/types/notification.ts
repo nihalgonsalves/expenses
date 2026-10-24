@@ -58,6 +58,22 @@ const ZTransferNotificationPayload = z.object({
   }),
 });
 
+const ZDraftNotificationPayload = z.object({
+  type: z.literal("DRAFT"),
+  draft: z.object({
+    id: z.string().check(z.minLength(1)),
+    description: z.nullable(z.string()),
+    // the amount or currency may not have been recognised
+    money: z.nullable(
+      z.object({
+        amount: z.int(),
+        scale: z.int().check(z.nonnegative()),
+        currencyCode: z.nullable(z.string()),
+      }),
+    ),
+  }),
+});
+
 const ZTestNotificationPayload = z.object({
   type: z.literal("TEST"),
   message: z.string().check(z.minLength(1)),
@@ -68,6 +84,7 @@ export const ZNotificationPayload = z.union([
   ZExpenseNotificationPayload,
   ZIncomeNotificationPayload,
   ZTransferNotificationPayload,
+  ZDraftNotificationPayload,
 ]);
 
 export type NotificationPayload = z.infer<typeof ZNotificationPayload>;

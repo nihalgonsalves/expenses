@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { TrashIcon } from "lucide-react";
+import { z } from "zod";
 
 import type { TransactionDraft } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 
@@ -9,8 +10,8 @@ import {
   transactionDraftMutations,
   transactionDraftQueries,
 } from "../../api/transaction-draft.functions";
-import { CurrencySpan } from "../../components/currency-span";
 import { ChooseSheetDialog } from "../../components/expenses/choose-sheet-dialog";
+import { DraftAmount } from "../../components/transaction-drafts/draft-summary";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -25,20 +26,31 @@ import { formatDateTimeRelative } from "../../utils/temporal";
 import { haptics } from "bzzz";
 
 export const Route = createFileRoute("/_auth/drafts")({
+  validateSearch: z.object({
+    /** set by the new draft notification, see sw.ts */
+    draftId: z.string().optional(),
+  }),
+  loaderDeps: ({ search: { draftId } }) => ({ draftId }),
+  loader: async ({ context: { queryClient }, deps: { draftId } }) => {
+    const drafts = await queryClient.query({
+      ...transactionDraftQueries.drafts.queryOptions(),
+      // the cached list may be from before the notification's draft was created
+      staleTime: draftId ? 0 : "static",
+    });
+
+    if (!draftId) return { searchDraft: undefined };
+
+    const searchDraft = drafts.find(({ id }) => id === draftId);
+
+    if (!searchDraft) {
+      // already added or discarded
+      throw redirect({ to: "/drafts", search: {}, replace: true });
+    }
+
+    return { searchDraft };
+  },
   component: RouteComponent,
 });
-
-const DraftAmount = ({ money }: { money: TransactionDraft["money"] }) => {
-  if (!money) return "Amount not recognised";
-
-  const { amount, scale, currencyCode } = money;
-
-  return currencyCode ? (
-    <CurrencySpan money={{ amount, scale, currencyCode }} />
-  ) : (
-    (amount / Math.pow(10, scale)).toFixed(scale)
-  );
-};
 
 const DraftCard = ({ draft }: { draft: TransactionDraft }) => {
   const { invalidate } = useQueryClient();
@@ -82,6 +94,7 @@ const DraftCard = ({ draft }: { draft: TransactionDraft }) => {
       <CardFooter>
         <ChooseSheetDialog
           draft={draft}
+          triggerType="trigger"
           render={<Button className="w-full">Add to sheet</Button>}
         />
       </CardFooter>
@@ -90,22 +103,39 @@ const DraftCard = ({ draft }: { draft: TransactionDraft }) => {
 };
 
 function RouteComponent() {
+  const { searchDraft } = Route.useLoaderData();
+  const navigate = useNavigate({ from: Route.fullPath });
   const result = useQuery(transactionDraftQueries.drafts.queryOptions());
 
+  // closes by itself once the draft is used, as the list is then refetched
+  const searchDraftOpen =
+    searchDraft !== undefined &&
+    (result.data?.some(({ id }) => id === searchDraft.id) ?? false);
+
   return (
-    <RootLoader
-      result={result}
-      title="Drafts"
-      render={(drafts) => (
-        <div className="flex flex-col gap-4">
-          {drafts.length === 0 && (
-            <p className="text-muted-foreground text-center">No drafts</p>
-          )}
-          {drafts.map((draft) => (
-            <DraftCard key={draft.id} draft={draft} />
-          ))}
-        </div>
-      )}
-    />
+    <>
+      <ChooseSheetDialog
+        draft={searchDraft}
+        triggerType="controlled"
+        open={searchDraftOpen}
+        handleSetOpen={(open) => {
+          if (!open) void navigate({ search: {}, replace: true });
+        }}
+      />
+      <RootLoader
+        result={result}
+        title="Drafts"
+        render={(drafts) => (
+          <div className="flex flex-col gap-4">
+            {drafts.length === 0 && (
+              <p className="text-muted-foreground text-center">No drafts</p>
+            )}
+            {drafts.map((draft) => (
+              <DraftCard key={draft.id} draft={draft} />
+            ))}
+          </div>
+        )}
+      />
+    </>
   );
 }

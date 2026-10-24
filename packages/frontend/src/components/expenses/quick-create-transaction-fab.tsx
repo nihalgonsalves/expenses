@@ -6,6 +6,7 @@ import { ChooseSheetDialog } from "./choose-sheet-dialog";
 
 export const QuickCreateTransactionFAB = () => (
   <ChooseSheetDialog
+    triggerType="trigger"
     render={
       <FloatingActionButton label="Add Transaction" icon={<PlusIcon />} />
     }

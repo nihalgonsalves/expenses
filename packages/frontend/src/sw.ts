@@ -12,8 +12,10 @@ import {
   type NotificationPayload,
 } from "@nihalgonsalves/expenses-shared/types/notification";
 
+import { z } from "zod/mini";
+
 import { prefsDb } from "./state/prefs-db";
-import { formatCurrency } from "./utils/money";
+import { formatCurrency, formatDraftMoney } from "./utils/money";
 import { getTransactionDescription } from "./utils/utils";
 
 declare let self: ServiceWorkerGlobalScope;
@@ -124,12 +126,29 @@ const getActionText = (action: "created" | "updated" | "deleted") => {
   }
 };
 
-const getNotificationPresentation = (payload: NotificationPayload) => {
+const getNotificationPresentation = (
+  payload: NotificationPayload,
+): { tag: string; title: string; body: string; url: string } => {
   if (payload.type === "TEST") {
     return {
       tag: "test",
       title: "Test Notification",
       body: payload.message,
+      url: "/",
+    };
+  }
+
+  if (payload.type === "DRAFT") {
+    const { id, description, money } = payload.draft;
+    const formattedMoney = money
+      ? formatDraftMoney(money)
+      : "amount not recognised";
+
+    return {
+      tag: `draft-${id}`,
+      title: `🧾 New draft – ${description ?? "No description"} (${formattedMoney})`,
+      body: "Tap to add it to a sheet",
+      url: `/drafts?${new URLSearchParams({ draftId: id }).toString()}`,
     };
   }
 
@@ -145,6 +164,7 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
       tag: payload.transaction.id,
       title,
       body: `You ${payload.transaction.type} ${formattedMoney} for ${description}`,
+      url: "/",
     };
   }
 
@@ -157,6 +177,7 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
       tag: payload.transaction.id,
       title,
       body: `${getActionText(payload.action)} expense: ${description} – your share is ${formattedShare}`,
+      url: "/",
     };
   }
 
@@ -165,28 +186,58 @@ const getNotificationPresentation = (payload: NotificationPayload) => {
     tag: payload.transaction.id,
     title,
     body: `${getActionText(payload.action)} income: ${description} – your share is ${formattedShare}`,
+    url: "/",
   };
 };
 
 const handlePush = async (event: PushEvent) => {
   const result = ZNotificationPayload.safeParse(event.data?.json());
 
-  const { tag, title, body } = result.success
+  const { tag, title, body, url } = result.success
     ? getNotificationPresentation(result.data)
     : {
         tag: "unknown",
         title: "Unknown Notification",
         body: "Open the app to see more",
+        url: "/",
       };
 
   await self.registration.showNotification(title, {
     body,
     tag,
+    data: { url },
   });
 };
 
 self.addEventListener("push", (event) => {
   event.waitUntil(handlePush(event));
+});
+
+const ZNotificationData = z.object({ url: z.string() });
+
+const handleNotificationClick = async (event: NotificationEvent) => {
+  event.notification.close();
+
+  const result = ZNotificationData.safeParse(event.notification.data);
+  const url = new URL(
+    result.success ? result.data.url : "/",
+    self.location.origin,
+  ).href;
+
+  const [client] = await self.clients.matchAll({ type: "window" });
+
+  if (client) {
+    await client.focus();
+    // `navigate` resolves to null (or rejects) if it isn't supported or allowed
+    const navigated = await client.navigate(url).catch(() => null);
+    if (navigated) return;
+  }
+
+  await self.clients.openWindow(url);
+};
+
+self.addEventListener("notificationclick", (event) => {
+  event.waitUntil(handleNotificationClick(event));
 });
 
 // The SKIP_WAITING message from registerSW.tsx will never be received here if the loaded
