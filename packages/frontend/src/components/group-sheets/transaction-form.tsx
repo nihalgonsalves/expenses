@@ -10,6 +10,7 @@ import type {
   TransactionType,
   TransactionWithSheet,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { TransactionDraft } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import {
@@ -22,12 +23,13 @@ import {
   transactionQueries,
 } from "../../api/transaction.functions";
 import { sheetQueries } from "../../api/sheet.functions";
+import { transactionDraftQueries } from "../../api/transaction-draft.functions";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";
+import { getDraftDefaultValues } from "../transaction-drafts/draft-default-values";
 import {
   CURRENT_TIMEZONE,
   dateTimeLocalToZonedISOString,
-  nowForDateTimeInput,
 } from "../../utils/temporal";
 import { CurrencySpan } from "../currency-span";
 import { CategorySelect, OTHER_CATEGORY } from "../form/category-select";
@@ -151,13 +153,19 @@ export const TransactionForm = ({
   groupSheet,
   me,
   type,
+  draft,
 }: {
   groupSheet: GroupSheetByIdResponse;
   me: User;
   type: Exclude<TransactionType, "TRANSFER">;
+  draft?: TransactionDraft | undefined;
 }) => {
   const dialog = useDialog();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
+  const { dateTime, ...draftDefaultValues } = getDraftDefaultValues(
+    draft,
+    preferredCurrencyCode,
+  );
 
   const { invalidate } = useQueryClient();
   const { mutateAsync: createGroupSheetTransaction, isPending } = useMutation(
@@ -171,11 +179,9 @@ export const TransactionForm = ({
     mode: "onTouched",
     defaultValues: {
       type,
-      currencyCode: preferredCurrencyCode,
+      ...draftDefaultValues,
       category: OTHER_CATEGORY,
-      amount: 0,
-      description: "",
-      spentAt: nowForDateTimeInput(),
+      spentAt: dateTime,
       paidOrReceivedById: me.id,
       splitType: GroupTransactionSplitType.Evenly,
       ratios: getDefaultRatios(groupSheet.participants),
@@ -224,6 +230,7 @@ export const TransactionForm = ({
       description: values.description,
       category: values.category,
       spentAt: dateTimeLocalToZonedISOString(values.spentAt),
+      draftId: draft?.id,
     };
 
     try {
@@ -263,6 +270,7 @@ export const TransactionForm = ({
       transactionQueries.participantSummaries.queryKey(groupSheet.id),
       transactionQueries.simplifiedBalances.queryKey(groupSheet.id),
       currencyConversionQueries.supportedCurrencies.queryKey(),
+      transactionDraftQueries.drafts.queryKey(),
     );
   };
 

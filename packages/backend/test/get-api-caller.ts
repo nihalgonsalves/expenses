@@ -70,11 +70,12 @@ const getTestCaller = async () => {
   ) => {
     const userService = new UserService(prisma, betterAuth, emailWorker);
     const notificationSubscriptionService = new NotificationService(prisma);
+    const transactionDraftService = new TransactionDraftService(prisma);
     const transactionService = new TransactionService(
       prisma,
       notificationDispatchService,
+      transactionDraftService,
     );
-    const transactionDraftService = new TransactionDraftService(prisma);
     const sheetService = new SheetService(
       prisma,
       transactionService,
@@ -292,6 +293,13 @@ const apiCaller = (caller: { context: ContextObj }) => {
         ),
       getTransactionDrafts: async () =>
         transactionDraftApi.getTransactionDrafts(authenticated(context)),
+      deleteTransactionDraft: async (
+        input: Parameters<typeof transactionDraftApi.deleteTransactionDraft>[1],
+      ) =>
+        transactionDraftApi.deleteTransactionDraft(
+          authenticated(context),
+          parse(transactionDraftApi.ZDeleteTransactionDraftInput, input),
+        ),
     },
     currencyConversion: {
       getSupportedCurrencies: async () =>

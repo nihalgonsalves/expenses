@@ -20,6 +20,8 @@ export type CreateSheetTransactionInput = z.infer<
 export const ZCreatePersonalSheetTransactionInput =
   ZCreateSheetTransactionInput.extend({
     personalSheetId: z.string().min(1),
+    /** deleted atomically when the transaction is created */
+    draftId: z.string().min(1).optional(),
   });
 
 export type CreatePersonalSheetTransactionInput = z.infer<
@@ -27,7 +29,7 @@ export type CreatePersonalSheetTransactionInput = z.infer<
 >;
 
 export const ZUpdatePersonalSheetTransactionInput =
-  ZCreatePersonalSheetTransactionInput.extend({
+  ZCreatePersonalSheetTransactionInput.omit({ draftId: true }).extend({
     id: z.string().min(1),
   });
 
@@ -51,6 +53,7 @@ export const ZCreatePersonalSheetTransactionScheduleInput =
   ZCreatePersonalSheetTransactionInput.omit({
     spentAt: true,
     originalMoney: true,
+    draftId: true,
   })
     .extend({
       // TODO: add Zod type
@@ -73,6 +76,8 @@ export const ZCreateGroupSheetTransactionInput =
   ZCreateSheetTransactionInput.extend({
     paidOrReceivedById: z.string().min(1),
     groupSheetId: z.string().min(1),
+    /** deleted atomically when the transaction is created */
+    draftId: z.string().min(1).optional(),
     splits: z.array(
       z.object({
         participantId: z.string(),
@@ -86,7 +91,7 @@ export type CreateGroupSheetTransactionInput = z.infer<
 >;
 
 export const ZReplaceGroupSheetTransactionInput =
-  ZCreateGroupSheetTransactionInput.extend({
+  ZCreateGroupSheetTransactionInput.omit({ draftId: true }).extend({
     transactionId: z.string().min(1),
   });
 

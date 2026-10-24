@@ -69,3 +69,18 @@ export const moneyToString = ({ currencyCode, amount, scale }: Money) => {
 
   return `${amount < 0 ? "-" : ""}${unsigned}`;
 };
+
+/**
+ * Converts to an amount in the minor units of `currencyCode`, as used by
+ * `MoneyField`
+ */
+export const toMinorUnits = (
+  { amount, scale }: Pick<Money, "amount" | "scale">,
+  currencyCode: string,
+) => {
+  const currency = getCurrency(currencyCode);
+
+  return dineroToMoney(
+    transformScale(dinero({ amount, scale, currency }), currency.exponent),
+  ).amount;
+};

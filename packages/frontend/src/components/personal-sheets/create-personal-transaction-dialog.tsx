@@ -12,6 +12,7 @@ import {
   ZRecurrenceRule,
   type RecurrenceFrequency,
 } from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { TransactionDraft } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 
 import {
   currencyConversionQueries,
@@ -23,6 +24,7 @@ import {
   transactionQueries,
 } from "../../api/transaction.functions";
 import { sheetQueries } from "../../api/sheet.functions";
+import { transactionDraftQueries } from "../../api/transaction-draft.functions";
 import { usePreferredCurrencyCode } from "../../state/preferences";
 import { useNavigatorOnLine } from "../../state/use-navigator-on-line";
 import { toMoneyValues } from "../../utils/money";
@@ -49,6 +51,10 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
+import {
+  getDraftDefaultValues,
+  getDraftTransactionType,
+} from "../transaction-drafts/draft-default-values";
 import type { RenderProp } from "../ui/utils";
 import { haptics } from "bzzz";
 
@@ -123,8 +129,10 @@ const safeParseDateString = (dateString: string) => {
 
 const CreatePersonalTransactionForm = ({
   personalSheet,
+  draft,
 }: {
   personalSheet: Sheet;
+  draft: TransactionDraft | undefined;
 }) => {
   const dialog = useDialog();
   const [preferredCurrencyCode] = usePreferredCurrencyCode();
@@ -136,12 +144,9 @@ const CreatePersonalTransactionForm = ({
     resolver: zodResolver(formSchema),
     mode: "onTouched",
     defaultValues: {
-      type: "EXPENSE",
-      currencyCode: preferredCurrencyCode,
+      type: getDraftTransactionType(draft),
+      ...getDraftDefaultValues(draft, preferredCurrencyCode),
       category: OTHER_CATEGORY,
-      amount: 0,
-      description: "",
-      dateTime: nowForDateTimeInput(),
     },
   });
 
@@ -217,6 +222,7 @@ const CreatePersonalTransactionForm = ({
           money: convertedMoneySnapshot ?? moneySnapshot,
           ...(convertedMoneySnapshot ? { originalMoney: moneySnapshot } : {}),
           spentAt: dateTimeLocalToZonedISOString(dateTime),
+          draftId: draft?.id,
         });
       }
     } catch (e) {
@@ -237,6 +243,7 @@ const CreatePersonalTransactionForm = ({
         personalSheetId: personalSheet.id,
       }),
       currencyConversionQueries.supportedCurrencies.queryKey(),
+      transactionDraftQueries.drafts.queryKey(),
     );
   };
 
@@ -376,35 +383,38 @@ const CreatePersonalTransactionForm = ({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="recurrenceRule.freq"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Recurring?</FormLabel>
-              <FormControl>
-                <Select
-                  options={RECURRENCE_OPTIONS}
-                  {...field}
-                  onChange={(frequency) => {
-                    field.onChange(frequency);
-                    if (frequency) {
-                      form.setValue(
-                        "currencyCode",
-                        personalSheet.currencyCode,
-                        {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        },
-                      );
-                    }
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* a draft is a one-off payment, and schedules can't consume drafts */}
+        {draft ? null : (
+          <FormField
+            control={form.control}
+            name="recurrenceRule.freq"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Recurring?</FormLabel>
+                <FormControl>
+                  <Select
+                    options={RECURRENCE_OPTIONS}
+                    {...field}
+                    onChange={(frequency) => {
+                      field.onChange(frequency);
+                      if (frequency) {
+                        form.setValue(
+                          "currencyCode",
+                          personalSheet.currencyCode,
+                          {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          },
+                        );
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <Button
           className="w-full capitalize"
@@ -422,9 +432,11 @@ const CreatePersonalTransactionForm = ({
 export const CreatePersonalTransactionDialog = ({
   render,
   sheetId,
+  draft,
 }: {
   render: RenderProp;
   sheetId: string;
+  draft?: TransactionDraft | undefined;
 }) => {
   const { data: personalSheet } = useQuery(
     sheetQueries.personalSheetById.queryOptions(sheetId),
@@ -437,7 +449,10 @@ export const CreatePersonalTransactionDialog = ({
       title="Add Transaction"
     >
       {personalSheet ? (
-        <CreatePersonalTransactionForm personalSheet={personalSheet} />
+        <CreatePersonalTransactionForm
+          personalSheet={personalSheet}
+          draft={draft}
+        />
       ) : null}
     </ResponsiveDialog>
   );

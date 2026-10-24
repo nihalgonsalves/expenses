@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 import {
   type CreateAppleWalletDraftInput,
   ZTransactionDraft,
@@ -26,6 +28,10 @@ const mapDraft = ({
     spentAt: spentAt.toISOString(),
   });
 
+export const ZDeleteTransactionDraftInput = z.object({
+  id: z.string().min(1),
+});
+
 export const createAppleWalletDraft = async (
   ctx: AuthenticatedContext,
   input: CreateAppleWalletDraftInput,
@@ -40,3 +46,10 @@ export const createAppleWalletDraft = async (
 
 export const getTransactionDrafts = async (ctx: AuthenticatedContext) =>
   (await ctx.transactionDraftService.getDrafts(ctx.user)).map(mapDraft);
+
+export const deleteTransactionDraft = async (
+  ctx: AuthenticatedContext,
+  input: z.infer<typeof ZDeleteTransactionDraftInput>,
+) => {
+  await ctx.transactionDraftService.deleteDraft(ctx.user, input.id);
+};

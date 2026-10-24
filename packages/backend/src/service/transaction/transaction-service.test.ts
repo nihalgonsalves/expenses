@@ -14,6 +14,7 @@ import {
   type FakeNotificationItem,
 } from "../../../test/web-push-utils.ts";
 
+import { TransactionDraftService } from "../transaction-draft/transaction-draft-service.ts";
 import { TransactionService } from "./transaction-service.ts";
 
 const prisma = await getPrisma();
@@ -32,6 +33,7 @@ const useSetup = async () => {
   const transactionService = new TransactionService(
     prisma,
     notificationDispatchService,
+    new TransactionDraftService(prisma),
   );
 
   const [user1, user2, user3] = await Promise.all([
@@ -57,6 +59,34 @@ const useSetup = async () => {
 
 describe("TransactionService", () => {
   describe("createGroupSheetExpense", () => {
+    it("does not send notifications if the draft can't be deleted", async () => {
+      const {
+        notificationDispatchService: webPushService,
+        transactionService,
+        groupSheet,
+        user1: creator,
+        user2: otherParticipant,
+      } = await useSetup();
+
+      const input = createGroupSheetTransactionInput(
+        "EXPENSE",
+        groupSheet.id,
+        currencyCode,
+        creator.id,
+        otherParticipant.id,
+      );
+
+      await expect(
+        transactionService.createGroupSheetTransaction(
+          creator,
+          { ...input, draftId: "nonexistent" },
+          groupSheet,
+        ),
+      ).rejects.toThrow("Draft not found");
+
+      expect(webPushService.messages).toStrictEqual([]);
+    });
+
     it("sends a notification to all transaction participants except the creator", async () => {
       const {
         notificationDispatchService: webPushService,

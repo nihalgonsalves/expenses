@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { GroupSheetByIdResponse } from "@nihalgonsalves/expenses-shared/types/sheet";
 import type { TransactionType } from "@nihalgonsalves/expenses-shared/types/transaction";
+import type { TransactionDraft } from "@nihalgonsalves/expenses-shared/types/transaction-draft";
 import type { User } from "@nihalgonsalves/expenses-shared/types/user";
 
 import { sheetQueries } from "../../api/sheet.functions";
@@ -11,6 +12,8 @@ import { useCurrentUser } from "../../api/user.functions";
 import { ResponsiveDialog } from "../form/responsive-dialog";
 import { ToggleButtonGroup } from "../form/toggle-button-group";
 import type { RenderProp } from "../ui/utils";
+
+import { getDraftTransactionType } from "../transaction-drafts/draft-default-values";
 
 import { SettlementForm } from "./settlement-form";
 import { TransactionForm } from "./transaction-form";
@@ -48,24 +51,40 @@ const TYPE_OPTIONS = [
 const CreateGroupSheetTransactionForm = ({
   groupSheet,
   me,
+  draft,
 }: {
   groupSheet: GroupSheetByIdResponse;
   me: User;
+  draft: TransactionDraft | undefined;
 }) => {
-  const [type, setType] = useState<TransactionType>("EXPENSE");
+  const [type, setType] = useState<TransactionType>(() =>
+    getDraftTransactionType(draft),
+  );
 
   return (
     <div className="flex flex-col gap-4">
       <ToggleButtonGroup
-        className="grid w-full grid-cols-3"
+        className={
+          draft ? "grid w-full grid-cols-2" : "grid w-full grid-cols-3"
+        }
         value={type}
         setValue={setType}
-        options={TYPE_OPTIONS}
+        // settlements don't have a description or date to fill from a draft
+        options={
+          draft
+            ? TYPE_OPTIONS.filter(({ value }) => value !== "TRANSFER")
+            : TYPE_OPTIONS
+        }
       />
       {type === "TRANSFER" ? (
         <SettlementForm groupSheet={groupSheet} me={me} />
       ) : (
-        <TransactionForm type={type} groupSheet={groupSheet} me={me} />
+        <TransactionForm
+          type={type}
+          groupSheet={groupSheet}
+          me={me}
+          draft={draft}
+        />
       )}
     </div>
   );
@@ -74,9 +93,11 @@ const CreateGroupSheetTransactionForm = ({
 export const CreateGroupSheetTransactionDialog = ({
   sheetId,
   render,
+  draft,
 }: {
   sheetId: string;
   render: RenderProp;
+  draft?: TransactionDraft | undefined;
 }) => {
   const { data: groupSheet } = useQuery(
     sheetQueries.groupSheetById.queryOptions(sheetId),
@@ -91,7 +112,11 @@ export const CreateGroupSheetTransactionDialog = ({
       title="Add Transaction"
     >
       {groupSheet && me ? (
-        <CreateGroupSheetTransactionForm groupSheet={groupSheet} me={me} />
+        <CreateGroupSheetTransactionForm
+          groupSheet={groupSheet}
+          me={me}
+          draft={draft}
+        />
       ) : null}
     </ResponsiveDialog>
   );

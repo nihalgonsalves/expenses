@@ -28,6 +28,9 @@ export const isoToTemporalZonedDateTime = (iso: string) =>
 export const nowForDateTimeInput = () =>
   Temporal.Now.plainDateTimeISO().round("minutes").toString();
 
+export const isoToDateTimeInput = (iso: string) =>
+  isoToTemporalZonedDateTime(iso).toPlainDateTime().round("minutes").toString();
+
 export const shortDateFormatter = new Intl.DateTimeFormat(getUserLanguage(), {
   dateStyle: "short",
 });

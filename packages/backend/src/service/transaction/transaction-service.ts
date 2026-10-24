@@ -35,6 +35,7 @@ import {
 import { generateId } from "../../utils/nanoid.ts";
 import { AppError } from "../../utils/errors.ts";
 import type { INotificationDispatchWorker } from "../notification/notification-dispatch-worker.ts";
+import type { TransactionDraftService } from "../transaction-draft/transaction-draft-service.ts";
 
 import {
   transactionToNotificationPayload,
@@ -175,6 +176,7 @@ export class TransactionService {
     | "sheetMemberships"
   >;
   private notificationDispatchWorker: INotificationDispatchWorker;
+  private transactionDraftService: Pick<TransactionDraftService, "deleteDraft">;
 
   constructor(
     prismaClient: Pick<
@@ -186,9 +188,31 @@ export class TransactionService {
       | "sheetMemberships"
     >,
     notificationDispatchWorker: INotificationDispatchWorker,
+    transactionDraftService: Pick<TransactionDraftService, "deleteDraft">,
   ) {
     this.prismaClient = prismaClient;
     this.notificationDispatchWorker = notificationDispatchWorker;
+    this.transactionDraftService = transactionDraftService;
+  }
+
+  /**
+   * Runs `create` in a transaction with the draft's deletion, so that a draft
+   * can only be turned into a transaction once
+   */
+  private async withDraftDeletion<T>(
+    user: User,
+    draftId: string | undefined,
+    create: (prismaClient: typeof this.prismaClient) => Promise<T>,
+    prismaClient = this.prismaClient,
+  ) {
+    if (!draftId) {
+      return create(prismaClient);
+    }
+
+    return this.prismaClient.$transaction(async (txClient) => {
+      await this.transactionDraftService.deleteDraft(user, draftId, txClient);
+      return create(txClient);
+    });
   }
 
   async getAllUserTransactions(
@@ -354,21 +378,23 @@ export class TransactionService {
     verifyAmountIsAbsolute(input.money);
     verifyOriginalMoney(personalSheet.currencyCode, input.originalMoney);
 
-    return this.prismaClient.transaction.create({
-      include: {
-        transactionEntries: {
-          include: {
-            user: true,
+    return this.withDraftDeletion(user, input.draftId, async (prismaClient) =>
+      prismaClient.transaction.create({
+        include: {
+          transactionEntries: {
+            include: {
+              user: true,
+            },
           },
         },
-      },
-      data: {
-        ...mapInputToCreatePersonalTransaction(input, personalSheet),
-        transactionEntries: {
-          create: [mapInputToCreatePersonalTransactionEntry(input, user)],
+        data: {
+          ...mapInputToCreatePersonalTransaction(input, personalSheet),
+          transactionEntries: {
+            create: [mapInputToCreatePersonalTransactionEntry(input, user)],
+          },
         },
-      },
-    });
+      }),
+    );
   }
 
   async updatePersonalSheetTransaction(
@@ -494,69 +520,75 @@ export class TransactionService {
       });
     }
 
-    const transaction = await prismaClient.transaction.create({
-      include: {
-        transactionEntries: {
+    const transaction = await this.withDraftDeletion(
+      user,
+      input.draftId,
+      async (txClient) =>
+        txClient.transaction.create({
           include: {
-            user: true,
+            transactionEntries: {
+              include: {
+                user: true,
+              },
+            },
           },
-        },
-      },
-      data: {
-        id: transactionId,
-        sheet: { connect: { id: groupSheet.id } },
-        amount: input.money.amount,
-        scale: input.money.scale,
-        ...(input.originalMoney
-          ? {
-              originalAmount: input.originalMoney.amount,
-              originalScale: input.originalMoney.scale,
-              originalCurrencyCode: input.originalMoney.currencyCode,
-            }
-          : {}),
-        type: input.type,
-        category: input.category,
-        description: input.description,
-        spentAt: Temporal.ZonedDateTime.from(input.spentAt)
-          .toInstant()
-          .toString(),
-        transactionEntries: {
-          create: input.splits
-            .filter(({ share }) => share.amount !== 0)
-            .flatMap(
-              (
-                split,
-              ): [
-                Prisma.TransactionEntryCreateWithoutTransactionInput,
-                Prisma.TransactionEntryCreateWithoutTransactionInput,
-              ] => [
-                {
-                  id: generateId(),
-                  user: {
-                    connect: {
-                      id: input.paidOrReceivedById,
+          data: {
+            id: transactionId,
+            sheet: { connect: { id: groupSheet.id } },
+            amount: input.money.amount,
+            scale: input.money.scale,
+            ...(input.originalMoney
+              ? {
+                  originalAmount: input.originalMoney.amount,
+                  originalScale: input.originalMoney.scale,
+                  originalCurrencyCode: input.originalMoney.currencyCode,
+                }
+              : {}),
+            type: input.type,
+            category: input.category,
+            description: input.description,
+            spentAt: Temporal.ZonedDateTime.from(input.spentAt)
+              .toInstant()
+              .toString(),
+            transactionEntries: {
+              create: input.splits
+                .filter(({ share }) => share.amount !== 0)
+                .flatMap(
+                  (
+                    split,
+                  ): [
+                    Prisma.TransactionEntryCreateWithoutTransactionInput,
+                    Prisma.TransactionEntryCreateWithoutTransactionInput,
+                  ] => [
+                    {
+                      id: generateId(),
+                      user: {
+                        connect: {
+                          id: input.paidOrReceivedById,
+                        },
+                      },
+                      amount:
+                        input.type === "EXPENSE"
+                          ? split.share.amount
+                          : -split.share.amount,
+                      scale: split.share.scale,
                     },
-                  },
-                  amount:
-                    input.type === "EXPENSE"
-                      ? split.share.amount
-                      : -split.share.amount,
-                  scale: split.share.scale,
-                },
-                {
-                  id: generateId(),
-                  user: { connect: { id: split.participantId } },
-                  amount:
-                    input.type === "EXPENSE"
-                      ? -split.share.amount
-                      : split.share.amount,
-                  scale: split.share.scale,
-                },
-              ],
-            ),
-        },
-      },
-    });
+                    {
+                      id: generateId(),
+                      user: { connect: { id: split.participantId } },
+                      amount:
+                        input.type === "EXPENSE"
+                          ? -split.share.amount
+                          : split.share.amount,
+                      scale: split.share.scale,
+                    },
+                  ],
+                ),
+            },
+          },
+        }),
+      prismaClient,
+    );
 
     const balances = calculateBalances(
       groupSheet,
