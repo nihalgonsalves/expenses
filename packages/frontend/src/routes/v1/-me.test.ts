@@ -7,9 +7,15 @@ describe("getV1Me", () => {
     const response = await getV1Me(new Request("https://expenses.test/v1/me"));
 
     expect(response.status).toBe(401);
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+    expect(response.headers.get("Content-Type")).toBe(
+      "application/problem+json",
+    );
+    expect(response.headers.get("WWW-Authenticate")).toBe("Bearer");
     await expect(response.json()).resolves.toStrictEqual({
-      code: "UNAUTHORIZED",
-      message: "Unauthorized",
+      title: "Unauthorized",
+      status: 401,
+      detail: "A valid API key is required",
     });
   });
 
@@ -25,7 +31,6 @@ describe("getV1Me", () => {
     );
 
     expect(response.status).toBe(200);
-    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
     await expect(response.json()).resolves.toStrictEqual({
       id: "user-123",
       name: "Ada Lovelace",
