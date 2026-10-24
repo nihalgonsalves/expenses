@@ -50,9 +50,7 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     SENTRY_PROJECT="$(cat /run/secrets/SENTRY_PROJECT 2>/dev/null || true)" \
     pnpm build:vite
 
-# the image itself is 26 pinned to LTS
-# hadolint ignore=DL3007
-FROM gcr.io/distroless/nodejs26:latest
+FROM gcr.io/distroless/nodejs26:nonroot
 # NODE_VERSION
 
 WORKDIR /app
