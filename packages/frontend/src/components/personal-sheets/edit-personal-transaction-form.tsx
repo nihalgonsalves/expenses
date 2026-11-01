@@ -177,6 +177,7 @@ const EditPersonalTransactionForm = ({
                       className="grow"
                       currencyCode={currencyCodeOrSheetDefault}
                       {...field}
+                      onAmountChange={field.onChange}
                     />
                   </FormControl>
 

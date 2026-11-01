@@ -532,7 +532,7 @@ export const SplitsFormSection = ({
                             mode="onBlur"
                             value={value}
                             onFocus={handleRatioFocus}
-                            onChange={(newAmount) => {
+                            onAmountChange={(newAmount) => {
                               field.onChange(getNewRatioValue(newAmount));
                               handleRatioBlur(i);
                             }}

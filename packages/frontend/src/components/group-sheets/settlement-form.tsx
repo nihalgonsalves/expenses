@@ -103,6 +103,7 @@ export const SettlementForm = ({
                   className="grow"
                   currencyCode={groupSheet.currencyCode}
                   {...field}
+                  onAmountChange={field.onChange}
                 />
               </FormControl>
               <FormMessage />

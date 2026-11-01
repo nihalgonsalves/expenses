@@ -305,6 +305,7 @@ export const TransactionForm = ({
                       className="grow"
                       currencyCode={currencyCodeOrGroupDefault}
                       {...field}
+                      onAmountChange={field.onChange}
                     />
                   </FormControl>
 
@@ -540,6 +541,7 @@ export const EditTransactionForm = ({
                       className="grow"
                       currencyCode={currencyCodeOrOriginal}
                       {...field}
+                      onAmountChange={field.onChange}
                     />
                   </FormControl>
 

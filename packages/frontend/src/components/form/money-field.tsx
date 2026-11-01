@@ -28,7 +28,9 @@ type MoneyFieldProps = Omit<
   "inputMode" | "ref" | "onKeyDown" | "onChange" | "value"
 > & {
   value: number;
-  onChange: (newAmount: number) => void;
+  // Base UI's `Field.Control` merges handlers with
+  // `onChange`, so this is not called that
+  onAmountChange: (newAmount: number) => void;
   currencyCode: string;
   mode?: "onChange" | "onBlur";
   ref?: Ref<HTMLDivElement>;
@@ -36,7 +38,7 @@ type MoneyFieldProps = Omit<
 
 export const MoneyField = ({
   value,
-  onChange: setAmount,
+  onAmountChange: setAmount,
   currencyCode,
   mode = "onChange",
   ...textFieldProps

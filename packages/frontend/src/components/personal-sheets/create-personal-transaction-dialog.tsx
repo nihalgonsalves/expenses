@@ -297,6 +297,7 @@ const CreatePersonalTransactionForm = ({
                       className="grow"
                       currencyCode={currencyCode || "EUR"}
                       {...field}
+                      onAmountChange={field.onChange}
                     />
                   </FormControl>
 
