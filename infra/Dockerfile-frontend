@@ -61,4 +61,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["--enable-source-maps", "./server/index.mjs"]
+CMD ["--enable-source-maps", "--no-experimental-webstorage", "--disable-warning=DEP0205", "./server/index.mjs"]
