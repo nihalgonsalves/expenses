@@ -4,11 +4,7 @@ import { THEMES } from "@nihalgonsalves/expenses-shared/types/theme";
 
 import { useCurrencyOptions } from "../../api/currency-conversion.functions";
 import { usePreferredCurrencyCode } from "../../state/preferences";
-import {
-  useThemePreference,
-  useTheme,
-  getThemeDataAttribute,
-} from "../../state/theme";
+import { useThemePreference, useTheme } from "../../state/theme";
 import { useIsStandalone } from "../../utils/hooks/use-is-standalone";
 import { noop } from "../../utils/utils";
 import { CurrencySelect } from "../form/currency-select";
@@ -85,7 +81,7 @@ export const AppearanceForm = () => {
               <ToggleGroupItem
                 key={t}
                 value={t}
-                data-theme={getThemeDataAttribute(themePreference, t)}
+                data-theme={t}
                 className="data-[state=on]:border-primary grid size-9 place-items-center rounded-full border shadow-none"
               >
                 <span className="bg-primary text-primary-foreground grid size-6 place-items-center rounded-full">

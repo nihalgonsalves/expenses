@@ -164,8 +164,6 @@ const devOnlyDefault = <T extends z.ZodType>(
 const DEV_VAPID_KEYS = webPush.generateVAPIDKeys();
 
 const ZEnv = z.object({
-  GIT_COMMIT_SHA: z.string().default("unknown"),
-
   PUBLIC_ORIGIN: devOnlyDefault(
     z.url({ protocol: /^https?$/ }),
     "http://localhost:5173",
@@ -202,8 +200,6 @@ const ZEnv = z.object({
     z.url({ protocol: /^https?$/ }),
     "http://localhost:5200/",
   ),
-
-  SENTRY_DSN: z.string().optional(),
 
   VITEST_WORKER_ID: IS_PROD ? z.undefined().optional() : z.string().optional(),
   VITE_INTEGRATION_TEST: IS_PROD

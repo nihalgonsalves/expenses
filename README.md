@@ -89,7 +89,6 @@ If using GitHub Codespaces or a Dev Container, skip to step 5.
 
 Docker build args:
 
-- GIT_COMMIT_SHA
 - VITE_GIT_COMMIT_SHA
 - VITE_ENV_NAME
 - VITE_SENTRY_DSN

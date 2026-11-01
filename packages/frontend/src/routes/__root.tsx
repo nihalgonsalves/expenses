@@ -21,9 +21,14 @@ import { Toaster } from "../components/ui/toaster";
 import { config } from "../config";
 import { appConfigQueryOptions } from "../api/config.functions";
 import { userApi } from "../api/user.functions";
+import { transactionDraftQueries } from "../api/transaction-draft.functions";
 import mainCss from "../main.css?url";
 import { useSwUpdateCheck } from "../register-sw";
-import { getThemeDataAttribute, useThemeSync } from "../state/theme";
+import {
+  getThemeModeAttribute,
+  getThemePreference,
+  useThemeSync,
+} from "../state/theme";
 import { PWAInstall } from "#/components/pwa-install";
 import { Devtools } from "../components/devtools";
 
@@ -52,9 +57,25 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       .query(appConfigQueryOptions())
       .catch(() => null);
 
-    return { user: await user, config: await configResult };
+    const resolvedUser = await user;
+
+    if (resolvedUser) {
+      // The sidebar reads drafts (useHasTransactionDrafts)
+      await queryClient
+        .query({
+          ...transactionDraftQueries.drafts.queryOptions(),
+          staleTime: "static",
+        })
+        .catch(() => null);
+    }
+
+    return {
+      user: resolvedUser,
+      config: await configResult,
+      themePreference: await getThemePreference(),
+    };
   },
-  head: () => ({
+  head: ({ match }) => ({
     title: "Expenses",
     meta: [
       {
@@ -65,7 +86,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content:
           "width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover",
       },
-      { name: "color-scheme", content: "normal" },
+      {
+        name: "color-scheme",
+        content:
+          getThemeModeAttribute(match.context.themePreference) ?? "light dark",
+      },
       { name: "theme-color", content: "hsl(201, 100%, 46%)" },
     ],
     links: [
@@ -110,11 +135,15 @@ const ConditionalPWAInstall = () => {
 };
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const { user } = Route.useRouteContext();
+  const { user, themePreference } = Route.useRouteContext();
   const parsedTheme = ZTheme.catch(THEME_DEFAULT).parse(user?.theme);
 
   return (
-    <html lang="en" data-theme={getThemeDataAttribute("system", parsedTheme)}>
+    <html
+      lang="en"
+      data-theme={parsedTheme}
+      data-mode={getThemeModeAttribute(themePreference)}
+    >
       <head>
         <HeadContent />
       </head>

@@ -16,22 +16,60 @@ import { useCurrentUser, userApi } from "../api/user.functions";
 import { useDialog } from "../components/form/responsive-dialog";
 import { isOldDataAtom } from "../pages/root";
 
-import { createPreferenceWithDefault } from "./preferences";
+// loads the Temporal polyfill (see note in utils/temporal.ts)
+import "../utils/temporal";
+
 import { useNavigatorOnLine } from "./use-navigator-on-line";
 import { createIsomorphicFn } from "@tanstack/react-start";
+import { getCookie } from "@tanstack/react-start/server";
+import { useRouteContext, useRouter } from "@tanstack/react-router";
 
 const ZThemePreference = z.enum(["system", "light", "dark"]);
 
-type ThemePreference = z.infer<typeof ZThemePreference>;
+export type ThemePreference = z.infer<typeof ZThemePreference>;
 
-export const useThemePreference = createPreferenceWithDefault(
-  "theme_preference",
-  (v) => {
-    const result = ZThemePreference.safeParse(v);
-    return result.success ? result.data : "system";
-  },
-  "system",
-);
+const THEME_PREFERENCE_COOKIE = "theme_preference";
+const THEME_PREFERENCE_COOKIE_MAX_AGE: Temporal.DurationLikeObject = {
+  // max browser cookie lifetime
+  days: 400,
+};
+
+const readThemePreferenceCookie = createIsomorphicFn()
+  .server(async () => getCookie(THEME_PREFERENCE_COOKIE))
+  .client(async () => (await cookieStore.get(THEME_PREFERENCE_COOKIE))?.value);
+
+export const getThemePreference = async (): Promise<ThemePreference> =>
+  ZThemePreference.catch("system").parse(await readThemePreferenceCookie());
+
+export const getThemeModeAttribute = (pref: ThemePreference) =>
+  pref === "system" ? undefined : pref;
+
+export const useThemePreference = () => {
+  const router = useRouter();
+  const themePreference = useRouteContext({
+    from: "__root__",
+    select: (ctx) => ctx.themePreference,
+  });
+
+  const setThemePreference = async (value: ThemePreference) => {
+    if (value === "system") {
+      await cookieStore.delete(THEME_PREFERENCE_COOKIE);
+    } else {
+      await cookieStore.set({
+        name: THEME_PREFERENCE_COOKIE,
+        value,
+        expires: Temporal.Now.zonedDateTimeISO().add(
+          THEME_PREFERENCE_COOKIE_MAX_AGE,
+        ).epochMilliseconds,
+        // for cross-site navigations
+        sameSite: "lax",
+      });
+    }
+    await router.invalidate();
+  };
+
+  return [themePreference, setThemePreference] as const;
+};
 
 export const useTheme = () => {
   const invalidateRouter = useInvalidateRouter();
@@ -54,21 +92,6 @@ export const useTheme = () => {
 
   return [THEME_DEFAULT, setTheme] as const;
 };
-
-const isDarkMode = (pref: ThemePreference) => {
-  if (pref === "system") {
-    return createIsomorphicFn().client(
-      () => globalThis.matchMedia("(prefers-color-scheme: dark)").matches,
-    )();
-  }
-
-  return pref === "dark";
-};
-
-export const getThemeDataAttribute = (
-  themePreference: ThemePreference,
-  theme: Theme,
-) => `${theme}-${isDarkMode(themePreference) ? "dark" : "light"}`;
 
 const setMetaThemeColor = (color: string) => {
   document
@@ -114,20 +137,36 @@ const syncMetaThemeColor = (shouldDarken: boolean) => {
   );
 };
 
-const syncTheme = (themePreference: ThemePreference, theme: Theme) => {
-  document.documentElement.setAttribute(
-    "data-theme",
-    getThemeDataAttribute(themePreference, theme),
-  );
-};
+/** Re-render with the new mode when another tab changes the preference */
+const useThemePreferenceCrossTabSync = () => {
+  const router = useRouter();
 
-const syncColorScheme = (themePreference: ThemePreference) => {
-  document
-    .querySelector('meta[name="color-scheme"]')
-    ?.setAttribute("content", isDarkMode(themePreference) ? "dark" : "light");
+  useEffect(() => {
+    const controller = new AbortController();
+
+    cookieStore.addEventListener(
+      "change",
+      ({ changed, deleted }) => {
+        if (
+          [...changed, ...deleted].some(
+            (c) => c.name === THEME_PREFERENCE_COOKIE,
+          )
+        ) {
+          void router.invalidate();
+        }
+      },
+      { signal: controller.signal },
+    );
+
+    return () => {
+      controller.abort();
+    };
+  }, [router]);
 };
 
 export const useThemeSync = () => {
+  useThemePreferenceCrossTabSync();
+
   const [themePreference] = useThemePreference();
   const [theme] = useTheme();
   const dialog = useDialog();
@@ -137,8 +176,6 @@ export const useThemeSync = () => {
   const systemDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   useEffect(() => {
-    syncTheme(themePreference, theme);
-    syncColorScheme(themePreference);
     syncMetaThemeColor(dialog.isOpen);
   }, [
     themePreference,
