@@ -40,4 +40,4 @@ USER node
 ARG GIT_COMMIT_SHA
 ENV GIT_COMMIT_SHA=${GIT_COMMIT_SHA}
 
-CMD ["node", "--enable-source-maps", "src/worker.ts"]
+CMD ["node", "--enable-source-maps", "--no-experimental-webstorage", "--disable-warning=DEP0205", "src/worker.ts"]
