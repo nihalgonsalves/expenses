@@ -369,12 +369,9 @@ importers:
       '@nihalgonsalves/expenses-shared':
         specifier: workspace:*
         version: link:../shared
-      '@sentry/react':
+      '@sentry/tanstackstart-react':
         specifier: 11.10.0
-        version: 11.10.0(react@19.3.1)
-      '@sentry/vite-plugin':
-        specifier: 11.10.0
-        version: 11.10.0(rollup@4.65.0)
+        version: 11.10.0(react@19.3.1)(rollup@4.65.0)
       '@tanstack/query-async-storage-persister':
         specifier: 5.104.5
         version: 5.104.5
@@ -3966,8 +3963,8 @@ packages:
     resolution: {integrity: sha512-m/MVCvPzQJJZZCTFlVPCrTuoncT7SR80+QKg1K7ul25AsL0byABr5KsHCbXVpOYXLVz04Omk+pOOR5Cv2IAlrA==}
     engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0'}
 
-  '@sentry/vite-plugin@11.10.0':
-    resolution: {integrity: sha512-1eUQmGMk7nPwGS6PN3nuzM8+U0mzP0zaPjmO3ua4IX6gd7HFpefkxriFgO9yGOhCBMSWkIkVzxl7hUrRTCIIfw==}
+  '@sentry/tanstackstart-react@11.10.0':
+    resolution: {integrity: sha512-mxpdB/3mqJgPyWSh5gYHO4ZF3Tr+mgncuiC6mMeaN8zYmYedrA+corAeODj4ADjfggq1vWTkW3BEPUZlYqK3uQ==}
     engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0'}
 
   '@shadcn/registry@0.2.0':
@@ -12398,10 +12395,20 @@ snapshots:
       '@sentry/conventions': 0.29.0
       '@sentry/core': 11.10.0
 
-  '@sentry/vite-plugin@11.10.0(rollup@4.65.0)':
+  '@sentry/tanstackstart-react@11.10.0(react@19.3.1)(rollup@4.65.0)':
     dependencies:
+      '@opentelemetry/api': 1.10.0
+      '@sentry/browser-utils': 11.10.0
       '@sentry/bundler-plugins': 11.10.0(rollup@4.65.0)
+      '@sentry/conventions': 0.29.0
+      '@sentry/core': 11.10.0
+      '@sentry/node': 11.10.0(rollup@4.65.0)
+      '@sentry/react': 11.10.0(react@19.3.1)
+      '@sentry/server-runtime-injection': 11.10.0
+      '@sentry/server-utils': 11.10.0
     transitivePeerDependencies:
+      - react
+      - react-router
       - rollup
       - webpack
 

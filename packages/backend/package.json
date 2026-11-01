@@ -7,7 +7,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "dev": "run-p 'start' 'db:generate --watch'",
-    "start": "node --enable-source-maps --no-experimental-webstorage --disable-warning=DEP0205 --env-file-if-exists=../../.env.app --watch ./src/worker.ts",
+    "start": "node --enable-source-maps --no-experimental-webstorage --env-file-if-exists=../../.env.app --watch ./src/worker.ts",
     "test": "vitest",
     "db:migrate": "prisma migrate dev",
     "db:migration": "prisma migrate dev --name",
@@ -16,7 +16,7 @@
     "db:generate": "prisma generate",
     "auth:generate": "BETTER_AUTH_CLI=true auth generate --output=./prisma/schema/auth.prisma",
     "prepare:local": "node bin/prepare-local-env.js",
-    "prepare:demo": "node --no-experimental-webstorage --disable-warning=DEP0205 bin/demo.ts"
+    "prepare:demo": "node --no-experimental-webstorage bin/demo.ts"
   },
   "dependencies": {
     "@better-auth/api-key": "1.7.13",

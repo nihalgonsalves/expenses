@@ -1,3 +1,4 @@
+import "./instrument.client";
 // TODO: conditional import? causes an error currently.
 import "temporal-polyfill/global";
 

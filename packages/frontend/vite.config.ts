@@ -1,7 +1,7 @@
 import { fileURLToPath } from "url";
 import { z } from "zod";
 import { codecovVitePlugin } from "@codecov/vite-plugin";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { sentryTanstackStart } from "@sentry/tanstackstart-react/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import react from "@vitejs/plugin-react";
@@ -117,23 +117,24 @@ export default defineConfig(({ mode }) => ({
         exclude: ["node_modules", "test/"],
         extension: [".js", ".ts", ".tsx"],
       }),
-    process.env["SENTRY_AUTH_TOKEN"] &&
-      process.env["SENTRY_ORG"] &&
-      process.env["SENTRY_PROJECT"] &&
-      process.env["VITE_GIT_COMMIT_SHA"] &&
-      sentryVitePlugin({
-        authToken: process.env["SENTRY_AUTH_TOKEN"],
-        org: process.env["SENTRY_ORG"],
-        project: process.env["SENTRY_PROJECT"],
-        release: { name: process.env["VITE_GIT_COMMIT_SHA"] },
-        reactComponentAnnotation: { enabled: true },
-        telemetry: false,
-      }),
     process.env["CODECOV_TOKEN"] &&
       codecovVitePlugin({
         enableBundleAnalysis: true,
         bundleName: "frontend",
         uploadToken: process.env["CODECOV_TOKEN"],
+        telemetry: false,
+      }),
+    // Must be last
+    process.env["SENTRY_AUTH_TOKEN"] &&
+      process.env["SENTRY_ORG"] &&
+      process.env["SENTRY_PROJECT"] &&
+      process.env["VITE_GIT_COMMIT_SHA"] &&
+      sentryTanstackStart({
+        authToken: process.env["SENTRY_AUTH_TOKEN"],
+        org: process.env["SENTRY_ORG"],
+        project: process.env["SENTRY_PROJECT"],
+        release: { name: process.env["VITE_GIT_COMMIT_SHA"] },
+        reactComponentAnnotation: { enabled: true },
         telemetry: false,
       }),
   ].filter(Boolean),

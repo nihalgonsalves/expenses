@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/react";
+import * as Sentry from "@sentry/tanstackstart-react";
 import { type ReactNode, Fragment } from "react";
 import { toast } from "sonner";
 

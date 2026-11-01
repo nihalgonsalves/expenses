@@ -59,6 +59,12 @@ COPY --from=builder /opt/app/packages/frontend/.output/ ./
 
 ENV NODE_ENV=production
 
+# Read at runtime by instrument.server.mjs
+ARG VITE_GIT_COMMIT_SHA
+ARG VITE_SENTRY_DSN
+ENV VITE_GIT_COMMIT_SHA=${VITE_GIT_COMMIT_SHA}
+ENV VITE_SENTRY_DSN=${VITE_SENTRY_DSN}
+
 EXPOSE 3000
 
-CMD ["--enable-source-maps", "--no-experimental-webstorage", "--disable-warning=DEP0205", "./server/index.mjs"]
+CMD ["--enable-source-maps", "--no-experimental-webstorage", "--import", "./server/instrument.server.mjs", "./server/index.mjs"]

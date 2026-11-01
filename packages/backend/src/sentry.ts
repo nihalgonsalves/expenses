@@ -31,7 +31,3 @@ export const initBackendSentry = (integrations: BackendIntegration[] = []) => {
     },
   });
 };
-
-export const captureBackendException = (error: unknown) => {
-  Sentry.captureException(error);
-};

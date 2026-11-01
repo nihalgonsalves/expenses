@@ -1,7 +1,10 @@
 import {
+  captureException,
+  sentryGlobalRequestMiddleware,
+} from "@sentry/tanstackstart-react";
+import {
   createCsrfMiddleware,
   createMiddleware,
-  createServerOnlyFn,
   createStart,
 } from "@tanstack/react-start";
 import { isNotFound, isRedirect } from "@tanstack/react-router";
@@ -9,14 +12,6 @@ import {
   AppError,
   normalizeAppError,
 } from "@nihalgonsalves/expenses-backend/src/utils/errors";
-
-const captureUnexpectedServerError = createServerOnlyFn(
-  async (error: unknown) => {
-    const { captureBackendException } =
-      await import("@nihalgonsalves/expenses-backend/src/sentry");
-    captureBackendException(error);
-  },
-);
 
 const sentryServerFunctionMiddleware = createMiddleware({
   type: "function",
@@ -33,7 +28,12 @@ const sentryServerFunctionMiddleware = createMiddleware({
       error.code === "INTERNAL_SERVER_ERROR"
     ) {
       const cause = error instanceof AppError ? error.cause : undefined;
-      await captureUnexpectedServerError(cause !== undefined ? cause : error);
+      captureException(cause !== undefined ? cause : error, {
+        mechanism: {
+          type: "auto.middleware.tanstackstart.server_function",
+          handled: false,
+        },
+      });
     }
 
     throw normalizeAppError(error);
@@ -47,6 +47,6 @@ const csrfMiddleware = createCsrfMiddleware({
 });
 
 export const startInstance = createStart(() => ({
-  requestMiddleware: [csrfMiddleware],
+  requestMiddleware: [sentryGlobalRequestMiddleware, csrfMiddleware],
   functionMiddleware: [sentryServerFunctionMiddleware],
 }));

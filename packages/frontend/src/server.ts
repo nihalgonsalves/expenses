@@ -1,9 +1,9 @@
+import { wrapFetchWithSentry } from "@sentry/tanstackstart-react";
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { FastResponse } from "srvx";
 import { z } from "zod";
 import { config } from "@nihalgonsalves/expenses-backend/src/config";
 import { getBackendWebApp } from "@nihalgonsalves/expenses-backend/src/web-context";
-import { initBackendSentry } from "@nihalgonsalves/expenses-backend/src/sentry";
 import {
   THEME_DEFAULT,
   themeColors,
@@ -11,7 +11,6 @@ import {
 } from "@nihalgonsalves/expenses-shared/types/theme";
 
 globalThis.Response = FastResponse;
-initBackendSentry();
 
 const handleManifestRequest = async (request: Request) => {
   const backend = await getBackendWebApp();
@@ -83,22 +82,24 @@ const handleHealthRequest = async () => {
 };
 
 // oxlint-disable-next-line import/no-default-export
-export default createServerEntry({
-  async fetch(request) {
-    const pathname = new URL(request.url).pathname;
+export default createServerEntry(
+  wrapFetchWithSentry({
+    async fetch(request: Request) {
+      const pathname = new URL(request.url).pathname;
 
-    if (pathname === "/healthz") {
-      return handleHealthRequest();
-    }
+      if (pathname === "/healthz") {
+        return handleHealthRequest();
+      }
 
-    if (pathname === "/manifest.webmanifest") {
-      return handleManifestRequest(request);
-    }
+      if (pathname === "/manifest.webmanifest") {
+        return handleManifestRequest(request);
+      }
 
-    if (pathname.startsWith("/api/auth")) {
-      return handleAuthRequest(request);
-    }
+      if (pathname.startsWith("/api/auth")) {
+        return handleAuthRequest(request);
+      }
 
-    return handler.fetch(request);
-  },
-});
+      return handler.fetch(request);
+    },
+  }),
+);

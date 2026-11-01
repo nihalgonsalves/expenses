@@ -1,4 +1,4 @@
-import * as Sentry from "@sentry/react";
+import * as Sentry from "@sentry/tanstackstart-react";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
 import { createIsomorphicFn } from "@tanstack/react-start";
@@ -39,41 +39,11 @@ export const getRouter = async () => {
     ),
   });
 
-  Sentry.init({
-    ...(config.VITE_SENTRY_DSN ? { dsn: config.VITE_SENTRY_DSN } : {}),
-    release: config.VITE_GIT_COMMIT_SHA,
-    integrations: [
-      Sentry.browserProfilingIntegration(),
-      Sentry.captureConsoleIntegration({
-        levels: ["error", "warn"],
-      }),
-      Sentry.httpClientIntegration(),
-      Sentry.reportingObserverIntegration(),
-      // Sentry.tanstackRouterBrowserTracingIntegration(router),
-      Sentry.replayIntegration({
-        maskAllText: true,
-        blockAllMedia: false,
-      }),
-    ],
-    tracesSampleRate: 1.0,
-    replaysSessionSampleRate: 0.1,
-    replaysOnErrorSampleRate: 1.0,
-    dataCollection: {
-      userInfo: false,
-      cookies: false,
-      httpHeaders: {
-        request: {
-          allow: ["user-agent", "content-type", "accept", "content-length"],
-        },
-        response: false,
-      },
-      httpBodies: [],
-      urlQueryParams: { deny: ["token", "code", "state", "callbackURL"] },
-      queues: false,
-      databaseQueryData: false,
-      stackFrameVariables: false,
-    },
-  });
+  if (!router.isServer) {
+    Sentry.addIntegration(
+      Sentry.tanstackRouterBrowserTracingIntegration(router),
+    );
+  }
 
   setupRouterSsrQueryIntegration({
     router,
