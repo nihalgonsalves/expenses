@@ -108,7 +108,7 @@ export const CreateGroupForm = ({
         <FormField
           control={form.control}
           name="currencyCode"
-          render={({ field }) => (
+          render={({ field: { onChange, ...field } }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Group sheet currency</FormLabel>
               <FormControl>
@@ -116,6 +116,7 @@ export const CreateGroupForm = ({
                   options={currencyOptions?.supported}
                   frequentOptions={currencyOptions?.frequent}
                   {...field}
+                  onValueChange={onChange}
                 />
               </FormControl>
               <FormMessage />

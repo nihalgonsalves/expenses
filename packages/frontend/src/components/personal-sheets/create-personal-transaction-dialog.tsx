@@ -316,7 +316,7 @@ const CreatePersonalTransactionForm = ({
           <FormField
             control={form.control}
             name="currencyCode"
-            render={({ field }) => (
+            render={({ field: { onChange, ...field } }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
@@ -325,6 +325,7 @@ const CreatePersonalTransactionForm = ({
                       options={supportedCurrencies}
                       frequentOptions={frequentCurrencies}
                       {...field}
+                      onValueChange={onChange}
                       disabled={Boolean(recurrenceRule?.freq)}
                     />
                   )}
@@ -343,11 +344,15 @@ const CreatePersonalTransactionForm = ({
         <FormField
           control={form.control}
           name="category"
-          render={({ field }) => (
+          render={({ field: { onChange, ...field } }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
               <FormControl>
-                <CategorySelect placeholder="Select a category" {...field} />
+                <CategorySelect
+                  placeholder="Select a category"
+                  {...field}
+                  onValueChange={onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

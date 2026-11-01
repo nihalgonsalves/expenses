@@ -114,11 +114,15 @@ export const SettlementForm = ({
         <FormField
           control={form.control}
           name="fromId"
-          render={({ field }) => (
+          render={({ field: { onChange, ...field } }) => (
             <FormItem className="flex flex-col">
               <FormLabel>From</FormLabel>
               <FormControl>
-                <ParticipantSelect groupSheet={groupSheet} {...field} />
+                <ParticipantSelect
+                  groupSheet={groupSheet}
+                  {...field}
+                  onValueChange={onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -128,11 +132,15 @@ export const SettlementForm = ({
         <FormField
           control={form.control}
           name="toId"
-          render={({ field }) => (
+          render={({ field: { onChange, ...field } }) => (
             <FormItem className="flex flex-col">
               <FormLabel>To</FormLabel>
               <FormControl>
-                <ParticipantSelect groupSheet={groupSheet} {...field} />
+                <ParticipantSelect
+                  groupSheet={groupSheet}
+                  {...field}
+                  onValueChange={onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

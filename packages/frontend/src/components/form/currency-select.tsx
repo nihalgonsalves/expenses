@@ -18,7 +18,9 @@ import {
 type CurrencySelectProps = {
   id?: string;
   value: string | undefined;
-  onChange: (newCode: string | null) => void;
+  // Base UI's `Field.Control` merges handlers with
+  // `onChange`, so this is not called that
+  onValueChange: (newCode: string | null) => void;
   options?: string[] | undefined;
   frequentOptions?: string[] | undefined;
   ref?: Ref<HTMLInputElement>;
@@ -67,7 +69,7 @@ const CurrencyOption = ({ code }: { code: string }) => {
 
 export const CurrencySelect = ({
   value,
-  onChange,
+  onValueChange,
   options = CURRENCY_CODES,
   frequentOptions = EMPTY_CURRENCY_OPTIONS,
   ref,
@@ -87,7 +89,7 @@ export const CurrencySelect = ({
     <Combobox<string>
       items={groups}
       value={value}
-      onValueChange={onChange}
+      onValueChange={onValueChange}
       filter={(code, query) => {
         const { name, symbol } = getCurrencyDetails(code);
         const normalizedQuery = query.toLocaleLowerCase();

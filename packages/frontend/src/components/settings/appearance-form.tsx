@@ -105,7 +105,7 @@ export const AppearanceForm = () => {
             options={currencyOptions?.supported}
             frequentOptions={currencyOptions?.frequent}
             value={preferredCurrencyCode}
-            onChange={(newCode) => {
+            onValueChange={(newCode) => {
               void setPreferredCurrencyCode(newCode ?? undefined);
             }}
           />

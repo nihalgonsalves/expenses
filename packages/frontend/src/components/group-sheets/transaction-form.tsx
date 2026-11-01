@@ -81,7 +81,7 @@ const MetadataFormSection = ({
       <FormField
         control={form.control}
         name="paidOrReceivedById"
-        render={({ field }) => (
+        render={({ field: { onChange, ...field } }) => (
           <FormItem className="flex flex-col">
             <FormLabel>
               {type === "EXPENSE" ? "Who paid?" : "Who received money?"}
@@ -90,10 +90,10 @@ const MetadataFormSection = ({
               <ParticipantSelect
                 groupSheet={groupSheet}
                 {...field}
-                onChange={(newId) => {
+                onValueChange={(newId) => {
                   if (!newId) return;
 
-                  field.onChange(newId);
+                  onChange(newId);
                 }}
               />
             </FormControl>
@@ -105,11 +105,15 @@ const MetadataFormSection = ({
       <FormField
         control={form.control}
         name="category"
-        render={({ field }) => (
+        render={({ field: { onChange, ...field } }) => (
           <FormItem>
             <FormLabel>Category</FormLabel>
             <FormControl>
-              <CategorySelect placeholder="Select a category" {...field} />
+              <CategorySelect
+                placeholder="Select a category"
+                {...field}
+                onValueChange={onChange}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -324,7 +328,7 @@ export const TransactionForm = ({
           <FormField
             control={form.control}
             name="currencyCode"
-            render={({ field }) => (
+            render={({ field: { onChange, ...field } }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
@@ -333,6 +337,7 @@ export const TransactionForm = ({
                       options={supportedCurrencies}
                       frequentOptions={frequentCurrencies}
                       {...field}
+                      onValueChange={onChange}
                     />
                   )}
                 </FormControl>
@@ -560,7 +565,7 @@ export const EditTransactionForm = ({
           <FormField
             control={form.control}
             name="currencyCode"
-            render={({ field }) => (
+            render={({ field: { onChange, ...field } }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Currency</FormLabel>
                 <FormControl>
@@ -569,6 +574,7 @@ export const EditTransactionForm = ({
                       options={supportedCurrencies}
                       frequentOptions={frequentCurrencies}
                       {...field}
+                      onValueChange={onChange}
                     />
                   )}
                 </FormControl>

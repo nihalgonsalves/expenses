@@ -110,7 +110,7 @@ export const CreateSheetForm = ({
         <FormField
           control={form.control}
           name="currencyCode"
-          render={({ field }) => (
+          render={({ field: { onChange, ...field } }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Sheet currency</FormLabel>
               <FormControl>
@@ -118,6 +118,7 @@ export const CreateSheetForm = ({
                   options={currencyOptions?.supported}
                   frequentOptions={currencyOptions?.frequent}
                   {...field}
+                  onValueChange={onChange}
                 />
               </FormControl>
               <FormMessage />

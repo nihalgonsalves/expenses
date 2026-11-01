@@ -16,7 +16,9 @@ type ParticipantSelectProps = {
   id?: string;
   groupSheet: GroupSheetByIdResponse;
   value: string | null;
-  onChange: (newValue: string | null) => void;
+  // Base UI's `Field.Control` merges handlers with
+  // `onChange`, so this is not called that
+  onValueChange: (newValue: string | null) => void;
   ref?: Ref<HTMLInputElement> | undefined;
 } & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
@@ -25,7 +27,7 @@ export const ParticipantSelect = ({
   id,
   groupSheet,
   value,
-  onChange,
+  onValueChange,
   ...controllerProps
 }: ParticipantSelectProps) => {
   const options = groupSheet.participants.map((participant) => participant.id);
@@ -40,7 +42,7 @@ export const ParticipantSelect = ({
     <Combobox<string>
       items={options}
       value={value}
-      onValueChange={onChange}
+      onValueChange={onValueChange}
       itemToStringLabel={(item) => labelById.get(item) ?? item}
       filter={(item, query) =>
         labelById

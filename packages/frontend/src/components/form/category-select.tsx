@@ -17,14 +17,16 @@ export const OTHER_CATEGORY = "other";
 type CategorySelectProps = {
   id?: string;
   value: string | undefined;
-  onChange: (newCategory: string | null | undefined) => void;
+  // Base UI's `Field.Control` merges handlers with
+  // `onChange`, so this is not called that
+  onValueChange: (newCategory: string | null | undefined) => void;
   placeholder?: string;
   ref?: Ref<HTMLInputElement>;
 } & Omit<ControllerRenderProps, "value" | "onChange" | "ref">;
 
 export const CategorySelect = ({
   value,
-  onChange,
+  onValueChange,
   placeholder = "Select a category",
   ...controllerProps
 }: CategorySelectProps) => {
@@ -50,7 +52,7 @@ export const CategorySelect = ({
     <Combobox
       items={items}
       value={value}
-      onValueChange={onChange}
+      onValueChange={onValueChange}
       onInputValueChange={setSearchValue}
     >
       <ComboboxInput
