@@ -24,3 +24,16 @@ updates:
       all:
         patterns:
           - "*"
+  - package-ecosystem: docker
+    directory: "/infra"
+    schedule:
+      interval: weekly
+    ignore:
+      # major is pinned via .node-version / engines
+      - dependency-name: "node"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      all:
+        patterns:
+          - "*"

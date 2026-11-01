@@ -21,10 +21,7 @@ jobs:
       - run: pnpm lint
       - uses: hadolint/hadolint-action@06be81baf89a55ffd0e24b8f04a4185738dd3387 # v3.5.0
         with:
-          dockerfile: ./infra/Dockerfile-backend
-      - uses: hadolint/hadolint-action@06be81baf89a55ffd0e24b8f04a4185738dd3387 # v3.5.0
-        with:
-          dockerfile: ./infra/Dockerfile-frontend
+          dockerfile: ./infra/Dockerfile
       - uses: crate-ci/typos@00f422f3b19c57bc6338715ebfe3316d38768461 # v1.50.3
 
   test-storybook:

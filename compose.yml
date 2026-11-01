@@ -1,17 +1,41 @@
+x-build: &build
+  context: .
+  dockerfile: ./infra/Dockerfile
+  args:
+    VITE_ENV_NAME: production
+    VITE_GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:-unknown}
+    VITE_SENTRY_DSN: ${VITE_SENTRY_DSN:-}
+  # optional, for source map uploads
+  secrets:
+    - SENTRY_AUTH_TOKEN
+    - SENTRY_ORG
+    - SENTRY_PROJECT
+
 services:
+  migrate:
+    build:
+      <<: *build
+      target: builder
+    working_dir: /opt/app/packages/backend
+    command: ["pnpm", "prisma", "migrate", "deploy"]
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file: &env_file
+      - .env.app
+
   web:
     restart: unless-stopped
-    depends_on:
-      - postgres
-    build:
-      context: .
-      dockerfile: ./infra/Dockerfile-frontend
+    depends_on: &depends_on
+      migrate:
+        condition: service_completed_successfully
+    build: *build
     # TODO: centralise/autogenerate this. must contain:
     # DATABASE_URL, JWT_SECRET, VAPID_EMAIL, VAPID_PRIVATE_KEY,
     # VAPID_PUBLIC_KEY, PUBLIC_ORIGIN, SMTP_HOST, SMTP_PORT, SMTP_USER,
-    # SMTP_PASSWORD, and optional SENTRY_DSN
-    env_file: &env_file
-      - .env.app
+    # SMTP_PASSWORD
+    env_file: *env_file
     environment: &environment
       FRANKFURTER_BASE_URL: https://api.frankfurter.dev/
     ports:
@@ -19,13 +43,17 @@ services:
 
   worker:
     restart: unless-stopped
-    depends_on:
-      - postgres
-    build:
-      context: .
-      dockerfile: ./infra/Dockerfile-backend
+    depends_on: *depends_on
+    build: *build
     init: true
-    command: ["node", "--enable-source-maps", "src/worker.ts"]
+    command:
+      [
+        "--enable-source-maps",
+        "--no-experimental-webstorage",
+        "--import",
+        "./server/instrument.server.mjs",
+        "./server/worker/index.mjs",
+      ]
     env_file: *env_file
     environment: *environment
 
@@ -42,5 +70,14 @@ services:
       - .env.postgres
     volumes:
       - postgres:/var/lib/postgresql
+
+secrets:
+  SENTRY_AUTH_TOKEN:
+    environment: SENTRY_AUTH_TOKEN
+  SENTRY_ORG:
+    environment: SENTRY_ORG
+  SENTRY_PROJECT:
+    environment: SENTRY_PROJECT
+
 volumes:
   postgres:

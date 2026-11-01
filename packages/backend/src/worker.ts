@@ -1,10 +1,6 @@
 import * as Sentry from "@sentry/node";
-import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
 import { closeBackendRuntime, createBackendRuntime } from "./runtime.ts";
-import { initBackendSentry } from "./sentry.ts";
-
-initBackendSentry([nodeProfilingIntegration()]);
 
 const runtime = await createBackendRuntime();
 

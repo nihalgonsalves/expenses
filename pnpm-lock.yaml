@@ -257,9 +257,6 @@ importers:
       '@sentry/node':
         specifier: 11.10.0
         version: 11.10.0(rollup@4.65.0)
-      '@sentry/profiling-node':
-        specifier: 11.10.0
-        version: 11.10.0(rollup@4.65.0)
       '@simplewebauthn/server':
         specifier: 13.3.3
         version: 13.3.3
@@ -565,6 +562,9 @@ importers:
       playwright:
         specifier: 1.64.1
         version: 1.64.1
+      rolldown:
+        specifier: 1.2.15
+        version: 1.2.15
       rollup-plugin-visualizer:
         specifier: 7.1.1
         version: 7.1.1(rolldown@1.2.15)(rollup@4.65.0)
@@ -3919,10 +3919,6 @@ packages:
     resolution: {integrity: sha512-jZqxVHPoUeZ6W7xSlhJdTMuM/GUJLA/K4U9OFmkP+g+TvtXhdwWxeiT23m2Wm5NmTHjaB07jSc05ayuflD8ETw==}
     engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0'}
 
-  '@sentry/node-cpu-profiler@2.4.4':
-    resolution: {integrity: sha512-FaYbFWxEyTTVqXLJccokJCkwx2cTuvTiRaM9kA+O4HbZVT49xYXqSV9cNLI5UqJhgdHiZDhelBd5LB4wj7IIRA==}
-    engines: {node: '>=18'}
-
   '@sentry/node@11.10.0':
     resolution: {integrity: sha512-ZsndrSn1NjL9AslpUdxz/kYPcv/i+plVZoyPe1ivlr5XPUpocB8pUL5noYbIUl96Wd/yGvPBw6zqO8d69rRKQQ==}
     engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0'}
@@ -3932,10 +3928,6 @@ packages:
     engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0'}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
-
-  '@sentry/profiling-node@11.10.0':
-    resolution: {integrity: sha512-YWsI02WFZp+JiD45diuhhZEnhatBu6EynTGR8sesnOLmiuwqiP7sSBU9aaprgC+vbITXIY+/XOnTba9MslQP/g==}
-    engines: {node: '>=20.19.0 <22.0.0 || >=22.12.0 <23.0.0 || >=23.2.0'}
 
   '@sentry/react@11.10.0':
     resolution: {integrity: sha512-xRa0LTxAu/wW6Q/prOncsfLV4ovmFfwcoLR1xmReWFCTVSYdh9+qbS6fnR3yHGmZUQgGPY9veBsaYGveYoqqQw==}
@@ -7520,10 +7512,6 @@ packages:
     resolution: {integrity: sha512-54gANPi62O8rfMvepiJUVuIzEIinYfpeHbebywlLxvVTgIYXDwSvpaU9Id+0sJOBjBx0wC1/CVYXJkH7SY+l0g==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
-
-  node-abi@3.101.0:
-    resolution: {integrity: sha512-bkb/RkuWCE64eWu1PCh3Fu2pGc9mKRs+kOE+FU2bGHRYlQa86/D321DSATV54AsCQMKz3/xSt9sRgraZTpqdhQ==}
-    engines: {node: '>=10'}
 
   node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
@@ -12334,11 +12322,6 @@ snapshots:
     dependencies:
       '@sentry/core': 11.10.0
 
-  '@sentry/node-cpu-profiler@2.4.4':
-    dependencies:
-      detect-libc: 2.1.2
-      node-abi: 3.101.0
-
   '@sentry/node@11.10.0(rollup@4.65.0)':
     dependencies:
       '@opentelemetry/api': 1.10.0
@@ -12357,15 +12340,6 @@ snapshots:
       '@opentelemetry/api': 1.10.0
       '@sentry/conventions': 0.29.0
       '@sentry/core': 11.10.0
-
-  '@sentry/profiling-node@11.10.0(rollup@4.65.0)':
-    dependencies:
-      '@sentry/core': 11.10.0
-      '@sentry/node': 11.10.0(rollup@4.65.0)
-      '@sentry/node-cpu-profiler': 2.4.4
-    transitivePeerDependencies:
-      - rollup
-      - webpack
 
   '@sentry/react@11.10.0(react@19.3.1)':
     dependencies:
@@ -16116,10 +16090,6 @@ snapshots:
       srvx: 1.0.7
       unenv: 2.0.0-rc.24
       unstorage: 2.0.0-beta.0
-
-  node-abi@3.101.0:
-    dependencies:
-      semver: 7.8.5
 
   node-abort-controller@3.1.1: {}
 
