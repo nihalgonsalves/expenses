@@ -58,6 +58,21 @@ export const getRouter = async () => {
     tracesSampleRate: 1.0,
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
+    dataCollection: {
+      userInfo: false,
+      cookies: false,
+      httpHeaders: {
+        request: {
+          allow: ["user-agent", "content-type", "accept", "content-length"],
+        },
+        response: false,
+      },
+      httpBodies: [],
+      urlQueryParams: { deny: ["token", "code", "state", "callbackURL"] },
+      queues: false,
+      databaseQueryData: false,
+      stackFrameVariables: false,
+    },
   });
 
   setupRouterSsrQueryIntegration({

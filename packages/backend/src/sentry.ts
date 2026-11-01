@@ -14,6 +14,21 @@ export const initBackendSentry = (integrations: BackendIntegration[] = []) => {
     integrations: [Sentry.prismaIntegration(), ...integrations],
     tracesSampleRate: 1.0,
     profileSessionSampleRate: 1.0,
+    dataCollection: {
+      userInfo: false,
+      cookies: false,
+      httpHeaders: {
+        request: {
+          allow: ["user-agent", "content-type", "accept", "content-length"],
+        },
+        response: false,
+      },
+      httpBodies: [],
+      urlQueryParams: { deny: ["token", "code", "state", "callbackURL"] },
+      queues: false,
+      databaseQueryData: false,
+      stackFrameVariables: false,
+    },
   });
 };
 
