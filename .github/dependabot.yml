@@ -37,3 +37,29 @@ updates:
       all:
         patterns:
           - "*"
+  - package-ecosystem: docker
+    directory: "/.devcontainer"
+    schedule:
+      interval: weekly
+    ignore:
+      # major is pinned via .node-version / engines
+      - dependency-name: "devcontainers/javascript-node"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      all:
+        patterns:
+          - "*"
+  - package-ecosystem: docker-compose
+    directory: "/"
+    schedule:
+      interval: weekly
+    ignore:
+      # keep in sync with build.yml services
+      - dependency-name: "postgres"
+        update-types:
+          - "version-update:semver-major"
+    groups:
+      all:
+        patterns:
+          - "*"

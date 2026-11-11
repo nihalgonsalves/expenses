@@ -1,5 +1,5 @@
 # NODE_VERSION
-FROM node:26-slim AS builder
+FROM node:26-slim@sha256:e6bedef217677b276c591795e169840edd9096dbf13f29df8ef8d1856b8820bc AS builder
 
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 # "Pin versions in npm"

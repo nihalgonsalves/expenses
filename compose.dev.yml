@@ -2,7 +2,7 @@
 name: expenses-dev
 services:
   postgres:
-    image: "postgres:18-alpine"
+    image: "postgres:18-alpine@sha256:9ba53c7d41ea093baf5c1ba635ba5434c4f979880527d49bb7d9237d3193085b"
     environment:
       # server
       POSTGRES_PASSWORD: postgres
@@ -21,10 +21,10 @@ services:
       - 5432
 
   frankfurter:
-    image: lineofflight/frankfurter:2.3.5
+    image: lineofflight/frankfurter:2.3.5@sha256:f3aa47a6ceb9a1298feb4f4fd2e6d4cbe8282610d678dda92c37234dc6c5291d
 
   mailpit:
-    image: axllent/mailpit
+    image: axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
     expose:
       - 8025 # web
       - 1025 # smtp

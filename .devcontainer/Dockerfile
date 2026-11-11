@@ -1,2 +1,2 @@
 # NODE_VERSION
-FROM mcr.microsoft.com/devcontainers/javascript-node:26
+FROM mcr.microsoft.com/devcontainers/javascript-node:26@sha256:045e66010973363cc211c8d86133580eb6106713314797066efe60cba970b9a8
