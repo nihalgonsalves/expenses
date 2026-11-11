@@ -21,7 +21,7 @@ services:
       - 5432
 
   frankfurter:
-    image: lineofflight/frankfurter:2.3.5@sha256:f3aa47a6ceb9a1298feb4f4fd2e6d4cbe8282610d678dda92c37234dc6c5291d
+    image: lineofflight/frankfurter:v2.6.1@sha256:ab07d75e88fc81404db541774795c8e06e938fe5aaf9fd44d7651cb72e898952
 
   mailpit:
     image: axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
