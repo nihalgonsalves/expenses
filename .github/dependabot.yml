@@ -15,6 +15,8 @@ updates:
           - "version-update:semver-major"
       # can't be updated without also updating the Docker image in build.yml
       - dependency-name: "@playwright/test"
+    cooldown:
+      default-days: 7
 
   - package-ecosystem: github-actions
     directory: "/"
@@ -24,6 +26,8 @@ updates:
       all:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
   - package-ecosystem: docker
     directory: "/infra"
     schedule:
@@ -37,6 +41,8 @@ updates:
       all:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
   - package-ecosystem: docker
     directory: "/.devcontainer"
     schedule:
@@ -50,6 +56,8 @@ updates:
       all:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7
   - package-ecosystem: docker-compose
     directory: "/"
     schedule:
@@ -63,3 +71,5 @@ updates:
       all:
         patterns:
           - "*"
+    cooldown:
+      default-days: 7

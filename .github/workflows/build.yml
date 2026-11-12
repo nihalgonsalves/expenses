@@ -1,6 +1,9 @@
 name: build
 on: [push]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
@@ -9,8 +12,13 @@ jobs:
   build:
     timeout-minutes: 5
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write # upload-sarif
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - uses: $/.github/actions/setup
       - working-directory: ./packages/backend/
         run: pnpm db:generate
@@ -24,6 +32,14 @@ jobs:
           dockerfile: ./infra/Dockerfile
       - uses: crate-ci/typos@v1.52.0
 
+      - run: zizmor --format=sarif . > results.sarif
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: github/codeql-action/upload-sarif@v4.39.1
+        with:
+          sarif_file: results.sarif
+          category: zizmor
+
   test-storybook:
     timeout-minutes: 5
     runs-on: ubuntu-latest
@@ -31,6 +47,8 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.64.1@sha256:2f05f8a734509a7b3f26a912639488ee08f58a7b292d14d62271bcff9038768f
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
       - run: chown -R $(id -u):$(id -g) $PWD
       - uses: $/.github/actions/setup
@@ -53,6 +71,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - uses: $/.github/actions/setup
       - working-directory: ./packages/backend/
         run: pnpm db:generate
@@ -103,6 +123,8 @@ jobs:
         image: axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       # https://github.com/actions/runner/issues/2033#issuecomment-1204205989
       - run: chown -R $(id -u):$(id -g) $PWD
       - uses: $/.github/actions/setup
@@ -126,6 +148,8 @@ jobs:
     needs: [test-storybook, test-vitest, test-playwright]
     steps:
       - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
       - uses: actions/download-artifact@v8.0.2
       - uses: codecov/codecov-action@v7.1.1
         with:

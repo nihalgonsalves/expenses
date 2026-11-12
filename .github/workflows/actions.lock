@@ -10,6 +10,7 @@ workflows:
         - 'actions/upload-artifact@v7.0.2'
         - 'codecov/codecov-action@v7.1.1'
         - 'crate-ci/typos@v1.52.0'
+        - 'github/codeql-action@v4.39.1'
         - 'hadolint/hadolint-action@v3.5.0'
         - 'jdx/mise-action@v5.2.2'
 dependencies:
@@ -50,6 +51,11 @@ dependencies:
         commit: 'sha1-4c8b7f51ca60df14e3c5ca82770dfbbe6c3dae85'
         owner_id: 36412122
         repo_id: 181782286
+    'github/codeql-action@v4.39.1':
+        ref: 'v4.39.1'
+        commit: 'sha1-9b3254085494b55a0f7c4c2b3d2d52cc712ce370'
+        owner_id: 9919
+        repo_id: 259445878
     'hadolint/hadolint-action@v3.5.0':
         ref: 'v3.5.0'
         commit: 'sha1-06be81baf89a55ffd0e24b8f04a4185738dd3387'

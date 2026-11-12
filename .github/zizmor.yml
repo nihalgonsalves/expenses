@@ -1,0 +1,5 @@
+rules:
+  unpinned-uses:
+    # composite actions are locked indirectly via the calling workflow in actions.lock (https://github.com/github/gh-actions-lock/issues/183)
+    ignore:
+      - action.yml
