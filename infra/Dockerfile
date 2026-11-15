@@ -50,7 +50,7 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     SENTRY_PROJECT="$(cat /run/secrets/SENTRY_PROJECT 2>/dev/null || true)" \
     pnpm build:vite
 
-FROM gcr.io/distroless/nodejs26:nonroot@sha256:767ffb7e2ffa9f4280f1af7b99f7f0a1cafb79d0dcc0e0d3aba43843748008a5
+FROM gcr.io/distroless/nodejs26:nonroot@sha256:1d736cf8b5716c07a245301f92717143215d248fd55771ee1936ef4b3302e531
 # NODE_VERSION
 
 WORKDIR /app
