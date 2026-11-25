@@ -120,7 +120,13 @@ export default defineConfig(({ mode }) => ({
     !process.env["VITE_STORYBOOK"] &&
       nitro({
         routeRules: {
-          // Static files skip the server entry; the SW follows its own CSP
+          // Static files skip the server entry
+          "/**": {
+            headers: {
+              "X-Content-Type-Options": "nosniff",
+              "Cross-Origin-Resource-Policy": "same-origin",
+            },
+          },
           "/sw.js": {
             headers: {
               "Content-Security-Policy": SERVICE_WORKER_CSP,

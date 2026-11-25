@@ -1,6 +1,7 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 import {
@@ -21,7 +22,10 @@ export const getCurrentUser = createServerFn({ method: "GET" })
 
 export const signOut = createServerFn({ method: "POST" })
   .middleware([serverContextMiddleware])
-  .handler(async ({ context }) => backendUserApi.signOut(context));
+  .handler(async ({ context }) => {
+    setResponseHeader("Clear-Site-Data", '"cache", "storage"');
+    return backendUserApi.signOut(context);
+  });
 
 export const anonymizeCurrentUser = createServerFn({ method: "POST" })
   .middleware([requiredServerContextMiddleware])

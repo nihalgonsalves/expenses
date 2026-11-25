@@ -1,4 +1,6 @@
 /// <reference lib="webworker" />
+// Must come first: before any module that imports zod
+import "./zod-jitless";
 import { cleanupOutdatedCaches, precacheAndRoute } from "workbox-precaching";
 import { registerRoute, NavigationRoute } from "workbox-routing";
 import { NetworkFirst, CacheFirst } from "workbox-strategies";

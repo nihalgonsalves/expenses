@@ -61,6 +61,6 @@ describe("allowScriptURL", () => {
 });
 
 it("shares zod's global config object", () => {
-  // install-trusted-types.ts sets jitless via this global, before zod loads
+  // zod-jitless.ts sets jitless via this global, before zod loads
   expect(config()).toBe(globalThis.__zod_globalConfig);
 });

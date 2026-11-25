@@ -24,17 +24,32 @@ const headersFor = (
 it("builds the production security headers", () => {
   expect({
     document: headersFor({ sentryDsn: DSN })("abcdef"),
+    nonDocument: headersFor({ sentryDsn: DSN })(),
     serviceWorker: SERVICE_WORKER_CSP,
   }).toMatchInlineSnapshot(`
     {
       "document": {
-        "Content-Security-Policy": "default-src 'self'; script-src 'nonce-abcdef' 'strict-dynamic'; style-src-elem 'self' 'nonce-abcdef'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://o1.ingest.us.sentry.io; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types default lit-html; report-to csp-endpoint",
+        "Cache-Control": "no-store",
+        "Content-Security-Policy": "default-src 'self'; script-src 'nonce-abcdef' 'strict-dynamic' 'report-sample'; style-src-elem 'self' 'nonce-abcdef' 'report-sample'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://o1.ingest.us.sentry.io; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types default lit-html; report-to csp-endpoint",
         "Cross-Origin-Embedder-Policy": "require-corp",
         "Cross-Origin-Opener-Policy": "same-origin",
         "Cross-Origin-Resource-Policy": "same-origin",
         "Document-Policy": "js-profiling",
         "Origin-Agent-Cluster": "?1",
-        "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=(), display-capture=(), payment=(), usb=(), serial=(), hid=(), bluetooth=(), browsing-topics=(), publickey-credentials-get=(self), publickey-credentials-create=(self)",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+        "Reporting-Endpoints": "csp-endpoint="https://o1.ingest.us.sentry.io/api/456/security/?sentry_key=abc123&sentry_environment=test&sentry_release=abc1234"",
+        "Strict-Transport-Security": "max-age=31536000",
+        "X-Content-Type-Options": "nosniff",
+      },
+      "nonDocument": {
+        "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+        "Cross-Origin-Embedder-Policy": "require-corp",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Cross-Origin-Resource-Policy": "same-origin",
+        "Document-Policy": "js-profiling",
+        "Origin-Agent-Cluster": "?1",
+        "Permissions-Policy": "camera=(), microphone=(), geolocation=(), display-capture=(), payment=(), usb=(), serial=(), hid=(), bluetooth=(), browsing-topics=(), publickey-credentials-get=(self), publickey-credentials-create=(self)",
         "Referrer-Policy": "strict-origin-when-cross-origin",
         "Reporting-Endpoints": "csp-endpoint="https://o1.ingest.us.sentry.io/api/456/security/?sentry_key=abc123&sentry_environment=test&sentry_release=abc1234"",
         "Strict-Transport-Security": "max-age=31536000",
@@ -80,8 +95,13 @@ describe("createSecurityHeaders", () => {
     expect(headers("b")["Content-Security-Policy"]).not.toContain("'nonce-a'");
   });
 
-  it("omits the CSP without a nonce", () => {
-    expect(headersFor()()).not.toHaveProperty("Content-Security-Policy");
+  it("uses a lockdown CSP without a nonce, and no Cache-Control", () => {
+    const headers = headersFor()();
+
+    expect(headers["Content-Security-Policy"]).toBe(
+      "default-src 'none'; frame-ancestors 'none'",
+    );
+    expect(headers).not.toHaveProperty("Cache-Control");
   });
 
   it("omits reporting without a DSN", () => {

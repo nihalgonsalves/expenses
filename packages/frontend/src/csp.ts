@@ -39,6 +39,11 @@ export const SERVICE_WORKER_CSP = serialize({
   "base-uri": ["'none'"],
 });
 
+const NON_DOCUMENT_CSP = serialize({
+  "default-src": ["'none'"],
+  "frame-ancestors": ["'none'"],
+});
+
 const NONCE = "{nonce}";
 const REPORTING_ENDPOINT = "csp-endpoint";
 
@@ -53,7 +58,7 @@ type SecurityHeadersOptions = {
 
 /**
  * Builds the headers once; the returned function only fills in the nonce.
- * Without a nonce (non-document responses), the CSP headers are omitted.
+ * Without a nonce (non-document responses), a lockdown CSP is used instead.
  */
 export const createSecurityHeaders = ({
   dev,
@@ -70,9 +75,13 @@ export const createSecurityHeaders = ({
     "default-src": ["'self'"],
     // Dev: Vite HMR/React refresh need these; a nonce would disable unsafe-inline
     "script-src": dev
-      ? ["'self'", "'unsafe-inline'", "'unsafe-eval'"]
-      : [`'nonce-${NONCE}'`, "'strict-dynamic'"],
-    "style-src-elem": ["'self'", dev ? "'unsafe-inline'" : `'nonce-${NONCE}'`],
+      ? ["'self'", "'unsafe-inline'", "'unsafe-eval'", "'report-sample'"]
+      : [`'nonce-${NONCE}'`, "'strict-dynamic'", "'report-sample'"],
+    "style-src-elem": [
+      "'self'",
+      dev ? "'unsafe-inline'" : `'nonce-${NONCE}'`,
+      "'report-sample'",
+    ],
     // Nonces can't cover style="" attributes from SSR'd UI libraries
     "style-src-attr": ["'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:"],
@@ -86,7 +95,7 @@ export const createSecurityHeaders = ({
     "worker-src": ["'self'"],
     "frame-src": dev ? ["http://*:8025"] : undefined, // Mailpit
     "object-src": ["'none'"],
-    "base-uri": ["'self'"],
+    "base-uri": ["'none'"],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
     "upgrade-insecure-requests": dev ? undefined : [],
@@ -108,7 +117,21 @@ export const createSecurityHeaders = ({
   const baseHeaders: Record<string, string> = {
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Permissions-Policy": [
+      "camera=()",
+      "microphone=()",
+      "geolocation=()",
+      "display-capture=()",
+      "payment=()",
+      "usb=()",
+      "serial=()",
+      "hid=()",
+      "bluetooth=()",
+      "browsing-topics=()",
+      // Passkeys
+      "publickey-credentials-get=(self)",
+      "publickey-credentials-create=(self)",
+    ].join(", "),
     "Cross-Origin-Opener-Policy": "same-origin",
     // Dev: credentialless so the Mailpit devtools iframe can still load
     "Cross-Origin-Embedder-Policy": dev ? "credentialless" : "require-corp",
@@ -129,8 +152,18 @@ export const createSecurityHeaders = ({
       })}"`;
   }
 
+  const nonDocumentHeaders = {
+    ...baseHeaders,
+    [cspHeader]: NON_DOCUMENT_CSP,
+  };
+
   return (nonce?: string): Record<string, string> =>
     nonce === undefined
-      ? baseHeaders
-      : { ...baseHeaders, [cspHeader]: csp.replaceAll(NONCE, nonce) };
+      ? nonDocumentHeaders
+      : {
+          ...baseHeaders,
+          [cspHeader]: csp.replaceAll(NONCE, nonce),
+          // Per-request nonce and user data: never store
+          "Cache-Control": "no-store",
+        };
 };
