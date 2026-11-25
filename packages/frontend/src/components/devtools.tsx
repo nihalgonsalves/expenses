@@ -17,6 +17,8 @@ const MailpitPanel = () => {
       title="Mailpit"
       src={mailpitUrl}
       referrerPolicy="no-referrer"
+      // Lets the cross-origin frame load under COEP (Chromium only)
+      credentialless
       // oxlint-disable-next-line react/iframe-missing-sandbox
       sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
       style={{

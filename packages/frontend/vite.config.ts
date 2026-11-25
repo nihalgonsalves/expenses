@@ -15,6 +15,8 @@ import IstanbulPlugin from "vite-plugin-istanbul";
 // We only need this for Vite's native loader, nowhere else
 // @ts-expect-error An import path can only end with a .ts extension when allowImportingTsExtensions is enabled.
 import { generateSw } from "./bin/generate-sw.ts";
+// @ts-expect-error An import path can only end with a .ts extension when allowImportingTsExtensions is enabled.
+import { SERVICE_WORKER_CSP } from "./src/csp.ts";
 import { jsonCodec } from "@nihalgonsalves/expenses-shared/zod";
 
 const relativePath = (path: string) =>
@@ -108,7 +110,18 @@ export default defineConfig(({ mode }) => ({
           });
         },
       },
-    !process.env["VITE_STORYBOOK"] && nitro({}),
+    !process.env["VITE_STORYBOOK"] &&
+      nitro({
+        routeRules: {
+          // Static files skip the server entry; the SW follows its own CSP
+          "/sw.js": {
+            headers: {
+              "Content-Security-Policy": SERVICE_WORKER_CSP,
+              "X-Content-Type-Options": "nosniff",
+            },
+          },
+        },
+      }),
     react({ compiler: { logDiagnostics: false } }),
     !process.env["VITE_STORYBOOK"] &&
       process.env["VITE_COVERAGE"] &&

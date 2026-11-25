@@ -1,7 +1,10 @@
 import * as Sentry from "@sentry/tanstackstart-react";
 import { createRouter } from "@tanstack/react-router";
 import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query";
-import { createIsomorphicFn } from "@tanstack/react-start";
+import {
+  createIsomorphicFn,
+  getGlobalStartContext,
+} from "@tanstack/react-start";
 import {
   getQueryClient,
   asyncStoragePersister,
@@ -26,8 +29,12 @@ export const getRouter = async () => {
   );
   await persistClientRestore();
 
+  // Server: set by the server entry. Client: read from TanStack's csp-nonce meta
+  const nonce = getGlobalStartContext()?.nonce;
+
   const router = createRouter({
     routeTree,
+    ...(nonce ? { ssr: { nonce } } : {}),
     defaultNotFoundComponent: NotFoundPage,
     context: { queryClient },
     scrollRestoration: true,

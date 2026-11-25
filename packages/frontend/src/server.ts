@@ -3,6 +3,8 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { FastResponse } from "srvx";
 import { z } from "zod";
 import { config } from "@nihalgonsalves/expenses-backend/src/config";
+import { config as frontendConfig } from "./config";
+import { createSecurityHeaders, generateNonce } from "./csp";
 import { getBackendWebApp } from "@nihalgonsalves/expenses-backend/src/web-context";
 import {
   THEME_DEFAULT,
@@ -81,25 +83,54 @@ const handleHealthRequest = async () => {
   }
 };
 
+const securityHeaders = createSecurityHeaders({
+  dev: import.meta.env.DEV,
+  sentryDsn: frontendConfig.VITE_SENTRY_DSN,
+  reportOnly: process.env["CSP_REPORT_ONLY"] === "true",
+});
+
+const withHeaders = (response: Response, headers: Record<string, string>) => {
+  for (const [name, value] of Object.entries(headers)) {
+    response.headers.set(name, value);
+  }
+  return response;
+};
+
+const handleNonDocumentRequest = async (
+  request: Request,
+): Promise<Response | undefined> => {
+  const pathname = new URL(request.url).pathname;
+
+  if (pathname === "/healthz") {
+    return handleHealthRequest();
+  }
+
+  if (pathname === "/manifest.webmanifest") {
+    return handleManifestRequest(request);
+  }
+
+  if (pathname.startsWith("/api/auth")) {
+    return handleAuthRequest(request);
+  }
+
+  return undefined;
+};
+
 // oxlint-disable-next-line import/no-default-export
 export default createServerEntry(
   wrapFetchWithSentry({
     async fetch(request: Request) {
-      const pathname = new URL(request.url).pathname;
-
-      if (pathname === "/healthz") {
-        return handleHealthRequest();
+      const response = await handleNonDocumentRequest(request);
+      if (response) {
+        return withHeaders(response, securityHeaders());
       }
 
-      if (pathname === "/manifest.webmanifest") {
-        return handleManifestRequest(request);
-      }
-
-      if (pathname.startsWith("/api/auth")) {
-        return handleAuthRequest(request);
-      }
-
-      return handler.fetch(request);
+      // `getRouter` reads the nonce from the Start context
+      const nonce = generateNonce();
+      return withHeaders(
+        await handler.fetch(request, { context: { nonce } }),
+        securityHeaders(nonce),
+      );
     },
   }),
 );

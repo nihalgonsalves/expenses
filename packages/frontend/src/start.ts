@@ -46,6 +46,14 @@ const csrfMiddleware = createCsrfMiddleware({
   filter: (ctx) => ctx.handlerType === "serverFn",
 });
 
+declare module "@tanstack/react-start" {
+  // oxlint-disable-next-line typescript/consistent-type-definitions -- declaration merging
+  interface Register {
+    // Passed by the server entry to `handler.fetch`
+    server: { requestContext: { nonce: string } };
+  }
+}
+
 export const startInstance = createStart(() => ({
   requestMiddleware: [sentryGlobalRequestMiddleware, csrfMiddleware],
   functionMiddleware: [sentryServerFunctionMiddleware],
