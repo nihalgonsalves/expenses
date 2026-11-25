@@ -17,6 +17,8 @@ import IstanbulPlugin from "vite-plugin-istanbul";
 import { generateSw } from "./bin/generate-sw.ts";
 // @ts-expect-error An import path can only end with a .ts extension when allowImportingTsExtensions is enabled.
 import { SERVICE_WORKER_CSP } from "./src/csp.ts";
+// @ts-expect-error An import path can only end with a .ts extension when allowImportingTsExtensions is enabled.
+import { trustedTypesPlugin } from "./bin/trusted-types-plugin.ts";
 import { jsonCodec } from "@nihalgonsalves/expenses-shared/zod";
 
 const relativePath = (path: string) =>
@@ -40,6 +42,10 @@ export default defineConfig(({ mode }) => ({
         moduleLevelDirective: false,
       },
     },
+  },
+  define: {
+    // The Replay worker is served from /assets/ instead (instrument.client.ts)
+    __SENTRY_EXCLUDE_REPLAY_WORKER__: true,
   },
   css: { transformer: "lightningcss" },
   optimizeDeps: {
@@ -69,6 +75,7 @@ export default defineConfig(({ mode }) => ({
       enhancedLogs: { enabled: true },
     }),
     jotaiPlugin(),
+    trustedTypesPlugin(),
     process.env["ENABLE_BUNDLE_VISUALIZER"] && visualizer({ open: true }),
     tailwindcss(),
     !process.env["VITE_STORYBOOK"] &&

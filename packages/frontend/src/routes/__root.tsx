@@ -6,6 +6,7 @@ import {
   HeadContent,
   Outlet,
   Scripts,
+  ScriptOnce,
 } from "@tanstack/react-router";
 import { MotionConfig } from "motion/react";
 
@@ -23,6 +24,7 @@ import { appConfigQueryOptions } from "../api/config.functions";
 import { userApi } from "../api/user.functions";
 import { transactionDraftQueries } from "../api/transaction-draft.functions";
 import mainCss from "../main.css?url";
+import installTrustedTypes from "virtual:install-trusted-types";
 import { useSwUpdateCheck } from "../register-sw";
 import {
   getThemeModeAttribute,
@@ -145,6 +147,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       data-mode={getThemeModeAttribute(themePreference)}
     >
       <head>
+        {/* First: inline scripts run before the (async) module entry, so the
+            Trusted Types default policy exists before any app code runs */}
+        <ScriptOnce>{installTrustedTypes}</ScriptOnce>
         <HeadContent />
       </head>
       <body>

@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/tanstackstart-react";
+import replayWorkerUrl from "@sentry/replay/worker-bundler?worker&url";
 import { config } from "./config";
 
 Sentry.init({
@@ -15,6 +16,7 @@ Sentry.init({
     Sentry.replayIntegration({
       maskAllText: true,
       blockAllMedia: false,
+      workerUrl: replayWorkerUrl,
     }),
   ],
   tracesSampleRate: 1.0,

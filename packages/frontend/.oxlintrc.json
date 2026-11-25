@@ -18,6 +18,7 @@
     ],
 
     "react/react-in-jsx-scope": "off",
+    "react/no-danger": "error",
     // TODO
     "react/error-boundaries": "warn",
     "react/exhaustive-effect-dependencies": "warn",

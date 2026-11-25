@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import fs from "fs/promises";
-import { test as base, type BrowserContext } from "@playwright/test";
+import { expect, test as base, type BrowserContext } from "@playwright/test";
 export { expect } from "@playwright/test";
 
 import { makeCreateContext } from "@nihalgonsalves/expenses-backend/src/context.ts";
@@ -31,8 +31,16 @@ type WorkerFixtures = {
   };
 };
 
+type CspViolation = {
+  directive: string;
+  blockedURI: string;
+  sample: string;
+  source: string;
+};
+
 declare global {
   var collectIstanbulCoverage: (coverageJSON: string) => void;
+  var reportCspViolation: (violation: CspViolation) => void;
   var __coverage__: unknown;
 }
 
@@ -48,6 +56,22 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
   },
 
   context: async ({ context }, use) => {
+    // Includes Trusted Types (require-trusted-types-for / trusted-types)
+    const cspViolations: CspViolation[] = [];
+    await context.exposeFunction("reportCspViolation", (v: CspViolation) => {
+      cspViolations.push(v);
+    });
+    await context.addInitScript(() => {
+      document.addEventListener("securitypolicyviolation", (event) => {
+        globalThis.reportCspViolation({
+          directive: event.effectiveDirective,
+          blockedURI: event.blockedURI,
+          sample: event.sample,
+          source: `${event.sourceFile}:${event.lineNumber}`,
+        });
+      });
+    });
+
     await context.addInitScript(() => {
       window.addEventListener("beforeunload", () => {
         globalThis.collectIstanbulCoverage(
@@ -85,6 +109,8 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
         }),
       ),
     );
+
+    expect(cspViolations, "CSP violations").toStrictEqual([]);
   },
 
   setup: [

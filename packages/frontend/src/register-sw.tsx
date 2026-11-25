@@ -1,3 +1,4 @@
+import { captureException } from "@sentry/tanstackstart-react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
@@ -47,9 +48,15 @@ export const registerSW = async () => {
     return;
   }
 
-  const registration = await navigator.serviceWorker.register(SW_URL, {
-    type: "module",
-  });
+  let registration: ServiceWorkerRegistration;
+  try {
+    registration = await navigator.serviceWorker.register(SW_URL, {
+      type: "module",
+    });
+  } catch (error) {
+    captureException(error);
+    return;
+  }
 
   const update = () => {
     if (registration.waiting) {

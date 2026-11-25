@@ -89,6 +89,7 @@ const securityHeaders = createSecurityHeaders({
   environment: frontendConfig.VITE_ENV_NAME,
   release: frontendConfig.VITE_GIT_COMMIT_SHA,
   reportOnly: process.env["CSP_REPORT_ONLY"] === "true",
+  trustedTypes: !import.meta.env.DEV || frontendConfig.VITE_INTEGRATION_TEST,
 });
 
 const withHeaders = (response: Response, headers: Record<string, string>) => {

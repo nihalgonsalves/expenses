@@ -48,6 +48,7 @@ type SecurityHeadersOptions = {
   environment: string;
   release: string;
   reportOnly: boolean;
+  trustedTypes: boolean;
 };
 
 /**
@@ -60,6 +61,7 @@ export const createSecurityHeaders = ({
   environment,
   release,
   reportOnly,
+  trustedTypes,
 }: SecurityHeadersOptions) => {
   const sentry = parseSentryDsn(sentryDsn);
   const reportTo = sentry ? [REPORTING_ENDPOINT] : undefined;
@@ -80,14 +82,22 @@ export const createSecurityHeaders = ({
       ...(sentry ? [sentry.origin] : []),
       ...(dev ? ["ws:", "wss:"] : []),
     ],
-    // Explicit so 'strict-dynamic' doesn't block the SW; blob: for Sentry replay
-    "worker-src": ["'self'", "blob:"],
+    // Explicit, or it would fall back to script-src with strict-dynamic and break workers
+    "worker-src": ["'self'"],
     "frame-src": dev ? ["http://*:8025"] : undefined, // Mailpit
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
     "frame-ancestors": ["'none'"],
     "upgrade-insecure-requests": dev ? undefined : [],
+    "require-trusted-types-for": trustedTypes ? ["'script'"] : undefined,
+    "trusted-types": trustedTypes
+      ? [
+          "default",
+          // pwa-install
+          "lit-html",
+        ]
+      : undefined,
     "report-to": reportTo,
   });
 

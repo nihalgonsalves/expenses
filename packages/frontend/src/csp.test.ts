@@ -17,6 +17,7 @@ const headersFor = (
     environment: "test",
     release: "abc1234",
     reportOnly: false,
+    trustedTypes: true,
     ...options,
   });
 
@@ -27,7 +28,7 @@ it("builds the production security headers", () => {
   }).toMatchInlineSnapshot(`
     {
       "document": {
-        "Content-Security-Policy": "default-src 'self'; script-src 'nonce-abcdef' 'strict-dynamic'; style-src-elem 'self' 'nonce-abcdef'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://o1.ingest.us.sentry.io; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; report-to csp-endpoint",
+        "Content-Security-Policy": "default-src 'self'; script-src 'nonce-abcdef' 'strict-dynamic'; style-src-elem 'self' 'nonce-abcdef'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://o1.ingest.us.sentry.io; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types default lit-html; report-to csp-endpoint",
         "Cross-Origin-Embedder-Policy": "require-corp",
         "Cross-Origin-Opener-Policy": "same-origin",
         "Cross-Origin-Resource-Policy": "same-origin",
@@ -88,6 +89,14 @@ describe("createSecurityHeaders", () => {
 
     expect(headers).not.toHaveProperty("Reporting-Endpoints");
     expect(Object.values(headers).join()).not.toContain("report-to");
+  });
+
+  it("omits Trusted Types when disabled", () => {
+    const csp = headersFor({ trustedTypes: false })("n")[
+      "Content-Security-Policy"
+    ];
+
+    expect(csp).not.toContain("trusted-types");
   });
 
   it("uses neither the nonce nor HSTS in dev", () => {
