@@ -1,7 +1,7 @@
-import Papa from "papaparse";
 import { toast } from "sonner";
 
 import { Button } from "../components/ui/button";
+import { unparseCsv } from "../utils/csv";
 
 export const requestExport = async <TData,>(
   sheetId: string,
@@ -25,14 +25,7 @@ export const requestExport = async <TData,>(
           ? new Blob([JSON.stringify(mapped, null, 2)], {
               type: "application/json",
             })
-          : new Blob(
-              [
-                Papa.unparse(mapped, {
-                  columns: columns ? [...columns] : undefined,
-                }),
-              ],
-              { type: "text/csv" },
-            );
+          : new Blob([unparseCsv(mapped, columns)], { type: "text/csv" });
 
       const objectURL = URL.createObjectURL(blob);
 
