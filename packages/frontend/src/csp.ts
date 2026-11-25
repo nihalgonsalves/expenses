@@ -45,6 +45,8 @@ const REPORTING_ENDPOINT = "csp-endpoint";
 type SecurityHeadersOptions = {
   dev: boolean;
   sentryDsn: string | undefined;
+  environment: string;
+  release: string;
   reportOnly: boolean;
 };
 
@@ -55,6 +57,8 @@ type SecurityHeadersOptions = {
 export const createSecurityHeaders = ({
   dev,
   sentryDsn,
+  environment,
+  release,
   reportOnly,
 }: SecurityHeadersOptions) => {
   const sentry = parseSentryDsn(sentryDsn);
@@ -109,7 +113,10 @@ export const createSecurityHeaders = ({
 
   if (sentry) {
     baseHeaders["Reporting-Endpoints"] =
-      `${REPORTING_ENDPOINT}="${sentry.reportUri}"`;
+      `${REPORTING_ENDPOINT}="${sentry.reportUri}&${new URLSearchParams({
+        sentry_environment: environment,
+        sentry_release: release,
+      })}"`;
   }
 
   return (nonce?: string): Record<string, string> =>

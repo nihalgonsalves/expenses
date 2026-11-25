@@ -60,8 +60,10 @@ COPY --from=builder /opt/app/packages/frontend/.output/ ./
 ENV NODE_ENV=production
 
 # Read at runtime by instrument.server.mjs
+ARG VITE_ENV_NAME=production
 ARG VITE_GIT_COMMIT_SHA
 ARG VITE_SENTRY_DSN
+ENV VITE_ENV_NAME=${VITE_ENV_NAME}
 ENV VITE_GIT_COMMIT_SHA=${VITE_GIT_COMMIT_SHA}
 ENV VITE_SENTRY_DSN=${VITE_SENTRY_DSN}
 

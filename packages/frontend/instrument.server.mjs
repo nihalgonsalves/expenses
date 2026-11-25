@@ -6,6 +6,8 @@ Sentry.init({
     ? { dsn: process.env["VITE_SENTRY_DSN"] }
     : {}),
   release: process.env["VITE_GIT_COMMIT_SHA"],
+  // Same default as VITE_ENV_NAME in src/config.ts
+  environment: process.env["VITE_ENV_NAME"] ?? "development",
   ignoreErrors: [/UNAUTHORIZED/],
   integrations: [Sentry.prismaIntegration()],
   tracesSampleRate: 1.0,

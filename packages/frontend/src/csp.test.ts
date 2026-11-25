@@ -14,6 +14,8 @@ const headersFor = (
   createSecurityHeaders({
     dev: false,
     sentryDsn: undefined,
+    environment: "test",
+    release: "abc1234",
     reportOnly: false,
     ...options,
   });
@@ -33,7 +35,7 @@ it("builds the production security headers", () => {
         "Origin-Agent-Cluster": "?1",
         "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
         "Referrer-Policy": "strict-origin-when-cross-origin",
-        "Reporting-Endpoints": "csp-endpoint="https://o1.ingest.us.sentry.io/api/456/security/?sentry_key=abc123"",
+        "Reporting-Endpoints": "csp-endpoint="https://o1.ingest.us.sentry.io/api/456/security/?sentry_key=abc123&sentry_environment=test&sentry_release=abc1234"",
         "Strict-Transport-Security": "max-age=31536000",
         "X-Content-Type-Options": "nosniff",
       },

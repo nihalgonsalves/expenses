@@ -86,6 +86,8 @@ const handleHealthRequest = async () => {
 const securityHeaders = createSecurityHeaders({
   dev: import.meta.env.DEV,
   sentryDsn: frontendConfig.VITE_SENTRY_DSN,
+  environment: frontendConfig.VITE_ENV_NAME,
+  release: frontendConfig.VITE_GIT_COMMIT_SHA,
   reportOnly: process.env["CSP_REPORT_ONLY"] === "true",
 });
 

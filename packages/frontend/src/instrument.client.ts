@@ -4,6 +4,7 @@ import { config } from "./config";
 Sentry.init({
   ...(config.VITE_SENTRY_DSN ? { dsn: config.VITE_SENTRY_DSN } : {}),
   release: config.VITE_GIT_COMMIT_SHA,
+  environment: config.VITE_ENV_NAME,
   integrations: [
     Sentry.browserProfilingIntegration(),
     Sentry.captureConsoleIntegration({
